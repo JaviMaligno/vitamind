@@ -24,7 +24,8 @@ export function solarElev(lat: number, lon: number, doy: number, utcH: number): 
   const B = ((360 / 365) * (doy - 81)) * RAD;
   const EoT = 9.87 * Math.sin(2 * B) - 7.53 * Math.cos(B) - 1.5 * Math.sin(B);
   const ha = ((utcH - (12 - lon / 15 - EoT / 60)) * 15) * RAD;
-  return Math.asin(Math.sin(lr) * Math.sin(d) + Math.cos(lr) * Math.cos(d) * Math.cos(ha)) * 180 / Math.PI;
+  const sinElev = Math.sin(lr) * Math.sin(d) + Math.cos(lr) * Math.cos(d) * Math.cos(ha);
+  return Math.asin(Math.max(-1, Math.min(1, sinElev))) * 180 / Math.PI;
 }
 
 export function getCurve(lat: number, lon: number, doy: number, tz: number): SolarPoint[] {
