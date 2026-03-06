@@ -7,6 +7,7 @@ import DailyCurve from "@/components/DailyCurve";
 import CitySearch from "@/components/CitySearch";
 import SaveLocationModal from "@/components/SaveLocationModal";
 import VitDEstimate from "@/components/VitDEstimate";
+import SkinSelector from "@/components/SkinSelector";
 import { BUILTIN_CITIES, findNearestCity } from "@/lib/cities";
 import { vitDHrs, getCurve, getWindow, dayOfYear, dateFromDoy, fmtTime, fmtDate } from "@/lib/solar";
 import { loadFavorites, saveFavorites, loadCustomLocations, saveCustomLocation, deleteCustomLocation, loadPreferences, savePreferences, getCachedWeather, setCachedWeather } from "@/lib/storage";
@@ -223,6 +224,9 @@ export default function App() {
           </button>
         </div>
 
+        {/* Skin & area personalization */}
+        <SkinSelector skinType={skinType} areaFraction={areaFraction} onSkinChange={setSkinType} onAreaChange={setAreaFraction} />
+
         {/* Search + controls */}
         <div style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
           <CitySearch onSelect={selectCity} onAddFav={(c) => toggleFav(c)} favorites={favorites} allCities={allCities} />
@@ -295,8 +299,6 @@ export default function App() {
           weather={weather}
           skinType={skinType}
           areaFraction={areaFraction}
-          onSkinChange={setSkinType}
-          onAreaChange={setAreaFraction}
         />
 
         {/* Legend */}
