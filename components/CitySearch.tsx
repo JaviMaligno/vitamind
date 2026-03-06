@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, useCallback, useRef, useEffect } from "react";
+import { searchGeoNames, preloadGeoNames } from "@/lib/geonames";
 import type { City } from "@/lib/types";
 
 interface Props {
@@ -12,12 +13,17 @@ interface Props {
 
 export default function CitySearch({ onSelect, onAddFav, favorites, allCities }: Props) {
   const [query, setQuery] = useState("");
-  const [results, setResults] = useState<City[]>([]);
+  const [geoResults, setGeoResults] = useState<City[]>([]);
+  const [nominatimResults, setNominatimResults] = useState<City[]>([]);
   const [open, setOpen] = useState(false);
   const [searching, setSearching] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
 
+  // Preload GeoNames on mount
+  useEffect(() => { preloadGeoNames(); }, []);
+
+  // Local match against builtin + custom cities
   const builtIn = useMemo(() => {
     if (!query.trim()) return [];
     const q = query.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
@@ -25,12 +31,19 @@ export default function CitySearch({ onSelect, onAddFav, favorites, allCities }:
   }, [query, allCities]);
 
   const doSearch = useCallback((q: string) => {
-    if (q.length < 2) { setResults([]); return; }
+    if (q.length < 2) { setGeoResults([]); setNominatimResults([]); return; }
     setSearching(true);
-    fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&limit=6&accept-language=es`, { headers: { "User-Agent": "VitD/1" } })
+
+    // GeoNames fuzzy search (local, fast)
+    searchGeoNames(q, 8).then((results) => {
+      setGeoResults(results);
+    });
+
+    // Nominatim as fallback (for addresses, POIs, etc.)
+    fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&limit=4&accept-language=es`, { headers: { "User-Agent": "VitD/1" } })
       .then((r) => r.json())
       .then((data) => {
-        setResults(
+        setNominatimResults(
           data
             .filter((r: { lat?: string; lon?: string }) => r.lat && r.lon)
             .map((r: { display_name: string; lat: string; lon: string }) => ({
@@ -47,14 +60,14 @@ export default function CitySearch({ onSelect, onAddFav, favorites, allCities }:
         );
         setSearching(false);
       })
-      .catch(() => { setResults([]); setSearching(false); });
+      .catch(() => { setNominatimResults([]); setSearching(false); });
   }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const v = e.target.value;
     setQuery(v); setOpen(true);
     clearTimeout(timerRef.current);
-    timerRef.current = setTimeout(() => doSearch(v), 500);
+    timerRef.current = setTimeout(() => doSearch(v), 300);
   };
 
   useEffect(() => {
@@ -65,10 +78,20 @@ export default function CitySearch({ onSelect, onAddFav, favorites, allCities }:
     return () => document.removeEventListener("mousedown", h);
   }, []);
 
+  // Merge: builtin first, then geonames, then nominatim — deduplicate by name
   const combined = useMemo(() => {
-    const s = new Set(builtIn.map((c) => c.name));
-    return [...builtIn, ...results.filter((r) => !s.has(r.name))].slice(0, 8);
-  }, [builtIn, results]);
+    const seen = new Set<string>();
+    const result: City[] = [];
+    for (const list of [builtIn, geoResults, nominatimResults]) {
+      for (const c of list) {
+        const key = `${c.name.toLowerCase()}:${c.lat.toFixed(1)}`;
+        if (!seen.has(key)) { seen.add(key); result.push(c); }
+        if (result.length >= 10) break;
+      }
+      if (result.length >= 10) break;
+    }
+    return result;
+  }, [builtIn, geoResults, nominatimResults]);
 
   return (
     <div ref={ref} style={{ position: "relative", flex: "1 1 280px" }}>
@@ -104,6 +127,9 @@ export default function CitySearch({ onSelect, onAddFav, favorites, allCities }:
                 )}
                 <span style={{ fontSize: 9, color: "rgba(255,255,255,0.2)", fontFamily: "'JetBrains Mono',monospace" }}>
                   {c.lat.toFixed(2)}&deg;, {c.lon.toFixed(2)}&deg;
+                  {c.population ? ` \u00B7 ${(c.population / 1000).toFixed(0)}K hab.` : ""}
+                  {c.source === "geonames" && <span style={{ color: "rgba(255,213,79,0.3)", marginLeft: 4 }}>GeoNames</span>}
+                  {c.source === "nominatim" && <span style={{ color: "rgba(100,200,255,0.3)", marginLeft: 4 }}>OSM</span>}
                 </span>
               </div>
               <button
@@ -115,7 +141,7 @@ export default function CitySearch({ onSelect, onAddFav, favorites, allCities }:
             </div>
           ))}
           {searching && (
-            <div style={{ padding: 10, fontSize: 11, color: "rgba(255,255,255,0.3)", textAlign: "center" }}>Buscando en OpenStreetMap...</div>
+            <div style={{ padding: 10, fontSize: 11, color: "rgba(255,255,255,0.3)", textAlign: "center" }}>Buscando...</div>
           )}
         </div>
       )}
