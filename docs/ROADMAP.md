@@ -21,20 +21,27 @@
 
 ---
 
-## Fase 6b - Calculo preciso de vitamina D con UV real
+## Completado (Fase 6b - Calculo preciso con UV real)
 
-### Problema
-Los calculos actuales asumen cielo despejado. Con los datos UV reales de Open-Meteo
-podriamos calcular tiempo necesario de exposicion mucho mas preciso.
+- Formula Holick/Dowdy (2010): time = target_IU * MED / (24000 * area * UVI)
+- MED por tipo Fitzpatrick (I-VI): 200-1200 J/m2
+- Umbral UVI >= 3 para sintesis
+- Cap a 1/3 MED (rendimiento decreciente)
+- Selector de piel con guia Fitzpatrick interactiva (boton ?)
+- Presets de area expuesta (10%-40%)
+- Panel de resultados: minutos para 1000 IU, mejor hora, ventana UV
+- Grafico de barras por hora coloreado por tiempo necesario
+- Persistencia de preferencias en localStorage
 
-### Investigacion necesaria
-- Papers sobre sintesis de vitamina D vs UV index real
-- Factores: tipo de piel (Fitzpatrick), % piel expuesta, angulo solar
-- Calcular IU/minuto en funcion de UV index medido
+---
 
-### Implementacion
-- Mostrar "tiempo estimado para 1000 IU" basado en UV real
-- Ventana "efectiva" vs "teorica"
+## Fase 6c - Mejora de UX/UI
+
+- Rediseño visual general (layout, espaciado, responsive)
+- Onboarding para nuevos usuarios (tipo de piel, ubicacion)
+- Tooltips y explicaciones contextuales mas claras
+- Mejor jerarquia visual entre controles y resultados
+- Accesibilidad (aria labels, contraste, teclado)
 
 ---
 
