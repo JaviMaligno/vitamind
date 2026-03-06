@@ -26,7 +26,7 @@ function cloudColor(cover: number): string {
 export default function DailyCurve({ curve, threshold, hoverTime, onHover, weather }: Props) {
   const ref = useRef<SVGSVGElement>(null);
   const maxE = Math.max(55, ...curve.map((p) => Math.max(p.elevation, 0)));
-  const minE = Math.min(-5, ...curve.map((p) => p.elevation));
+  const minE = Math.max(-15, Math.min(-5, ...curve.map((p) => p.elevation)));
   const range = maxE - minE;
   const x = (h: number) => PAD.l + (h / 24) * plotW;
   const y = (e: number) => PAD.t + plotH - ((e - minE) / range) * plotH;
