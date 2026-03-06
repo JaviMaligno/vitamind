@@ -6,10 +6,12 @@ import GlobalHeatmap from "@/components/GlobalHeatmap";
 import DailyCurve from "@/components/DailyCurve";
 import CitySearch from "@/components/CitySearch";
 import SaveLocationModal from "@/components/SaveLocationModal";
+import VitDEstimate from "@/components/VitDEstimate";
 import { BUILTIN_CITIES, findNearestCity } from "@/lib/cities";
 import { vitDHrs, getCurve, getWindow, dayOfYear, dateFromDoy, fmtTime, fmtDate } from "@/lib/solar";
 import { loadFavorites, saveFavorites, loadCustomLocations, saveCustomLocation, deleteCustomLocation, loadPreferences, savePreferences, getCachedWeather, setCachedWeather } from "@/lib/storage";
 import type { City, WeatherData } from "@/lib/types";
+import type { SkinType } from "@/lib/vitd";
 
 export default function App() {
   // State
@@ -30,6 +32,8 @@ export default function App() {
   const [scrubMode, setScrubMode] = useState(false);
   const [savingLocation, setSavingLocation] = useState(false);
   const [weather, setWeather] = useState<WeatherData | null>(null);
+  const [skinType, setSkinType] = useState<SkinType>(3);
+  const [areaFraction, setAreaFraction] = useState(0.25);
   const animRef = useRef<number>(0);
 
   // Load persisted state on mount
@@ -38,6 +42,8 @@ export default function App() {
     setCustomLocations(loadCustomLocations());
     const prefs = loadPreferences();
     setThreshold(prefs.threshold);
+    if (prefs.skinType) setSkinType(prefs.skinType);
+    if (prefs.areaFraction) setAreaFraction(prefs.areaFraction);
   }, []);
 
   // Persist favorites
@@ -47,8 +53,8 @@ export default function App() {
 
   // Persist threshold
   useEffect(() => {
-    savePreferences({ threshold, lastCityId: cityId });
-  }, [threshold, cityId]);
+    savePreferences({ threshold, lastCityId: cityId, skinType, areaFraction });
+  }, [threshold, cityId, skinType, areaFraction]);
 
   // All cities = builtin + custom
   const allCities = useMemo(() => {
@@ -284,6 +290,15 @@ export default function App() {
           <DailyCurve curve={curve} threshold={threshold} hoverTime={hoverTime} onHover={setHoverTime} weather={weather} />
         </div>
 
+        {/* Vitamin D estimate */}
+        <VitDEstimate
+          weather={weather}
+          skinType={skinType}
+          areaFraction={areaFraction}
+          onSkinChange={setSkinType}
+          onAreaChange={setAreaFraction}
+        />
+
         {/* Legend */}
         <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 12, marginTop: 8, padding: "5px 10px", borderRadius: 8, background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.04)", fontSize: 9, color: "rgba(255,255,255,0.22)" }}>
           <span>Horas Vit D:</span>
@@ -295,7 +310,7 @@ export default function App() {
       </div>
 
       <div style={{ maxWidth: 880, margin: "12px auto 0", fontSize: 9, color: "rgba(255,255,255,0.15)", lineHeight: 1.5 }}>
-        Calculos astronomicos (cielo despejado). Mapa: Natural Earth. Busqueda: OpenStreetMap Nominatim. Umbral 45&deg; (in vitro) / 50&deg; (conservador).
+        Calculos astronomicos + datos UV reales (Open-Meteo). Estimacion Vit D basada en Holick/Dowdy (2010). Mapa: Natural Earth. Busqueda: OpenStreetMap Nominatim. Umbral 45&deg; (in vitro) / 50&deg; (conservador).
       </div>
     </div>
   );

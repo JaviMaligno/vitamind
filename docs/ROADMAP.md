@@ -69,13 +69,15 @@ podriamos calcular tiempo necesario de exposicion mucho mas preciso.
 
 ---
 
-## Fase 9 - PWA (Progressive Web App)
+## Completado (Fase 9 - PWA)
 
-- manifest.json con iconos, nombre, colores
-- Service Worker para cache offline
+- manifest.json con iconos (192, 512, maskable), nombre, colores
+- Service Worker con cache-first para assets, network-first para paginas
+- Pagina offline con boton de reintentar
+- Apple Web App meta tags (capable, status-bar-style, touch-icon)
+- Favicon SVG con icono sol+D
 - "Anadir a pantalla de inicio" en movil
-- Comportamiento tipo app nativa
-- Prerrequisito para notificaciones push
+- Comportamiento tipo app nativa (display: standalone)
 
 ---
 

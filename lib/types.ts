@@ -44,4 +44,6 @@ export interface WeatherData {
 export interface Preferences {
   threshold: number;
   lastCityId?: string;
+  skinType?: 1 | 2 | 3 | 4 | 5 | 6;
+  areaFraction?: number;
 }
