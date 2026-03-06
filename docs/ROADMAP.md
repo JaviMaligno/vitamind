@@ -63,6 +63,7 @@
 ## Fase 8 - Perfil personal
 
 - Tipo de piel (escala Fitzpatrick I-VI) -> ajusta tiempo necesario
+- Autodeteccion de tipo de piel con foto (IA / vision model)
 - Edad -> ajusta eficiencia de sintesis
 - % de piel expuesta -> multiplica tiempo
 - Requiere autenticacion (Firebase Auth o Supabase Auth)
