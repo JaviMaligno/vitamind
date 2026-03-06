@@ -31,7 +31,8 @@ export default function DailyCurve({ curve, threshold, hoverTime, onHover, weath
   const x = (h: number) => PAD.l + (h / 24) * plotW;
   const y = (e: number) => PAD.t + plotH - ((e - minE) / range) * plotH;
 
-  const pathD = curve.map((p, i) => `${i === 0 ? "M" : "L"}${x(p.localHours).toFixed(1)},${y(Math.max(p.elevation, minE)).toFixed(1)}`).join(" ");
+  // Path uses real elevation values (no clamping). clipPath handles visibility.
+  const pathD = curve.map((p, i) => `${i === 0 ? "M" : "L"}${x(p.localHours).toFixed(1)},${y(p.elevation).toFixed(1)}`).join(" ");
 
   const aP = curve.filter((p) => p.elevation >= threshold);
   let aD = "";
@@ -49,7 +50,6 @@ export default function DailyCurve({ curve, threshold, hoverTime, onHover, weath
 
   const hp = hoverTime !== null ? curve.reduce((a, b) => Math.abs(b.localHours - hoverTime) < Math.abs(a.localHours - hoverTime) ? b : a, curve[0]) : null;
 
-  // Build cloud overlay rectangles
   const cloudRects: { x1: number; x2: number; color: string }[] = [];
   if (weather?.hours) {
     for (const wh of weather.hours) {
@@ -71,9 +71,11 @@ export default function DailyCurve({ curve, threshold, hoverTime, onHover, weath
         <linearGradient id="vg3" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor="#FFD54F" stopOpacity=".6" /><stop offset="100%" stopColor="#FF8F00" stopOpacity=".15" />
         </linearGradient>
+        <clipPath id="plotClip">
+          <rect x={PAD.l} y={PAD.t} width={plotW} height={plotH} />
+        </clipPath>
       </defs>
       <rect x={PAD.l} y={PAD.t} width={plotW} height={plotH} fill="url(#sg3)" rx="4" />
-      {/* Cloud overlay */}
       {cloudRects.map((cr, i) => (
         <rect key={i} x={cr.x1} y={PAD.t} width={cr.x2 - cr.x1} height={plotH} fill={cr.color} />
       ))}
@@ -92,8 +94,11 @@ export default function DailyCurve({ curve, threshold, hoverTime, onHover, weath
       <line x1={PAD.l} y1={y(0)} x2={PAD.l + plotW} y2={y(0)} stroke="rgba(255,255,255,0.18)" strokeDasharray="3,3" />
       <line x1={PAD.l} y1={y(threshold)} x2={PAD.l + plotW} y2={y(threshold)} stroke="#FF6D00" strokeWidth="1.5" strokeDasharray="6,3" opacity=".8" />
       <text x={PAD.l + plotW + 4} y={y(threshold) + 4} fill="#FFB74D" fontSize="9" fontWeight="600" fontFamily="'JetBrains Mono',monospace">{threshold}&deg;</text>
-      {aD && <path d={aD} fill="url(#vg3)" />}
-      <path d={pathD} fill="none" stroke="#FFD54F" strokeWidth="2.5" strokeLinecap="round" />
+      {/* Clipped group: curve and fill area are clipped to the plot rectangle */}
+      <g clipPath="url(#plotClip)">
+        {aD && <path d={aD} fill="url(#vg3)" />}
+        <path d={pathD} fill="none" stroke="#FFD54F" strokeWidth="2.5" strokeLinecap="round" />
+      </g>
       {hp && hoverTime !== null && (
         <g>
           <line x1={x(hp.localHours)} y1={PAD.t} x2={x(hp.localHours)} y2={PAD.t + plotH} stroke="rgba(255,255,255,0.2)" strokeDasharray="2,2" />
