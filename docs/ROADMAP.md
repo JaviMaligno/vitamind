@@ -16,6 +16,8 @@
 - Overlay de nubes en curva diaria
 - Proyecto Next.js modular (TypeScript, Tailwind)
 - Deploy en Vercel, repo en GitHub
+- Curva solar verificada: formula astronomica estandar (NOAA), error <0.3 grados, forma realista confirmada
+- Renderizado robusto de curva (buildVisiblePath con interpolacion de bordes, verificado 187K combinaciones)
 
 ---
 

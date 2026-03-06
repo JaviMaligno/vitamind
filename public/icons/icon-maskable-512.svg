@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <rect width="512" height="512" fill="#1a237e"/>
+  <line x1="363.52" y1="256" x2="419.84000000000003" y2="256" stroke="#FFD54F" stroke-width="12.8" stroke-linecap="round"/>
+  <line x1="349.11505141490284" y1="309.76" x2="397.88960215604243" y2="337.91999999999996" stroke="#FFD54F" stroke-width="12.8" stroke-linecap="round"/>
+  <line x1="309.76" y1="349.11505141490284" x2="337.92" y2="397.88960215604243" stroke="#FFD54F" stroke-width="12.8" stroke-linecap="round"/>
+  <line x1="256" y1="363.52" x2="256" y2="419.84000000000003" stroke="#FFD54F" stroke-width="12.8" stroke-linecap="round"/>
+  <line x1="202.24" y1="349.11505141490284" x2="174.08000000000004" y2="397.88960215604243" stroke="#FFD54F" stroke-width="12.8" stroke-linecap="round"/>
+  <line x1="162.88494858509716" y1="309.76" x2="114.11039784395757" y2="337.91999999999996" stroke="#FFD54F" stroke-width="12.8" stroke-linecap="round"/>
+  <line x1="148.48000000000002" y1="256" x2="92.16" y2="256" stroke="#FFD54F" stroke-width="12.8" stroke-linecap="round"/>
+  <line x1="162.88494858509716" y1="202.23999999999998" x2="114.11039784395757" y2="174.07999999999998" stroke="#FFD54F" stroke-width="12.8" stroke-linecap="round"/>
+  <line x1="202.23999999999995" y1="162.88494858509716" x2="174.07999999999993" y2="114.1103978439576" stroke="#FFD54F" stroke-width="12.8" stroke-linecap="round"/>
+  <line x1="255.99999999999997" y1="148.48000000000002" x2="255.99999999999997" y2="92.16" stroke="#FFD54F" stroke-width="12.8" stroke-linecap="round"/>
+  <line x1="309.76" y1="162.88494858509716" x2="337.92" y2="114.11039784395757" stroke="#FFD54F" stroke-width="12.8" stroke-linecap="round"/>
+  <line x1="349.11505141490284" y1="202.23999999999995" x2="397.88960215604243" y2="174.07999999999993" stroke="#FFD54F" stroke-width="12.8" stroke-linecap="round"/>
+  <circle cx="256" cy="256" r="92.16" fill="#FFD54F"/>
+  <text x="256" y="272.384" text-anchor="middle" font-family="sans-serif" font-weight="700" font-size="46.08" fill="#1a237e">D</text>
+</svg>

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+  <rect width="32" height="32" rx="5.76" fill="#1a237e"/>
+  <line x1="24.32" y1="16" x2="28.8" y2="16" stroke="#FFD54F" stroke-width="0.96" stroke-linecap="round"/>
+  <line x1="23.20533135948653" y1="20.16" x2="27.08512516844082" y2="22.4" stroke="#FFD54F" stroke-width="0.96" stroke-linecap="round"/>
+  <line x1="20.16" y1="23.20533135948653" x2="22.400000000000002" y2="27.085125168440815" stroke="#FFD54F" stroke-width="0.96" stroke-linecap="round"/>
+  <line x1="16" y1="24.32" x2="16" y2="28.8" stroke="#FFD54F" stroke-width="0.96" stroke-linecap="round"/>
+  <line x1="11.840000000000002" y1="23.20533135948653" x2="9.600000000000001" y2="27.08512516844082" stroke="#FFD54F" stroke-width="0.96" stroke-linecap="round"/>
+  <line x1="8.79466864051347" y1="20.16" x2="4.9148748315591835" y2="22.4" stroke="#FFD54F" stroke-width="0.96" stroke-linecap="round"/>
+  <line x1="7.68" y1="16" x2="3.1999999999999993" y2="16" stroke="#FFD54F" stroke-width="0.96" stroke-linecap="round"/>
+  <line x1="8.794668640513471" y1="11.84" x2="4.914874831559185" y2="9.599999999999998" stroke="#FFD54F" stroke-width="0.96" stroke-linecap="round"/>
+  <line x1="11.839999999999996" y1="8.794668640513471" x2="9.599999999999994" y2="4.914874831559187" stroke="#FFD54F" stroke-width="0.96" stroke-linecap="round"/>
+  <line x1="15.999999999999998" y1="7.68" x2="15.999999999999998" y2="3.1999999999999993" stroke="#FFD54F" stroke-width="0.96" stroke-linecap="round"/>
+  <line x1="20.16" y1="8.794668640513471" x2="22.400000000000002" y2="4.914874831559185" stroke="#FFD54F" stroke-width="0.96" stroke-linecap="round"/>
+  <line x1="23.20533135948653" y1="11.839999999999996" x2="27.08512516844081" y2="9.599999999999994" stroke="#FFD54F" stroke-width="0.96" stroke-linecap="round"/>
+  <circle cx="16" cy="16" r="7.04" fill="#FFD54F"/>
+  <text x="16" y="17.28" text-anchor="middle" font-family="sans-serif" font-weight="700" font-size="3.52" fill="#1a237e">D</text>
+</svg>

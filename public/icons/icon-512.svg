@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="92.16" fill="#1a237e"/>
+  <line x1="389.12" y1="256" x2="460.8" y2="256" stroke="#FFD54F" stroke-width="15.36" stroke-linecap="round"/>
+  <line x1="371.28530175178446" y1="322.56" x2="433.3620026950531" y2="358.4" stroke="#FFD54F" stroke-width="15.36" stroke-linecap="round"/>
+  <line x1="322.56" y1="371.28530175178446" x2="358.40000000000003" y2="433.36200269505304" stroke="#FFD54F" stroke-width="15.36" stroke-linecap="round"/>
+  <line x1="256" y1="389.12" x2="256" y2="460.8" stroke="#FFD54F" stroke-width="15.36" stroke-linecap="round"/>
+  <line x1="189.44000000000003" y1="371.28530175178446" x2="153.60000000000002" y2="433.3620026950531" stroke="#FFD54F" stroke-width="15.36" stroke-linecap="round"/>
+  <line x1="140.7146982482155" y1="322.56" x2="78.63799730494694" y2="358.4" stroke="#FFD54F" stroke-width="15.36" stroke-linecap="round"/>
+  <line x1="122.88" y1="256" x2="51.19999999999999" y2="256" stroke="#FFD54F" stroke-width="15.36" stroke-linecap="round"/>
+  <line x1="140.71469824821554" y1="189.44" x2="78.63799730494696" y2="153.59999999999997" stroke="#FFD54F" stroke-width="15.36" stroke-linecap="round"/>
+  <line x1="189.43999999999994" y1="140.71469824821554" x2="153.5999999999999" y2="78.63799730494699" stroke="#FFD54F" stroke-width="15.36" stroke-linecap="round"/>
+  <line x1="255.99999999999997" y1="122.88" x2="255.99999999999997" y2="51.19999999999999" stroke="#FFD54F" stroke-width="15.36" stroke-linecap="round"/>
+  <line x1="322.56" y1="140.71469824821554" x2="358.40000000000003" y2="78.63799730494696" stroke="#FFD54F" stroke-width="15.36" stroke-linecap="round"/>
+  <line x1="371.28530175178446" y1="189.43999999999994" x2="433.362002695053" y2="153.5999999999999" stroke="#FFD54F" stroke-width="15.36" stroke-linecap="round"/>
+  <circle cx="256" cy="256" r="112.64" fill="#FFD54F"/>
+  <text x="256" y="276.48" text-anchor="middle" font-family="sans-serif" font-weight="700" font-size="56.32" fill="#1a237e">D</text>
+</svg>
