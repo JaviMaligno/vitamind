@@ -31,7 +31,7 @@ export default function DailyCurve({ curve, threshold, hoverTime, onHover, weath
   const x = (h: number) => PAD.l + (h / 24) * plotW;
   const y = (e: number) => PAD.t + plotH - ((e - minE) / range) * plotH;
 
-  const pathD = curve.filter((p) => p.elevation > minE).map((p, i) => `${i === 0 ? "M" : "L"}${x(p.localHours).toFixed(1)},${y(p.elevation).toFixed(1)}`).join(" ");
+  const pathD = curve.map((p, i) => `${i === 0 ? "M" : "L"}${x(p.localHours).toFixed(1)},${y(Math.max(p.elevation, minE)).toFixed(1)}`).join(" ");
 
   const aP = curve.filter((p) => p.elevation >= threshold);
   let aD = "";

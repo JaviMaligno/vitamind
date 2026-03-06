@@ -104,6 +104,7 @@ export default function App() {
     if (near) {
       setLon(near.lon); setTz(near.tz); setCityName(near.name); setCityFlag(near.flag || "\u{1F4CD}"); setCityId(near.id);
     } else {
+      setLon(0); setTz(0);
       setCityName(`Lat ${Math.round(rL)}\u00B0`); setCityFlag("\u{1F4CD}"); setCityId(`custom:lat-${rL}`);
     }
   }, []);
