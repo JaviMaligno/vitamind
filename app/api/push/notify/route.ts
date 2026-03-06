@@ -30,6 +30,7 @@ async function fetchUVI(lat: number, lon: number): Promise<{ hour: number; uvi: 
 }
 
 export async function GET(request: NextRequest) {
+  try {
   // Verify cron secret to prevent unauthorized calls
   const authHeader = request.headers.get("authorization");
   const cronSecret = process.env.CRON_SECRET;
@@ -90,4 +91,8 @@ export async function GET(request: NextRequest) {
   }
 
   return NextResponse.json({ sent, failed, total: subs.length });
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : String(err);
+    return NextResponse.json({ error: "Notify failed", detail: message }, { status: 500 });
+  }
 }
