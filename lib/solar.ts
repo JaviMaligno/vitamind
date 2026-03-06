@@ -30,10 +30,9 @@ export function solarElev(lat: number, lon: number, doy: number, utcH: number): 
 export function getCurve(lat: number, lon: number, doy: number, tz: number): SolarPoint[] {
   const p: SolarPoint[] = [];
   for (let m = 0; m <= 1440; m += 5) {
-    const u = m / 60;
-    const l = u + tz;
-    if (l < 0 || l > 24) continue;
-    p.push({ localHours: l, elevation: solarElev(lat, lon, doy, u) });
+    const localH = m / 60;
+    const utcH = localH - tz;
+    p.push({ localHours: localH, elevation: solarElev(lat, lon, doy, utcH) });
   }
   return p;
 }
