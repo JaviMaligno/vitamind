@@ -8,6 +8,7 @@ import CitySearch from "@/components/CitySearch";
 import SaveLocationModal from "@/components/SaveLocationModal";
 import VitDEstimate from "@/components/VitDEstimate";
 import SkinSelector from "@/components/SkinSelector";
+import NotificationToggle from "@/components/NotificationToggle";
 import { BUILTIN_CITIES, findNearestCity } from "@/lib/cities";
 import { vitDHrs, getCurve, getWindow, dayOfYear, dateFromDoy, fmtTime, fmtDate } from "@/lib/solar";
 import { loadFavorites, saveFavorites, loadCustomLocations, saveCustomLocation, deleteCustomLocation, loadPreferences, savePreferences, getCachedWeather, setCachedWeather } from "@/lib/storage";
@@ -181,6 +182,7 @@ export default function App() {
           <button onClick={() => setSavingLocation(true)} style={{ padding: "2px 10px", borderRadius: 12, border: "none", cursor: "pointer", background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.4)", fontSize: 10 }}>
             Guardar como...
           </button>
+          <NotificationToggle lat={lat} lon={lon} tz={tz} skinType={skinType} areaFraction={areaFraction} threshold={threshold} cityName={cityName} />
         </div>
         {vitDWindow && (
           <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 16, fontWeight: 600, color: "#FFD54F" }}>

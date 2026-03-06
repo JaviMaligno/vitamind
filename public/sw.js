@@ -1,4 +1,4 @@
-const CACHE_NAME = "vitamind-v1";
+const CACHE_NAME = "vitamind-v2";
 
 const PRECACHE_URLS = [
   "/",
@@ -65,5 +65,37 @@ self.addEventListener("fetch", (event) => {
       .catch(() =>
         caches.match(request).then((cached) => cached || caches.match("/offline"))
       )
+  );
+});
+
+// Push notifications
+self.addEventListener("push", (event) => {
+  if (!event.data) return;
+  try {
+    const data = event.data.json();
+    event.waitUntil(
+      self.registration.showNotification(data.title || "Vitamina D", {
+        body: data.body || "",
+        icon: data.icon || "/icons/icon-192.png",
+        badge: data.badge || "/icons/icon-192.png",
+        data: data.data || {},
+        vibrate: [100, 50, 100],
+      })
+    );
+  } catch (e) {
+    console.warn("Push parse error:", e);
+  }
+});
+
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+  const url = event.notification.data?.url || "/";
+  event.waitUntil(
+    self.clients.matchAll({ type: "window" }).then((clients) => {
+      for (const client of clients) {
+        if (client.url.includes(url) && "focus" in client) return client.focus();
+      }
+      return self.clients.openWindow(url);
+    })
   );
 });
