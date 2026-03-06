@@ -23,6 +23,51 @@ function cloudColor(cover: number): string {
   return "rgba(120,120,140,0.22)";
 }
 
+// Build path that only includes visible segments.
+// When elevation drops below minE, the path breaks and restarts when it re-enters.
+// At entry/exit boundaries, we interpolate the exact crossing point for a clean edge.
+function buildVisiblePath(
+  curve: SolarPoint[],
+  minE: number,
+  x: (h: number) => number,
+  y: (e: number) => number,
+): string {
+  const parts: string[] = [];
+  let inSegment = false;
+
+  for (let i = 0; i < curve.length; i++) {
+    const p = curve[i];
+    const visible = p.elevation >= minE;
+
+    if (visible) {
+      if (!inSegment) {
+        // Entering visible zone — interpolate entry point if possible
+        if (i > 0 && curve[i - 1].elevation < minE) {
+          const prev = curve[i - 1];
+          const t = (minE - prev.elevation) / (p.elevation - prev.elevation);
+          const entryH = prev.localHours + t * (p.localHours - prev.localHours);
+          parts.push(`M${x(entryH).toFixed(1)},${y(minE).toFixed(1)}`);
+        } else {
+          parts.push(`M${x(p.localHours).toFixed(1)},${y(p.elevation).toFixed(1)}`);
+        }
+        inSegment = true;
+      }
+      parts.push(`L${x(p.localHours).toFixed(1)},${y(p.elevation).toFixed(1)}`);
+    } else {
+      if (inSegment) {
+        // Exiting visible zone — interpolate exit point
+        const prev = curve[i - 1];
+        const t = (minE - prev.elevation) / (p.elevation - prev.elevation);
+        const exitH = prev.localHours + t * (p.localHours - prev.localHours);
+        parts.push(`L${x(exitH).toFixed(1)},${y(minE).toFixed(1)}`);
+        inSegment = false;
+      }
+    }
+  }
+
+  return parts.join(" ");
+}
+
 export default function DailyCurve({ curve, threshold, hoverTime, onHover, weather }: Props) {
   const ref = useRef<SVGSVGElement>(null);
   const maxE = Math.max(55, ...curve.map((p) => Math.max(p.elevation, 0)));
@@ -31,8 +76,7 @@ export default function DailyCurve({ curve, threshold, hoverTime, onHover, weath
   const x = (h: number) => PAD.l + (h / 24) * plotW;
   const y = (e: number) => PAD.t + plotH - ((e - minE) / range) * plotH;
 
-  // Path uses real elevation values (no clamping). clipPath handles visibility.
-  const pathD = curve.map((p, i) => `${i === 0 ? "M" : "L"}${x(p.localHours).toFixed(1)},${y(p.elevation).toFixed(1)}`).join(" ");
+  const pathD = buildVisiblePath(curve, minE, x, y);
 
   const aP = curve.filter((p) => p.elevation >= threshold);
   let aD = "";
@@ -71,9 +115,6 @@ export default function DailyCurve({ curve, threshold, hoverTime, onHover, weath
         <linearGradient id="vg3" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor="#FFD54F" stopOpacity=".6" /><stop offset="100%" stopColor="#FF8F00" stopOpacity=".15" />
         </linearGradient>
-        <clipPath id="plotClip">
-          <rect x={PAD.l} y={PAD.t} width={plotW} height={plotH} />
-        </clipPath>
       </defs>
       <rect x={PAD.l} y={PAD.t} width={plotW} height={plotH} fill="url(#sg3)" rx="4" />
       {cloudRects.map((cr, i) => (
@@ -94,11 +135,8 @@ export default function DailyCurve({ curve, threshold, hoverTime, onHover, weath
       <line x1={PAD.l} y1={y(0)} x2={PAD.l + plotW} y2={y(0)} stroke="rgba(255,255,255,0.18)" strokeDasharray="3,3" />
       <line x1={PAD.l} y1={y(threshold)} x2={PAD.l + plotW} y2={y(threshold)} stroke="#FF6D00" strokeWidth="1.5" strokeDasharray="6,3" opacity=".8" />
       <text x={PAD.l + plotW + 4} y={y(threshold) + 4} fill="#FFB74D" fontSize="9" fontWeight="600" fontFamily="'JetBrains Mono',monospace">{threshold}&deg;</text>
-      {/* Clipped group: curve and fill area are clipped to the plot rectangle */}
-      <g clipPath="url(#plotClip)">
-        {aD && <path d={aD} fill="url(#vg3)" />}
-        <path d={pathD} fill="none" stroke="#FFD54F" strokeWidth="2.5" strokeLinecap="round" />
-      </g>
+      {aD && <path d={aD} fill="url(#vg3)" />}
+      <path d={pathD} fill="none" stroke="#FFD54F" strokeWidth="2.5" strokeLinecap="round" />
       {hp && hoverTime !== null && (
         <g>
           <line x1={x(hp.localHours)} y1={PAD.t} x2={x(hp.localHours)} y2={PAD.t + plotH} stroke="rgba(255,255,255,0.2)" strokeDasharray="2,2" />
