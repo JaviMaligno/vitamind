@@ -45,24 +45,18 @@
 
 ---
 
-## Fase 7 - Notificaciones push
+## Completado (Fase 7 - Notificaciones push)
 
-### Arquitectura
-1. Service Worker para recibir notificaciones en segundo plano
-2. Backend (Next.js API routes + cron) para calcular cuando notificar
-3. Web Push API (o Firebase Cloud Messaging)
-
-### Tipos de notificaciones
-| Tipo | Trigger | Mensaje |
-|------|---------|---------|
-| Ventana abierta | Elevacion > umbral + despejado | "Sol ideal para Vit D hasta las HH:MM" |
-| Ventana cerrandose | 30 min antes de bajar del umbral | "Ultima media hora de sol util hoy" |
-| Primer dia de temporada | Primer dia del ano con ventana | "Hoy es el primer dia que puedes sintetizar Vit D!" |
-| Resumen semanal | Lunes 9:00 | "Esta semana: 3 dias buenos para sol" |
-
-### Stack
-- Firebase Cloud Functions + Cloud Messaging (gratis hasta 2M invocaciones/mes)
-- O: Next.js API routes + web-push library + cron
+- Web Push API con VAPID keys (web-push library)
+- Service Worker: push event handler + notification click abre la app
+- API routes: POST/DELETE /api/push/subscribe, GET /api/push/notify
+- Vercel Cron: check diario a las 8:00 UTC
+- Notificacion incluye: minutos para 1000 IU, ventana solar, UV pico
+- Auto-limpieza de suscripciones expiradas (410/404)
+- Actualiza suscripcion al cambiar ciudad/piel/area
+- Toggle de notificaciones en el banner de estado
+- **Pendiente**: Configurar Vercel KV para persistencia de suscripciones
+  (sin KV usa memoria, que se pierde entre invocaciones serverless)
 
 ---
 
