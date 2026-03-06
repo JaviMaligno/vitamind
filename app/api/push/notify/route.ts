@@ -1,13 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
-import webpush from "web-push";
 import { getAllSubscriptions, removeSubscription } from "@/lib/push-store";
 import { getCurve, getWindow, dayOfYear, fmtTime } from "@/lib/solar";
 import { minutesForVitD, type SkinType } from "@/lib/vitd";
 
-const VAPID_PUBLIC = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!;
-const VAPID_PRIVATE = process.env.VAPID_PRIVATE_KEY!;
+// Dynamic import to avoid build-time issues with web-push native modules
+async function getWebPush() {
+  const webpush = (await import("web-push")).default;
+  webpush.setVapidDetails(
+    "mailto:vitamind@example.com",
+    process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
+    process.env.VAPID_PRIVATE_KEY!,
+  );
+  return webpush;
+}
 
-webpush.setVapidDetails("mailto:vitamind@example.com", VAPID_PUBLIC, VAPID_PRIVATE);
+export const dynamic = "force-dynamic";
 
 async function fetchUVI(lat: number, lon: number): Promise<{ hour: number; uvi: number }[]> {
   const today = new Date().toISOString().slice(0, 10);
@@ -36,6 +43,7 @@ export async function GET(request: NextRequest) {
   }
 
   const doy = dayOfYear(new Date());
+  const webpush = await getWebPush();
   let sent = 0;
   let failed = 0;
 
