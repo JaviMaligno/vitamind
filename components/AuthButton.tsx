@@ -42,11 +42,16 @@ export default function AuthButton({ onAuthChange }: Props) {
     setLoading(true);
 
     if (mode === "signup") {
-      const { error: err } = await sb.auth.signUp({ email, password, options: { emailRedirectTo: window.location.origin } });
-      if (err) setError(err.message);
-      else {
+      const { data, error: err } = await sb.auth.signUp({ email, password });
+      if (err) {
+        setError(err.message);
+      } else if (data.session) {
+        // Autoconfirm enabled — user is logged in immediately
+        setShowForm(false);
+      } else {
+        // Email confirmation required
         setMessage("Revisa tu email para confirmar la cuenta");
-        setMode("resend"); // Switch to resend mode so user can retry
+        setMode("resend");
       }
     } else if (mode === "resend") {
       const { error: err } = await sb.auth.resend({ type: "signup", email, options: { emailRedirectTo: window.location.origin } });
