@@ -1,4 +1,4 @@
-import type { WeatherHour } from "./types";
+import type { WeatherHour, SolarPoint } from "./types";
 
 export type SkinType = 1 | 2 | 3 | 4 | 5 | 6;
 
@@ -102,6 +102,60 @@ export function computeExposure(
 
     if (wh.uvIndex > bestUVI) {
       bestUVI = wh.uvIndex;
+      bestHour = h;
+    }
+  }
+
+  if (bestUVI < MIN_UVI) return null;
+
+  const minutesNeeded = minutesForVitD(bestUVI, skinType, areaFraction, targetIU, age);
+  if (minutesNeeded === null) return null;
+
+  return { bestHour, bestUVI, minutesNeeded, windowStart, windowEnd, hourlyMinutes };
+}
+
+/**
+ * Estimate clear-sky UV index from solar elevation angle.
+ * Simplified Madronich model: UVI ≈ 12 * sin(elevation)^1.3 at sea level.
+ * This ignores clouds, ozone, altitude — gives a "typical clear sky" estimate.
+ */
+export function estimateUVFromElevation(elevationDeg: number): number {
+  if (elevationDeg <= 0) return 0;
+  const sinElev = Math.sin((elevationDeg * Math.PI) / 180);
+  return 12 * Math.pow(sinElev, 1.3);
+}
+
+/**
+ * Compute exposure estimate from solar curve (no weather data needed).
+ * Uses theoretical clear-sky UV. Labeled as "estimacion teorica".
+ */
+export function computeExposureFromCurve(
+  curve: SolarPoint[],
+  skinType: SkinType,
+  areaFraction: number,
+  targetIU: number = 1000,
+  age: number | null = null,
+): ExposureResult | null {
+  const hourlyMinutes: ExposureResult["hourlyMinutes"] = [];
+  let bestUVI = 0;
+  let bestHour = 12;
+  let windowStart = -1;
+  let windowEnd = -1;
+
+  // Sample one point per hour from the curve
+  for (let h = 0; h < 24; h++) {
+    const pt = curve.find((p) => Math.floor(p.localHours) === h);
+    const elev = pt?.elevation ?? 0;
+    const uvi = estimateUVFromElevation(elev);
+    const mins = minutesForVitD(uvi, skinType, areaFraction, targetIU, age);
+    hourlyMinutes.push({ hour: h, uvi, minutes: mins });
+
+    if (uvi >= MIN_UVI) {
+      if (windowStart === -1) windowStart = h;
+      windowEnd = h + 1;
+    }
+    if (uvi > bestUVI) {
+      bestUVI = uvi;
       bestHour = h;
     }
   }

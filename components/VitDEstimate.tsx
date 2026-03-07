@@ -1,11 +1,12 @@
 "use client";
 
 import { useMemo } from "react";
-import { computeExposure, type SkinType } from "@/lib/vitd";
-import type { WeatherData } from "@/lib/types";
+import { computeExposure, computeExposureFromCurve, type SkinType } from "@/lib/vitd";
+import type { WeatherData, SolarPoint } from "@/lib/types";
 
 interface Props {
   weather: WeatherData | null;
+  curve: SolarPoint[];
   skinType: SkinType;
   areaFraction: number;
   age: number | null;
@@ -19,11 +20,17 @@ function fmtMin(m: number): string {
   return r > 0 ? `${h}h ${r}min` : `${h}h`;
 }
 
-export default function VitDEstimate({ weather, skinType, areaFraction, age }: Props) {
-  const result = useMemo(
+export default function VitDEstimate({ weather, curve, skinType, areaFraction, age }: Props) {
+  const weatherResult = useMemo(
     () => weather ? computeExposure(weather.hours, skinType, areaFraction, 1000, age) : null,
     [weather, skinType, areaFraction, age],
   );
+  const curveResult = useMemo(
+    () => (!weather && curve.length) ? computeExposureFromCurve(curve, skinType, areaFraction, 1000, age) : null,
+    [weather, curve, skinType, areaFraction, age],
+  );
+  const result = weatherResult ?? curveResult;
+  const isTheoretical = !weatherResult && !!curveResult;
 
   return (
     <div style={{
@@ -35,20 +42,16 @@ export default function VitDEstimate({ weather, skinType, areaFraction, age }: P
     }}>
       <div style={{ fontSize: 10, color: "rgba(255,255,255,0.45)", fontWeight: 600, marginBottom: 8, textTransform: "uppercase", letterSpacing: 1 }}>
         Estimacion Vitamina D
+        {isTheoretical && (
+          <span style={{ marginLeft: 8, fontSize: 9, color: "rgba(255,213,79,0.5)", fontWeight: 400, textTransform: "none", letterSpacing: 0 }}>
+            (cielo despejado teorico — sin datos meteo para esta fecha)
+          </span>
+        )}
       </div>
 
-      {!weather && (
-        <div style={{ fontSize: 12, color: "rgba(255,255,255,0.4)" }}>
-          Sin datos UV para esta fecha. Los datos meteorologicos solo estan disponibles para los proximos ~14 dias.
-          <br />
-          <span style={{ fontSize: 10, color: "rgba(255,255,255,0.25)" }}>
-            Selecciona una fecha cercana a hoy para ver la estimacion de vitamina D.
-          </span>
-        </div>
-      )}
-      {weather && !result && (
+      {!result && (
         <div style={{ fontSize: 12, color: "#ef5350", fontWeight: 600 }}>
-          UV insuficiente (UVI &lt; 3) — no es posible sintetizar vitamina D hoy
+          UV insuficiente (UVI &lt; 3) — no es posible sintetizar vitamina D en esta fecha
         </div>
       )}
       {result && (
@@ -112,7 +115,9 @@ export default function VitDEstimate({ weather, skinType, areaFraction, age }: P
 
           {/* Disclaimer */}
           <div style={{ fontSize: 8, color: "rgba(255,255,255,0.15)", marginTop: 8, lineHeight: 1.4 }}>
-            Basado en la regla de Holick (Dowdy et al. 2010). Estimacion orientativa — no sustituye consejo medico.
+            {isTheoretical
+              ? "Estimacion teorica con cielo despejado (sin nubes ni datos reales). Los datos meteo reales solo cubren ~14 dias."
+              : "Basado en la regla de Holick (Dowdy et al. 2010). Estimacion orientativa — no sustituye consejo medico."}
           </div>
         </div>
       )}

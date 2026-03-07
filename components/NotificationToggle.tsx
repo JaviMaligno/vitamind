@@ -131,7 +131,7 @@ export default function NotificationToggle({ lat, lon, tz, skinType, areaFractio
       disabled={status === "denied"}
       title={
         status === "denied"
-          ? "Notificaciones bloqueadas en el navegador. Cambia los permisos en ajustes del sitio."
+          ? "Notificaciones bloqueadas. En Chrome: pulsa el candado en la barra de direcciones > Permisos > Notificaciones > Permitir. Luego recarga la pagina."
           : status === "on"
             ? "Desactivar notificaciones diarias"
             : "Activar notificaciones diarias de sol"

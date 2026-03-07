@@ -327,6 +327,7 @@ export default function App() {
         {/* Vitamin D estimate */}
         <VitDEstimate
           weather={weather}
+          curve={curve}
           skinType={skinType}
           areaFraction={areaFraction}
           age={age}
