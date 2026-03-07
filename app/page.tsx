@@ -11,9 +11,12 @@ import SkinSelector from "@/components/SkinSelector";
 import NotificationToggle from "@/components/NotificationToggle";
 import { BUILTIN_CITIES, findNearestCity } from "@/lib/cities";
 import { vitDHrs, getCurve, getWindow, dayOfYear, dateFromDoy, fmtTime, fmtDate } from "@/lib/solar";
+import AuthButton from "@/components/AuthButton";
 import { loadFavorites, saveFavorites, loadCustomLocations, saveCustomLocation, deleteCustomLocation, loadPreferences, savePreferences, getCachedWeather, setCachedWeather } from "@/lib/storage";
+import { loadProfile, updateProfile } from "@/lib/profile";
 import type { City, WeatherData } from "@/lib/types";
 import type { SkinType } from "@/lib/vitd";
+import type { User } from "@supabase/supabase-js";
 
 export default function App() {
   // State
@@ -36,6 +39,8 @@ export default function App() {
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [skinType, setSkinType] = useState<SkinType>(3);
   const [areaFraction, setAreaFraction] = useState(0.25);
+  const [age, setAge] = useState<number | null>(null);
+  const [authUser, setAuthUser] = useState<User | null>(null);
   const animRef = useRef<number>(0);
 
   // Load persisted state on mount
@@ -46,6 +51,7 @@ export default function App() {
     setThreshold(prefs.threshold);
     if (prefs.skinType) setSkinType(prefs.skinType);
     if (prefs.areaFraction) setAreaFraction(prefs.areaFraction);
+    if (prefs.age) setAge(prefs.age);
   }, []);
 
   // Persist favorites
@@ -55,8 +61,27 @@ export default function App() {
 
   // Persist threshold
   useEffect(() => {
-    savePreferences({ threshold, lastCityId: cityId, skinType, areaFraction });
-  }, [threshold, cityId, skinType, areaFraction]);
+    savePreferences({ threshold, lastCityId: cityId, skinType, areaFraction, age: age ?? undefined });
+    if (authUser) {
+      updateProfile(authUser.id, { threshold, lastCityId: cityId, skinType, areaFraction, age });
+    }
+  }, [threshold, cityId, skinType, areaFraction, age, authUser]);
+
+  // Sync profile from Supabase on auth change
+  const handleAuthChange = useCallback(async (user: User | null) => {
+    setAuthUser(user);
+    if (user) {
+      const { profile } = await loadProfile();
+      if (profile) {
+        setSkinType(profile.skinType);
+        setAreaFraction(profile.areaFraction);
+        setAge(profile.age);
+        setThreshold(profile.threshold);
+        if (profile.favorites.length) setFavorites(profile.favorites);
+        if (profile.lastCityId) setCityId(profile.lastCityId);
+      }
+    }
+  }, []);
 
   // All cities = builtin + custom
   const allCities = useMemo(() => {
@@ -160,9 +185,12 @@ export default function App() {
     <div style={{ minHeight: "100vh", background: "linear-gradient(155deg,#050816 0%,#0a0e27 30%,#0d1233 60%,#080c20 100%)", color: "#e0e0e0", fontFamily: "'DM Sans',sans-serif", padding: "20px 12px" }}>
       {/* Header */}
       <div style={{ maxWidth: 880, margin: "0 auto 14px" }}>
-        <div style={{ display: "flex", alignItems: "baseline", gap: 10 }}>
-          <span style={{ fontSize: 30, fontWeight: 800, letterSpacing: "-1px", fontFamily: "'Playfair Display',serif", background: "linear-gradient(135deg,#FFD54F,#FF8F00)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Vitamina D</span>
-          <span style={{ fontSize: 13, color: "rgba(255,255,255,0.3)", fontWeight: 500 }}>Explorador Solar Global</span>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
+          <div style={{ display: "flex", alignItems: "baseline", gap: 10 }}>
+            <span style={{ fontSize: 30, fontWeight: 800, letterSpacing: "-1px", fontFamily: "'Playfair Display',serif", background: "linear-gradient(135deg,#FFD54F,#FF8F00)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Vitamina D</span>
+            <span style={{ fontSize: 13, color: "rgba(255,255,255,0.3)", fontWeight: 500 }}>Explorador Solar Global</span>
+          </div>
+          <AuthButton onAuthChange={handleAuthChange} />
         </div>
       </div>
 
@@ -227,7 +255,7 @@ export default function App() {
         </div>
 
         {/* Skin & area personalization */}
-        <SkinSelector skinType={skinType} areaFraction={areaFraction} onSkinChange={setSkinType} onAreaChange={setAreaFraction} />
+        <SkinSelector skinType={skinType} areaFraction={areaFraction} age={age} onSkinChange={setSkinType} onAreaChange={setAreaFraction} onAgeChange={setAge} />
 
         {/* Search + controls */}
         <div style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
@@ -301,6 +329,7 @@ export default function App() {
           weather={weather}
           skinType={skinType}
           areaFraction={areaFraction}
+          age={age}
         />
 
         {/* Legend */}

@@ -32,19 +32,31 @@ export const AREA_PRESETS: { label: string; value: number }[] = [
 const MIN_UVI = 3; // Below this, no meaningful vitamin D synthesis
 
 /**
+ * Age adjustment factor for vitamin D synthesis.
+ * Holick 1989: ~50% decrease from age 20 to 80.
+ * Returns multiplier >= 0.5 (conservative floor).
+ */
+export function ageFactor(age: number | null): number {
+  if (age === null || age <= 20) return 1.0;
+  return Math.max(0.5, 1.0 - 0.013 * (age - 20));
+}
+
+/**
  * Minutes needed to synthesize target IU of vitamin D.
  * Based on Holick's Rule: 1/4 MED over 25% body ≈ 1000 IU
- * Formula: time = target_IU * MED[skin] / (24000 * areaFraction * uvi)
+ * Formula: time = target_IU * MED[skin] / (24000 * areaFraction * uvi * ageFactor)
  */
 export function minutesForVitD(
   uvi: number,
   skinType: SkinType,
   areaFraction: number,
   targetIU: number = 1000,
+  age: number | null = null,
 ): number | null {
   if (uvi < MIN_UVI) return null; // No synthesis possible
   const med = MED[skinType];
-  const time = (targetIU * med) / (24000 * areaFraction * uvi);
+  const af = ageFactor(age);
+  const time = (targetIU * med) / (24000 * areaFraction * uvi * af);
   // Cap at 1/3 MED time (diminishing returns beyond this)
   const maxUseful = med / (4.5 * uvi);
   return Math.min(time, maxUseful);
@@ -67,6 +79,7 @@ export function computeExposure(
   skinType: SkinType,
   areaFraction: number,
   targetIU: number = 1000,
+  age: number | null = null,
 ): ExposureResult | null {
   if (!hours.length) return null;
 
@@ -79,7 +92,7 @@ export function computeExposure(
   for (const wh of hours) {
     const d = new Date(wh.time);
     const h = d.getHours();
-    const mins = minutesForVitD(wh.uvIndex, skinType, areaFraction, targetIU);
+    const mins = minutesForVitD(wh.uvIndex, skinType, areaFraction, targetIU, age);
     hourlyMinutes.push({ hour: h, uvi: wh.uvIndex, minutes: mins });
 
     if (wh.uvIndex >= MIN_UVI) {
@@ -95,7 +108,7 @@ export function computeExposure(
 
   if (bestUVI < MIN_UVI) return null;
 
-  const minutesNeeded = minutesForVitD(bestUVI, skinType, areaFraction, targetIU);
+  const minutesNeeded = minutesForVitD(bestUVI, skinType, areaFraction, targetIU, age);
   if (minutesNeeded === null) return null;
 
   return { bestHour, bestUVI, minutesNeeded, windowStart, windowEnd, hourlyMinutes };

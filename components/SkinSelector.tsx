@@ -6,8 +6,10 @@ import { SKIN_LABELS, AREA_PRESETS, type SkinType } from "@/lib/vitd";
 interface Props {
   skinType: SkinType;
   areaFraction: number;
+  age: number | null;
   onSkinChange: (s: SkinType) => void;
   onAreaChange: (a: number) => void;
+  onAgeChange: (a: number | null) => void;
 }
 
 const SKIN_HELP = [
@@ -19,7 +21,7 @@ const SKIN_HELP = [
   { type: "VI", desc: "Piel oscura/negra. Nunca se quema.", example: "Africa subsahariana, Melanesia" },
 ];
 
-export default function SkinSelector({ skinType, areaFraction, onSkinChange, onAreaChange }: Props) {
+export default function SkinSelector({ skinType, areaFraction, age, onSkinChange, onAreaChange, onAgeChange }: Props) {
   const [showHelp, setShowHelp] = useState(false);
 
   const selectStyle: React.CSSProperties = {
@@ -62,6 +64,16 @@ export default function SkinSelector({ skinType, areaFraction, onSkinChange, onA
             <option key={p.value} value={p.value}>{p.label}</option>
           ))}
         </select>
+        <span style={{ fontSize: 9, color: "rgba(255,255,255,0.2)", textTransform: "uppercase", letterSpacing: 1 }}>Edad:</span>
+        <input
+          type="number"
+          min="1"
+          max="120"
+          placeholder="—"
+          value={age ?? ""}
+          onChange={(e) => onAgeChange(e.target.value ? parseInt(e.target.value) : null)}
+          style={{ ...selectStyle, width: 50, textAlign: "center" }}
+        />
       </div>
 
       {showHelp && (

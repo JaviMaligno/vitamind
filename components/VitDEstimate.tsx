@@ -8,6 +8,7 @@ interface Props {
   weather: WeatherData | null;
   skinType: SkinType;
   areaFraction: number;
+  age: number | null;
 }
 
 function fmtMin(m: number): string {
@@ -18,10 +19,10 @@ function fmtMin(m: number): string {
   return r > 0 ? `${h}h ${r}min` : `${h}h`;
 }
 
-export default function VitDEstimate({ weather, skinType, areaFraction }: Props) {
+export default function VitDEstimate({ weather, skinType, areaFraction, age }: Props) {
   const result = useMemo(
-    () => weather ? computeExposure(weather.hours, skinType, areaFraction) : null,
-    [weather, skinType, areaFraction],
+    () => weather ? computeExposure(weather.hours, skinType, areaFraction, 1000, age) : null,
+    [weather, skinType, areaFraction, age],
   );
 
   return (
