@@ -55,8 +55,7 @@
 - Auto-limpieza de suscripciones expiradas (410/404)
 - Actualiza suscripcion al cambiar ciudad/piel/area
 - Toggle de notificaciones en el banner de estado
-- **Pendiente**: Configurar Vercel KV para persistencia de suscripciones
-  (sin KV usa memoria, que se pierde entre invocaciones serverless)
+- Persistencia de suscripciones en Supabase (push_subscriptions table + RLS)
 
 ---
 
@@ -68,8 +67,8 @@
 - Profile sync: localStorage siempre, Supabase cuando hay sesion
 - Campo edad con factor Holick 1989 (-1.3%/año desde 20, min 0.5)
 - Tabla profiles con RLS (docs/supabase-schema.sql)
-- **Pendiente**: Configurar proyecto Supabase y env vars
-- **Futuro**: Autodeteccion tipo de piel con foto (IA / vision model)
+- Supabase configurado (proyecto + env vars en Vercel)
+- Estimacion teorica cielo despejado para fechas sin datos meteo (modelo Madronich)
 
 ---
 
@@ -82,6 +81,16 @@
 - Favicon SVG con icono sol+D
 - "Anadir a pantalla de inicio" en movil
 - Comportamiento tipo app nativa (display: standalone)
+
+---
+
+## Futuro - Funcionalidades adicionales
+
+- Autodeteccion tipo de piel con foto (IA / vision model)
+- Chat IA / preguntas comunes: "cuando podre sintetizar vitamina D", "cuantas horas necesito", etc.
+- QA sobre vitamina D, sol (beneficios incluso sin sintesis), por que el angulo influye, astronomia relacionada
+- Soporte multi-idioma (i18n)
+- Activar ubicacion GPS automatica del dispositivo
 
 ---
 
