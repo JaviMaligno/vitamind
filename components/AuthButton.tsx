@@ -44,12 +44,14 @@ export default function AuthButton({ onAuthChange }: Props) {
     if (mode === "signup") {
       const { error: err } = await sb.auth.signUp({ email, password, options: { emailRedirectTo: window.location.origin } });
       if (err) setError(err.message);
-      else setMessage("Revisa tu email para confirmar la cuenta");
+      else {
+        setMessage("Revisa tu email para confirmar la cuenta");
+        setMode("resend"); // Switch to resend mode so user can retry
+      }
     } else if (mode === "resend") {
       const { error: err } = await sb.auth.resend({ type: "signup", email, options: { emailRedirectTo: window.location.origin } });
       if (err) setError(err.message);
       else setMessage("Email de confirmacion reenviado");
-      setMode("login");
     } else {
       const { error: err } = await sb.auth.signInWithPassword({ email, password });
       if (err) setError(err.message);
@@ -133,20 +135,22 @@ export default function AuthButton({ onAuthChange }: Props) {
           </button>
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
-          <button
-            type="button"
-            onClick={() => { setMode(mode === "login" ? "signup" : "login"); setError(""); setMessage(""); }}
-            style={{ ...btnStyle, background: "transparent", color: "rgba(255,255,255,0.3)", fontSize: 9, textAlign: "center" }}
-          >
-            {mode === "login" ? "No tengo cuenta — Registrarse" : "Ya tengo cuenta — Iniciar sesion"}
-          </button>
-          {mode === "login" && (
+          {mode !== "resend" && (
             <button
               type="button"
-              onClick={() => { setMode("resend"); setError(""); setMessage(""); }}
-              style={{ ...btnStyle, background: "transparent", color: "rgba(255,255,255,0.2)", fontSize: 8, textAlign: "center" }}
+              onClick={() => { setMode(mode === "login" ? "signup" : "login"); setError(""); setMessage(""); }}
+              style={{ ...btnStyle, background: "transparent", color: "rgba(255,255,255,0.3)", fontSize: 9, textAlign: "center" }}
             >
-              Reenviar email de confirmacion
+              {mode === "login" ? "No tengo cuenta — Registrarse" : "Ya tengo cuenta — Iniciar sesion"}
+            </button>
+          )}
+          {mode === "resend" && (
+            <button
+              type="button"
+              onClick={() => { setMode("login"); setError(""); setMessage(""); }}
+              style={{ ...btnStyle, background: "transparent", color: "rgba(255,255,255,0.3)", fontSize: 9, textAlign: "center" }}
+            >
+              Volver a iniciar sesion
             </button>
           )}
         </div>
