@@ -60,14 +60,16 @@
 
 ---
 
-## Fase 8 - Perfil personal
+## Completado (Fase 8 - Perfil personal)
 
-- Tipo de piel (escala Fitzpatrick I-VI) -> ajusta tiempo necesario
-- Autodeteccion de tipo de piel con foto (IA / vision model)
-- Edad -> ajusta eficiencia de sintesis
-- % de piel expuesta -> multiplica tiempo
-- Requiere autenticacion (Firebase Auth o Supabase Auth)
-- Migracion de localStorage a base de datos (Supabase/Firestore)
+- Auth opcional via Supabase (app funciona completamente sin cuenta)
+- AuthButton en header: login/signup/logout
+- On login: sincroniza perfil cloud -> local
+- Profile sync: localStorage siempre, Supabase cuando hay sesion
+- Campo edad con factor Holick 1989 (-1.3%/año desde 20, min 0.5)
+- Tabla profiles con RLS (docs/supabase-schema.sql)
+- **Pendiente**: Configurar proyecto Supabase y env vars
+- **Futuro**: Autodeteccion tipo de piel con foto (IA / vision model)
 
 ---
 
