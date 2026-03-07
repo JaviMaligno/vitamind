@@ -21,12 +21,11 @@ export async function GET(request: NextRequest) {
       url.searchParams.set("end_date", date);
     }
 
-    const res = await fetch(url.toString(), {
-      next: { revalidate: 3600 }, // cache 1 hour server-side
-    });
+    const res = await fetch(url.toString());
 
     if (!res.ok) {
-      return NextResponse.json({ error: "Open-Meteo API error" }, { status: 502 });
+      const body = await res.text().catch(() => "");
+      return NextResponse.json({ error: "Open-Meteo API error", status: res.status, detail: body.slice(0, 200) }, { status: 502 });
     }
 
     const data = await res.json();

@@ -38,8 +38,12 @@ export default function VitDEstimate({ weather, skinType, areaFraction, age }: P
       </div>
 
       {!weather && (
-        <div style={{ fontSize: 11, color: "rgba(255,255,255,0.3)", fontStyle: "italic" }}>
-          Sin datos meteorologicos para esta fecha/ubicacion
+        <div style={{ fontSize: 12, color: "rgba(255,255,255,0.4)" }}>
+          Sin datos UV para esta fecha. Los datos meteorologicos solo estan disponibles para los proximos ~14 dias.
+          <br />
+          <span style={{ fontSize: 10, color: "rgba(255,255,255,0.25)" }}>
+            Selecciona una fecha cercana a hoy para ver la estimacion de vitamina D.
+          </span>
         </div>
       )}
       {weather && !result && (

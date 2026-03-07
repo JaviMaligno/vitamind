@@ -26,20 +26,37 @@ function urlBase64ToUint8Array(base64String: string): Uint8Array {
 export default function NotificationToggle({ lat, lon, tz, skinType, areaFraction, threshold, cityName }: Props) {
   const [status, setStatus] = useState<Status>("loading");
 
+  // Check permission on mount and when user returns to tab (e.g. after changing browser settings)
   useEffect(() => {
-    if (!("serviceWorker" in navigator) || !("PushManager" in window)) {
-      setStatus("unsupported");
-      return;
-    }
-    if (Notification.permission === "denied") {
-      setStatus("denied");
-      return;
-    }
-    navigator.serviceWorker.ready.then((reg) => {
-      reg.pushManager.getSubscription().then((sub) => {
-        setStatus(sub ? "on" : "off");
+    function checkPermission() {
+      if (!("serviceWorker" in navigator) || !("PushManager" in window)) {
+        setStatus("unsupported");
+        return;
+      }
+      if (Notification.permission === "denied") {
+        setStatus("denied");
+        return;
+      }
+      // If was denied but now default/granted, reset to check subscription
+      if (Notification.permission === "default") {
+        setStatus((prev) => prev === "denied" ? "off" : prev);
+      }
+      navigator.serviceWorker.ready.then((reg) => {
+        reg.pushManager.getSubscription().then((sub) => {
+          if (Notification.permission !== "denied") {
+            setStatus(sub ? "on" : "off");
+          }
+        });
       });
-    });
+    }
+
+    checkPermission();
+
+    const handleVisibility = () => {
+      if (document.visibilityState === "visible") checkPermission();
+    };
+    document.addEventListener("visibilitychange", handleVisibility);
+    return () => document.removeEventListener("visibilitychange", handleVisibility);
   }, []);
 
   const toggle = useCallback(async () => {
