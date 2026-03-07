@@ -84,6 +84,19 @@
 
 ---
 
+## Pendiente de verificacion
+
+- [ ] Auth: persistencia de perfil (login -> cambia preferencias -> logout -> login -> se mantienen?)
+- [ ] Auth: sincronizacion cloud <-> localStorage al iniciar sesion
+- [ ] Push notifications: recibir notificacion diaria a las 8:00 UTC (requiere esperar al cron)
+- [ ] Push notifications: contenido correcto (minutos, ventana solar, UV pico)
+- [ ] PWA: instalable en movil ("Anadir a pantalla de inicio")
+- [ ] PWA: modo offline (cortar internet, recargar -> pagina offline con reintentar)
+- [ ] Estimacion teorica UV: muestra datos para fechas mas alla de ~14 dias
+- [ ] Estimacion con datos reales: muestra minutos, mejor hora, barras por hora para fecha de hoy
+
+---
+
 ## Futuro - Funcionalidades adicionales
 
 - Autodeteccion tipo de piel con foto (IA / vision model)
