@@ -1,6 +1,4 @@
-// Push subscription storage
-// Uses Vercel KV when available, falls back to in-memory (dev only)
-
+import { createClient } from "@supabase/supabase-js";
 import type { PushSubscription as WebPushSubscription } from "web-push";
 
 export interface StoredSubscription {
@@ -15,72 +13,63 @@ export interface StoredSubscription {
   createdAt: number;
 }
 
-let kvModule: typeof import("@vercel/kv") | null = null;
-
-async function getKV() {
-  if (kvModule) return kvModule;
-  try {
-    kvModule = await import("@vercel/kv");
-    // Test if KV is configured
-    await kvModule.kv.ping();
-    return kvModule;
-  } catch {
-    return null;
-  }
+// Use service_role key for server-side push operations (reads all subscriptions)
+function getServiceClient() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url || !key) return null;
+  return createClient(url, key);
 }
 
-// In-memory fallback for development
-const memStore = new Map<string, StoredSubscription>();
-
-function subKey(endpoint: string): string {
-  // Hash the endpoint to make a shorter key
-  let hash = 0;
-  for (let i = 0; i < endpoint.length; i++) {
-    hash = ((hash << 5) - hash + endpoint.charCodeAt(i)) | 0;
-  }
-  return `push:${Math.abs(hash).toString(36)}`;
+// Use anon key for client-facing subscribe/unsubscribe
+function getAnonClient() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  if (!url || !key) return null;
+  return createClient(url, key);
 }
 
 export async function saveSubscription(sub: StoredSubscription): Promise<void> {
-  const key = subKey(sub.subscription.endpoint);
-  const kv = await getKV();
-  if (kv) {
-    await kv.kv.set(key, JSON.stringify(sub), { ex: 90 * 86400 }); // 90 day TTL
-    await kv.kv.sadd("push:all", key);
-  } else {
-    memStore.set(key, sub);
-  }
+  const sb = getAnonClient();
+  if (!sb) return;
+
+  await sb.from("push_subscriptions").upsert({
+    endpoint: sub.subscription.endpoint,
+    subscription: sub.subscription,
+    lat: sub.lat,
+    lon: sub.lon,
+    tz: sub.tz,
+    skin_type: sub.skinType,
+    area_fraction: sub.areaFraction,
+    threshold: sub.threshold,
+    city_name: sub.cityName,
+    updated_at: new Date().toISOString(),
+  }, { onConflict: "endpoint" });
 }
 
 export async function removeSubscription(endpoint: string): Promise<void> {
-  const key = subKey(endpoint);
-  const kv = await getKV();
-  if (kv) {
-    await kv.kv.del(key);
-    await kv.kv.srem("push:all", key);
-  } else {
-    memStore.delete(key);
-  }
+  const sb = getAnonClient();
+  if (!sb) return;
+
+  await sb.from("push_subscriptions").delete().eq("endpoint", endpoint);
 }
 
 export async function getAllSubscriptions(): Promise<StoredSubscription[]> {
-  const kv = await getKV();
-  if (kv) {
-    const keys = await kv.kv.smembers("push:all") as string[];
-    if (!keys.length) return [];
-    const results: StoredSubscription[] = [];
-    for (const key of keys) {
-      const raw = await kv.kv.get(key) as string | null;
-      if (raw) {
-        try {
-          results.push(typeof raw === "string" ? JSON.parse(raw) : raw as StoredSubscription);
-        } catch { /* skip corrupted */ }
-      } else {
-        // Expired, clean up
-        await kv.kv.srem("push:all", key);
-      }
-    }
-    return results;
-  }
-  return Array.from(memStore.values());
+  const sb = getServiceClient();
+  if (!sb) return [];
+
+  const { data, error } = await sb.from("push_subscriptions").select("*");
+  if (error || !data) return [];
+
+  return data.map((row) => ({
+    subscription: row.subscription as WebPushSubscription,
+    lat: row.lat,
+    lon: row.lon,
+    tz: row.tz,
+    skinType: row.skin_type,
+    areaFraction: row.area_fraction,
+    threshold: row.threshold,
+    cityName: row.city_name,
+    createdAt: new Date(row.created_at).getTime(),
+  }));
 }
