@@ -181,6 +181,8 @@ export default function ConfigZone({
                 <SaveLocationModal
                   lat={lat}
                   lon={lon}
+                  cityName={cityName}
+                  cityFlag={cityFlag}
                   onSave={(city) => {
                     onSaveLocation(city);
                     setSavingLocation(false);

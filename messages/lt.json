@@ -101,9 +101,11 @@
     "emailResent": "Patvirtinimo el. laiškas išsiųstas iš naujo"
   },
   "notifications": {
-    "on": "🔔 Pranešimai ĮJ",
-    "blocked": "🔕 Užblokuoti",
-    "notify": "🔔 Pranešti",
+    "on": "Pranešimai ĮJ",
+    "blocked": "Užblokuoti",
+    "notify": "Pranešti",
+    "loading": "Kraunami pranešimai…",
+    "unsupported": "Pranešimai šioje naršyklėje nepasiekiami",
     "deniedHint": "Pranešimai užblokuoti. Chrome: spustelėkite spyną adreso juostoje > Leidimai > Pranešimai > Leisti. Tada perkraukite puslapį.",
     "disableHint": "Išjungti kasdienius pranešimus",
     "enableHint": "Įjungti kasdienius saulės pranešimus"
@@ -120,7 +122,12 @@
     "myLocation": "Mano vieta",
     "near": "šalia",
     "save": "Išsaugoti",
-    "namePlaceholder": "Pavadinimas (nebūtinas)",
+    "savingLocation": "Išsaugoma vieta ties",
+    "nameLabel": "Šios vietos pavadinimas",
+    "namePlaceholder": "Mano namai, Biuras, Paplūdimys...",
+    "saveAndFavorite": "Išsaugoti ir pridėti prie mėgstamiausių",
+    "cancel": "Atšaukti",
+    "savedAs": "Išsaugota kaip",
     "lat": "Plat",
     "lon": "Ilg"
   },

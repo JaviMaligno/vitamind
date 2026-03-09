@@ -101,9 +101,11 @@
     "emailResent": "Bestätigungs-E-Mail erneut gesendet"
   },
   "notifications": {
-    "on": "🔔 Benachrichtigungen AN",
-    "blocked": "🔕 Blockiert",
-    "notify": "🔔 Benachrichtigen",
+    "on": "Benachrichtigungen AN",
+    "blocked": "Blockiert",
+    "notify": "Benachrichtigen",
+    "loading": "Benachrichtigungen werden geladen…",
+    "unsupported": "Benachrichtigungen sind in diesem Browser nicht verfügbar",
     "deniedHint": "Benachrichtigungen blockiert. In Chrome: Klicke auf das Schloss in der Adressleiste > Berechtigungen > Benachrichtigungen > Zulassen. Dann Seite neu laden.",
     "disableHint": "Tägliche Benachrichtigungen deaktivieren",
     "enableHint": "Tägliche Sonnenbenachrichtigungen aktivieren"
@@ -120,7 +122,12 @@
     "myLocation": "Mein Standort",
     "near": "nahe",
     "save": "Speichern",
-    "namePlaceholder": "Name (optional)",
+    "savingLocation": "Standort speichern bei",
+    "nameLabel": "Name für diesen Standort",
+    "namePlaceholder": "Mein Zuhause, Büro, Strand...",
+    "saveAndFavorite": "Speichern und zu Favoriten hinzufügen",
+    "cancel": "Abbrechen",
+    "savedAs": "Gespeichert als",
     "lat": "Lat",
     "lon": "Lon"
   },

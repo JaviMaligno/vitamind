@@ -125,12 +125,29 @@ export default function NotificationToggle({ lat, lon, tz, skinType, areaFractio
     });
   }, [status, lat, lon, tz, skinType, areaFraction, threshold, cityName]);
 
-  if (status === "loading" || status === "unsupported") return null;
+  if (status === "loading") {
+    return (
+      <span className="text-xs text-white/20 italic">{t("loading")}</span>
+    );
+  }
+
+  if (status === "unsupported") {
+    return (
+      <span className="text-xs text-white/20">{t("unsupported")}</span>
+    );
+  }
 
   return (
     <button
       onClick={toggle}
       disabled={status === "denied"}
+      className={`min-h-[44px] px-4 py-2 rounded-lg text-sm cursor-pointer transition-colors ${
+        status === "on"
+          ? "bg-amber-400/15 text-amber-400 font-semibold"
+          : status === "denied"
+            ? "bg-red-500/[0.08] text-red-400/40 opacity-50 cursor-not-allowed"
+            : "bg-white/[0.04] text-white/35 hover:bg-white/[0.08]"
+      }`}
       title={
         status === "denied"
           ? t("deniedHint")
@@ -138,20 +155,8 @@ export default function NotificationToggle({ lat, lon, tz, skinType, areaFractio
             ? t("disableHint")
             : t("enableHint")
       }
-      style={{
-        padding: "4px 10px",
-        borderRadius: 6,
-        border: "none",
-        cursor: status === "denied" ? "not-allowed" : "pointer",
-        background: status === "on" ? "rgba(255,213,79,0.15)" : status === "denied" ? "rgba(255,60,60,0.08)" : "rgba(255,255,255,0.04)",
-        color: status === "on" ? "#FFD54F" : status === "denied" ? "rgba(255,60,60,0.4)" : "rgba(255,255,255,0.35)",
-        fontSize: 10,
-        fontWeight: status === "on" ? 600 : 400,
-        fontFamily: "'DM Sans',sans-serif",
-        opacity: status === "denied" ? 0.5 : 1,
-      }}
     >
-      {status === "on" ? t("on") : status === "denied" ? t("blocked") : t("notify")}
+      {status === "on" ? `🔔 ${t("on")}` : status === "denied" ? `🚫 ${t("blocked")}` : `🔕 ${t("notify")}`}
     </button>
   );
 }

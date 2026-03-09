@@ -101,9 +101,11 @@
     "emailResent": "Confirmation email resent"
   },
   "notifications": {
-    "on": "🔔 Notifications ON",
-    "blocked": "🔕 Blocked",
-    "notify": "🔔 Notify me",
+    "on": "Notifications ON",
+    "blocked": "Blocked",
+    "notify": "Notify me",
+    "loading": "Loading notifications…",
+    "unsupported": "Notifications not available in this browser",
     "deniedHint": "Notifications blocked. In Chrome: click the lock icon in the address bar > Permissions > Notifications > Allow. Then reload the page.",
     "disableHint": "Disable daily notifications",
     "enableHint": "Enable daily sun notifications"
@@ -120,7 +122,12 @@
     "myLocation": "My location",
     "near": "near",
     "save": "Save",
-    "namePlaceholder": "Name (optional)",
+    "savingLocation": "Saving location at",
+    "nameLabel": "Name for this location",
+    "namePlaceholder": "My home, Office, Beach...",
+    "saveAndFavorite": "Save and add to favorites",
+    "cancel": "Cancel",
+    "savedAs": "Saved as",
     "lat": "Lat",
     "lon": "Lon"
   },
