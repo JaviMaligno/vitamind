@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useCallback, useRef, useEffect } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import WorldMap from "@/components/WorldMap";
 import GlobalHeatmap from "@/components/GlobalHeatmap";
 import DailyCurve from "@/components/DailyCurve";
@@ -9,174 +9,86 @@ import SaveLocationModal from "@/components/SaveLocationModal";
 import VitDEstimate from "@/components/VitDEstimate";
 import SkinSelector from "@/components/SkinSelector";
 import NotificationToggle from "@/components/NotificationToggle";
-import { BUILTIN_CITIES, findNearestCity } from "@/lib/cities";
 import { vitDHrs, getCurve, getWindow, dayOfYear, dateFromDoy, fmtTime, fmtDate } from "@/lib/solar";
 import AuthButton from "@/components/AuthButton";
-import { loadFavorites, saveFavorites, loadCustomLocations, saveCustomLocation, deleteCustomLocation, loadPreferences, savePreferences, getCachedWeather, setCachedWeather } from "@/lib/storage";
-import { loadProfile, updateProfile } from "@/lib/profile";
-import type { City, WeatherData } from "@/lib/types";
-import type { SkinType } from "@/lib/vitd";
 import type { User } from "@supabase/supabase-js";
 
+import { usePreferences } from "@/hooks/usePreferences";
+import { useLocation } from "@/hooks/useLocation";
+import { useWeather } from "@/hooks/useWeather";
+import { useAnimation } from "@/hooks/useAnimation";
+
 export default function App() {
-  // State
-  const [lat, setLat] = useState(51.51);
-  const [lon, setLon] = useState(-0.13);
-  const [tz, setTz] = useState(0);
+  // Local state
   const [doy, setDoy] = useState(dayOfYear(new Date()));
-  const [threshold, setThreshold] = useState(50);
-  const [cityName, setCityName] = useState("Londres");
-  const [cityFlag, setCityFlag] = useState("\u{1F1EC}\u{1F1E7}");
-  const [cityId, setCityId] = useState("builtin:londres");
-  const [hoverTime, setHoverTime] = useState<number | null>(null);
-  const [animating, setAnimating] = useState(false);
-  const [favorites, setFavorites] = useState<string[]>([]);
-  const [customLocations, setCustomLocations] = useState<City[]>([]);
-  const [editingFavs, setEditingFavs] = useState(false);
   const [tab, setTab] = useState<"map" | "heatmap">("map");
   const [scrubMode, setScrubMode] = useState(false);
+  const [hoverTime, setHoverTime] = useState<number | null>(null);
   const [savingLocation, setSavingLocation] = useState(false);
-  const [weather, setWeather] = useState<WeatherData | null>(null);
-  const [skinType, setSkinType] = useState<SkinType>(3);
-  const [areaFraction, setAreaFraction] = useState(0.25);
-  const [age, setAge] = useState<number | null>(null);
-  const [authUser, setAuthUser] = useState<User | null>(null);
-  const animRef = useRef<number>(0);
 
-  // Load persisted state on mount
-  useEffect(() => {
-    setFavorites(loadFavorites());
-    setCustomLocations(loadCustomLocations());
-    const prefs = loadPreferences();
-    setThreshold(prefs.threshold);
-    if (prefs.skinType) setSkinType(prefs.skinType);
-    if (prefs.areaFraction) setAreaFraction(prefs.areaFraction);
-    if (prefs.age) setAge(prefs.age);
-  }, []);
+  // Custom hooks
+  const {
+    skinType, setSkinType,
+    areaFraction, setAreaFraction,
+    age, setAge,
+    threshold, setThreshold,
+    authUser,
+    persistPreferences,
+    handleAuthChange,
+  } = usePreferences();
 
-  // Persist favorites
-  useEffect(() => {
-    if (favorites.length > 0) saveFavorites(favorites);
-  }, [favorites]);
-
-  // Persist threshold
-  useEffect(() => {
-    savePreferences({ threshold, lastCityId: cityId, skinType, areaFraction, age: age ?? undefined });
-    if (authUser) {
-      updateProfile(authUser.id, { threshold, lastCityId: cityId, skinType, areaFraction, age });
-    }
-  }, [threshold, cityId, skinType, areaFraction, age, authUser]);
-
-  // Sync profile from Supabase on auth change
-  const handleAuthChange = useCallback(async (user: User | null) => {
-    setAuthUser(user);
-    if (user) {
-      const { profile } = await loadProfile();
-      if (profile) {
-        setSkinType(profile.skinType);
-        setAreaFraction(profile.areaFraction);
-        setAge(profile.age);
-        setThreshold(profile.threshold);
-        if (profile.favorites.length) setFavorites(profile.favorites);
-        if (profile.lastCityId) setCityId(profile.lastCityId);
-      }
-    }
-  }, []);
-
-  // All cities = builtin + custom
-  const allCities = useMemo(() => {
-    const s = new Set(BUILTIN_CITIES.map((c) => c.id));
-    return [...BUILTIN_CITIES, ...customLocations.filter((c) => !s.has(c.id))].sort((a, b) => a.name.localeCompare(b.name));
-  }, [customLocations]);
+  const {
+    lat, setLat,
+    lon, setLon,
+    tz, setTz,
+    cityName, setCityName,
+    cityFlag, setCityFlag,
+    cityId, setCityId,
+    favorites, setFavorites,
+    customLocations,
+    editingFavs, setEditingFavs,
+    allCities,
+    selectCity,
+    selectFromHeatmap,
+    toggleFav,
+    handleSaveLocation: locationSaveHandler,
+    handleDeleteCustom,
+  } = useLocation();
 
   const date = dateFromDoy(doy);
+  const weather = useWeather(lat, lon, date);
+  const { animating, toggleAnim } = useAnimation(setDoy);
+
+  // Persist preferences when they change
+  useEffect(() => {
+    persistPreferences(cityId);
+  }, [threshold, cityId, skinType, areaFraction, age, authUser, persistPreferences]);
+
+  // Bridge: handleAuthChange needs setFavorites and setCityId from useLocation
+  const onAuthChange = useCallback(
+    (user: User | null) => handleAuthChange(user, setFavorites, setCityId),
+    [handleAuthChange, setFavorites, setCityId],
+  );
+
+  // Bridge: selectFromHeatmap needs setDoy
+  const onSelectFromHeatmap = useCallback(
+    (newLat: number, newDoy: number) => selectFromHeatmap(newLat, newDoy, setDoy),
+    [selectFromHeatmap, setDoy],
+  );
+
+  // Bridge: handleSaveLocation also closes the modal
+  const handleSaveLocation = useCallback(
+    (city: Parameters<typeof locationSaveHandler>[0]) => {
+      locationSaveHandler(city);
+      setSavingLocation(false);
+    },
+    [locationSaveHandler],
+  );
+
   const curve = useMemo(() => getCurve(lat, lon, doy, tz), [lat, lon, doy, tz]);
   const vitDWindow = useMemo(() => getWindow(curve, threshold), [curve, threshold]);
   const peak = useMemo(() => Math.max(...curve.map((p) => p.elevation)), [curve]);
   const vdH = vitDHrs(lat, doy, threshold);
-
-  // Fetch weather
-  useEffect(() => {
-    const dateStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
-    const cached = getCachedWeather(lat, lon, dateStr);
-    if (cached) { setWeather(cached); return; }
-
-    const controller = new AbortController();
-    fetch(`/api/weather?lat=${lat.toFixed(2)}&lon=${lon.toFixed(2)}&date=${dateStr}`, { signal: controller.signal })
-      .then((r) => r.ok ? r.json() : null)
-      .then((data) => {
-        if (data?.hours) {
-          const wd: WeatherData = { hours: data.hours, fetchedAt: Date.now() };
-          setCachedWeather(lat, lon, dateStr, wd);
-          setWeather(wd);
-        } else {
-          setWeather(null);
-        }
-      })
-      .catch(() => setWeather(null));
-    return () => controller.abort();
-  }, [lat, lon, date]);
-
-  const selectCity = useCallback((c: City) => {
-    setLat(c.lat); setLon(c.lon); setTz(c.tz);
-    setCityName(c.name); setCityFlag(c.flag || "\u{1F4CD}"); setCityId(c.id);
-    if (c.source === "nominatim" && !BUILTIN_CITIES.find((b) => b.id === c.id)) {
-      setCustomLocations((prev) => {
-        if (prev.find((x) => x.id === c.id)) return prev;
-        const updated = [...prev, c];
-        saveCustomLocation(c);
-        return updated;
-      });
-    }
-  }, []);
-
-  const selectFromHeatmap = useCallback((newLat: number, newDoy: number) => {
-    const rL = Math.round(newLat * 10) / 10;
-    setLat(rL); setDoy(Math.max(1, Math.min(365, Math.round(newDoy))));
-    const near = findNearestCity(rL, BUILTIN_CITIES);
-    if (near) {
-      setLon(near.lon); setTz(near.tz); setCityName(near.name); setCityFlag(near.flag || "\u{1F4CD}"); setCityId(near.id);
-    } else {
-      setLon(0); setTz(0);
-      setCityName(`Lat ${Math.round(rL)}\u00B0`); setCityFlag("\u{1F4CD}"); setCityId(`custom:lat-${rL}`);
-    }
-  }, []);
-
-  const toggleFav = useCallback((c: City | string) => {
-    const id = typeof c === "string" ? c : c.id;
-    setFavorites((f) => f.includes(id) ? f.filter((x) => x !== id) : [...f, id]);
-    if (typeof c !== "string" && c.source !== "builtin") {
-      setCustomLocations((prev) => {
-        if (prev.find((x) => x.id === c.id)) return prev;
-        saveCustomLocation(c);
-        return [...prev, c];
-      });
-    }
-  }, []);
-
-  const handleSaveLocation = useCallback((city: City) => {
-    saveCustomLocation(city);
-    setCustomLocations((prev) => [...prev.filter((c) => c.id !== city.id), city]);
-    setFavorites((f) => f.includes(city.id) ? f : [...f, city.id]);
-    setCityName(city.name); setCityFlag(city.flag || "\u{1F4CD}"); setCityId(city.id);
-    setSavingLocation(false);
-  }, []);
-
-  const handleDeleteCustom = useCallback((id: string) => {
-    deleteCustomLocation(id);
-    setCustomLocations((prev) => prev.filter((c) => c.id !== id));
-    setFavorites((f) => f.filter((x) => x !== id));
-  }, []);
-
-  const toggleAnim = () => {
-    if (animating) { cancelAnimationFrame(animRef.current); setAnimating(false); }
-    else {
-      setAnimating(true);
-      const s = () => { setDoy((d) => d >= 365 ? 1 : d + 1); animRef.current = requestAnimationFrame(s); };
-      animRef.current = requestAnimationFrame(s);
-    }
-  };
-  useEffect(() => () => cancelAnimationFrame(animRef.current), []);
 
   const isCurrentFav = favorites.includes(cityId);
   const sI: React.CSSProperties = { padding: "7px 8px", borderRadius: 8, background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.1)", color: "#e0e0e0", fontSize: 11, fontFamily: "'JetBrains Mono',monospace", outline: "none", width: 65, boxSizing: "border-box" };
@@ -190,7 +102,7 @@ export default function App() {
             <span style={{ fontSize: 30, fontWeight: 800, letterSpacing: "-1px", fontFamily: "'Playfair Display',serif", background: "linear-gradient(135deg,#FFD54F,#FF8F00)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Vitamina D</span>
             <span style={{ fontSize: 13, color: "rgba(255,255,255,0.3)", fontWeight: 500 }}>Explorador Solar Global</span>
           </div>
-          <AuthButton onAuthChange={handleAuthChange} />
+          <AuthButton onAuthChange={onAuthChange} />
         </div>
       </div>
 
@@ -311,7 +223,7 @@ export default function App() {
             <div style={{ fontSize: 10, color: "rgba(255,255,255,0.3)", marginBottom: 4, paddingLeft: 8 }}>
               <strong style={{ color: "rgba(255,255,255,0.45)" }}>HEATMAP GLOBAL</strong> &middot; Latitud &times; Dia del a&ntilde;o &middot; Horas &ge; {threshold}&deg; &middot; <em>Clic y arrastra para explorar</em>
             </div>
-            <GlobalHeatmap selectedLat={lat} selectedDoy={doy} threshold={threshold} onSelect={selectFromHeatmap} />
+            <GlobalHeatmap selectedLat={lat} selectedDoy={doy} threshold={threshold} onSelect={onSelectFromHeatmap} />
           </div>
         )}
 
