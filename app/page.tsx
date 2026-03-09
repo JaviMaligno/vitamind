@@ -11,6 +11,7 @@ import type { User } from "@supabase/supabase-js";
 
 import { usePreferences } from "@/hooks/usePreferences";
 import { useLocation } from "@/hooks/useLocation";
+import { useGeoLocation } from "@/hooks/useGeoLocation";
 import { useWeather } from "@/hooks/useWeather";
 import { useAnimation } from "@/hooks/useAnimation";
 
@@ -46,6 +47,20 @@ export default function App() {
     handleSaveLocation: locationSaveHandler,
     handleDeleteCustom,
   } = useLocation();
+
+  const gps = useGeoLocation();
+
+  // Sync GPS coordinates into location state
+  useEffect(() => {
+    if (gps.lat !== null && gps.lon !== null) {
+      setLat(gps.lat);
+      setLon(gps.lon);
+      setTz(Math.round(gps.lon / 15));
+      setCityName("Mi ubicación");
+      setCityFlag("📍");
+      setCityId(`gps:${gps.lat.toFixed(4)},${gps.lon.toFixed(4)}`);
+    }
+  }, [gps.lat, gps.lon, setLat, setLon, setTz, setCityName, setCityFlag, setCityId]);
 
   const date = dateFromDoy(doy);
   const weather = useWeather(lat, lon, date);
@@ -96,7 +111,7 @@ export default function App() {
     : null;
 
   const dateLabel = fmtDate(date);
-  const hasLocation = Boolean(cityName);
+  const hasLocation = (gps.lat !== null && gps.lon !== null) || cityId !== "builtin:londres";
   const isCurrentFav = favorites.includes(cityId);
 
   return (
@@ -135,6 +150,9 @@ export default function App() {
         peakElevation={peak}
         dateLabel={dateLabel}
         windowLabel={windowLabel}
+        onRequestGps={gps.enableGps}
+        gpsLoading={gps.loading}
+        gpsError={gps.error}
       />
 
       {/* Zone 2 — Visualization */}
