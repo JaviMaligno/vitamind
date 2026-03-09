@@ -1,12 +1,26 @@
 import type { Metadata, Viewport } from "next";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages, getLocale } from "next-intl/server";
+import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Vitamina D Explorer",
-  description: "Descubre cuando y donde puedes sintetizar vitamina D gracias al sol",
+  title: "Vitamina D Explorer — Know When You Can Synthesize Vitamin D",
+  description: "Free solar vitamin D calculator. Find out exactly when and where you can synthesize vitamin D based on your location, skin type, and real-time UV data.",
   manifest: "/manifest.json",
+  openGraph: {
+    title: "Vitamina D Explorer",
+    description: "Know when and where you can synthesize vitamin D from sunlight",
+    type: "website",
+    locale: "es_ES",
+    alternateLocale: ["en_US", "fr_FR", "de_DE"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Vitamina D Explorer",
+    description: "Free solar vitamin D calculator based on your location and skin type",
+  },
+  robots: { index: true, follow: true },
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
@@ -39,11 +53,26 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Playfair+Display:wght@700;800&display=swap"
           rel="stylesheet"
         />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebApplication",
+              "name": "Vitamina D Explorer",
+              "description": "Solar vitamin D synthesis calculator",
+              "applicationCategory": "HealthApplication",
+              "operatingSystem": "Any",
+              "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
+            }),
+          }}
+        />
       </head>
       <body style={{ margin: 0 }}>
         <NextIntlClientProvider messages={messages} locale={locale}>
           {children}
         </NextIntlClientProvider>
+        <Analytics />
         <script
           dangerouslySetInnerHTML={{
             __html: `
