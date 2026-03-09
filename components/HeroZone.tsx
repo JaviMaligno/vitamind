@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import CitySearch from "@/components/CitySearch";
 import type { City } from "@/lib/types";
 import type { ExposureResult } from "@/lib/vitd";
@@ -46,14 +47,16 @@ export default function HeroZone({
   gpsLoading,
   gpsError,
 }: Props) {
+  const t = useTranslations("hero");
+
   if (!hasLocation) {
     return (
       <section className="mx-auto max-w-[960px] py-12 px-4 text-center">
         <h1 className="text-[36px] font-bold text-white mb-3">
-          ¿Dónde estás?
+          {t("whereAreYou")}
         </h1>
         <p className="text-sm text-white/40 mb-6">
-          Busca tu ciudad para saber si hoy puedes sintetizar vitamina D
+          {t("searchHint")}
         </p>
 
         {/* GPS button */}
@@ -76,7 +79,7 @@ export default function HeroZone({
                   clipRule="evenodd"
                 />
               </svg>
-              {gpsLoading ? "Localizando..." : "Usar mi ubicación"}
+              {gpsLoading ? t("locating") : t("useMyLocation")}
             </button>
             {gpsError && (
               <p className="mt-2 text-xs text-red-400/80">{gpsError}</p>
@@ -87,7 +90,7 @@ export default function HeroZone({
         {/* City search as alternative */}
         <div className="mx-auto max-w-md">
           {onRequestGps && (
-            <p className="text-xs text-white/30 mb-3">o busca una ciudad</p>
+            <p className="text-xs text-white/30 mb-3">{t("orSearchCity")}</p>
           )}
           <CitySearch
             onSelect={onSelectCity}
@@ -125,7 +128,7 @@ export default function HeroZone({
               canSynthesize ? "text-amber-400/70" : "text-red-400/70"
             }`}
           >
-            {canSynthesize ? "Síntesis posible" : "Sin vitamina D hoy"}
+            {canSynthesize ? t("synthesisPossible") : t("noSynthesis")}
           </span>
         </div>
 
@@ -136,10 +139,10 @@ export default function HeroZone({
               <span className="font-mono text-amber-400">
                 {minutesNeeded}
               </span>{" "}
-              minutos al sol
+              {t("minutesSun")}
             </h2>
             <p className="text-sm text-white/40 mb-6">
-              para sintetizar ~1000 UI de vitamina D
+              {t("forVitD")}
             </p>
 
             {/* Details row */}
@@ -147,7 +150,7 @@ export default function HeroZone({
               {windowLabel && (
                 <div>
                   <span className="text-[11px] uppercase tracking-wider text-white/25 block mb-0.5">
-                    Ventana UV
+                    {t("window")}
                   </span>
                   <span className="font-mono text-[15px] font-semibold text-amber-400">
                     {windowLabel}
@@ -157,7 +160,7 @@ export default function HeroZone({
               {bestHour !== null && (
                 <div>
                   <span className="text-[11px] uppercase tracking-wider text-white/25 block mb-0.5">
-                    Mejor hora
+                    {t("bestHour")}
                   </span>
                   <span className="font-mono text-[15px] font-semibold text-white/80">
                     {String(bestHour).padStart(2, "0")}:00
@@ -166,7 +169,7 @@ export default function HeroZone({
               )}
               <div>
                 <span className="text-[11px] uppercase tracking-wider text-white/25 block mb-0.5">
-                  Pico solar
+                  {t("peakSolar")}
                 </span>
                 <span className="font-mono text-[15px] font-semibold text-white/80">
                   {peakElevation.toFixed(1)}°
@@ -174,7 +177,7 @@ export default function HeroZone({
               </div>
               <div>
                 <span className="text-[11px] uppercase tracking-wider text-white/25 block mb-0.5">
-                  Ubicación
+                  {t("location")}
                 </span>
                 <span className="text-[15px] text-white/60">
                   {cityFlag} {cityName}
@@ -182,7 +185,7 @@ export default function HeroZone({
               </div>
               <div>
                 <span className="text-[11px] uppercase tracking-wider text-white/25 block mb-0.5">
-                  Fecha
+                  {t("date")}
                 </span>
                 <span className="text-[15px] text-white/60">{dateLabel}</span>
               </div>
@@ -191,19 +194,18 @@ export default function HeroZone({
         ) : (
           <>
             <h2 className="text-[32px] md:text-[36px] font-bold text-white leading-tight mb-2">
-              Hoy no es posible sintetizar vitamina D
+              {t("noSynthesisTitle")}
             </h2>
             <p className="text-sm text-white/40 mb-4">
-              El sol no alcanza la elevación necesaria en{" "}
+              {t("noSynthesisHint")}{" "}
               <span className="text-white/60">
                 {cityFlag} {cityName}
               </span>{" "}
               · {dateLabel}
             </p>
             <div className="rounded-xl bg-white/[0.04] border border-white/[0.06] px-4 py-3 text-sm text-white/50 max-w-lg">
-              <span className="text-amber-400/70 font-semibold">Consejo:</span>{" "}
-              Considera suplementación oral de vitamina D (800-2000 UI/día)
-              durante los meses con baja radiación UV.
+              <span className="text-amber-400/70 font-semibold">{t("advice")}</span>{" "}
+              {t("adviceText")}
             </div>
           </>
         )}

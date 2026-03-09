@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { useTranslations } from "next-intl";
 
 interface Props {
   lat: number;
@@ -25,6 +26,7 @@ function urlBase64ToUint8Array(base64String: string): Uint8Array {
 
 export default function NotificationToggle({ lat, lon, tz, skinType, areaFraction, threshold, cityName }: Props) {
   const [status, setStatus] = useState<Status>("loading");
+  const t = useTranslations("notifications");
 
   // Check permission on mount and when user returns to tab (e.g. after changing browser settings)
   useEffect(() => {
@@ -131,10 +133,10 @@ export default function NotificationToggle({ lat, lon, tz, skinType, areaFractio
       disabled={status === "denied"}
       title={
         status === "denied"
-          ? "Notificaciones bloqueadas. En Chrome: pulsa el candado en la barra de direcciones > Permisos > Notificaciones > Permitir. Luego recarga la pagina."
+          ? t("deniedHint")
           : status === "on"
-            ? "Desactivar notificaciones diarias"
-            : "Activar notificaciones diarias de sol"
+            ? t("disableHint")
+            : t("enableHint")
       }
       style={{
         padding: "4px 10px",
@@ -149,7 +151,7 @@ export default function NotificationToggle({ lat, lon, tz, skinType, areaFractio
         opacity: status === "denied" ? 0.5 : 1,
       }}
     >
-      {status === "on" ? "\u{1F514} Notificaciones ON" : status === "denied" ? "\u{1F515} Bloqueadas" : "\u{1F514} Notificarme"}
+      {status === "on" ? t("on") : status === "denied" ? t("blocked") : t("notify")}
     </button>
   );
 }

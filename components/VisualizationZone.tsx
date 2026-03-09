@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import WorldMap from "@/components/WorldMap";
 import GlobalHeatmap from "@/components/GlobalHeatmap";
 import DailyCurve from "@/components/DailyCurve";
@@ -32,12 +33,6 @@ interface Props {
   onScrubModeToggle: () => void;
 }
 
-const TABS: { key: Tab; label: string }[] = [
-  { key: "curve", label: "📈 Curva del Día" },
-  { key: "map", label: "🌍 Mapa Mundi" },
-  { key: "heatmap", label: "📊 Latitud × Año" },
-];
-
 export default function VisualizationZone({
   lat,
   lon,
@@ -60,6 +55,14 @@ export default function VisualizationZone({
 }: Props) {
   const [tab, setTab] = useState<Tab>("curve");
   const [hoverTime, setHoverTime] = useState<number | null>(null);
+  const tTabs = useTranslations("tabs");
+  const tViz = useTranslations("viz");
+
+  const TABS: { key: Tab; label: string }[] = [
+    { key: "curve", label: tTabs("dailyCurve") },
+    { key: "map", label: tTabs("worldMap") },
+    { key: "heatmap", label: tTabs("heatmap") },
+  ];
 
   return (
     <section className="mx-auto max-w-[960px] px-4 py-2">
@@ -85,11 +88,11 @@ export default function VisualizationZone({
         {tab === "curve" && (
           <>
             <div className="text-[10px] text-white/30 mb-1 pl-2">
-              <strong className="text-white/45">CURVA DEL DÍA</strong> ·{" "}
+              <strong className="text-white/45">{tViz("dailyCurveTitle")}</strong> ·{" "}
               {cityFlag} {cityName} · {dateLabel}
               {weather && (
                 <span className="ml-2 text-white/20">
-                  · Con datos meteorológicos
+                  · {tViz("withWeatherData")}
                 </span>
               )}
             </div>
@@ -114,7 +117,7 @@ export default function VisualizationZone({
                     : "bg-white/[0.04] text-white/30"
                 }`}
               >
-                {scrubMode ? "🔍 Explorar" : "✋ Mover"}
+                {scrubMode ? tViz("explore") : tViz("move")}
               </button>
             </div>
             <WorldMap
@@ -133,9 +136,9 @@ export default function VisualizationZone({
         {tab === "heatmap" && (
           <>
             <div className="text-[10px] text-white/30 mb-1 pl-2">
-              <strong className="text-white/45">HEATMAP GLOBAL</strong> ·
-              Latitud × Día del año · Horas ≥ {threshold}° ·{" "}
-              <em>Clic y arrastra para explorar</em>
+              <strong className="text-white/45">{tViz("heatmapTitle")}</strong> ·{" "}
+              {tViz("heatmapDesc", { threshold })} ·{" "}
+              <em>{tViz("heatmapHint")}</em>
             </div>
             <GlobalHeatmap
               selectedLat={lat}

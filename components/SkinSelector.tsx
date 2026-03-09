@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { SKIN_LABELS, AREA_PRESETS, type SkinType } from "@/lib/vitd";
+import { useTranslations } from "next-intl";
+import { AREA_PRESETS, type SkinType } from "@/lib/vitd";
 
 interface Props {
   skinType: SkinType;
@@ -12,17 +13,34 @@ interface Props {
   onAgeChange: (a: number | null) => void;
 }
 
-const SKIN_HELP = [
-  { type: "I", desc: "Piel muy palida, pecas, pelo rubio/pelirrojo. Siempre se quema, nunca se broncea.", example: "Norte de Europa, Irlanda" },
-  { type: "II", desc: "Piel clara, pelo rubio. Se quema facilmente, se broncea poco.", example: "Europa central/norte" },
-  { type: "III", desc: "Piel media, pelo castano. A veces se quema, se broncea gradualmente.", example: "Sur de Europa, Mediterraneo" },
-  { type: "IV", desc: "Piel oliva, pelo oscuro. Rara vez se quema, se broncea bien.", example: "Mediterraneo, Latinoamerica, Asia" },
-  { type: "V", desc: "Piel morena. Muy rara vez se quema.", example: "Oriente Medio, Sur de Asia, Norte de Africa" },
-  { type: "VI", desc: "Piel oscura/negra. Nunca se quema.", example: "Africa subsahariana, Melanesia" },
-];
-
 export default function SkinSelector({ skinType, areaFraction, age, onSkinChange, onAreaChange, onAgeChange }: Props) {
   const [showHelp, setShowHelp] = useState(false);
+  const t = useTranslations("skin");
+
+  const skinLabels: Record<SkinType, string> = {
+    1: t("type1"),
+    2: t("type2"),
+    3: t("type3"),
+    4: t("type4"),
+    5: t("type5"),
+    6: t("type6"),
+  };
+
+  const skinHelp = [
+    { type: "I", desc: t("desc1"), example: t("example1") },
+    { type: "II", desc: t("desc2"), example: t("example2") },
+    { type: "III", desc: t("desc3"), example: t("example3") },
+    { type: "IV", desc: t("desc4"), example: t("example4") },
+    { type: "V", desc: t("desc5"), example: t("example5") },
+    { type: "VI", desc: t("desc6"), example: t("example6") },
+  ];
+
+  const areaLabels: Record<number, string> = {
+    0.10: t("areaFaceHands"),
+    0.18: t("areaFaceArms"),
+    0.25: t("areaTshirtShort"),
+    0.40: t("areaSwimsuit"),
+  };
 
   const selectStyle: React.CSSProperties = {
     padding: "5px 8px",
@@ -39,11 +57,11 @@ export default function SkinSelector({ skinType, areaFraction, age, onSkinChange
   return (
     <div style={{ marginBottom: 8 }}>
       <div style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
-        <span style={{ fontSize: 9, color: "rgba(255,255,255,0.2)", textTransform: "uppercase", letterSpacing: 1 }}>Tu piel:</span>
+        <span style={{ fontSize: 9, color: "rgba(255,255,255,0.2)", textTransform: "uppercase", letterSpacing: 1 }}>{t("type")}</span>
         <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
           <select value={skinType} onChange={(e) => onSkinChange(Number(e.target.value) as SkinType)} style={selectStyle}>
-            {([1, 2, 3, 4, 5, 6] as SkinType[]).map((t) => (
-              <option key={t} value={t}>{SKIN_LABELS[t]}</option>
+            {([1, 2, 3, 4, 5, 6] as SkinType[]).map((st) => (
+              <option key={st} value={st}>{skinLabels[st]}</option>
             ))}
           </select>
           <button
@@ -55,16 +73,16 @@ export default function SkinSelector({ skinType, areaFraction, age, onSkinChange
               fontSize: 11, fontWeight: 700, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
               padding: 0, lineHeight: 1,
             }}
-            title="Como identificar tu tipo de piel"
+            title={t("help")}
           >?</button>
         </div>
-        <span style={{ fontSize: 9, color: "rgba(255,255,255,0.2)", textTransform: "uppercase", letterSpacing: 1 }}>Exposicion:</span>
+        <span style={{ fontSize: 9, color: "rgba(255,255,255,0.2)", textTransform: "uppercase", letterSpacing: 1 }}>{t("area")}</span>
         <select value={areaFraction} onChange={(e) => onAreaChange(Number(e.target.value))} style={selectStyle}>
           {AREA_PRESETS.map((p) => (
-            <option key={p.value} value={p.value}>{p.label}</option>
+            <option key={p.value} value={p.value}>{areaLabels[p.value] ?? p.label}</option>
           ))}
         </select>
-        <span style={{ fontSize: 9, color: "rgba(255,255,255,0.2)", textTransform: "uppercase", letterSpacing: 1 }}>Edad:</span>
+        <span style={{ fontSize: 9, color: "rgba(255,255,255,0.2)", textTransform: "uppercase", letterSpacing: 1 }}>{t("age")}</span>
         <input
           type="number"
           min="1"
@@ -82,13 +100,13 @@ export default function SkinSelector({ skinType, areaFraction, age, onSkinChange
           background: "rgba(255,213,79,0.04)", border: "1px solid rgba(255,213,79,0.1)",
         }}>
           <div style={{ fontSize: 11, fontWeight: 600, color: "#FFD54F", marginBottom: 6 }}>
-            Escala Fitzpatrick — Tipo de piel
+            {t("fitzpatrickTitle")}
           </div>
           <div style={{ fontSize: 10, color: "rgba(255,255,255,0.4)", marginBottom: 8, lineHeight: 1.4 }}>
-            Piensa en como reacciona tu piel tras 30 min de sol de verano sin proteccion:
+            {t("fitzpatrickHint")}
           </div>
           <div style={{ display: "grid", gap: 4 }}>
-            {SKIN_HELP.map((s, i) => (
+            {skinHelp.map((s, i) => (
               <div
                 key={s.type}
                 onClick={() => { onSkinChange((i + 1) as SkinType); setShowHelp(false); }}

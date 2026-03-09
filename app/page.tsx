@@ -1,9 +1,11 @@
 "use client";
 
 import { useState, useMemo, useCallback, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import { vitDHrs, getCurve, getWindow, dayOfYear, dateFromDoy, fmtTime, fmtDate } from "@/lib/solar";
 import { computeExposure, computeExposureFromCurve } from "@/lib/vitd";
 import AuthButton from "@/components/AuthButton";
+import LanguageSelector from "@/components/LanguageSelector";
 import HeroZone from "@/components/HeroZone";
 import VisualizationZone from "@/components/VisualizationZone";
 import ConfigZone from "@/components/ConfigZone";
@@ -17,6 +19,7 @@ import { useAnimation } from "@/hooks/useAnimation";
 import { findNearestCityApi } from "@/lib/cities-api";
 
 export default function App() {
+  const t = useTranslations();
   // Local state
   const [doy, setDoy] = useState(dayOfYear(new Date()));
   const [scrubMode, setScrubMode] = useState(false);
@@ -57,20 +60,20 @@ export default function App() {
       setLat(gps.lat);
       setLon(gps.lon);
       setTz(Math.round(gps.lon / 15));
-      setCityName("Mi ubicación");
+      setCityName(t("common.myLocation"));
       setCityFlag("\u{1F4CD}");
       setCityId(`gps:${gps.lat.toFixed(4)},${gps.lon.toFixed(4)}`);
 
       // Resolve nearest city name from Supabase
       findNearestCityApi(gps.lat, gps.lon).then((city) => {
         if (city) {
-          setCityName(`Mi ubicación (near ${city.name})`);
+          setCityName(`${t("common.myLocation")} (${t("common.near")} ${city.name})`);
           setCityFlag(city.flag ?? "\u{1F4CD}");
           setTz(city.tz);
         }
       });
     }
-  }, [gps.lat, gps.lon, setLat, setLon, setTz, setCityName, setCityFlag, setCityId]);
+  }, [gps.lat, gps.lon, setLat, setLon, setTz, setCityName, setCityFlag, setCityId, t]);
 
   const date = dateFromDoy(doy);
   const weather = useWeather(lat, lon, date);
@@ -131,13 +134,16 @@ export default function App() {
         <div className="flex items-center justify-between flex-wrap gap-2">
           <div className="flex items-baseline gap-2.5">
             <span className="text-[30px] font-extrabold tracking-tight font-[Playfair_Display,serif] bg-gradient-to-br from-amber-400 to-amber-700 bg-clip-text text-transparent">
-              Vitamina D
+              {t("app.title")}
             </span>
             <span className="text-[13px] text-white/30 font-medium">
-              Explorador Solar Global
+              {t("app.subtitle")}
             </span>
           </div>
-          <AuthButton onAuthChange={onAuthChange} />
+          <div className="flex items-center gap-3">
+            <LanguageSelector />
+            <AuthButton onAuthChange={onAuthChange} />
+          </div>
         </div>
       </div>
 
@@ -238,17 +244,17 @@ export default function App() {
       {/* Legend */}
       <div className="mx-auto max-w-[960px] px-4 mt-6">
         <div className="flex flex-wrap items-center gap-3 py-1.5 px-3 rounded-lg bg-white/[0.02] border border-white/[0.04] text-[9px] text-white/[0.22]">
-          <span>Horas Vit D:</span>
+          <span>{t("legend.vitDHours")}</span>
           <div className="w-[100px] h-1.5 rounded-sm bg-gradient-to-r from-[#0a0f28] via-[#b36200] to-amber-400" />
-          <span className="font-mono">0h → 10h+</span>
+          <span className="font-mono">{t("legend.range")}</span>
           <span>
             <span className="inline-block w-3 h-[1.5px] bg-[#FF6D00] mr-1 align-middle" />
-            Límite Vit D
+            {t("legend.vitDLimit")}
           </span>
           {weather && (
             <span>
               <span className="inline-block w-3 h-1.5 bg-[rgba(150,150,170,0.3)] mr-1 align-middle rounded-sm" />
-              Nubes
+              {t("legend.clouds")}
             </span>
           )}
         </div>
@@ -256,9 +262,7 @@ export default function App() {
 
       {/* Footer */}
       <div className="mx-auto max-w-[960px] px-4 mt-3 text-[9px] text-white/[0.15] leading-relaxed">
-        Cálculos astronómicos + datos UV reales (Open-Meteo). Estimación Vit D
-        basada en Holick/Dowdy (2010). Mapa: Natural Earth. Búsqueda:
-        OpenStreetMap Nominatim. Umbral 45° (in vitro) / 50° (conservador).
+        {t("app.footer")}
       </div>
     </div>
   );

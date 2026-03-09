@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import CitySearch from "@/components/CitySearch";
 import SkinSelector from "@/components/SkinSelector";
 import NotificationToggle from "@/components/NotificationToggle";
@@ -100,6 +101,8 @@ export default function ConfigZone({
 }: Props) {
   const [open, setOpen] = useState(false);
   const [savingLocation, setSavingLocation] = useState(false);
+  const t = useTranslations("config");
+  const tc = useTranslations("common");
 
   return (
     <section className="mx-auto max-w-[960px] px-4 pt-6 pb-2">
@@ -114,7 +117,7 @@ export default function ConfigZone({
           ▶
         </span>
         <span className="uppercase tracking-wider font-semibold text-[11px]">
-          Configuración
+          {t("title")}
         </span>
       </button>
 
@@ -123,7 +126,7 @@ export default function ConfigZone({
           {/* Search city */}
           <div>
             <h3 className="text-[11px] uppercase tracking-wider text-white/25 font-semibold mb-3">
-              Buscar ciudad
+              {t("searchCity")}
             </h3>
             <div className="flex flex-wrap gap-3 items-center">
               <CitySearch
@@ -133,7 +136,7 @@ export default function ConfigZone({
                 allCities={allCities}
               />
               <div className="flex gap-1.5 items-center">
-                <span className="text-[9px] text-white/20">Lat</span>
+                <span className="text-[9px] text-white/20">{tc("lat")}</span>
                 <input
                   value={lat}
                   onChange={(e) => {
@@ -143,7 +146,7 @@ export default function ConfigZone({
                   }}
                   className="w-16 px-2 py-1.5 rounded-lg bg-white/[0.07] border border-white/10 text-white/80 text-[11px] font-mono outline-none"
                 />
-                <span className="text-[9px] text-white/20">Lon</span>
+                <span className="text-[9px] text-white/20">{tc("lon")}</span>
                 <input
                   value={lon}
                   onChange={(e) => {
@@ -163,14 +166,14 @@ export default function ConfigZone({
                   onClick={() => toggleFav(cityId)}
                   className="min-h-[44px] px-3 py-1 rounded-full bg-amber-400/10 text-amber-400 text-[10px] font-semibold cursor-pointer"
                 >
-                  ☆ Favorito
+                  {tc("favorite")}
                 </button>
               )}
               <button
                 onClick={() => setSavingLocation(true)}
                 className="min-h-[44px] px-3 py-1 rounded-full bg-white/[0.06] text-white/40 text-[10px] cursor-pointer"
               >
-                Guardar como...
+                {tc("saveAs")}
               </button>
             </div>
             {savingLocation && (
@@ -191,7 +194,7 @@ export default function ConfigZone({
           {/* Favorites */}
           <div>
             <h3 className="text-[11px] uppercase tracking-wider text-white/25 font-semibold mb-3">
-              Favoritos
+              {t("favorites")}
             </h3>
             <div className="flex flex-wrap gap-1 items-center">
               {favorites.map((fid) => {
@@ -236,7 +239,7 @@ export default function ConfigZone({
                     : "bg-white/[0.04] text-white/20"
                 }`}
               >
-                {editingFavs ? "✓ Listo" : "✎ Editar"}
+                {editingFavs ? t("done") : t("edit")}
               </button>
             </div>
           </div>
@@ -244,7 +247,7 @@ export default function ConfigZone({
           {/* Solar profile */}
           <div>
             <h3 className="text-[11px] uppercase tracking-wider text-white/25 font-semibold mb-3">
-              Perfil solar
+              {t("solarProfile")}
             </h3>
             <SkinSelector
               skinType={skinType}
@@ -259,7 +262,7 @@ export default function ConfigZone({
           {/* Date controls */}
           <div>
             <h3 className="text-[11px] uppercase tracking-wider text-white/25 font-semibold mb-3">
-              Fecha
+              {t("date")}
             </h3>
             <div className="flex items-center gap-2 flex-wrap">
               <button
@@ -293,7 +296,7 @@ export default function ConfigZone({
                     : "bg-amber-400/10 text-amber-400"
                 }`}
               >
-                {animating ? "⏸" : "▶ Animar"}
+                {animating ? t("pause") : t("animate")}
               </button>
             </div>
           </div>
@@ -301,20 +304,20 @@ export default function ConfigZone({
           {/* Threshold */}
           <div>
             <h3 className="text-[11px] uppercase tracking-wider text-white/25 font-semibold mb-3">
-              Umbral solar
+              {t("threshold")}
             </h3>
             <div className="flex gap-1.5">
-              {[45, 50].map((t) => (
+              {[45, 50].map((th) => (
                 <button
-                  key={t}
-                  onClick={() => setThreshold(t)}
+                  key={th}
+                  onClick={() => setThreshold(th)}
                   className={`min-h-[44px] px-3 py-1.5 rounded-md font-mono text-[10px] cursor-pointer ${
-                    threshold === t
+                    threshold === th
                       ? "bg-amber-400/15 text-amber-400 font-semibold"
                       : "bg-white/[0.04] text-white/35"
                   }`}
                 >
-                  {t}°
+                  {th}°
                 </button>
               ))}
             </div>
@@ -323,7 +326,7 @@ export default function ConfigZone({
           {/* Notifications */}
           <div>
             <h3 className="text-[11px] uppercase tracking-wider text-white/25 font-semibold mb-3">
-              Notificaciones
+              {t("notifications")}
             </h3>
             <NotificationToggle {...notificationProps} />
           </div>

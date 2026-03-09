@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
+import { useTranslations } from "next-intl";
 import { computeExposure, computeExposureFromCurve, type SkinType } from "@/lib/vitd";
 import type { WeatherData, SolarPoint } from "@/lib/types";
 
@@ -21,6 +22,8 @@ function fmtMin(m: number): string {
 }
 
 export default function VitDEstimate({ weather, curve, skinType, areaFraction, age }: Props) {
+  const t = useTranslations("estimate");
+
   const weatherResult = useMemo(
     () => weather ? computeExposure(weather.hours, skinType, areaFraction, 1000, age) : null,
     [weather, skinType, areaFraction, age],
@@ -41,17 +44,17 @@ export default function VitDEstimate({ weather, curve, skinType, areaFraction, a
       marginTop: 10,
     }}>
       <div style={{ fontSize: 10, color: "rgba(255,255,255,0.45)", fontWeight: 600, marginBottom: 8, textTransform: "uppercase", letterSpacing: 1 }}>
-        Estimacion Vitamina D
+        {t("title")}
         {isTheoretical && (
           <span style={{ marginLeft: 8, fontSize: 9, color: "rgba(255,213,79,0.5)", fontWeight: 400, textTransform: "none", letterSpacing: 0 }}>
-            (cielo despejado teorico — sin datos meteo para esta fecha)
+            {t("theoreticalHint")}
           </span>
         )}
       </div>
 
       {!result && (
         <div style={{ fontSize: 12, color: "#ef5350", fontWeight: 600 }}>
-          UV insuficiente (UVI &lt; 3) — no es posible sintetizar vitamina D en esta fecha
+          {t("insufficientUV")}
         </div>
       )}
       {result && (
@@ -63,18 +66,18 @@ export default function VitDEstimate({ weather, curve, skinType, areaFraction, a
                 {fmtMin(result.minutesNeeded)}
               </span>
               <span style={{ fontSize: 11, color: "rgba(255,255,255,0.4)", marginLeft: 6 }}>
-                para 1000 IU
+                {t("for1000IU")}
               </span>
             </div>
             <div style={{ fontSize: 11, color: "rgba(255,255,255,0.35)", lineHeight: 1.6 }}>
-              <div>Mejor hora: <strong style={{ color: "#FFD54F" }}>{result.bestHour}:00</strong> (UVI {result.bestUVI.toFixed(1)})</div>
-              <div>Ventana UV: <strong style={{ color: "rgba(255,255,255,0.5)" }}>{result.windowStart}:00 – {result.windowEnd}:00</strong></div>
+              <div>{t("bestHour")} <strong style={{ color: "#FFD54F" }}>{result.bestHour}:00</strong> (UVI {result.bestUVI.toFixed(1)})</div>
+              <div>{t("uvWindow")} <strong style={{ color: "rgba(255,255,255,0.5)" }}>{result.windowStart}:00 – {result.windowEnd}:00</strong></div>
             </div>
           </div>
 
           {/* Hourly bar chart */}
           <div style={{ fontSize: 9, color: "rgba(255,255,255,0.2)", marginBottom: 4 }}>
-            Tiempo por hora (min para 1000 IU)
+            {t("hourlyTitle")}
           </div>
           <div style={{ display: "flex", gap: 1, alignItems: "flex-end", height: 50 }}>
             {result.hourlyMinutes
@@ -87,7 +90,7 @@ export default function VitDEstimate({ weather, curve, skinType, areaFraction, a
                   <div
                     key={h.hour}
                     style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 1 }}
-                    title={h.minutes !== null ? `${h.hour}:00 — UVI ${h.uvi.toFixed(1)} — ${Math.round(h.minutes)} min` : `${h.hour}:00 — UVI ${h.uvi.toFixed(1)} — Sin sintesis`}
+                    title={h.minutes !== null ? `${h.hour}:00 — UVI ${h.uvi.toFixed(1)} — ${Math.round(h.minutes)} min` : `${h.hour}:00 — UVI ${h.uvi.toFixed(1)}`}
                   >
                     <div style={{
                       width: "100%",
@@ -108,16 +111,14 @@ export default function VitDEstimate({ weather, curve, skinType, areaFraction, a
               })}
           </div>
           <div style={{ display: "flex", gap: 10, marginTop: 6, fontSize: 8, color: "rgba(255,255,255,0.2)" }}>
-            <span><span style={{ display: "inline-block", width: 8, height: 8, borderRadius: 2, background: "rgba(255,213,79,0.6)", marginRight: 3, verticalAlign: "middle" }} />&le;15 min</span>
-            <span><span style={{ display: "inline-block", width: 8, height: 8, borderRadius: 2, background: "rgba(255,143,0,0.5)", marginRight: 3, verticalAlign: "middle" }} />&le;30 min</span>
-            <span><span style={{ display: "inline-block", width: 8, height: 8, borderRadius: 2, background: "rgba(255,109,0,0.3)", marginRight: 3, verticalAlign: "middle" }} />&gt;30 min</span>
+            <span><span style={{ display: "inline-block", width: 8, height: 8, borderRadius: 2, background: "rgba(255,213,79,0.6)", marginRight: 3, verticalAlign: "middle" }} />{t("lte15")}</span>
+            <span><span style={{ display: "inline-block", width: 8, height: 8, borderRadius: 2, background: "rgba(255,143,0,0.5)", marginRight: 3, verticalAlign: "middle" }} />{t("lte30")}</span>
+            <span><span style={{ display: "inline-block", width: 8, height: 8, borderRadius: 2, background: "rgba(255,109,0,0.3)", marginRight: 3, verticalAlign: "middle" }} />{t("gt30")}</span>
           </div>
 
           {/* Disclaimer */}
           <div style={{ fontSize: 8, color: "rgba(255,255,255,0.15)", marginTop: 8, lineHeight: 1.4 }}>
-            {isTheoretical
-              ? "Estimacion teorica con cielo despejado (sin nubes ni datos reales). Los datos meteo reales solo cubren ~14 dias."
-              : "Basado en la regla de Holick (Dowdy et al. 2010). Estimacion orientativa — no sustituye consejo medico."}
+            {isTheoretical ? t("disclaimerTheoretical") : t("disclaimerReal")}
           </div>
         </div>
       )}

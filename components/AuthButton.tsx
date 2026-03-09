@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { useTranslations } from "next-intl";
 import { getSupabase } from "@/lib/supabase";
 import type { User } from "@supabase/supabase-js";
 
@@ -17,6 +18,7 @@ export default function AuthButton({ onAuthChange }: Props) {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const t = useTranslations("auth");
 
   const sb = getSupabase();
 
@@ -46,24 +48,22 @@ export default function AuthButton({ onAuthChange }: Props) {
       if (err) {
         setError(err.message);
       } else if (data.session) {
-        // Autoconfirm enabled — user is logged in immediately
         setShowForm(false);
       } else {
-        // Email confirmation required
-        setMessage("Revisa tu email para confirmar la cuenta");
+        setMessage(t("checkEmail"));
         setMode("resend");
       }
     } else if (mode === "resend") {
       const { error: err } = await sb.auth.resend({ type: "signup", email, options: { emailRedirectTo: window.location.origin } });
       if (err) setError(err.message);
-      else setMessage("Email de confirmacion reenviado");
+      else setMessage(t("emailResent"));
     } else {
       const { error: err } = await sb.auth.signInWithPassword({ email, password });
       if (err) setError(err.message);
       else setShowForm(false);
     }
     setLoading(false);
-  }, [sb, email, password, mode]);
+  }, [sb, email, password, mode, t]);
 
   const handleLogout = useCallback(async () => {
     if (!sb) return;
@@ -86,7 +86,7 @@ export default function AuthButton({ onAuthChange }: Props) {
           {user.email}
         </span>
         <button onClick={handleLogout} style={{ ...btnStyle, background: "rgba(255,255,255,0.04)", color: "rgba(255,255,255,0.35)" }}>
-          Cerrar sesion
+          {t("logout")}
         </button>
       </div>
     );
@@ -97,9 +97,9 @@ export default function AuthButton({ onAuthChange }: Props) {
       <button
         onClick={() => setShowForm(true)}
         style={{ ...btnStyle, background: "rgba(255,213,79,0.08)", color: "rgba(255,213,79,0.6)" }}
-        title="Inicia sesion para sincronizar tus preferencias entre dispositivos"
+        title={t("loginHint")}
       >
-        Iniciar sesion
+        {t("login")}
       </button>
     );
   }
@@ -118,25 +118,25 @@ export default function AuthButton({ onAuthChange }: Props) {
     }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
         <span style={{ fontSize: 11, fontWeight: 600, color: "#FFD54F" }}>
-          {mode === "login" ? "Iniciar sesion" : mode === "signup" ? "Crear cuenta" : "Reenviar confirmacion"}
+          {mode === "login" ? t("login") : mode === "signup" ? t("signup") : t("resendConfirmation")}
         </span>
         <button onClick={() => setShowForm(false)} style={{ ...btnStyle, background: "transparent", color: "rgba(255,255,255,0.3)", padding: "2px 6px" }}>
           &#x2715;
         </button>
       </div>
       <div style={{ fontSize: 9, color: "rgba(255,255,255,0.3)", marginBottom: 8, lineHeight: 1.4 }}>
-        Opcional — sincroniza preferencias entre dispositivos
+        {t("syncHint")}
       </div>
       <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-        <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} style={inputStyle} required />
+        <input type="email" placeholder={t("email")} value={email} onChange={(e) => setEmail(e.target.value)} style={inputStyle} required />
         {mode !== "resend" && (
-          <input type="password" placeholder="Contrasena" value={password} onChange={(e) => setPassword(e.target.value)} style={inputStyle} required minLength={6} />
+          <input type="password" placeholder={t("password")} value={password} onChange={(e) => setPassword(e.target.value)} style={inputStyle} required minLength={6} />
         )}
         {error && <div style={{ fontSize: 9, color: "#ef5350" }}>{error}</div>}
         {message && <div style={{ fontSize: 9, color: "#66bb6a" }}>{message}</div>}
         <div style={{ display: "flex", gap: 6 }}>
           <button type="submit" disabled={loading} style={{ ...btnStyle, flex: 1, background: "rgba(255,213,79,0.15)", color: "#FFD54F", fontWeight: 600 }}>
-            {loading ? "..." : mode === "login" ? "Entrar" : mode === "signup" ? "Registrarse" : "Reenviar"}
+            {loading ? "..." : mode === "login" ? t("enter") : mode === "signup" ? t("register") : t("resend")}
           </button>
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
@@ -146,7 +146,7 @@ export default function AuthButton({ onAuthChange }: Props) {
               onClick={() => { setMode(mode === "login" ? "signup" : "login"); setError(""); setMessage(""); }}
               style={{ ...btnStyle, background: "transparent", color: "rgba(255,255,255,0.3)", fontSize: 9, textAlign: "center" }}
             >
-              {mode === "login" ? "No tengo cuenta — Registrarse" : "Ya tengo cuenta — Iniciar sesion"}
+              {mode === "login" ? t("noAccount") : t("hasAccount")}
             </button>
           )}
           {mode === "resend" && (
@@ -155,7 +155,7 @@ export default function AuthButton({ onAuthChange }: Props) {
               onClick={() => { setMode("login"); setError(""); setMessage(""); }}
               style={{ ...btnStyle, background: "transparent", color: "rgba(255,255,255,0.3)", fontSize: 9, textAlign: "center" }}
             >
-              Volver a iniciar sesion
+              {t("backToLogin")}
             </button>
           )}
         </div>
