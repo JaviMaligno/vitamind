@@ -5,8 +5,8 @@
 - Mapa real del mundo (Natural Earth + d3-geo) con pan, zoom, tap/clic
 - Heatmap latitud x dia del ano con drag interactivo
 - Curva solar diaria con umbral de vitamina D
-- ~80 ciudades built-in + 33,390 ciudades GeoNames con fuzzy search (Fuse.js)
-- Busqueda Nominatim (OpenStreetMap) como fallback
+- ~80 ciudades built-in + 200K+ ciudades GeoNames cities500 en Supabase
+- Busqueda fuzzy server-side (pg_trgm) + Nominatim fallback
 - Favoritos editables, animacion temporal, umbrales 45/50
 - Soporte movil (touch, pinch-to-zoom)
 - Modo scrub opcional en mapa (toggle explorar/mover)
@@ -35,13 +35,14 @@
 
 ---
 
-## Fase 6c - Mejora de UX/UI
+## Completado (Fase 6c - Mejora de UX/UI)
 
-- Rediseño visual general (layout, espaciado, responsive)
-- Onboarding para nuevos usuarios (tipo de piel, ubicacion)
-- Tooltips y explicaciones contextuales mas claras
-- Mejor jerarquia visual entre controles y resultados
-- Accesibilidad (aria labels, contraste, teclado)
+- Rediseño completo con layout de 3 zonas: Hero (respuesta inmediata), Visualizacion (tabs), Configuracion (colapsable)
+- Migracion de inline styles a Tailwind CSS
+- Extraccion de hooks: useLocation, useWeather, usePreferences, useAnimation, useGeoLocation
+- Componentes: HeroZone, VisualizationZone, ConfigZone
+- Botones con min-height 44px para accesibilidad movil
+- Jerarquia visual clara: respuesta grande, visualizaciones en tabs, controles ocultos por defecto
 
 ---
 
@@ -84,32 +85,62 @@
 
 ---
 
+## Completado (Fase 10 - v2 Redesign)
+
+- GPS auto-deteccion (navigator.geolocation) con fallback a busqueda de ciudad
+- Base de datos de ciudades migrada a Supabase (200K+ ciudades GeoNames cities500)
+- Busqueda de ciudad por nombre (pg_trgm) y por proximidad GPS
+- API route /api/cities para busqueda server-side
+- i18n con next-intl: 6 idiomas (ES, EN, FR, DE, RU, LT)
+- Selector de idioma en header
+- Deteccion automatica de idioma del navegador
+- SEO: meta tags OpenGraph/Twitter, JSON-LD structured data
+- Vercel Analytics integrado
+- Push notifications: fix critico (RLS bloqueaba escritura de suscripciones)
+- Push notifications: soporte test manual (?secret=), mejor reporte de errores
+- Testing: vitest configurado con smoke tests para solar math
+
+---
+
 ## Pendiente de verificacion
 
+- [x] PWA: instalable en movil
+- [x] PWA: modo offline
+- [x] Estimacion teorica UV para fechas >14 dias
 - [ ] Auth: persistencia de perfil (login -> cambia preferencias -> logout -> login -> se mantienen?)
 - [ ] Auth: sincronizacion cloud <-> localStorage al iniciar sesion
-- [ ] Push notifications: recibir notificacion diaria a las 8:00 UTC (requiere esperar al cron)
+- [ ] Push notifications: recibir notificacion diaria a las 8:00 UTC (re-suscribirse tras fix)
 - [ ] Push notifications: contenido correcto (minutos, ventana solar, UV pico)
-- [ ] PWA: instalable en movil ("Anadir a pantalla de inicio")
-- [ ] PWA: modo offline (cortar internet, recargar -> pagina offline con reintentar)
-- [ ] Estimacion teorica UV: muestra datos para fechas mas alla de ~14 dias
 - [ ] Estimacion con datos reales: muestra minutos, mejor hora, barras por hora para fecha de hoy
+- [ ] Seed de ciudades: ejecutar scripts/seed-cities.ts en Supabase produccion
 
 ---
 
 ## Futuro - Funcionalidades adicionales
 
 - Autodeteccion tipo de piel con foto (IA / vision model)
-- Chat IA / preguntas comunes: "cuando podre sintetizar vitamina D", "cuantas horas necesito", etc.
-- QA sobre vitamina D, sol (beneficios incluso sin sintesis), por que el angulo influye, astronomia relacionada
-- Soporte multi-idioma (i18n)
-- Activar ubicacion GPS automatica del dispositivo
+- Chat IA / preguntas comunes sobre vitamina D y sol
+- Mensaje contextual de suplementacion (cuando no hay ventana de sintesis)
+- Onboarding guiado para nuevos usuarios
+- Tooltips y explicaciones contextuales
+- Accesibilidad avanzada (aria labels, navegacion por teclado)
+- OG image personalizada (screenshot/heatmap)
+- Assets para Product Hunt (screenshots, GIF animado con Remotion)
 
 ---
 
-## Fase 10 - App movil nativa
+## Futuro - App movil nativa
 
 - Evaluar si PWA es suficiente o se necesita app nativa
 - Si nativa: React Native / Expo (reutiliza logica de lib/)
-- Ventajas nativa: GPS automatico, notificaciones mas fiables, stores
+- Ventajas nativa: notificaciones mas fiables, presencia en stores
 - Solo si la PWA se queda corta en funcionalidad o UX
+
+---
+
+## Estrategia comercial
+
+- Ver docs/original_claude_ouput/vitamin-d-estrategia-comercial.md para plan detallado
+- Lanzamiento: Product Hunt, Reddit, Hacker News, Twitter/X
+- B2C: freemium (gratis + Pro 2.99€/mes)
+- B2B: partnerships con marcas de suplementos
