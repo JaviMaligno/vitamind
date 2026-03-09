@@ -21,16 +21,10 @@ function getServiceClient() {
   return createClient(url, key);
 }
 
-// Use anon key for client-facing subscribe/unsubscribe
-function getAnonClient() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-  if (!url || !key) return null;
-  return createClient(url, key);
-}
 
 export async function saveSubscription(sub: StoredSubscription): Promise<void> {
-  const sb = getAnonClient();
+  // Use service role key to bypass RLS for server-side subscription management
+  const sb = getServiceClient();
   if (!sb) return;
 
   await sb.from("push_subscriptions").upsert({
@@ -48,7 +42,8 @@ export async function saveSubscription(sub: StoredSubscription): Promise<void> {
 }
 
 export async function removeSubscription(endpoint: string): Promise<void> {
-  const sb = getAnonClient();
+  // Use service role key to bypass RLS for server-side subscription management
+  const sb = getServiceClient();
   if (!sb) return;
 
   await sb.from("push_subscriptions").delete().eq("endpoint", endpoint);
