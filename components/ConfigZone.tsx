@@ -161,14 +161,14 @@ export default function ConfigZone({
               {!isCurrentFav && cityName && (
                 <button
                   onClick={() => toggleFav(cityId)}
-                  className="px-3 py-1 rounded-full bg-amber-400/10 text-amber-400 text-[10px] font-semibold cursor-pointer"
+                  className="min-h-[44px] px-3 py-1 rounded-full bg-amber-400/10 text-amber-400 text-[10px] font-semibold cursor-pointer"
                 >
                   ☆ Favorito
                 </button>
               )}
               <button
                 onClick={() => setSavingLocation(true)}
-                className="px-3 py-1 rounded-full bg-white/[0.06] text-white/40 text-[10px] cursor-pointer"
+                className="min-h-[44px] px-3 py-1 rounded-full bg-white/[0.06] text-white/40 text-[10px] cursor-pointer"
               >
                 Guardar como...
               </button>
@@ -202,7 +202,7 @@ export default function ConfigZone({
                   <div key={fid} className="flex items-center">
                     <button
                       onClick={() => onSelectCity(c)}
-                      className={`px-2.5 py-1 text-[10px] cursor-pointer ${
+                      className={`min-h-[44px] px-2.5 py-1 text-[10px] cursor-pointer ${
                         editingFavs
                           ? "rounded-l-xl"
                           : "rounded-xl"
@@ -220,7 +220,7 @@ export default function ConfigZone({
                           toggleFav(fid);
                           if (c.source === "custom") handleDeleteCustom(fid);
                         }}
-                        className="px-1.5 py-1 rounded-r-xl bg-red-500/10 text-red-400 text-[9px] cursor-pointer"
+                        className="min-h-[44px] px-1.5 py-1 rounded-r-xl bg-red-500/10 text-red-400 text-[9px] cursor-pointer"
                       >
                         ✕
                       </button>
@@ -230,7 +230,7 @@ export default function ConfigZone({
               })}
               <button
                 onClick={() => setEditingFavs(!editingFavs)}
-                className={`px-2.5 py-1 rounded-xl text-[9px] cursor-pointer ${
+                className={`min-h-[44px] px-2.5 py-1 rounded-xl text-[9px] cursor-pointer ${
                   editingFavs
                     ? "bg-amber-400/10 text-amber-400"
                     : "bg-white/[0.04] text-white/20"
@@ -264,7 +264,7 @@ export default function ConfigZone({
             <div className="flex items-center gap-2 flex-wrap">
               <button
                 onClick={() => setDoy((d: number) => Math.max(1, d - 1))}
-                className="px-2 py-1.5 rounded-md bg-white/[0.06] text-white/80 cursor-pointer text-[10px]"
+                className="min-h-[44px] px-2 py-1.5 rounded-md bg-white/[0.06] text-white/80 cursor-pointer text-[10px]"
               >
                 ◀
               </button>
@@ -278,7 +278,7 @@ export default function ConfigZone({
               />
               <button
                 onClick={() => setDoy((d: number) => Math.min(365, d + 1))}
-                className="px-2 py-1.5 rounded-md bg-white/[0.06] text-white/80 cursor-pointer text-[10px]"
+                className="min-h-[44px] px-2 py-1.5 rounded-md bg-white/[0.06] text-white/80 cursor-pointer text-[10px]"
               >
                 ▶
               </button>
@@ -287,7 +287,7 @@ export default function ConfigZone({
               </span>
               <button
                 onClick={toggleAnim}
-                className={`px-3 py-1.5 rounded-md text-[10px] font-semibold cursor-pointer ${
+                className={`min-h-[44px] px-3 py-1.5 rounded-md text-[10px] font-semibold cursor-pointer ${
                   animating
                     ? "bg-red-500/15 text-red-400"
                     : "bg-amber-400/10 text-amber-400"
@@ -308,7 +308,7 @@ export default function ConfigZone({
                 <button
                   key={t}
                   onClick={() => setThreshold(t)}
-                  className={`px-3 py-1.5 rounded-md font-mono text-[10px] cursor-pointer ${
+                  className={`min-h-[44px] px-3 py-1.5 rounded-md font-mono text-[10px] cursor-pointer ${
                     threshold === t
                       ? "bg-amber-400/15 text-amber-400 font-semibold"
                       : "bg-white/[0.04] text-white/35"
