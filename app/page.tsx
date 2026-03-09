@@ -14,6 +14,7 @@ import { useLocation } from "@/hooks/useLocation";
 import { useGeoLocation } from "@/hooks/useGeoLocation";
 import { useWeather } from "@/hooks/useWeather";
 import { useAnimation } from "@/hooks/useAnimation";
+import { findNearestCityApi } from "@/lib/cities-api";
 
 export default function App() {
   // Local state
@@ -50,15 +51,24 @@ export default function App() {
 
   const gps = useGeoLocation();
 
-  // Sync GPS coordinates into location state
+  // Sync GPS coordinates into location state and resolve nearest city name
   useEffect(() => {
     if (gps.lat !== null && gps.lon !== null) {
       setLat(gps.lat);
       setLon(gps.lon);
       setTz(Math.round(gps.lon / 15));
       setCityName("Mi ubicación");
-      setCityFlag("📍");
+      setCityFlag("\u{1F4CD}");
       setCityId(`gps:${gps.lat.toFixed(4)},${gps.lon.toFixed(4)}`);
+
+      // Resolve nearest city name from Supabase
+      findNearestCityApi(gps.lat, gps.lon).then((city) => {
+        if (city) {
+          setCityName(`Mi ubicación (near ${city.name})`);
+          setCityFlag(city.flag ?? "\u{1F4CD}");
+          setTz(city.tz);
+        }
+      });
     }
   }, [gps.lat, gps.lon, setLat, setLon, setTz, setCityName, setCityFlag, setCityId]);
 

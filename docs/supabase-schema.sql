@@ -26,3 +26,30 @@ create policy "Users can insert own profile"
 
 create policy "Users can update own profile"
   on profiles for update using (auth.uid() = id);
+
+-- Cities table (GeoNames cities500)
+CREATE TABLE cities (
+  geoname_id INTEGER PRIMARY KEY,
+  name TEXT NOT NULL,
+  ascii_name TEXT NOT NULL,
+  country_code CHAR(2) NOT NULL,
+  lat REAL NOT NULL,
+  lon REAL NOT NULL,
+  population INTEGER DEFAULT 0,
+  timezone TEXT NOT NULL
+);
+
+CREATE EXTENSION IF NOT EXISTS pg_trgm;
+CREATE INDEX idx_cities_name_trgm ON cities USING gin (ascii_name gin_trgm_ops);
+CREATE INDEX idx_cities_lat_lon ON cities (lat, lon);
+CREATE INDEX idx_cities_population ON cities (population DESC);
+
+ALTER TABLE cities ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Cities are viewable by everyone" ON cities FOR SELECT USING (true);
+
+CREATE OR REPLACE FUNCTION search_cities_nearby(p_lat REAL, p_lon REAL, p_limit INTEGER DEFAULT 5)
+RETURNS SETOF cities AS $$
+  SELECT * FROM cities
+  ORDER BY (lat - p_lat) * (lat - p_lat) + (lon - p_lon) * (lon - p_lon)
+  LIMIT p_limit;
+$$ LANGUAGE sql STABLE;

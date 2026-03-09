@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo, useCallback, useRef, useEffect } from "react";
-import { searchGeoNames, preloadGeoNames } from "@/lib/geonames";
+import { searchCities } from "@/lib/cities-api";
 import type { City } from "@/lib/types";
 
 interface Props {
@@ -13,17 +13,14 @@ interface Props {
 
 export default function CitySearch({ onSelect, onAddFav, favorites, allCities }: Props) {
   const [query, setQuery] = useState("");
-  const [geoResults, setGeoResults] = useState<City[]>([]);
+  const [apiResults, setApiResults] = useState<City[]>([]);
   const [nominatimResults, setNominatimResults] = useState<City[]>([]);
   const [open, setOpen] = useState(false);
   const [searching, setSearching] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
 
-  // Preload GeoNames on mount
-  useEffect(() => { preloadGeoNames(); }, []);
-
-  // Local match against builtin + custom cities
+  // Local match against builtin + custom cities (instant, no network)
   const builtIn = useMemo(() => {
     if (!query.trim()) return [];
     const q = query.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
@@ -31,12 +28,12 @@ export default function CitySearch({ onSelect, onAddFav, favorites, allCities }:
   }, [query, allCities]);
 
   const doSearch = useCallback((q: string) => {
-    if (q.length < 2) { setGeoResults([]); setNominatimResults([]); return; }
+    if (q.length < 2) { setApiResults([]); setNominatimResults([]); return; }
     setSearching(true);
 
-    // GeoNames fuzzy search (local, fast)
-    searchGeoNames(q, 8).then((results) => {
-      setGeoResults(results);
+    // Supabase API search (server-side, 200K+ cities)
+    searchCities(q).then((results) => {
+      setApiResults(results);
     });
 
     // Nominatim as fallback (for addresses, POIs, etc.)
@@ -78,11 +75,11 @@ export default function CitySearch({ onSelect, onAddFav, favorites, allCities }:
     return () => document.removeEventListener("mousedown", h);
   }, []);
 
-  // Merge: builtin first, then geonames, then nominatim — deduplicate by name
+  // Merge: builtin first, then API results, then nominatim — deduplicate by name
   const combined = useMemo(() => {
     const seen = new Set<string>();
     const result: City[] = [];
-    for (const list of [builtIn, geoResults, nominatimResults]) {
+    for (const list of [builtIn, apiResults, nominatimResults]) {
       for (const c of list) {
         const key = `${c.name.toLowerCase()}:${c.lat.toFixed(1)}`;
         if (!seen.has(key)) { seen.add(key); result.push(c); }
@@ -91,7 +88,7 @@ export default function CitySearch({ onSelect, onAddFav, favorites, allCities }:
       if (result.length >= 10) break;
     }
     return result;
-  }, [builtIn, geoResults, nominatimResults]);
+  }, [builtIn, apiResults, nominatimResults]);
 
   return (
     <div ref={ref} style={{ position: "relative", flex: "1 1 280px" }}>
