@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, useCallback, useRef, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import { searchCities } from "@/lib/cities-api";
 import type { City } from "@/lib/types";
 
@@ -17,8 +18,10 @@ export default function CitySearch({ onSelect, onAddFav, favorites, allCities }:
   const [nominatimResults, setNominatimResults] = useState<City[]>([]);
   const [open, setOpen] = useState(false);
   const [searching, setSearching] = useState(false);
+  const [justAdded, setJustAdded] = useState<string | null>(null);
   const ref = useRef<HTMLDivElement>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const t = useTranslations("search");
 
   // Local match against builtin + custom cities (instant, no network)
   const builtIn = useMemo(() => {
@@ -31,12 +34,10 @@ export default function CitySearch({ onSelect, onAddFav, favorites, allCities }:
     if (q.length < 2) { setApiResults([]); setNominatimResults([]); return; }
     setSearching(true);
 
-    // Supabase API search (server-side, 200K+ cities)
     searchCities(q).then((results) => {
       setApiResults(results);
     });
 
-    // Nominatim as fallback (for addresses, POIs, etc.)
     fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&limit=4&accept-language=es`, { headers: { "User-Agent": "VitD/1" } })
       .then((r) => r.json())
       .then((data) => {
@@ -62,7 +63,7 @@ export default function CitySearch({ onSelect, onAddFav, favorites, allCities }:
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const v = e.target.value;
-    setQuery(v); setOpen(true);
+    setQuery(v); setOpen(true); setJustAdded(null);
     clearTimeout(timerRef.current);
     timerRef.current = setTimeout(() => doSearch(v), 300);
   };
@@ -75,7 +76,14 @@ export default function CitySearch({ onSelect, onAddFav, favorites, allCities }:
     return () => document.removeEventListener("mousedown", h);
   }, []);
 
-  // Merge: builtin first, then API results, then nominatim — deduplicate by name
+  // Clear "just added" feedback after 2s
+  useEffect(() => {
+    if (!justAdded) return;
+    const timer = setTimeout(() => setJustAdded(null), 2000);
+    return () => clearTimeout(timer);
+  }, [justAdded]);
+
+  // Merge: builtin first, then API results, then nominatim — deduplicate
   const combined = useMemo(() => {
     const seen = new Set<string>();
     const result: City[] = [];
@@ -90,55 +98,80 @@ export default function CitySearch({ onSelect, onAddFav, favorites, allCities }:
     return result;
   }, [builtIn, apiResults, nominatimResults]);
 
+  const handleGoTo = (c: City) => {
+    onSelect(c);
+    setQuery("");
+    setOpen(false);
+  };
+
+  const handleAddFav = (c: City) => {
+    onAddFav(c);
+    setJustAdded(c.id);
+  };
+
   return (
-    <div ref={ref} style={{ position: "relative", flex: "1 1 280px" }}>
-      <div style={{ display: "flex" }}>
+    <div ref={ref} className="relative flex-[1_1_280px]">
+      <div className="flex">
         <input
           value={query} onChange={handleChange} onFocus={() => setOpen(true)}
-          placeholder="Buscar cualquier ciudad del mundo..."
-          style={{ flex: 1, padding: "7px 12px", borderRadius: "8px 0 0 8px", background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.1)", color: "#e0e0e0", fontSize: 12, fontFamily: "'DM Sans',sans-serif", outline: "none" }}
+          placeholder={t("placeholder")}
+          className="flex-1 px-3 py-2 rounded-l-lg bg-white/[0.07] border border-white/10 text-white/80 text-sm outline-none focus:border-amber-400/30"
         />
-        <div style={{ padding: "7px 10px", borderRadius: "0 8px 8px 0", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", borderLeft: "none", color: "rgba(255,255,255,0.3)", fontSize: 12, display: "flex", alignItems: "center" }}>
-          {searching ? "\u23F3" : "\u{1F50D}"}
+        <div className="px-3 py-2 rounded-r-lg bg-white/[0.05] border border-white/10 border-l-0 text-white/30 text-sm flex items-center">
+          {searching ? "⏳" : "🔍"}
         </div>
       </div>
       {open && query.length >= 2 && (
-        <div style={{ position: "absolute", top: "100%", left: 0, right: 0, zIndex: 200, marginTop: 4, background: "#141832", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 8, maxHeight: 300, overflowY: "auto", boxShadow: "0 12px 40px rgba(0,0,0,0.7)" }}>
+        <div className="absolute top-full left-0 right-0 z-[200] mt-1 bg-[#141832] border border-white/[0.12] rounded-xl max-h-[350px] overflow-y-auto shadow-[0_12px_40px_rgba(0,0,0,0.7)]">
           {combined.length === 0 && !searching && (
-            <div style={{ padding: 12, fontSize: 12, color: "rgba(255,255,255,0.3)" }}>Sin resultados</div>
+            <div className="p-3 text-sm text-white/30">{t("noResults")}</div>
           )}
-          {combined.map((c, i) => (
-            <div
-              key={`${c.id}-${i}`}
-              style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "8px 12px", cursor: "pointer", borderBottom: "1px solid rgba(255,255,255,0.04)" }}
-              onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.06)")}
-              onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
-              onClick={() => { onSelect(c); setQuery(""); setOpen(false); }}
-            >
-              <div style={{ minWidth: 0 }}>
-                <div style={{ fontSize: 13, color: "#e0e0e0" }}>{c.flag} {c.name}</div>
-                {(c as { _full?: string })._full && (
-                  <div style={{ fontSize: 9, color: "rgba(255,255,255,0.25)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: 260 }}>
-                    {(c as { _full?: string })._full}
-                  </div>
-                )}
-                <span style={{ fontSize: 9, color: "rgba(255,255,255,0.2)", fontFamily: "'JetBrains Mono',monospace" }}>
-                  {c.lat.toFixed(2)}&deg;, {c.lon.toFixed(2)}&deg;
-                  {c.population ? ` \u00B7 ${(c.population / 1000).toFixed(0)}K hab.` : ""}
-                  {c.source === "geonames" && <span style={{ color: "rgba(255,213,79,0.3)", marginLeft: 4 }}>GeoNames</span>}
-                  {c.source === "nominatim" && <span style={{ color: "rgba(100,200,255,0.3)", marginLeft: 4 }}>OSM</span>}
-                </span>
-              </div>
-              <button
-                onClick={(e) => { e.stopPropagation(); onAddFav(c); }}
-                style={{ padding: "2px 8px", borderRadius: 4, border: "none", cursor: "pointer", background: favorites.includes(c.id) ? "rgba(255,213,79,0.15)" : "rgba(255,255,255,0.06)", color: favorites.includes(c.id) ? "#FFD54F" : "rgba(255,255,255,0.4)", fontSize: 12 }}
+          {combined.map((c, i) => {
+            const isFav = favorites.includes(c.id);
+            const wasJustAdded = justAdded === c.id;
+            return (
+              <div
+                key={`${c.id}-${i}`}
+                className="flex items-center gap-2 px-3 py-2.5 border-b border-white/[0.04] hover:bg-white/[0.04]"
               >
-                {favorites.includes(c.id) ? "\u2605" : "\u2606"}
-              </button>
-            </div>
-          ))}
+                {/* City info */}
+                <div className="flex-1 min-w-0">
+                  <div className="text-sm text-white/90">{c.flag} {c.name}</div>
+                  {(c as { _full?: string })._full && (
+                    <div className="text-[10px] text-white/25 truncate max-w-[260px]">
+                      {(c as { _full?: string })._full}
+                    </div>
+                  )}
+                  <span className="text-[10px] text-white/20 font-mono">
+                    {c.lat.toFixed(2)}°, {c.lon.toFixed(2)}°
+                    {c.population ? ` · ${(c.population / 1000).toFixed(0)}K` : ""}
+                  </span>
+                </div>
+
+                {/* Action buttons — separate and clear */}
+                <button
+                  onClick={(e) => { e.stopPropagation(); handleAddFav(c); }}
+                  className={`shrink-0 px-2.5 py-1.5 rounded-lg text-xs cursor-pointer transition-colors ${
+                    isFav || wasJustAdded
+                      ? "bg-amber-400/15 text-amber-400"
+                      : "bg-white/[0.06] text-white/40 hover:bg-white/[0.1]"
+                  }`}
+                  title={t("addFavorite")}
+                >
+                  {wasJustAdded ? `✓ ${t("added")}` : isFav ? "★" : `☆ ${t("fav")}`}
+                </button>
+                <button
+                  onClick={(e) => { e.stopPropagation(); handleGoTo(c); }}
+                  className="shrink-0 px-2.5 py-1.5 rounded-lg text-xs cursor-pointer bg-amber-400/10 text-amber-400 hover:bg-amber-400/20 transition-colors"
+                  title={t("goTo")}
+                >
+                  📍 {t("go")}
+                </button>
+              </div>
+            );
+          })}
           {searching && (
-            <div style={{ padding: 10, fontSize: 11, color: "rgba(255,255,255,0.3)", textAlign: "center" }}>Buscando...</div>
+            <div className="p-3 text-xs text-white/30 text-center">{t("searching")}</div>
           )}
         </div>
       )}

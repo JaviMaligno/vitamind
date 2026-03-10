@@ -22,7 +22,14 @@
     "bestHour": "Mejor hora",
     "peakSolar": "Pico solar",
     "location": "Ubicación",
-    "date": "Fecha"
+    "date": "Fecha",
+    "backToMyLocation": "Volver a mi ubicación",
+    "gpsDenied": "Permiso de ubicación denegado",
+    "gpsTimeout": "No se pudo obtener tu ubicación a tiempo",
+    "gpsUnavailable": "Servicios de ubicación no disponibles",
+    "gpsNotSupported": "Tu navegador no soporta geolocalización",
+    "gpsGenericError": "Error al obtener la ubicación",
+    "gpsEnableHint": "Asegúrate de tener activada la ubicación en tu dispositivo (Ajustes > Ubicación/GPS)"
   },
   "tabs": {
     "dailyCurve": "📈 Curva del Día",
@@ -130,6 +137,16 @@
     "savedAs": "Guardado como",
     "lat": "Lat",
     "lon": "Lon"
+  },
+  "search": {
+    "placeholder": "Buscar cualquier ciudad del mundo...",
+    "noResults": "Sin resultados",
+    "searching": "Buscando...",
+    "addFavorite": "Añadir a favoritos",
+    "added": "Añadido",
+    "fav": "Fav",
+    "goTo": "Ir a esta ubicación",
+    "go": "Ir"
   },
   "estimate": {
     "title": "Estimación Vitamina D",

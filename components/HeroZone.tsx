@@ -82,7 +82,12 @@ export default function HeroZone({
               {gpsLoading ? t("locating") : t("useMyLocation")}
             </button>
             {gpsError && (
-              <p className="mt-2 text-xs text-red-400/80">{gpsError}</p>
+              <div className="mt-3 text-xs text-red-400/80 max-w-sm mx-auto">
+                <p>{t(gpsError)}</p>
+                {(gpsError === "gpsTimeout" || gpsError === "gpsUnavailable") && (
+                  <p className="mt-1 text-white/30">{t("gpsEnableHint")}</p>
+                )}
+              </div>
             )}
           </div>
         )}
@@ -131,6 +136,16 @@ export default function HeroZone({
             {canSynthesize ? t("synthesisPossible") : t("noSynthesis")}
           </span>
         </div>
+
+        {/* Quick action: return to GPS location */}
+        {onRequestGps && !cityName.includes("Mi ubicación") && !cityName.includes("My location") && (
+          <button
+            onClick={onRequestGps}
+            className="mb-4 px-3 py-1.5 rounded-lg bg-white/[0.04] text-white/30 text-xs hover:bg-white/[0.08] hover:text-white/50 transition-colors cursor-pointer"
+          >
+            📍 {t("backToMyLocation")}
+          </button>
+        )}
 
         {canSynthesize ? (
           <>

@@ -22,7 +22,14 @@
     "bestHour": "Beste Stunde",
     "peakSolar": "Sonnenhöchststand",
     "location": "Standort",
-    "date": "Datum"
+    "date": "Datum",
+    "backToMyLocation": "Zurück zu meinem Standort",
+    "gpsDenied": "Standortberechtigung verweigert",
+    "gpsTimeout": "Standort konnte nicht rechtzeitig ermittelt werden",
+    "gpsUnavailable": "Standortdienste nicht verfügbar",
+    "gpsNotSupported": "Ihr Browser unterstützt keine Geolokalisierung",
+    "gpsGenericError": "Fehler beim Ermitteln des Standorts",
+    "gpsEnableHint": "Stellen Sie sicher, dass Standort/GPS auf Ihrem Gerät aktiviert ist (Einstellungen > Standort/GPS)"
   },
   "tabs": {
     "dailyCurve": "📈 Tageskurve",
@@ -130,6 +137,16 @@
     "savedAs": "Gespeichert als",
     "lat": "Lat",
     "lon": "Lon"
+  },
+  "search": {
+    "placeholder": "Beliebige Stadt weltweit suchen...",
+    "noResults": "Keine Ergebnisse",
+    "searching": "Suche...",
+    "addFavorite": "Zu Favoriten hinzufügen",
+    "added": "Hinzugefügt",
+    "fav": "Fav",
+    "goTo": "Zu diesem Standort gehen",
+    "go": "Los"
   },
   "estimate": {
     "title": "Vitamin-D-Schätzung",

@@ -22,7 +22,14 @@
     "bestHour": "Meilleure heure",
     "peakSolar": "Pic solaire",
     "location": "Emplacement",
-    "date": "Date"
+    "date": "Date",
+    "backToMyLocation": "Retour à ma position",
+    "gpsDenied": "Autorisation de localisation refusée",
+    "gpsTimeout": "Impossible d'obtenir votre position à temps",
+    "gpsUnavailable": "Services de localisation non disponibles",
+    "gpsNotSupported": "Votre navigateur ne prend pas en charge la géolocalisation",
+    "gpsGenericError": "Erreur lors de la localisation",
+    "gpsEnableHint": "Assurez-vous que la localisation/GPS est activé(e) sur votre appareil (Paramètres > Localisation/GPS)"
   },
   "tabs": {
     "dailyCurve": "📈 Courbe du Jour",
@@ -130,6 +137,16 @@
     "savedAs": "Enregistré sous",
     "lat": "Lat",
     "lon": "Lon"
+  },
+  "search": {
+    "placeholder": "Rechercher une ville dans le monde...",
+    "noResults": "Aucun résultat",
+    "searching": "Recherche...",
+    "addFavorite": "Ajouter aux favoris",
+    "added": "Ajouté",
+    "fav": "Fav",
+    "goTo": "Aller à cet emplacement",
+    "go": "Aller"
   },
   "estimate": {
     "title": "Estimation Vitamine D",

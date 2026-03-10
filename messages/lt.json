@@ -22,7 +22,14 @@
     "bestHour": "Geriausia valanda",
     "peakSolar": "Saulės pikas",
     "location": "Vieta",
-    "date": "Data"
+    "date": "Data",
+    "backToMyLocation": "Grįžti į mano vietą",
+    "gpsDenied": "Vietos leidimas atmestas",
+    "gpsTimeout": "Nepavyko laiku nustatyti jūsų vietos",
+    "gpsUnavailable": "Vietos nustatymo paslaugos nepasiekiamos",
+    "gpsNotSupported": "Jūsų naršyklė nepalaiko geolokacijos",
+    "gpsGenericError": "Klaida nustatant vietą",
+    "gpsEnableHint": "Įsitikinkite, kad vietos nustatymas/GPS įjungtas jūsų įrenginyje (Nustatymai > Vieta/GPS)"
   },
   "tabs": {
     "dailyCurve": "📈 Dienos kreivė",
@@ -130,6 +137,16 @@
     "savedAs": "Išsaugota kaip",
     "lat": "Plat",
     "lon": "Ilg"
+  },
+  "search": {
+    "placeholder": "Ieškoti bet kurio miesto pasaulyje...",
+    "noResults": "Rezultatų nėra",
+    "searching": "Ieškoma...",
+    "addFavorite": "Pridėti prie mėgstamiausių",
+    "added": "Pridėta",
+    "fav": "Mėgst",
+    "goTo": "Eiti į šią vietą",
+    "go": "Eiti"
   },
   "estimate": {
     "title": "Vitamino D įvertinimas",

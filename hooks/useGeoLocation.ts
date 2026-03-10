@@ -13,7 +13,7 @@ export function useGeoLocation() {
 
   const requestLocation = useCallback(() => {
     if (!navigator.geolocation) {
-      setError("Geolocalización no disponible en este navegador");
+      setError("gpsNotSupported");
       return;
     }
     setLoading(true);
@@ -30,11 +30,13 @@ export function useGeoLocation() {
         setLoading(false);
         if (err.code === err.PERMISSION_DENIED) {
           setPermissionDenied(true);
-          setError("Permiso de ubicación denegado");
+          setError("gpsDenied");
         } else if (err.code === err.TIMEOUT) {
-          setError("Tiempo de espera agotado al obtener ubicación");
+          setError("gpsTimeout");
+        } else if (err.code === err.POSITION_UNAVAILABLE) {
+          setError("gpsUnavailable");
         } else {
-          setError("No se pudo obtener la ubicación");
+          setError("gpsGenericError");
         }
       },
       {

@@ -22,7 +22,14 @@
     "bestHour": "Best hour",
     "peakSolar": "Solar peak",
     "location": "Location",
-    "date": "Date"
+    "date": "Date",
+    "backToMyLocation": "Back to my location",
+    "gpsDenied": "Location permission denied",
+    "gpsTimeout": "Could not get your location in time",
+    "gpsUnavailable": "Location services not available",
+    "gpsNotSupported": "Your browser doesn't support geolocation",
+    "gpsGenericError": "Error getting location",
+    "gpsEnableHint": "Make sure location/GPS is enabled on your device (Settings > Location/GPS)"
   },
   "tabs": {
     "dailyCurve": "📈 Daily Curve",
@@ -130,6 +137,16 @@
     "savedAs": "Saved as",
     "lat": "Lat",
     "lon": "Lon"
+  },
+  "search": {
+    "placeholder": "Search any city in the world...",
+    "noResults": "No results",
+    "searching": "Searching...",
+    "addFavorite": "Add to favorites",
+    "added": "Added",
+    "fav": "Fav",
+    "goTo": "Go to this location",
+    "go": "Go"
   },
   "estimate": {
     "title": "Vitamin D Estimate",
