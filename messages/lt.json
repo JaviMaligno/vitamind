@@ -29,7 +29,8 @@
     "gpsUnavailable": "Vietos nustatymo paslaugos nepasiekiamos",
     "gpsNotSupported": "Jūsų naršyklė nepalaiko geolokacijos",
     "gpsGenericError": "Klaida nustatant vietą",
-    "gpsEnableHint": "Įsitikinkite, kad vietos nustatymas/GPS įjungtas jūsų įrenginyje (Nustatymai > Vieta/GPS)"
+    "gpsEnableHint": "Įsitikinkite, kad vietos nustatymas/GPS įjungtas jūsų įrenginyje (Nustatymai > Vieta/GPS)",
+    "gpsDeniedHint": "Leidimas atmestas. Chrome: spustelėkite spynos piktogramą adreso juostoje > Leidimai > Vieta > Leisti. Tada perkraukite puslapį."
   },
   "tabs": {
     "dailyCurve": "📈 Dienos kreivė",

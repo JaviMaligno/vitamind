@@ -29,7 +29,8 @@
     "gpsUnavailable": "Standortdienste nicht verfügbar",
     "gpsNotSupported": "Ihr Browser unterstützt keine Geolokalisierung",
     "gpsGenericError": "Fehler beim Ermitteln des Standorts",
-    "gpsEnableHint": "Stellen Sie sicher, dass Standort/GPS auf Ihrem Gerät aktiviert ist (Einstellungen > Standort/GPS)"
+    "gpsEnableHint": "Stellen Sie sicher, dass Standort/GPS auf Ihrem Gerät aktiviert ist (Einstellungen > Standort/GPS)",
+    "gpsDeniedHint": "Berechtigung verweigert. In Chrome: Klicken Sie auf das Schloss-Symbol in der Adressleiste > Berechtigungen > Standort > Zulassen. Dann laden Sie die Seite neu."
   },
   "tabs": {
     "dailyCurve": "📈 Tageskurve",

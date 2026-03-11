@@ -29,7 +29,8 @@
     "gpsUnavailable": "Location services not available",
     "gpsNotSupported": "Your browser doesn't support geolocation",
     "gpsGenericError": "Error getting location",
-    "gpsEnableHint": "Make sure location/GPS is enabled on your device (Settings > Location/GPS)"
+    "gpsEnableHint": "Make sure location/GPS is enabled on your device (Settings > Location/GPS)",
+    "gpsDeniedHint": "Permission denied. In Chrome: click the lock icon in the address bar > Permissions > Location > Allow. Then reload the page."
   },
   "tabs": {
     "dailyCurve": "📈 Daily Curve",

@@ -84,6 +84,9 @@ export default function HeroZone({
             {gpsError && (
               <div className="mt-3 text-xs text-red-400/80 max-w-sm mx-auto">
                 <p>{t(gpsError)}</p>
+                {gpsError === "gpsDenied" && (
+                  <p className="mt-1 text-white/30">{t("gpsDeniedHint")}</p>
+                )}
                 {(gpsError === "gpsTimeout" || gpsError === "gpsUnavailable") && (
                   <p className="mt-1 text-white/30">{t("gpsEnableHint")}</p>
                 )}
