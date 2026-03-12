@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 
 const LS_KEY = "vitamind:useGps";
 
@@ -8,8 +8,10 @@ export function useGeoLocation() {
   const [lat, setLat] = useState<number | null>(null);
   const [lon, setLon] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
+  const [slow, setSlow] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [permissionDenied, setPermissionDenied] = useState(false);
+  const slowTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const requestLocation = useCallback(() => {
     if (!navigator.geolocation) {
@@ -17,17 +19,26 @@ export function useGeoLocation() {
       return;
     }
     setLoading(true);
+    setSlow(false);
     setError(null);
+
+    // After 4 seconds of waiting, hint that GPS might be off
+    slowTimer.current = setTimeout(() => setSlow(true), 4000);
+
     navigator.geolocation.getCurrentPosition(
       (pos) => {
+        if (slowTimer.current) clearTimeout(slowTimer.current);
         setLat(pos.coords.latitude);
         setLon(pos.coords.longitude);
         setLoading(false);
+        setSlow(false);
         setError(null);
         setPermissionDenied(false);
       },
       (err) => {
+        if (slowTimer.current) clearTimeout(slowTimer.current);
         setLoading(false);
+        setSlow(false);
         if (err.code === err.PERMISSION_DENIED) {
           setPermissionDenied(true);
           setError("gpsDenied");
@@ -41,7 +52,7 @@ export function useGeoLocation() {
       },
       {
         enableHighAccuracy: false,
-        timeout: 30000,
+        timeout: 12000,
         maximumAge: 600000,
       },
     );
@@ -79,5 +90,5 @@ export function useGeoLocation() {
     }
   }, [requestLocation]);
 
-  return { lat, lon, loading, error, permissionDenied, requestLocation, enableGps, disableGps };
+  return { lat, lon, loading, slow, error, permissionDenied, requestLocation, enableGps, disableGps };
 }

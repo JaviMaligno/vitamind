@@ -168,6 +168,7 @@ export default function App() {
         windowLabel={windowLabel}
         onRequestGps={gps.enableGps}
         gpsLoading={gps.loading}
+        gpsSlow={gps.slow}
         gpsError={gps.error}
       />
 
