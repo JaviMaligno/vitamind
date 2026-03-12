@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 
 const LS_KEY = "vitamind:useGps";
 
@@ -8,26 +8,48 @@ export function useGeoLocation() {
   const [lat, setLat] = useState<number | null>(null);
   const [lon, setLon] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
+  const [slow, setSlow] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [permissionDenied, setPermissionDenied] = useState(false);
+  const slowTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const requestLocation = useCallback(() => {
+  const requestLocation = useCallback(async () => {
     if (!navigator.geolocation) {
       setError("gpsNotSupported");
       return;
     }
     setLoading(true);
+    setSlow(false);
     setError(null);
+
+    // If permission was already granted, show the hint faster (1s vs 4s)
+    // because the only reason it would be slow is that the device GPS is off
+    let hintDelay = 4000;
+    try {
+      if (navigator.permissions) {
+        const perm = await navigator.permissions.query({ name: "geolocation" });
+        if (perm.state === "granted") hintDelay = 1500;
+      }
+    } catch {
+      // Permissions API not supported — use default delay
+    }
+
+    slowTimer.current = setTimeout(() => setSlow(true), hintDelay);
+
     navigator.geolocation.getCurrentPosition(
       (pos) => {
+        if (slowTimer.current) clearTimeout(slowTimer.current);
         setLat(pos.coords.latitude);
         setLon(pos.coords.longitude);
         setLoading(false);
+        setSlow(false);
         setError(null);
         setPermissionDenied(false);
       },
       (err) => {
+        if (slowTimer.current) clearTimeout(slowTimer.current);
         setLoading(false);
+        setSlow(false);
         if (err.code === err.PERMISSION_DENIED) {
           setPermissionDenied(true);
           setError("gpsDenied");
@@ -41,7 +63,7 @@ export function useGeoLocation() {
       },
       {
         enableHighAccuracy: false,
-        timeout: 30000,
+        timeout: 12000,
         maximumAge: 600000,
       },
     );
@@ -79,5 +101,5 @@ export function useGeoLocation() {
     }
   }, [requestLocation]);
 
-  return { lat, lon, loading, error, permissionDenied, requestLocation, enableGps, disableGps };
+  return { lat, lon, loading, slow, error, permissionDenied, requestLocation, enableGps, disableGps };
 }

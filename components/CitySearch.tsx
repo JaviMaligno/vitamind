@@ -132,7 +132,11 @@ export default function CitySearch({ onSelect, onAddFav, favorites, allCities }:
             return (
               <div
                 key={`${c.id}-${i}`}
-                className="flex items-center gap-2 px-3 py-2.5 border-b border-white/[0.04] hover:bg-white/[0.04]"
+                role="button"
+                tabIndex={0}
+                onClick={() => handleGoTo(c)}
+                onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); handleGoTo(c); } }}
+                className="flex items-center gap-2 px-3 py-2.5 border-b border-white/[0.04] hover:bg-white/[0.07] cursor-pointer transition-colors"
               >
                 {/* City info */}
                 <div className="flex-1 min-w-0">
@@ -148,7 +152,7 @@ export default function CitySearch({ onSelect, onAddFav, favorites, allCities }:
                   </span>
                 </div>
 
-                {/* Action buttons — separate and clear */}
+                {/* Favorite button */}
                 <button
                   onClick={(e) => { e.stopPropagation(); handleAddFav(c); }}
                   className={`shrink-0 px-2.5 py-1.5 rounded-lg text-xs cursor-pointer transition-colors ${
@@ -159,13 +163,6 @@ export default function CitySearch({ onSelect, onAddFav, favorites, allCities }:
                   title={t("addFavorite")}
                 >
                   {wasJustAdded ? `✓ ${t("added")}` : isFav ? "★" : `☆ ${t("fav")}`}
-                </button>
-                <button
-                  onClick={(e) => { e.stopPropagation(); handleGoTo(c); }}
-                  className="shrink-0 px-2.5 py-1.5 rounded-lg text-xs cursor-pointer bg-amber-400/10 text-amber-400 hover:bg-amber-400/20 transition-colors"
-                  title={t("goTo")}
-                >
-                  📍 {t("go")}
                 </button>
               </div>
             );

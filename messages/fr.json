@@ -29,7 +29,8 @@
     "gpsUnavailable": "Services de localisation non disponibles",
     "gpsNotSupported": "Votre navigateur ne prend pas en charge la géolocalisation",
     "gpsGenericError": "Erreur lors de la localisation",
-    "gpsEnableHint": "Assurez-vous que la localisation/GPS est activé(e) sur votre appareil (Paramètres > Localisation/GPS)"
+    "gpsEnableHint": "Assurez-vous que la localisation/GPS est activé(e) sur votre appareil (Paramètres > Localisation/GPS)",
+    "gpsDeniedHint": "Autorisation refusée. Dans Chrome : cliquez sur le cadenas dans la barre d'adresse > Autorisations > Position > Autoriser. Puis rechargez la page."
   },
   "tabs": {
     "dailyCurve": "📈 Courbe du Jour",

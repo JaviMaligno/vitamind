@@ -25,6 +25,7 @@ interface Props {
   windowLabel: string | null;
   onRequestGps?: () => void;
   gpsLoading?: boolean;
+  gpsSlow?: boolean;
   gpsError?: string | null;
 }
 
@@ -45,6 +46,7 @@ export default function HeroZone({
   windowLabel,
   onRequestGps,
   gpsLoading,
+  gpsSlow,
   gpsError,
 }: Props) {
   const t = useTranslations("hero");
@@ -81,9 +83,17 @@ export default function HeroZone({
               </svg>
               {gpsLoading ? t("locating") : t("useMyLocation")}
             </button>
+            {gpsSlow && !gpsError && (
+              <p className="mt-3 text-xs text-amber-400/60 max-w-sm mx-auto animate-pulse">
+                {t("gpsEnableHint")}
+              </p>
+            )}
             {gpsError && (
               <div className="mt-3 text-xs text-red-400/80 max-w-sm mx-auto">
                 <p>{t(gpsError)}</p>
+                {gpsError === "gpsDenied" && (
+                  <p className="mt-1 text-white/30">{t("gpsDeniedHint")}</p>
+                )}
                 {(gpsError === "gpsTimeout" || gpsError === "gpsUnavailable") && (
                   <p className="mt-1 text-white/30">{t("gpsEnableHint")}</p>
                 )}
