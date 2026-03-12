@@ -13,7 +13,7 @@ export function useGeoLocation() {
   const [permissionDenied, setPermissionDenied] = useState(false);
   const slowTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const requestLocation = useCallback(() => {
+  const requestLocation = useCallback(async () => {
     if (!navigator.geolocation) {
       setError("gpsNotSupported");
       return;
@@ -22,8 +22,19 @@ export function useGeoLocation() {
     setSlow(false);
     setError(null);
 
-    // After 4 seconds of waiting, hint that GPS might be off
-    slowTimer.current = setTimeout(() => setSlow(true), 4000);
+    // If permission was already granted, show the hint faster (1s vs 4s)
+    // because the only reason it would be slow is that the device GPS is off
+    let hintDelay = 4000;
+    try {
+      if (navigator.permissions) {
+        const perm = await navigator.permissions.query({ name: "geolocation" });
+        if (perm.state === "granted") hintDelay = 1500;
+      }
+    } catch {
+      // Permissions API not supported — use default delay
+    }
+
+    slowTimer.current = setTimeout(() => setSlow(true), hintDelay);
 
     navigator.geolocation.getCurrentPosition(
       (pos) => {
