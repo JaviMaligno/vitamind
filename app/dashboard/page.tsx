@@ -1,0 +1,66 @@
+"use client";
+
+import { useTranslations } from "next-intl";
+import { useApp } from "@/context/AppProvider";
+import { useHistory } from "@/hooks/useHistory";
+import { useForecast } from "@/hooks/useForecast";
+import DayRecommendation from "@/components/dashboard/DayRecommendation";
+import ForecastRow from "@/components/dashboard/ForecastRow";
+import WeekTracker from "@/components/dashboard/WeekTracker";
+import MonthSummary from "@/components/dashboard/MonthSummary";
+import CitySearch from "@/components/CitySearch";
+import Link from "next/link";
+
+export default function DashboardPage() {
+  const t = useTranslations("dashboard");
+  const app = useApp();
+
+  const { loading, getToday, getWeek, getMonth, toggleOverride } = useHistory(
+    app.lat, app.lon, app.cityId, app.skinType, app.areaFraction, app.age,
+  );
+  const forecast = useForecast(app.lat, app.lon);
+
+  const todayRecord = getToday();
+  const weekRecords = getWeek();
+  const monthRecords = getMonth();
+
+  return (
+    <div className="mx-auto max-w-[960px] px-3 space-y-4">
+      {/* Quick actions */}
+      <div className="flex items-center gap-2">
+        <div className="flex-1">
+          <CitySearch
+            onSelect={app.selectCity}
+            onAddFav={app.toggleFav}
+            favorites={app.favorites}
+            allCities={app.allCities}
+          />
+        </div>
+        <Link
+          href="/explore"
+          className="px-3 py-2 rounded-lg bg-white/[0.04] text-white/30 text-xs hover:bg-white/[0.08] hover:text-white/50 transition-colors whitespace-nowrap"
+        >
+          {t("editProfile")}
+        </Link>
+      </div>
+
+      {/* Hero: Today's recommendation */}
+      <DayRecommendation
+        record={todayRecord}
+        cityName={app.cityName}
+        cityFlag={app.cityFlag}
+        areaFraction={app.areaFraction}
+        loading={loading}
+      />
+
+      {/* 5-day forecast */}
+      <ForecastRow forecast={forecast} />
+
+      {/* Week tracker + Month summary */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <WeekTracker weekRecords={weekRecords} onToggleOverride={toggleOverride} />
+        <MonthSummary monthRecords={monthRecords} />
+      </div>
+    </div>
+  );
+}
