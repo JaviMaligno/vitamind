@@ -5,6 +5,9 @@ export async function GET(request: NextRequest) {
   const lat = searchParams.get("lat");
   const lon = searchParams.get("lon");
   const date = searchParams.get("date"); // YYYY-MM-DD
+  const days = searchParams.get("days");
+  const start = searchParams.get("start");
+  const end = searchParams.get("end");
 
   if (!lat || !lon) {
     return NextResponse.json({ error: "lat and lon required" }, { status: 400 });
@@ -15,9 +18,14 @@ export async function GET(request: NextRequest) {
     url.searchParams.set("latitude", lat);
     url.searchParams.set("longitude", lon);
     url.searchParams.set("hourly", "uv_index,cloud_cover");
-    if (date) {
+    if (start && end) {
+      url.searchParams.set("start_date", start);
+      url.searchParams.set("end_date", end);
+    } else if (date) {
       url.searchParams.set("start_date", date);
       url.searchParams.set("end_date", date);
+    } else if (days) {
+      url.searchParams.set("forecast_days", days);
     } else {
       url.searchParams.set("forecast_days", "3");
     }
