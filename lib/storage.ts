@@ -1,4 +1,4 @@
-import type { City, Preferences, WeatherData } from "./types";
+import type { City, Preferences, WeatherData, DayRecord } from "./types";
 import { DEFAULT_FAVORITE_IDS } from "./cities";
 
 const KEYS = {
@@ -6,6 +6,7 @@ const KEYS = {
   customLocations: "vitamind:customLocations",
   preferences: "vitamind:preferences",
   weatherCache: "vitamind:weather",
+  history: "vitamind:history",
 } as const;
 
 function getItem<T>(key: string, fallback: T): T {
@@ -73,4 +74,46 @@ export function getCachedWeather(lat: number, lon: number, date: string): Weathe
 export function setCachedWeather(lat: number, lon: number, date: string, data: WeatherData): void {
   const key = `${KEYS.weatherCache}:${lat.toFixed(2)}:${lon.toFixed(2)}:${date}`;
   setItem(key, data);
+}
+
+const MAX_HISTORY_DAYS = 90;
+
+// History
+export function loadHistory(): DayRecord[] {
+  return getItem<DayRecord[]>(KEYS.history, []);
+}
+
+export function saveHistory(records: DayRecord[]): void {
+  const sorted = records
+    .sort((a, b) => b.date.localeCompare(a.date))
+    .slice(0, MAX_HISTORY_DAYS);
+  setItem(KEYS.history, sorted);
+}
+
+export function upsertDayRecord(record: DayRecord): void {
+  const records = loadHistory();
+  const idx = records.findIndex((r) => r.date === record.date);
+  if (idx >= 0) {
+    const existing = records[idx];
+    records[idx] = {
+      ...record,
+      userOverride: record.userOverride ?? existing.userOverride,
+    };
+  } else {
+    records.push(record);
+  }
+  saveHistory(records);
+}
+
+export function toggleDayOverride(date: string): void {
+  const records = loadHistory();
+  const record = records.find((r) => r.date === date);
+  if (!record) return;
+
+  if (record.userOverride === null) {
+    record.userOverride = !record.sufficient;
+  } else {
+    record.userOverride = null;
+  }
+  saveHistory(records);
 }

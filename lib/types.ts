@@ -60,3 +60,14 @@ export interface UserProfile {
   customLocations: City[];
   lastCityId: string | null;
 }
+
+export interface DayRecord {
+  date: string;            // "2026-03-14" ISO date
+  cityId: string;          // user's city that day
+  peakUVI: number;         // actual peak UVI from Open-Meteo
+  windowStart: number;     // hour (e.g., 12.5 = 12:30)
+  windowEnd: number;       // hour
+  minutesNeeded: number;   // based on user profile
+  sufficient: boolean;     // conditions met for synthesis?
+  userOverride: boolean | null; // null = not edited, true/false = user corrected
+}
