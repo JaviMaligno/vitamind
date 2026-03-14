@@ -53,8 +53,13 @@ export default function VitDEstimate({ weather, curve, skinType, areaFraction, a
       </div>
 
       {!result && (
-        <div style={{ fontSize: 12, color: "#ef5350", fontWeight: 600 }}>
-          {t("insufficientUV")}
+        <div>
+          <div style={{ fontSize: 12, color: "#ef5350", fontWeight: 600 }}>
+            {t("insufficientUV")}
+          </div>
+          <div style={{ fontSize: 11, color: "rgba(255,255,255,0.4)", marginTop: 8, lineHeight: 1.5 }}>
+            💊 {t("supplementAdvice")}
+          </div>
         </div>
       )}
       {result && (

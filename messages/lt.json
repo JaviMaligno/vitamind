@@ -153,6 +153,7 @@
     "title": "Vitamino D įvertinimas",
     "theoreticalHint": "(teorinis giedras dangus — nėra orų duomenų šiai datai)",
     "insufficientUV": "Nepakankamas UV (UVI < 3) — vitamino D sintezė šią datą negalima",
+    "supplementAdvice": "Apsvarstykite geriamąjį vitamino D papildą (800–2000 TV/dieną) mėnesiais, kai UV spinduliuotė yra maža.",
     "for1000IU": "1000 TV",
     "bestHour": "Geriausia valanda:",
     "uvWindow": "UV langas:",

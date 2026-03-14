@@ -153,6 +153,7 @@
     "title": "Estimation Vitamine D",
     "theoreticalHint": "(ciel dégagé théorique — pas de données météo pour cette date)",
     "insufficientUV": "UV insuffisant (IUV < 3) — synthèse de vitamine D impossible à cette date",
+    "supplementAdvice": "Envisagez une supplémentation orale en vitamine D (800–2000 UI/jour) pendant les mois à faible rayonnement UV.",
     "for1000IU": "pour 1000 UI",
     "bestHour": "Meilleure heure :",
     "uvWindow": "Fenêtre UV :",

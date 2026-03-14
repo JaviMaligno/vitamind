@@ -5,6 +5,7 @@ import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://vitamind-bzytt4rn0-javieraguilar-6355s-projects.vercel.app"),
   title: "Vitamina D Explorer — Know When You Can Synthesize Vitamin D",
   description: "Free solar vitamin D calculator. Find out exactly when and where you can synthesize vitamin D based on your location, skin type, and real-time UV data.",
   manifest: "/manifest.json",

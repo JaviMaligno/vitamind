@@ -152,6 +152,7 @@
   "estimate": {
     "title": "Vitamin D Estimate",
     "theoreticalHint": "(theoretical clear sky — no weather data for this date)",
+    "supplementAdvice": "Consider oral vitamin D supplementation (800–2000 IU/day) during months with low UV radiation.",
     "insufficientUV": "Insufficient UV (UVI < 3) — vitamin D synthesis not possible on this date",
     "for1000IU": "for 1000 IU",
     "bestHour": "Best hour:",

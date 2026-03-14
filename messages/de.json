@@ -153,6 +153,7 @@
     "title": "Vitamin-D-Schätzung",
     "theoreticalHint": "(theoretisch klarer Himmel — keine Wetterdaten für dieses Datum)",
     "insufficientUV": "Unzureichende UV (UVI < 3) — Vitamin-D-Synthese an diesem Datum nicht möglich",
+    "supplementAdvice": "Erwägen Sie eine orale Vitamin-D-Supplementierung (800–2000 IE/Tag) in Monaten mit niedriger UV-Strahlung.",
     "for1000IU": "für 1000 IE",
     "bestHour": "Beste Stunde:",
     "uvWindow": "UV-Fenster:",
