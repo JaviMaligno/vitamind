@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages, getLocale } from "next-intl/server";
 import { Analytics } from "@vercel/analytics/react";
+import AppShell from "@/components/AppShell";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -71,7 +72,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       </head>
       <body style={{ margin: 0 }}>
         <NextIntlClientProvider messages={messages} locale={locale}>
-          {children}
+          <AppShell>{children}</AppShell>
         </NextIntlClientProvider>
         <Analytics />
         <script
