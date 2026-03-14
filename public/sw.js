@@ -1,7 +1,9 @@
-const CACHE_NAME = "vitamind-v2";
+const CACHE_NAME = "vitamind-v3";
 
 const PRECACHE_URLS = [
   "/",
+  "/dashboard",
+  "/explore",
   "/offline",
 ];
 
@@ -89,7 +91,7 @@ self.addEventListener("push", (event) => {
 
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
-  const url = event.notification.data?.url || "/";
+  const url = event.notification.data?.url || "/dashboard";
   event.waitUntil(
     self.clients.matchAll({ type: "window" }).then((clients) => {
       for (const client of clients) {
