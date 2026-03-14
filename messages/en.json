@@ -163,5 +163,38 @@
     "gt30": ">30 min",
     "disclaimerTheoretical": "Theoretical estimate with clear sky (no clouds or real data). Real weather data only covers ~14 days.",
     "disclaimerReal": "Based on Holick's rule (Dowdy et al. 2010). Indicative estimate — does not replace medical advice."
+  },
+  "nav": {
+    "myDay": "My Day",
+    "explore": "Explore"
+  },
+  "dashboard": {
+    "goOutBetween": "Go out between {start} and {end}",
+    "youNeed": "You need ~{minutes} min with {area} exposed",
+    "noWindowToday": "No suitable conditions today",
+    "noWindowHint": "UV index too low for vitamin D synthesis",
+    "currentUVI": "Current UVI",
+    "peakUVI": "Peak UVI",
+    "conditions": "Conditions",
+    "favorable": "Favorable conditions",
+    "insufficient": "Insufficient conditions",
+    "marginal": "Marginal conditions",
+    "forecast": "Next days",
+    "noForecast": "Forecast unavailable",
+    "weekTracker": "This week",
+    "monthSummary": "This month",
+    "monthCount": "~{count} of {total} days with favorable conditions",
+    "supplementHint": "Consider supplementation in months with few windows",
+    "didntGoOut": "I didn't go out",
+    "didGoOut": "I did go out",
+    "resetAuto": "Reset to automatic",
+    "overrideHint": "Tap a day to correct the estimate",
+    "changeCity": "Change city",
+    "editProfile": "Edit profile",
+    "faceHands": "face and hands",
+    "faceArms": "face and arms",
+    "tshirtShort": "T-shirt and shorts",
+    "swimsuit": "swimsuit",
+    "loading": "Loading your data..."
   }
 }

@@ -163,5 +163,38 @@
     "gt30": ">30 Min.",
     "disclaimerTheoretical": "Theoretische Schätzung bei klarem Himmel (ohne Wolken oder reale Daten). Reale Wetterdaten decken nur ~14 Tage ab.",
     "disclaimerReal": "Basierend auf Holicks Regel (Dowdy et al. 2010). Orientierende Schätzung — ersetzt keinen ärztlichen Rat."
+  },
+  "nav": {
+    "myDay": "Mein Tag",
+    "explore": "Entdecken"
+  },
+  "dashboard": {
+    "goOutBetween": "Geh zwischen {start} und {end} raus",
+    "youNeed": "Du brauchst ~{minutes} Min. mit {area} exponiert",
+    "noWindowToday": "Heute keine geeigneten Bedingungen",
+    "noWindowHint": "Der UV-Index ist zu niedrig für die Vitamin-D-Synthese",
+    "currentUVI": "Aktueller UVI",
+    "peakUVI": "Spitzen-UVI",
+    "conditions": "Bedingungen",
+    "favorable": "Günstige Bedingungen",
+    "insufficient": "Unzureichende Bedingungen",
+    "marginal": "Grenzwertige Bedingungen",
+    "forecast": "Nächste Tage",
+    "noForecast": "Vorhersage nicht verfügbar",
+    "weekTracker": "Diese Woche",
+    "monthSummary": "Dieser Monat",
+    "monthCount": "~{count} von {total} Tagen mit günstigen Bedingungen",
+    "supplementHint": "Erwäge Supplementierung in Monaten mit wenigen Zeitfenstern",
+    "didntGoOut": "Ich war nicht draußen",
+    "didGoOut": "Ich war draußen",
+    "resetAuto": "Auf automatisch zurücksetzen",
+    "overrideHint": "Tippe auf einen Tag, um die Schätzung zu korrigieren",
+    "changeCity": "Stadt ändern",
+    "editProfile": "Profil bearbeiten",
+    "faceHands": "Gesicht und Hände",
+    "faceArms": "Gesicht und Arme",
+    "tshirtShort": "T-Shirt und Shorts",
+    "swimsuit": "Badeanzug",
+    "loading": "Deine Daten werden geladen..."
   }
 }

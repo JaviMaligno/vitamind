@@ -163,5 +163,38 @@
     "gt30": ">30 min",
     "disclaimerTheoretical": "Teorinis įvertinimas esant giedram dangui (be debesų ar realių duomenų). Realūs orų duomenys apima tik ~14 dienų.",
     "disclaimerReal": "Remiantis Holick taisykle (Dowdy et al. 2010). Orientacinis įvertinimas — nepakeičia medicininės konsultacijos."
+  },
+  "nav": {
+    "myDay": "Mano diena",
+    "explore": "Tyrinėti"
+  },
+  "dashboard": {
+    "goOutBetween": "Išeikite laukan tarp {start} ir {end}",
+    "youNeed": "Jums reikia ~{minutes} min. su {area} atidengtu",
+    "noWindowToday": "Šiandien nėra tinkamų sąlygų",
+    "noWindowHint": "UV indeksas per žemas vitamino D sintezei",
+    "currentUVI": "Dabartinis UVI",
+    "peakUVI": "Didžiausias UVI",
+    "conditions": "Sąlygos",
+    "favorable": "Palankios sąlygos",
+    "insufficient": "Nepakankamos sąlygos",
+    "marginal": "Ribinės sąlygos",
+    "forecast": "Artimiausiomis dienomis",
+    "noForecast": "Prognozė nepasiekiama",
+    "weekTracker": "Ši savaitė",
+    "monthSummary": "Šis mėnuo",
+    "monthCount": "~{count} iš {total} dienų su palankiomis sąlygomis",
+    "supplementHint": "Apsvarstykite papildus mėnesiais su mažai langų",
+    "didntGoOut": "Neišėjau",
+    "didGoOut": "Išėjau",
+    "resetAuto": "Grąžinti automatinį",
+    "overrideHint": "Paspauskite dieną, kad pataisytumėte įvertinimą",
+    "changeCity": "Pakeisti miestą",
+    "editProfile": "Redaguoti profilį",
+    "faceHands": "veidas ir rankos",
+    "faceArms": "veidas ir rankos pilnai",
+    "tshirtShort": "marškinėliai ir šortai",
+    "swimsuit": "maudymosi kostiumėlis",
+    "loading": "Kraunami jūsų duomenys..."
   }
 }

@@ -163,5 +163,38 @@
     "gt30": ">30 min",
     "disclaimerTheoretical": "Estimación teórica con cielo despejado (sin nubes ni datos reales). Los datos meteo reales solo cubren ~14 días.",
     "disclaimerReal": "Basado en la regla de Holick (Dowdy et al. 2010). Estimación orientativa — no sustituye consejo médico."
+  },
+  "nav": {
+    "myDay": "Mi día",
+    "explore": "Explorar"
+  },
+  "dashboard": {
+    "goOutBetween": "Sal entre las {start} y las {end}",
+    "youNeed": "Necesitas ~{minutes} min con {area} expuestos",
+    "noWindowToday": "Hoy no hay condiciones suficientes",
+    "noWindowHint": "El índice UV es demasiado bajo para sintetizar vitamina D",
+    "currentUVI": "UVI actual",
+    "peakUVI": "UVI pico",
+    "conditions": "Condiciones",
+    "favorable": "Condiciones favorables",
+    "insufficient": "Condiciones insuficientes",
+    "marginal": "Condiciones marginales",
+    "forecast": "Próximos días",
+    "noForecast": "Previsión no disponible",
+    "weekTracker": "Esta semana",
+    "monthSummary": "Este mes",
+    "monthCount": "~{count} de {total} días con condiciones favorables",
+    "supplementHint": "Considera suplementación en meses con pocas ventanas",
+    "didntGoOut": "No salí",
+    "didGoOut": "Sí salí",
+    "resetAuto": "Volver a automático",
+    "overrideHint": "Toca un día para corregir la estimación",
+    "changeCity": "Cambiar ciudad",
+    "editProfile": "Editar perfil",
+    "faceHands": "cara y manos",
+    "faceArms": "cara y brazos",
+    "tshirtShort": "camiseta y pantalón corto",
+    "swimsuit": "bañador",
+    "loading": "Cargando tus datos..."
   }
 }
