@@ -3,7 +3,6 @@
 import { useTranslations } from "next-intl";
 import CitySearch from "@/components/CitySearch";
 import type { City } from "@/lib/types";
-import type { ExposureResult } from "@/lib/vitd";
 
 interface Props {
   lat: number;
@@ -18,11 +17,8 @@ interface Props {
   onAddFav: (c: City | string) => void;
   favorites: string[];
   allCities: City[];
-  exposure: ExposureResult | null;
-  vitDHours: number;
   peakElevation: number;
   dateLabel: string;
-  windowLabel: string | null;
   onRequestGps?: () => void;
   gpsLoading?: boolean;
   gpsSlow?: boolean;
@@ -32,6 +28,7 @@ interface Props {
 export default function HeroZone({
   lat,
   lon,
+  threshold,
   cityName,
   cityFlag,
   hasLocation,
@@ -39,11 +36,8 @@ export default function HeroZone({
   onAddFav,
   favorites,
   allCities,
-  exposure,
-  vitDHours,
   peakElevation,
   dateLabel,
-  windowLabel,
   onRequestGps,
   gpsLoading,
   gpsSlow,
@@ -118,9 +112,7 @@ export default function HeroZone({
     );
   }
 
-  const canSynthesize = vitDHours > 0 && exposure !== null;
-  const minutesNeeded = exposure ? Math.round(exposure.minutesNeeded) : null;
-  const bestHour = exposure?.bestHour ?? null;
+  const canSynthesize = peakElevation > threshold;
 
   return (
     <section className="mx-auto max-w-[960px] px-4 py-8">
@@ -159,39 +151,15 @@ export default function HeroZone({
 
         {canSynthesize ? (
           <>
-            {/* Main answer */}
             <h2 className="text-[36px] md:text-[40px] font-bold text-white leading-tight mb-2">
-              <span className="font-mono text-amber-400">
-                {minutesNeeded}
-              </span>{" "}
-              {t("minutesSun")}
+              {t("synthesisPossible")}
             </h2>
             <p className="text-sm text-white/40 mb-6">
               {t("forVitD")}
             </p>
 
-            {/* Details row */}
+            {/* Details row - simplified */}
             <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm">
-              {windowLabel && (
-                <div>
-                  <span className="text-[11px] uppercase tracking-wider text-white/25 block mb-0.5">
-                    {t("window")}
-                  </span>
-                  <span className="font-mono text-[15px] font-semibold text-amber-400">
-                    {windowLabel}
-                  </span>
-                </div>
-              )}
-              {bestHour !== null && (
-                <div>
-                  <span className="text-[11px] uppercase tracking-wider text-white/25 block mb-0.5">
-                    {t("bestHour")}
-                  </span>
-                  <span className="font-mono text-[15px] font-semibold text-white/80">
-                    {String(bestHour).padStart(2, "0")}:00
-                  </span>
-                </div>
-              )}
               <div>
                 <span className="text-[11px] uppercase tracking-wider text-white/25 block mb-0.5">
                   {t("peakSolar")}

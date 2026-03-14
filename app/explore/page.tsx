@@ -63,11 +63,8 @@ export default function ExplorePage() {
         onAddFav={app.toggleFav}
         favorites={app.favorites}
         allCities={app.allCities}
-        exposure={exposure}
-        vitDHours={vdH}
         peakElevation={peak}
         dateLabel={dateLabel}
-        windowLabel={windowLabel}
         onRequestGps={app.gps.enableGps}
         gpsLoading={app.gps.loading}
         gpsSlow={app.gps.slow}
