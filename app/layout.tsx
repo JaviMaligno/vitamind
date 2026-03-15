@@ -16,11 +16,13 @@ export const metadata: Metadata = {
     type: "website",
     locale: "es_ES",
     alternateLocale: ["en_US", "fr_FR", "de_DE"],
+    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "Vitamina D Explorer" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Vitamina D Explorer",
     description: "Free solar vitamin D calculator based on your location and skin type",
+    images: ["/og-image.png"],
   },
   robots: { index: true, follow: true },
   appleWebApp: {
