@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-const BASE_URL = "https://vitamind-bzytt4rn0-javieraguilar-6355s-projects.vercel.app";
+const BASE_URL = "https://vitamind-app.vercel.app";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [

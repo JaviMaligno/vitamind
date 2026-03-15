@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://vitamind-bzytt4rn0-javieraguilar-6355s-projects.vercel.app/sitemap.xml
+Sitemap: https://vitamind-app.vercel.app/sitemap.xml
