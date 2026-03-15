@@ -11,8 +11,8 @@ export const metadata: Metadata = {
   description: "Free solar vitamin D calculator. Find out exactly when and where you can synthesize vitamin D based on your location, skin type, and real-time UV data.",
   manifest: "/manifest.json",
   openGraph: {
-    title: "Vitamina D Explorer",
-    description: "Know when and where you can synthesize vitamin D from sunlight",
+    title: "Vitamina D Explorer — When Can You Synthesize Vitamin D?",
+    description: "Free solar calculator. Enter your location to find out exactly when and how long to stay in the sun to get your daily vitamin D — based on real UV data.",
     type: "website",
     locale: "es_ES",
     alternateLocale: ["en_US", "fr_FR", "de_DE"],
