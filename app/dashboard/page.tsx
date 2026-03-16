@@ -6,8 +6,7 @@ import { useHistory } from "@/hooks/useHistory";
 import { useForecast } from "@/hooks/useForecast";
 import DayRecommendation from "@/components/dashboard/DayRecommendation";
 import ForecastRow from "@/components/dashboard/ForecastRow";
-import WeekTracker from "@/components/dashboard/WeekTracker";
-import MonthSummary from "@/components/dashboard/MonthSummary";
+import HistoryCalendar from "@/components/dashboard/HistoryCalendar";
 import CitySearch from "@/components/CitySearch";
 import Link from "next/link";
 
@@ -15,14 +14,12 @@ export default function DashboardPage() {
   const t = useTranslations("dashboard");
   const app = useApp();
 
-  const { loading, getToday, getWeek, getMonth, toggleOverride } = useHistory(
+  const { records, loading, getToday, toggleOverride, requestBackfill } = useHistory(
     app.lat, app.lon, app.cityId, app.skinType, app.areaFraction, app.age,
   );
   const forecast = useForecast(app.lat, app.lon);
 
   const todayRecord = getToday();
-  const weekRecords = getWeek();
-  const monthRecords = getMonth();
 
   return (
     <div className="mx-auto max-w-[960px] px-3 space-y-4">
@@ -53,14 +50,20 @@ export default function DashboardPage() {
         loading={loading}
       />
 
-      {/* 5-day forecast */}
-      <ForecastRow forecast={forecast} />
+      {/* 5-day forecast (expandable) */}
+      <ForecastRow
+        forecast={forecast}
+        skinType={app.skinType}
+        areaFraction={app.areaFraction}
+        age={app.age}
+      />
 
-      {/* Week tracker + Month summary */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <WeekTracker weekRecords={weekRecords} onToggleOverride={toggleOverride} />
-        <MonthSummary monthRecords={monthRecords} />
-      </div>
+      {/* History calendar (replaces WeekTracker + MonthSummary) */}
+      <HistoryCalendar
+        records={records}
+        onToggleOverride={toggleOverride}
+        onNavigate={requestBackfill}
+      />
     </div>
   );
 }

@@ -195,6 +195,16 @@
     "faceArms": "лицо и руки полностью",
     "tshirtShort": "футболка и шорты",
     "swimsuit": "купальник",
-    "loading": "Загрузка ваших данных..."
+    "loading": "Загрузка ваших данных...",
+    "week": "Неделя",
+    "month": "Месяц",
+    "confirmedCount": "{count} подтверждено",
+    "favorableSummary": "{count} из {total} дней с благоприятными условиями",
+    "forecastWindow": "Окно",
+    "forecastMinutes": "~{minutes} мин. с {area}",
+    "forecastCloud": "{percent}% облачности по прогнозу",
+    "forecastHourly": "Почасовая детализация",
+    "noSynthesisDay": "Недостаточный UV",
+    "tapToExpand": "Нажмите на день для подробностей"
   }
 }

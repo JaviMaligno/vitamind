@@ -195,6 +195,16 @@
     "faceArms": "veidas ir rankos pilnai",
     "tshirtShort": "marškinėliai ir šortai",
     "swimsuit": "maudymosi kostiumėlis",
-    "loading": "Kraunami jūsų duomenys..."
+    "loading": "Kraunami jūsų duomenys...",
+    "week": "Savaitė",
+    "month": "Mėnuo",
+    "confirmedCount": "{count} patvirtinta",
+    "favorableSummary": "{count} iš {total} dienų su palankiomis sąlygomis",
+    "forecastWindow": "Langas",
+    "forecastMinutes": "~{minutes} min. su {area}",
+    "forecastCloud": "{percent}% debesuotumas prognozuojamas",
+    "forecastHourly": "Valandinis detalumas",
+    "noSynthesisDay": "Nepakankamas UV",
+    "tapToExpand": "Paspauskite dieną norėdami pamatyti detales"
   }
 }

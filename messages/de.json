@@ -195,6 +195,16 @@
     "faceArms": "Gesicht und Arme",
     "tshirtShort": "T-Shirt und Shorts",
     "swimsuit": "Badeanzug",
-    "loading": "Deine Daten werden geladen..."
+    "loading": "Deine Daten werden geladen...",
+    "week": "Woche",
+    "month": "Monat",
+    "confirmedCount": "{count} bestätigt",
+    "favorableSummary": "{count} von {total} Tagen mit günstigen Bedingungen",
+    "forecastWindow": "Fenster",
+    "forecastMinutes": "~{minutes} Min. mit {area}",
+    "forecastCloud": "{percent}% Bewölkung vorhergesagt",
+    "forecastHourly": "Stündliches Detail",
+    "noSynthesisDay": "Unzureichende UV",
+    "tapToExpand": "Tippe auf einen Tag für Details"
   }
 }

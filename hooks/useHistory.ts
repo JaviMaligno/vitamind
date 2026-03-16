@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { loadHistory, upsertDayRecord, toggleDayOverride as toggleOverrideStorage } from "@/lib/storage";
 import { computeExposure } from "@/lib/vitd";
 import type { DayRecord, WeatherHour } from "@/lib/types";
@@ -40,6 +40,23 @@ function buildDayRecord(
   };
 }
 
+function datesToFill(startStr: string, endStr: string, existing: DayRecord[], cityId: string): string[] {
+  const missing: string[] = [];
+  const d = new Date(startStr + "T12:00:00");
+  const end = new Date(endStr + "T12:00:00");
+  const today = new Date();
+  today.setHours(23, 59, 59, 999);
+
+  while (d <= end && d <= today) {
+    const ds = toDateStr(d);
+    if (!existing.find((r) => r.date === ds && r.cityId === cityId)) {
+      missing.push(ds);
+    }
+    d.setDate(d.getDate() + 1);
+  }
+  return missing;
+}
+
 export function useHistory(
   lat: number,
   lon: number,
@@ -50,6 +67,7 @@ export function useHistory(
 ) {
   const [records, setRecords] = useState<DayRecord[]>([]);
   const [loading, setLoading] = useState(true);
+  const activeRequests = useRef(new Set<string>());
 
   useEffect(() => {
     const stored = loadHistory();
@@ -60,17 +78,8 @@ export function useHistory(
     const todayStr = toDateStr(today);
     const mondayStr = toDateStr(monday);
 
-    const missingDates: string[] = [];
-    const d = new Date(monday);
-    while (d <= today) {
-      const ds = toDateStr(d);
-      if (!stored.find((r) => r.date === ds && r.cityId === cityId)) {
-        missingDates.push(ds);
-      }
-      d.setDate(d.getDate() + 1);
-    }
-
-    if (missingDates.length === 0) {
+    const missing = datesToFill(mondayStr, todayStr, stored, cityId);
+    if (missing.length === 0) {
       setLoading(false);
       return;
     }
@@ -83,24 +92,46 @@ export function useHistory(
       .then((r) => (r.ok ? r.json() : null))
       .then((data) => {
         if (!data?.hours) return;
-        for (const dateStr of missingDates) {
+        for (const dateStr of missing) {
           const record = buildDayRecord(dateStr, cityId, data.hours, skinType, areaFraction, age);
           upsertDayRecord(record);
         }
         setRecords(loadHistory());
       })
-      .catch(() => { /* offline or error */ })
+      .catch(() => {})
       .finally(() => setLoading(false));
 
     return () => controller.abort();
   }, [lat, lon, cityId, skinType, areaFraction, age]);
 
-  const getWeek = useCallback((): DayRecord[] => {
-    const today = new Date();
-    const monday = getMonday(today);
+  const requestBackfill = useCallback((startStr: string, endStr: string) => {
+    const key = `${startStr}:${endStr}`;
+    if (activeRequests.current.has(key)) return;
+
+    const stored = loadHistory();
+    const missing = datesToFill(startStr, endStr, stored, cityId);
+    if (missing.length === 0) return;
+
+    activeRequests.current.add(key);
+
+    fetch(`/api/weather?lat=${lat.toFixed(2)}&lon=${lon.toFixed(2)}&start=${startStr}&end=${endStr}`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (!data?.hours) return;
+        for (const dateStr of missing) {
+          const record = buildDayRecord(dateStr, cityId, data.hours, skinType, areaFraction, age);
+          upsertDayRecord(record);
+        }
+        setRecords(loadHistory());
+      })
+      .catch(() => {})
+      .finally(() => activeRequests.current.delete(key));
+  }, [lat, lon, cityId, skinType, areaFraction, age]);
+
+  const getRecordsForWeek = useCallback((mondayDate: Date): DayRecord[] => {
     const week: DayRecord[] = [];
     for (let i = 0; i < 7; i++) {
-      const d = new Date(monday);
+      const d = new Date(mondayDate);
       d.setDate(d.getDate() + i);
       const ds = toDateStr(d);
       const record = records.find((r) => r.date === ds);
@@ -109,12 +140,9 @@ export function useHistory(
     return week;
   }, [records]);
 
-  const getMonth = useCallback((): DayRecord[] => {
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = today.getMonth();
+  const getRecordsForMonth = useCallback((year: number, month: number): DayRecord[] => {
     return records.filter((r) => {
-      const d = new Date(r.date);
+      const d = new Date(r.date + "T12:00:00");
       return d.getFullYear() === year && d.getMonth() === month;
     });
   }, [records]);
@@ -129,5 +157,5 @@ export function useHistory(
     return records.find((r) => r.date === todayStr) ?? null;
   }, [records]);
 
-  return { records, loading, getWeek, getMonth, getToday, toggleOverride };
+  return { records, loading, getRecordsForWeek, getRecordsForMonth, getToday, toggleOverride, requestBackfill };
 }
