@@ -14,7 +14,7 @@ export default function BottomTabBar() {
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-[#0a0e27]/95 backdrop-blur-md border-t border-white/[0.06]">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-surface/95 backdrop-blur-md border-t border-border-default">
       <div className="mx-auto max-w-[960px] flex">
         {tabs.map((tab) => {
           const isActive = pathname === tab.href || (tab.href === "/dashboard" && pathname === "/");
@@ -25,7 +25,7 @@ export default function BottomTabBar() {
               className={`flex-1 flex flex-col items-center gap-1 py-3 text-xs font-medium transition-colors ${
                 isActive
                   ? "text-amber-400"
-                  : "text-white/30 hover:text-white/50"
+                  : "text-text-muted hover:text-text-secondary"
               }`}
             >
               {tab.icon === "sun" ? (

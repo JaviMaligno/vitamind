@@ -51,7 +51,7 @@ export default function HeroZone({
         <h1 className="text-[36px] font-bold text-white mb-3">
           {t("whereAreYou")}
         </h1>
-        <p className="text-sm text-white/40 mb-6">
+        <p className="text-sm text-text-muted mb-6">
           {t("searchHint")}
         </p>
 
@@ -61,7 +61,7 @@ export default function HeroZone({
             <button
               onClick={onRequestGps}
               disabled={gpsLoading}
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-amber-500/90 hover:bg-amber-500 text-[#0a0e27] font-semibold text-sm transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-amber-500/90 hover:bg-amber-500 text-surface font-semibold text-sm transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -86,10 +86,10 @@ export default function HeroZone({
               <div className="mt-3 text-xs text-red-400/80 max-w-sm mx-auto">
                 <p>{t(gpsError)}</p>
                 {gpsError === "gpsDenied" && (
-                  <p className="mt-1 text-white/30">{t("gpsDeniedHint")}</p>
+                  <p className="mt-1 text-text-muted">{t("gpsDeniedHint")}</p>
                 )}
                 {(gpsError === "gpsTimeout" || gpsError === "gpsUnavailable") && (
-                  <p className="mt-1 text-white/30">{t("gpsEnableHint")}</p>
+                  <p className="mt-1 text-text-muted">{t("gpsEnableHint")}</p>
                 )}
               </div>
             )}
@@ -99,7 +99,7 @@ export default function HeroZone({
         {/* City search as alternative */}
         <div className="mx-auto max-w-md">
           {onRequestGps && (
-            <p className="text-xs text-white/30 mb-3">{t("orSearchCity")}</p>
+            <p className="text-xs text-text-muted mb-3">{t("orSearchCity")}</p>
           )}
           <CitySearch
             onSelect={onSelectCity}
@@ -143,7 +143,7 @@ export default function HeroZone({
         {onRequestGps && !cityName.includes("Mi ubicación") && !cityName.includes("My location") && (
           <button
             onClick={onRequestGps}
-            className="mb-4 px-3 py-1.5 rounded-lg bg-white/[0.04] text-white/30 text-xs hover:bg-white/[0.08] hover:text-white/50 transition-colors cursor-pointer"
+            className="mb-4 px-3 py-1.5 rounded-lg bg-surface-card text-text-muted text-xs hover:bg-surface-elevated hover:text-text-secondary transition-colors cursor-pointer"
           >
             📍 {t("backToMyLocation")}
           </button>
@@ -154,33 +154,33 @@ export default function HeroZone({
             <h2 className="text-[36px] md:text-[40px] font-bold text-white leading-tight mb-2">
               {t("synthesisPossible")}
             </h2>
-            <p className="text-sm text-white/40 mb-6">
+            <p className="text-sm text-text-muted mb-6">
               {t("forVitD")}
             </p>
 
             {/* Details row - simplified */}
             <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm">
               <div>
-                <span className="text-[11px] uppercase tracking-wider text-white/25 block mb-0.5">
+                <span className="text-[11px] uppercase tracking-wider text-text-faint block mb-0.5">
                   {t("peakSolar")}
                 </span>
-                <span className="font-mono text-[15px] font-semibold text-white/80">
+                <span className="font-mono text-[15px] font-semibold text-text-primary">
                   {peakElevation.toFixed(1)}°
                 </span>
               </div>
               <div>
-                <span className="text-[11px] uppercase tracking-wider text-white/25 block mb-0.5">
+                <span className="text-[11px] uppercase tracking-wider text-text-faint block mb-0.5">
                   {t("location")}
                 </span>
-                <span className="text-[15px] text-white/60">
+                <span className="text-[15px] text-text-secondary">
                   {cityFlag} {cityName}
                 </span>
               </div>
               <div>
-                <span className="text-[11px] uppercase tracking-wider text-white/25 block mb-0.5">
+                <span className="text-[11px] uppercase tracking-wider text-text-faint block mb-0.5">
                   {t("date")}
                 </span>
-                <span className="text-[15px] text-white/60">{dateLabel}</span>
+                <span className="text-[15px] text-text-secondary">{dateLabel}</span>
               </div>
             </div>
           </>
@@ -189,14 +189,14 @@ export default function HeroZone({
             <h2 className="text-[32px] md:text-[36px] font-bold text-white leading-tight mb-2">
               {t("noSynthesisTitle")}
             </h2>
-            <p className="text-sm text-white/40 mb-4">
+            <p className="text-sm text-text-muted mb-4">
               {t("noSynthesisHint")}{" "}
-              <span className="text-white/60">
+              <span className="text-text-secondary">
                 {cityFlag} {cityName}
               </span>{" "}
               · {dateLabel}
             </p>
-            <div className="rounded-xl bg-white/[0.04] border border-white/[0.06] px-4 py-3 text-sm text-white/50 max-w-lg">
+            <div className="rounded-xl bg-surface-card border border-border-default px-4 py-3 text-sm text-text-secondary max-w-lg">
               <span className="text-amber-400/70 font-semibold">{t("advice")}</span>{" "}
               {t("adviceText")}
             </div>

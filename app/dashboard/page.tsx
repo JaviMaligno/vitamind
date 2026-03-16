@@ -35,7 +35,7 @@ export default function DashboardPage() {
         </div>
         <Link
           href="/explore"
-          className="px-3 py-2 rounded-lg bg-white/[0.04] text-white/30 text-xs hover:bg-white/[0.08] hover:text-white/50 transition-colors whitespace-nowrap"
+          className="px-3 py-2 rounded-lg bg-surface-card text-text-muted text-xs hover:bg-surface-elevated hover:text-text-secondary transition-colors whitespace-nowrap"
         >
           {t("editProfile")}
         </Link>

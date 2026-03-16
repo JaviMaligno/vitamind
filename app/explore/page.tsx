@@ -143,7 +143,7 @@ export default function ExplorePage() {
 
       {/* Legend */}
       <div className="mx-auto max-w-[960px] px-4 mt-6">
-        <div className="flex flex-wrap items-center gap-3 py-1.5 px-3 rounded-lg bg-white/[0.02] border border-white/[0.04] text-[9px] text-white/[0.22]">
+        <div className="flex flex-wrap items-center gap-3 py-1.5 px-3 rounded-lg bg-surface-card border border-border-subtle text-[9px] text-text-faint">
           <span>{t("legend.vitDHours")}</span>
           <div className="w-[100px] h-1.5 rounded-sm bg-gradient-to-r from-[#0a0f28] via-[#b36200] to-amber-400" />
           <span className="font-mono">{t("legend.range")}</span>
@@ -161,7 +161,7 @@ export default function ExplorePage() {
       </div>
 
       {/* Footer */}
-      <div className="mx-auto max-w-[960px] px-4 mt-3 text-[9px] text-white/[0.15] leading-relaxed">
+      <div className="mx-auto max-w-[960px] px-4 mt-3 text-[9px] text-text-faint leading-relaxed">
         {t("app.footer")}
       </div>
     </>

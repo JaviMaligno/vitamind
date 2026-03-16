@@ -1,1 +1,33 @@
 @import "tailwindcss";
+
+@theme {
+  --color-surface: #ffffff;
+  --color-surface-alt: #f8f9fa;
+  --color-surface-card: #ffffff;
+  --color-surface-elevated: #f0f1f3;
+  --color-bg-page-from: #f5f0e8;
+  --color-bg-page-via: #f0ebe3;
+  --color-bg-page-to: #ede7df;
+  --color-text-primary: #1a1a2e;
+  --color-text-secondary: rgba(26, 26, 46, 0.6);
+  --color-text-muted: rgba(26, 26, 46, 0.35);
+  --color-text-faint: rgba(26, 26, 46, 0.2);
+  --color-border-default: rgba(26, 26, 46, 0.1);
+  --color-border-subtle: rgba(26, 26, 46, 0.06);
+}
+
+.dark {
+  --color-surface: #0a0e27;
+  --color-surface-alt: #080c20;
+  --color-surface-card: rgba(255, 255, 255, 0.02);
+  --color-surface-elevated: rgba(255, 255, 255, 0.06);
+  --color-bg-page-from: #050816;
+  --color-bg-page-via: #0a0e27;
+  --color-bg-page-to: #080c20;
+  --color-text-primary: #e0e0e0;
+  --color-text-secondary: rgba(255, 255, 255, 0.5);
+  --color-text-muted: rgba(255, 255, 255, 0.3);
+  --color-text-faint: rgba(255, 255, 255, 0.15);
+  --color-border-default: rgba(255, 255, 255, 0.06);
+  --color-border-subtle: rgba(255, 255, 255, 0.04);
+}

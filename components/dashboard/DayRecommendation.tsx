@@ -29,9 +29,9 @@ export default function DayRecommendation({ record, cityName, cityFlag, areaFrac
 
   if (loading) {
     return (
-      <div className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-6 animate-pulse">
-        <div className="h-8 bg-white/[0.05] rounded w-3/4 mb-3" />
-        <div className="h-5 bg-white/[0.05] rounded w-1/2" />
+      <div className="rounded-2xl border border-border-default bg-surface-card p-6 animate-pulse">
+        <div className="h-8 bg-surface-elevated rounded w-3/4 mb-3" />
+        <div className="h-5 bg-surface-elevated rounded w-1/2" />
       </div>
     );
   }
@@ -52,8 +52,8 @@ export default function DayRecommendation({ record, cityName, cityFlag, areaFrac
   return (
     <div className={`rounded-2xl border ${colors.border} bg-gradient-to-br ${colors.bg} p-6 shadow-lg`}>
       <div className="flex items-center justify-between mb-4">
-        <span className="text-sm text-white/50">{cityFlag} {cityName}</span>
-        <span className="text-xs text-white/30">{todayStr}</span>
+        <span className="text-sm text-text-secondary">{cityFlag} {cityName}</span>
+        <span className="text-xs text-text-muted">{todayStr}</span>
       </div>
 
       <div className="flex items-center gap-2 mb-4">
@@ -65,26 +65,26 @@ export default function DayRecommendation({ record, cityName, cityFlag, areaFrac
 
       {hasSynthesis && hasWindow && record ? (
         <>
-          <h2 className="text-[28px] md:text-[32px] font-bold text-white leading-tight mb-2">
+          <h2 className="text-[28px] md:text-[32px] font-bold text-text-primary leading-tight mb-2">
             {t("goOutBetween", { start: formatHour(record.windowStart), end: formatHour(record.windowEnd) })}
           </h2>
-          <p className="text-sm text-white/40 mb-4">
+          <p className="text-sm text-text-muted mb-4">
             {t("youNeed", { minutes: Math.round(record.minutesNeeded), area: t(getAreaKey(areaFraction)) })}
           </p>
 
           <div className="flex gap-6 text-sm">
             <div>
-              <span className="text-[11px] uppercase tracking-wider text-white/25 block mb-0.5">{t("peakUVI")}</span>
+              <span className="text-[11px] uppercase tracking-wider text-text-faint block mb-0.5">{t("peakUVI")}</span>
               <span className="font-mono text-[15px] font-semibold text-amber-400">{record.peakUVI.toFixed(1)}</span>
             </div>
           </div>
         </>
       ) : (
         <>
-          <h2 className="text-[28px] md:text-[32px] font-bold text-white leading-tight mb-2">
+          <h2 className="text-[28px] md:text-[32px] font-bold text-text-primary leading-tight mb-2">
             {t("noWindowToday")}
           </h2>
-          <p className="text-sm text-white/40">
+          <p className="text-sm text-text-muted">
             {t("noWindowHint")}
           </p>
         </>

@@ -45,12 +45,12 @@ function getCellStyle(record: DayRecord | null, isToday: boolean, isFuture: bool
     if (record.userOverride === true) {
       bg = "bg-emerald-500/50";
     } else if (record.userOverride === false) {
-      bg = "bg-white/[0.06]";
-      border += " ring-1 ring-white/20";
+      bg = "bg-surface-elevated";
+      border += " ring-1 ring-text-faint";
     } else if (record.sufficient) {
       bg = "bg-emerald-500/20";
     } else {
-      bg = "bg-white/[0.06]";
+      bg = "bg-surface-elevated";
     }
   }
 
@@ -171,14 +171,14 @@ export default function HistoryCalendar({ records, onToggleOverride, onNavigate 
     : `${MONTH_NAMES[viewMonth]} ${viewYear}`;
 
   return (
-    <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-4" {...swipeHandlers}>
+    <div className="rounded-xl border border-border-default bg-surface-card p-4" {...swipeHandlers}>
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
         <div className="flex gap-1">
           <button
             onClick={() => setViewMode("week")}
             className={`px-2.5 py-1 rounded-md text-[11px] font-medium transition-colors ${
-              viewMode === "week" ? "bg-amber-400/20 text-amber-400" : "text-white/30 hover:text-white/50"
+              viewMode === "week" ? "bg-amber-400/20 text-amber-400" : "text-text-muted hover:text-text-secondary"
             }`}
           >
             {t("week")}
@@ -186,7 +186,7 @@ export default function HistoryCalendar({ records, onToggleOverride, onNavigate 
           <button
             onClick={() => setViewMode("month")}
             className={`px-2.5 py-1 rounded-md text-[11px] font-medium transition-colors ${
-              viewMode === "month" ? "bg-amber-400/20 text-amber-400" : "text-white/30 hover:text-white/50"
+              viewMode === "month" ? "bg-amber-400/20 text-amber-400" : "text-text-muted hover:text-text-secondary"
             }`}
           >
             {t("month")}
@@ -197,15 +197,15 @@ export default function HistoryCalendar({ records, onToggleOverride, onNavigate 
           <button
             onClick={goBack}
             disabled={!canGoBack}
-            className="text-white/30 hover:text-white/60 disabled:opacity-20 disabled:cursor-default text-sm px-1"
+            className="text-text-muted hover:text-text-secondary disabled:opacity-20 disabled:cursor-default text-sm px-1"
           >
             ‹
           </button>
-          <span className="text-xs text-white/40 min-w-[120px] text-center">{headerLabel}</span>
+          <span className="text-xs text-text-secondary min-w-[120px] text-center">{headerLabel}</span>
           <button
             onClick={goForward}
             disabled={!canGoForward}
-            className="text-white/30 hover:text-white/60 disabled:opacity-20 disabled:cursor-default text-sm px-1"
+            className="text-text-muted hover:text-text-secondary disabled:opacity-20 disabled:cursor-default text-sm px-1"
           >
             ›
           </button>
@@ -233,7 +233,7 @@ export default function HistoryCalendar({ records, onToggleOverride, onNavigate 
                   isFuture ? "opacity-30 cursor-default" : "cursor-pointer hover:ring-1 hover:ring-amber-400/30"
                 }`}
               >
-                <span className="text-[10px] font-medium text-white/50">{DAY_LABELS[i]}</span>
+                <span className="text-[10px] font-medium text-text-secondary">{DAY_LABELS[i]}</span>
               </button>
             );
           })}
@@ -255,7 +255,7 @@ export default function HistoryCalendar({ records, onToggleOverride, onNavigate 
           <div>
             <div className="grid grid-cols-7 gap-1 mb-1">
               {DAY_LABELS.map((label) => (
-                <div key={label} className="text-center text-[9px] text-white/25 font-medium">{label}</div>
+                <div key={label} className="text-center text-[9px] text-text-faint font-medium">{label}</div>
               ))}
             </div>
             <div className="grid grid-cols-7 gap-1">
@@ -275,7 +275,7 @@ export default function HistoryCalendar({ records, onToggleOverride, onNavigate 
                     onClick={() => record && !isFuture && onToggleOverride(ds)}
                     disabled={isFuture || !record}
                     className={`flex items-center justify-center rounded-md h-8 text-[10px] font-medium transition-colors ${style} ${
-                      isFuture ? "opacity-30 cursor-default text-white/20" : "cursor-pointer hover:ring-1 hover:ring-amber-400/30 text-white/50"
+                      isFuture ? "opacity-30 cursor-default text-text-faint" : "cursor-pointer hover:ring-1 hover:ring-amber-400/30 text-text-secondary"
                     }`}
                   >
                     {day}
@@ -290,7 +290,7 @@ export default function HistoryCalendar({ records, onToggleOverride, onNavigate 
       {/* Summary */}
       <div className="mt-3 space-y-1">
         {summary.total > 0 && (
-          <p className="text-sm text-white/50">
+          <p className="text-sm text-text-secondary">
             {t("favorableSummary", { count: summary.favorable, total: summary.total })}
           </p>
         )}
@@ -306,7 +306,7 @@ export default function HistoryCalendar({ records, onToggleOverride, onNavigate 
         )}
       </div>
 
-      <p className="text-[10px] text-white/20 mt-2 text-center">{t("tapToExpand")}</p>
+      <p className="text-[10px] text-text-faint mt-2 text-center">{t("tapToExpand")}</p>
     </div>
   );
 }
