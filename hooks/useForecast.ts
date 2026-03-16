@@ -10,6 +10,7 @@ export interface ForecastDay {
   avgCloud: number;
   windowStart: number;
   windowEnd: number;
+  hours: WeatherHour[];
 }
 
 function toDateStr(d: Date): string {
@@ -63,6 +64,7 @@ export function useForecast(lat: number, lon: number): ForecastDay[] | null {
             avgCloud: Math.round(cloudSum / hours.length),
             windowStart,
             windowEnd,
+            hours,
           });
         }
 
