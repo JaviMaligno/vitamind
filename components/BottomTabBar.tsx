@@ -14,7 +14,10 @@ export default function BottomTabBar() {
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-surface/95 backdrop-blur-md border-t border-border-default">
+    <nav
+      className="fixed bottom-0 left-0 right-0 z-50 bg-surface/95 backdrop-blur-md border-t border-border-default"
+      style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
+    >
       <div className="mx-auto max-w-[960px] flex">
         {tabs.map((tab) => {
           const isActive = pathname === tab.href || (tab.href === "/dashboard" && pathname === "/");
