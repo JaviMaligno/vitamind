@@ -14,7 +14,21 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const url = new URL("https://api.open-meteo.com/v1/forecast");
+    // Decide whether to use archive or forecast endpoint
+    // Open-Meteo forecast only has ~7 days of past data
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const sevenDaysAgo = new Date(today);
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+    const startDate = start || date || null;
+    const needsArchive = startDate && new Date(startDate + "T00:00:00") < sevenDaysAgo;
+
+    const baseUrl = needsArchive
+      ? "https://archive-api.open-meteo.com/v1/archive"
+      : "https://api.open-meteo.com/v1/forecast";
+
+    const url = new URL(baseUrl);
     url.searchParams.set("latitude", lat);
     url.searchParams.set("longitude", lon);
     url.searchParams.set("hourly", "uv_index,cloud_cover");

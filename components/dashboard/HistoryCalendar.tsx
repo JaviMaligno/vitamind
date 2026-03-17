@@ -33,41 +33,49 @@ const MONTH_NAMES = [
   "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre",
 ];
 
-function getCellStyle(record: DayRecord | null, isToday: boolean, isFuture: boolean): string {
-  let bg = "bg-transparent";
-  let border = "";
+type DayStatus = "empty" | "future" | "unfavorable" | "favorable" | "confirmed";
 
-  if (isToday) {
-    border = "border-2 border-dashed border-amber-400/40";
+function getDayStatus(record: DayRecord | null, isFuture: boolean): DayStatus {
+  if (isFuture) return "future";
+  if (!record) return "empty";
+  if (record.userOverride === true && record.sufficient) return "confirmed";
+  if (record.sufficient) return "favorable";
+  return "unfavorable";
+}
+
+function getCellClasses(status: DayStatus, isToday: boolean): string {
+  const todayBorder = isToday ? "ring-2 ring-amber-400/50" : "";
+
+  switch (status) {
+    case "confirmed":
+      return `bg-emerald-500/40 ${todayBorder}`;
+    case "favorable":
+      return `bg-amber-400/25 ${todayBorder}`;
+    case "unfavorable":
+      return `bg-surface-elevated ${todayBorder}`;
+    case "future":
+      return "opacity-25";
+    default:
+      return `bg-transparent ${todayBorder}`;
   }
+}
 
-  if (!isFuture && record) {
-    if (record.userOverride === true) {
-      bg = "bg-emerald-500/50";
-    } else if (record.userOverride === false) {
-      bg = "bg-surface-elevated";
-      border += " ring-1 ring-text-faint";
-    } else if (record.sufficient) {
-      bg = "bg-emerald-500/20";
-    } else {
-      bg = "bg-surface-elevated";
-    }
+function getCellIcon(status: DayStatus): string | null {
+  switch (status) {
+    case "confirmed": return "\u2713";    // checkmark
+    case "favorable": return "\u25cb";    // open circle (pending)
+    case "unfavorable": return "\u2014";  // em dash
+    default: return null;
   }
-
-  return `${bg} ${border}`;
 }
 
 function computeSummary(records: DayRecord[]): { favorable: number; total: number; confirmed: number } {
   let favorable = 0;
   let confirmed = 0;
   for (const r of records) {
-    if (r.userOverride === true) {
+    if (r.sufficient) {
       favorable++;
-      confirmed++;
-    } else if (r.userOverride === false) {
-      // user said no
-    } else if (r.sufficient) {
-      favorable++;
+      if (r.userOverride === true) confirmed++;
     }
   }
   return { favorable, total: records.length, confirmed };
@@ -93,7 +101,7 @@ export default function HistoryCalendar({ records, onToggleOverride, onNavigate 
 
   const handleDayTap = useCallback((date: string, record: DayRecord | null, isFuture: boolean) => {
     if (isFuture || !record) return;
-    if (!record.sufficient && record.userOverride === null) {
+    if (!record.sufficient) {
       showFeedback(t("noConditionsTap"));
       return;
     }
@@ -187,6 +195,32 @@ export default function HistoryCalendar({ records, onToggleOverride, onNavigate 
       })()
     : `${MONTH_NAMES[viewMonth]} ${viewYear}`;
 
+  function renderDayCell(ds: string, record: DayRecord | null, isFuture: boolean, isToday: boolean, label: string | number, shape: "circle" | "square") {
+    const status = getDayStatus(record, isFuture);
+    const cellClasses = getCellClasses(status, isToday);
+    const icon = getCellIcon(status);
+    const canTap = !isFuture && !!record;
+    const isRound = shape === "circle";
+
+    return (
+      <button
+        key={ds}
+        onClick={() => handleDayTap(ds, record, isFuture)}
+        disabled={!canTap}
+        className={`flex flex-col items-center justify-center ${isRound ? "rounded-full w-10 h-10" : "rounded-md h-8"} flex-shrink-0 transition-colors ${cellClasses} ${
+          canTap ? "cursor-pointer active:scale-95" : "cursor-default"
+        }`}
+      >
+        <span className={`text-[10px] font-medium ${status === "confirmed" ? "text-emerald-300" : status === "favorable" ? "text-amber-400" : "text-text-secondary"}`}>
+          {isRound && icon ? icon : label}
+        </span>
+        {isRound && (
+          <span className="text-[8px] text-text-faint leading-none">{label}</span>
+        )}
+      </button>
+    );
+  }
+
   return (
     <div className="rounded-xl border border-border-default bg-surface-card p-4" {...swipeHandlers}>
       {/* Header */}
@@ -216,7 +250,7 @@ export default function HistoryCalendar({ records, onToggleOverride, onNavigate 
             disabled={!canGoBack}
             className="text-text-muted hover:text-text-secondary disabled:opacity-20 disabled:cursor-default text-sm px-1"
           >
-            ‹
+            {"\u2039"}
           </button>
           <span className="text-xs text-text-secondary min-w-[120px] text-center">{headerLabel}</span>
           <button
@@ -224,7 +258,7 @@ export default function HistoryCalendar({ records, onToggleOverride, onNavigate 
             disabled={!canGoForward}
             className="text-text-muted hover:text-text-secondary disabled:opacity-20 disabled:cursor-default text-sm px-1"
           >
-            ›
+            {"\u203a"}
           </button>
         </div>
       </div>
@@ -239,20 +273,7 @@ export default function HistoryCalendar({ records, onToggleOverride, onNavigate 
             const record = records.find((r) => r.date === ds) ?? null;
             const isFuture = d > today;
             const isToday = ds === todayStr;
-            const style = getCellStyle(record, isToday, isFuture);
-
-            return (
-              <button
-                key={ds}
-                onClick={() => handleDayTap(ds, record, isFuture)}
-                disabled={isFuture || !record}
-                className={`flex flex-col items-center justify-center rounded-full w-10 h-10 flex-shrink-0 transition-colors ${style} ${
-                  isFuture ? "opacity-30 cursor-default" : "cursor-pointer hover:ring-1 hover:ring-amber-400/30"
-                }`}
-              >
-                <span className="text-[10px] font-medium text-text-secondary">{DAY_LABELS[i]}</span>
-              </button>
-            );
+            return renderDayCell(ds, record, isFuture, isToday, DAY_LABELS[i], "circle");
           })}
         </div>
       )}
@@ -284,20 +305,7 @@ export default function HistoryCalendar({ records, onToggleOverride, onNavigate 
                 const record = records.find((r) => r.date === ds) ?? null;
                 const isFuture = d > today;
                 const isToday = ds === todayStr;
-                const style = getCellStyle(record, isToday, isFuture);
-
-                return (
-                  <button
-                    key={ds}
-                    onClick={() => handleDayTap(ds, record, isFuture)}
-                    disabled={isFuture || !record}
-                    className={`flex items-center justify-center rounded-md h-8 text-[10px] font-medium transition-colors ${style} ${
-                      isFuture ? "opacity-30 cursor-default text-text-faint" : "cursor-pointer hover:ring-1 hover:ring-amber-400/30 text-text-secondary"
-                    }`}
-                  >
-                    {day}
-                  </button>
-                );
+                return renderDayCell(ds, record, isFuture, isToday, day, "square");
               })}
             </div>
           </div>
@@ -306,7 +314,7 @@ export default function HistoryCalendar({ records, onToggleOverride, onNavigate 
 
       {/* Summary */}
       <div className="mt-3 space-y-1">
-        {summary.total > 0 && (
+        {summary.favorable > 0 && (
           <p className="text-sm text-text-secondary">
             {t("favorableSummary", { count: summary.favorable, total: summary.total })}
           </p>
@@ -323,10 +331,24 @@ export default function HistoryCalendar({ records, onToggleOverride, onNavigate 
         )}
       </div>
 
+      {/* Feedback or legend */}
       {feedbackMsg ? (
         <p className="text-[10px] text-amber-400/70 mt-2 text-center animate-pulse">{feedbackMsg}</p>
       ) : (
-        <p className="text-[10px] text-text-faint mt-2 text-center">{t("tapToExpand")}</p>
+        <div className="flex items-center justify-center gap-4 mt-3 text-[9px] text-text-faint">
+          <span className="flex items-center gap-1">
+            <span className="inline-block w-2.5 h-2.5 rounded-sm bg-amber-400/25" />
+            {t("legendFavorable")}
+          </span>
+          <span className="flex items-center gap-1">
+            <span className="inline-block w-2.5 h-2.5 rounded-sm bg-emerald-500/40" />
+            {t("legendConfirmed")}
+          </span>
+          <span className="flex items-center gap-1">
+            <span className="inline-block w-2.5 h-2.5 rounded-sm bg-surface-elevated" />
+            {t("legendUnfavorable")}
+          </span>
+        </div>
       )}
     </div>
   );
