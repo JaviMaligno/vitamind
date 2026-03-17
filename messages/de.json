@@ -166,7 +166,8 @@
   },
   "nav": {
     "myDay": "Mein Tag",
-    "explore": "Entdecken"
+    "explore": "Entdecken",
+    "profile": "Profil"
   },
   "dashboard": {
     "goOutBetween": "Geh zwischen {start} und {end} raus",

@@ -166,7 +166,8 @@
   },
   "nav": {
     "myDay": "Mano diena",
-    "explore": "Tyrinėti"
+    "explore": "Tyrinėti",
+    "profile": "Profilis"
   },
   "dashboard": {
     "goOutBetween": "Išeikite laukan tarp {start} ir {end}",

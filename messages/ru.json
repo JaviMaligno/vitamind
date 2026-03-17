@@ -166,7 +166,8 @@
   },
   "nav": {
     "myDay": "Мой день",
-    "explore": "Исследовать"
+    "explore": "Исследовать",
+    "profile": "Профиль"
   },
   "dashboard": {
     "goOutBetween": "Выйдите на улицу между {start} и {end}",

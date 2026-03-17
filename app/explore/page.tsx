@@ -7,7 +7,6 @@ import { vitDHrs, getCurve, getWindow, dayOfYear, dateFromDoy, fmtTime, fmtDate 
 import { computeExposure, computeExposureFromCurve } from "@/lib/vitd";
 import HeroZone from "@/components/HeroZone";
 import VisualizationZone from "@/components/VisualizationZone";
-import ConfigZone from "@/components/ConfigZone";
 import { useWeather } from "@/hooks/useWeather";
 import { useAnimation } from "@/hooks/useAnimation";
 
@@ -94,52 +93,44 @@ export default function ExplorePage() {
         onScrubModeToggle={() => setScrubMode((s) => !s)}
       />
 
-      {/* Zone 3 -- Config */}
-      <ConfigZone
-        lat={app.lat}
-        lon={app.lon}
-        tz={app.tz}
-        cityName={app.cityName}
-        cityId={app.cityId}
-        cityFlag={app.cityFlag}
-        setLat={app.setLat}
-        setLon={app.setLon}
-        setTz={app.setTz}
-        setCityName={app.setCityName}
-        setCityFlag={app.setCityFlag}
-        onSelectCity={app.selectCity}
-        onAddFav={app.toggleFav}
-        favorites={app.favorites}
-        allCities={app.allCities}
-        editingFavs={app.editingFavs}
-        setEditingFavs={app.setEditingFavs}
-        toggleFav={app.toggleFav}
-        handleDeleteCustom={app.handleDeleteCustom}
-        isCurrentFav={app.isCurrentFav}
-        onSaveLocation={app.handleSaveLocation}
-        skinType={app.skinType}
-        areaFraction={app.areaFraction}
-        age={app.age}
-        onSkinChange={app.setSkinType}
-        onAreaChange={app.setAreaFraction}
-        onAgeChange={app.setAge}
-        doy={doy}
-        setDoy={setDoy}
-        date={date}
-        animating={animating}
-        toggleAnim={toggleAnim}
-        threshold={app.threshold}
-        setThreshold={app.setThreshold}
-        notificationProps={{
-          lat: app.lat,
-          lon: app.lon,
-          tz: app.tz,
-          skinType: app.skinType,
-          areaFraction: app.areaFraction,
-          threshold: app.threshold,
-          cityName: app.cityName,
-        }}
-      />
+      {/* Zone 3 -- Date controls */}
+      <section className="mx-auto max-w-[960px] px-4 pt-6 pb-2">
+        <div className="flex items-center gap-2 flex-wrap">
+          <button
+            onClick={() => setDoy((d: number) => Math.max(1, d - 1))}
+            className="min-h-[44px] px-2 py-1.5 rounded-md bg-white/[0.06] text-white/80 cursor-pointer text-[10px]"
+          >
+            ◀
+          </button>
+          <input
+            type="range"
+            min="1"
+            max="365"
+            value={doy}
+            onChange={(e) => setDoy(parseInt(e.target.value))}
+            className="flex-1 min-w-[140px] h-1 accent-amber-400"
+          />
+          <button
+            onClick={() => setDoy((d: number) => Math.min(365, d + 1))}
+            className="min-h-[44px] px-2 py-1.5 rounded-md bg-white/[0.06] text-white/80 cursor-pointer text-[10px]"
+          >
+            ▶
+          </button>
+          <span className="font-mono text-[11px] text-amber-400 min-w-[50px]">
+            {dateLabel}
+          </span>
+          <button
+            onClick={toggleAnim}
+            className={`min-h-[44px] px-3 py-1.5 rounded-md text-[10px] font-semibold cursor-pointer ${
+              animating
+                ? "bg-red-500/15 text-red-400"
+                : "bg-amber-400/10 text-amber-400"
+            }`}
+          >
+            {animating ? t("config.pause") : t("config.animate")}
+          </button>
+        </div>
+      </section>
 
       {/* Legend */}
       <div className="mx-auto max-w-[960px] px-4 mt-6">
