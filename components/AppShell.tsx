@@ -37,7 +37,10 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <ThemeProvider>
       <AppProvider>
-        <div className="min-h-screen bg-gradient-to-br from-bg-page-from via-bg-page-via via-60% to-bg-page-to text-text-primary font-[DM_Sans,sans-serif] pb-20">
+        <div
+          className="min-h-screen bg-gradient-to-br from-bg-page-from via-bg-page-via via-60% to-bg-page-to text-text-primary font-[DM_Sans,sans-serif] pb-20"
+          style={{ paddingBottom: "calc(5rem + env(safe-area-inset-bottom, 0px))" }}
+        >
           <TopBar />
           {children}
           <BottomTabBar />
