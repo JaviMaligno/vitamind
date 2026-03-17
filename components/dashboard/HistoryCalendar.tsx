@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect, useRef } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { useSwipe } from "@/hooks/useSwipe";
 import type { DayRecord } from "@/lib/types";
@@ -82,23 +82,6 @@ export default function HistoryCalendar({ records, onToggleOverride, onNavigate 
   const [weekOffset, setWeekOffset] = useState(0);
   const [viewYear, setViewYear] = useState(today.getFullYear());
   const [viewMonth, setViewMonth] = useState(today.getMonth());
-  const [feedbackMsg, setFeedbackMsg] = useState<string | null>(null);
-  const feedbackTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
-
-  const showFeedback = useCallback((msg: string) => {
-    clearTimeout(feedbackTimer.current);
-    setFeedbackMsg(msg);
-    feedbackTimer.current = setTimeout(() => setFeedbackMsg(null), 2000);
-  }, []);
-
-  const handleDayTap = useCallback((date: string, record: DayRecord | null, isFuture: boolean) => {
-    if (isFuture || !record) return;
-    if (!record.sufficient && record.userOverride === null) {
-      showFeedback(t("noConditionsTap"));
-      return;
-    }
-    onToggleOverride(date);
-  }, [onToggleOverride, showFeedback, t]);
 
   const currentMonday = getMonday(today);
   const viewMonday = new Date(currentMonday);
@@ -244,7 +227,7 @@ export default function HistoryCalendar({ records, onToggleOverride, onNavigate 
             return (
               <button
                 key={ds}
-                onClick={() => handleDayTap(ds, record, isFuture)}
+                onClick={() => record && !isFuture && onToggleOverride(ds)}
                 disabled={isFuture || !record}
                 className={`flex flex-col items-center justify-center rounded-full w-10 h-10 flex-shrink-0 transition-colors ${style} ${
                   isFuture ? "opacity-30 cursor-default" : "cursor-pointer hover:ring-1 hover:ring-amber-400/30"
@@ -289,7 +272,7 @@ export default function HistoryCalendar({ records, onToggleOverride, onNavigate 
                 return (
                   <button
                     key={ds}
-                    onClick={() => handleDayTap(ds, record, isFuture)}
+                    onClick={() => record && !isFuture && onToggleOverride(ds)}
                     disabled={isFuture || !record}
                     className={`flex items-center justify-center rounded-md h-8 text-[10px] font-medium transition-colors ${style} ${
                       isFuture ? "opacity-30 cursor-default text-text-faint" : "cursor-pointer hover:ring-1 hover:ring-amber-400/30 text-text-secondary"
@@ -323,11 +306,7 @@ export default function HistoryCalendar({ records, onToggleOverride, onNavigate 
         )}
       </div>
 
-      {feedbackMsg ? (
-        <p className="text-[10px] text-amber-400/70 mt-2 text-center animate-pulse">{feedbackMsg}</p>
-      ) : (
-        <p className="text-[10px] text-text-faint mt-2 text-center">{t("tapToExpand")}</p>
-      )}
+      <p className="text-[10px] text-text-faint mt-2 text-center">{t("tapToExpand")}</p>
     </div>
   );
 }

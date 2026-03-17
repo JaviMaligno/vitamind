@@ -206,7 +206,6 @@
     "forecastCloud": "{percent}% debesuotumas prognozuojamas",
     "forecastHourly": "Valandinis detalumas",
     "noSynthesisDay": "Nepakankamas UV",
-    "noConditionsTap": "Šią dieną nebuvo pakankamų sąlygų",
     "tapToExpand": "Paspauskite dieną norėdami pamatyti detales"
   }
 }

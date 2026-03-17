@@ -206,7 +206,6 @@
     "forecastCloud": "{percent}% nubosidad prevista",
     "forecastHourly": "Detalle por hora",
     "noSynthesisDay": "UV insuficiente",
-    "noConditionsTap": "Sin condiciones suficientes este día",
     "tapToExpand": "Toca un día para ver detalle"
   }
 }

@@ -206,7 +206,6 @@
     "forecastCloud": "{percent}% cloud cover forecast",
     "forecastHourly": "Hourly detail",
     "noSynthesisDay": "Insufficient UV",
-    "noConditionsTap": "No sufficient conditions this day",
     "tapToExpand": "Tap a day for details"
   }
 }

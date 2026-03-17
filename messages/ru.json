@@ -206,7 +206,6 @@
     "forecastCloud": "{percent}% облачности по прогнозу",
     "forecastHourly": "Почасовая детализация",
     "noSynthesisDay": "Недостаточный UV",
-    "noConditionsTap": "Недостаточные условия в этот день",
     "tapToExpand": "Нажмите на день для подробностей"
   }
 }
