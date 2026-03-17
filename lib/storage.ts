@@ -110,6 +110,9 @@ export function toggleDayOverride(date: string): void {
   const record = records.find((r) => r.date === date);
   if (!record) return;
 
+  // Don't allow confirming as favorable when conditions weren't sufficient
+  if (!record.sufficient && record.userOverride === null) return;
+
   if (record.userOverride === null) {
     record.userOverride = !record.sufficient;
   } else {
