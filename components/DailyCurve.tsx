@@ -106,9 +106,10 @@ export default function DailyCurve({ curve, threshold, hoverTime, onHover, weath
     }
   }
 
-  // SVG axis label color — uses CSS variable for theme awareness
-  const axisLabelColor = "var(--color-text-muted)";
-  const gridLineColor = "var(--color-border-subtle)";
+  // Chart renders over a dark gradient background, so use chart-specific tokens
+  // that stay light in both themes (not theme-adaptive text/border tokens).
+  const axisLabelColor = "var(--color-text-on-chart)";
+  const gridLineColor = "var(--color-chart-grid)";
 
   return (
     <svg ref={ref} viewBox={`0 0 ${W} ${H}`} style={{ width: "100%" }} onMouseMove={handleMove} onMouseLeave={() => onHover(null)}>

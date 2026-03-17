@@ -15,6 +15,13 @@
   --color-text-faint: rgba(26, 26, 46, 0.4);
   --color-border-default: rgba(26, 26, 46, 0.15);
   --color-border-subtle: rgba(26, 26, 46, 0.08);
+  --color-chart-grid: rgba(255, 255, 255, 0.05);
+  --color-text-on-chart: rgba(255, 255, 255, 0.3);
+  --color-text-on-chart-faint: rgba(255, 255, 255, 0.2);
+  --color-chart-bar-fast: rgba(255, 213, 79, 0.6);
+  --color-chart-bar-medium: rgba(255, 143, 0, 0.5);
+  --color-chart-bar-slow: rgba(255, 109, 0, 0.3);
+  --color-chart-bar-inactive: rgba(128, 128, 128, 0.1);
 }
 
 .dark {
@@ -32,4 +39,11 @@
   --color-text-faint: rgba(255, 255, 255, 0.15);
   --color-border-default: rgba(255, 255, 255, 0.06);
   --color-border-subtle: rgba(255, 255, 255, 0.04);
+  --color-chart-grid: rgba(255, 255, 255, 0.05);
+  --color-text-on-chart: rgba(255, 255, 255, 0.3);
+  --color-text-on-chart-faint: rgba(255, 255, 255, 0.2);
+  --color-chart-bar-fast: rgba(255, 213, 79, 0.6);
+  --color-chart-bar-medium: rgba(255, 143, 0, 0.5);
+  --color-chart-bar-slow: rgba(255, 109, 0, 0.3);
+  --color-chart-bar-inactive: rgba(128, 128, 128, 0.1);
 }

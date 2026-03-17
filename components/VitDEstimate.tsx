@@ -98,11 +98,11 @@ export default function VitDEstimate({ weather, curve, skinType, areaFraction, a
                       borderRadius: "3px 3px 0 0",
                       background: isActive
                         ? h.minutes !== null && h.minutes <= 15
-                          ? "rgba(255,213,79,0.6)"
+                          ? "var(--color-chart-bar-fast)"
                           : h.minutes !== null && h.minutes <= 30
-                            ? "rgba(255,143,0,0.5)"
-                            : "rgba(255,109,0,0.3)"
-                        : "rgba(128,128,128,0.1)",
+                            ? "var(--color-chart-bar-medium)"
+                            : "var(--color-chart-bar-slow)"
+                        : "var(--color-chart-bar-inactive)",
                     }} />
                     <span className="text-[7px] text-text-faint">{h.hour}</span>
                   </div>
@@ -110,9 +110,9 @@ export default function VitDEstimate({ weather, curve, skinType, areaFraction, a
               })}
           </div>
           <div className="flex gap-2.5 mt-1.5 text-[8px] text-text-faint">
-            <span><span style={{ display: "inline-block", width: 8, height: 8, borderRadius: 2, background: "rgba(255,213,79,0.6)", marginRight: 3, verticalAlign: "middle" }} />{t("lte15")}</span>
-            <span><span style={{ display: "inline-block", width: 8, height: 8, borderRadius: 2, background: "rgba(255,143,0,0.5)", marginRight: 3, verticalAlign: "middle" }} />{t("lte30")}</span>
-            <span><span style={{ display: "inline-block", width: 8, height: 8, borderRadius: 2, background: "rgba(255,109,0,0.3)", marginRight: 3, verticalAlign: "middle" }} />{t("gt30")}</span>
+            <span><span style={{ display: "inline-block", width: 8, height: 8, borderRadius: 2, background: "var(--color-chart-bar-fast)", marginRight: 3, verticalAlign: "middle" }} />{t("lte15")}</span>
+            <span><span style={{ display: "inline-block", width: 8, height: 8, borderRadius: 2, background: "var(--color-chart-bar-medium)", marginRight: 3, verticalAlign: "middle" }} />{t("lte30")}</span>
+            <span><span style={{ display: "inline-block", width: 8, height: 8, borderRadius: 2, background: "var(--color-chart-bar-slow)", marginRight: 3, verticalAlign: "middle" }} />{t("gt30")}</span>
           </div>
 
           {/* Disclaimer */}
