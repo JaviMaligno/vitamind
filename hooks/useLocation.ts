@@ -25,11 +25,9 @@ export function useLocation() {
     // Restore last selected city from preferences
     const prefs = loadPreferences();
     if (prefs.lastCityId && prefs.lastCityId !== "builtin:londres") {
-      const allAvailable = [
-        ...BUILTIN_CITIES,
-        ...custom,
-      ];
-      const saved = allAvailable.find((c) => c.id === prefs.lastCityId);
+      const builtinIds = new Set(BUILTIN_CITIES.map((c) => c.id));
+      const saved = [...BUILTIN_CITIES, ...custom.filter((c) => !builtinIds.has(c.id))]
+        .find((c) => c.id === prefs.lastCityId);
       if (saved) {
         setLat(saved.lat);
         setLon(saved.lon);
