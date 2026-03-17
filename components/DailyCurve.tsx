@@ -106,6 +106,10 @@ export default function DailyCurve({ curve, threshold, hoverTime, onHover, weath
     }
   }
 
+  // SVG axis label color — uses CSS variable for theme awareness
+  const axisLabelColor = "var(--color-text-muted)";
+  const gridLineColor = "var(--color-border-subtle)";
+
   return (
     <svg ref={ref} viewBox={`0 0 ${W} ${H}`} style={{ width: "100%" }} onMouseMove={handleMove} onMouseLeave={() => onHover(null)}>
       <defs>
@@ -123,13 +127,13 @@ export default function DailyCurve({ curve, threshold, hoverTime, onHover, weath
       {[0, 3, 6, 9, 12, 15, 18, 21, 24].map((h) => (
         <g key={h}>
           <line x1={x(h)} y1={PAD.t} x2={x(h)} y2={PAD.t + plotH} stroke="rgba(255,255,255,0.05)" />
-          <text x={x(h)} y={PAD.t + plotH + 14} textAnchor="middle" fill="rgba(255,255,255,0.3)" fontSize="9" fontFamily="'JetBrains Mono',monospace">{`${h}:00`}</text>
+          <text x={x(h)} y={PAD.t + plotH + 14} textAnchor="middle" fill={axisLabelColor} fontSize="9" fontFamily="'JetBrains Mono',monospace">{`${h}:00`}</text>
         </g>
       ))}
       {[0, 15, 30, 45, 60].filter((v) => v >= minE && v <= maxE).map((v) => (
         <g key={v}>
-          <line x1={PAD.l} y1={y(v)} x2={PAD.l + plotW} y2={y(v)} stroke="rgba(255,255,255,0.05)" />
-          <text x={PAD.l - 5} y={y(v) + 3} textAnchor="end" fill="rgba(255,255,255,0.3)" fontSize="9" fontFamily="'JetBrains Mono',monospace">{v}&deg;</text>
+          <line x1={PAD.l} y1={y(v)} x2={PAD.l + plotW} y2={y(v)} stroke={gridLineColor} />
+          <text x={PAD.l - 5} y={y(v) + 3} textAnchor="end" fill={axisLabelColor} fontSize="9" fontFamily="'JetBrains Mono',monospace">{v}&deg;</text>
         </g>
       ))}
       <line x1={PAD.l} y1={y(0)} x2={PAD.l + plotW} y2={y(0)} stroke="rgba(255,255,255,0.18)" strokeDasharray="3,3" />

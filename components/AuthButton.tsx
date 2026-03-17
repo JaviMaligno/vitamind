@@ -74,18 +74,16 @@ export default function AuthButton({ onAuthChange }: Props) {
   // No Supabase configured — don't show anything
   if (!sb) return null;
 
-  const btnStyle: React.CSSProperties = {
-    padding: "4px 10px", borderRadius: 6, border: "none", cursor: "pointer",
-    fontSize: 10, fontFamily: "'DM Sans',sans-serif",
-  };
-
   if (user) {
     return (
-      <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-        <span style={{ fontSize: 9, color: "rgba(255,255,255,0.3)" }}>
+      <div className="flex items-center gap-1.5">
+        <span className="text-[9px] text-text-muted">
           {user.email}
         </span>
-        <button onClick={handleLogout} style={{ ...btnStyle, background: "rgba(255,255,255,0.04)", color: "rgba(255,255,255,0.35)" }}>
+        <button
+          onClick={handleLogout}
+          className="px-2.5 py-1 rounded-md bg-surface-elevated text-text-muted text-[10px] cursor-pointer border-none"
+        >
           {t("logout")}
         </button>
       </div>
@@ -96,7 +94,7 @@ export default function AuthButton({ onAuthChange }: Props) {
     return (
       <button
         onClick={() => setShowForm(true)}
-        style={{ ...btnStyle, background: "rgba(255,213,79,0.08)", color: "rgba(255,213,79,0.6)" }}
+        className="px-2.5 py-1 rounded-md bg-amber-400/[0.08] text-amber-400/60 text-[10px] cursor-pointer border-none"
         title={t("loginHint")}
       >
         {t("login")}
@@ -104,47 +102,59 @@ export default function AuthButton({ onAuthChange }: Props) {
     );
   }
 
-  const inputStyle: React.CSSProperties = {
-    padding: "6px 8px", borderRadius: 6, background: "rgba(255,255,255,0.06)",
-    border: "1px solid rgba(255,255,255,0.1)", color: "#e0e0e0",
-    fontSize: 11, fontFamily: "'DM Sans',sans-serif", outline: "none", width: "100%",
-  };
-
   return (
-    <div style={{
-      padding: "10px 12px", borderRadius: 8,
-      background: "rgba(255,213,79,0.03)", border: "1px solid rgba(255,213,79,0.08)",
-      maxWidth: 280,
-    }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-        <span style={{ fontSize: 11, fontWeight: 600, color: "#FFD54F" }}>
+    <div className="p-3 rounded-lg bg-amber-400/[0.03] border border-amber-400/[0.08] max-w-[280px]">
+      <div className="flex justify-between items-center mb-2">
+        <span className="text-[11px] font-semibold text-amber-400">
           {mode === "login" ? t("login") : mode === "signup" ? t("signup") : t("resendConfirmation")}
         </span>
-        <button onClick={() => setShowForm(false)} style={{ ...btnStyle, background: "transparent", color: "rgba(255,255,255,0.3)", padding: "2px 6px" }}>
+        <button
+          onClick={() => setShowForm(false)}
+          className="px-1.5 py-0.5 rounded-md bg-transparent text-text-muted text-[10px] cursor-pointer border-none"
+        >
           &#x2715;
         </button>
       </div>
-      <div style={{ fontSize: 9, color: "rgba(255,255,255,0.3)", marginBottom: 8, lineHeight: 1.4 }}>
+      <div className="text-[9px] text-text-muted mb-2 leading-relaxed">
         {t("syncHint")}
       </div>
-      <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-        <input type="email" placeholder={t("email")} value={email} onChange={(e) => setEmail(e.target.value)} style={inputStyle} required />
+      <form onSubmit={handleSubmit} className="flex flex-col gap-1.5">
+        <input
+          type="email"
+          placeholder={t("email")}
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="w-full px-2 py-1.5 rounded-md bg-surface-input border border-border-default text-text-primary text-[11px] outline-none"
+          required
+        />
         {mode !== "resend" && (
-          <input type="password" placeholder={t("password")} value={password} onChange={(e) => setPassword(e.target.value)} style={inputStyle} required minLength={6} />
+          <input
+            type="password"
+            placeholder={t("password")}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full px-2 py-1.5 rounded-md bg-surface-input border border-border-default text-text-primary text-[11px] outline-none"
+            required
+            minLength={6}
+          />
         )}
-        {error && <div style={{ fontSize: 9, color: "#ef5350" }}>{error}</div>}
-        {message && <div style={{ fontSize: 9, color: "#66bb6a" }}>{message}</div>}
-        <div style={{ display: "flex", gap: 6 }}>
-          <button type="submit" disabled={loading} style={{ ...btnStyle, flex: 1, background: "rgba(255,213,79,0.15)", color: "#FFD54F", fontWeight: 600 }}>
+        {error && <div className="text-[9px] text-red-500">{error}</div>}
+        {message && <div className="text-[9px] text-green-500">{message}</div>}
+        <div className="flex gap-1.5">
+          <button
+            type="submit"
+            disabled={loading}
+            className="flex-1 px-2.5 py-1 rounded-md bg-amber-400/15 text-amber-400 text-[10px] font-semibold cursor-pointer border-none"
+          >
             {loading ? "..." : mode === "login" ? t("enter") : mode === "signup" ? t("register") : t("resend")}
           </button>
         </div>
-        <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+        <div className="flex flex-col gap-0.5">
           {mode !== "resend" && (
             <button
               type="button"
               onClick={() => { setMode(mode === "login" ? "signup" : "login"); setError(""); setMessage(""); }}
-              style={{ ...btnStyle, background: "transparent", color: "rgba(255,255,255,0.3)", fontSize: 9, textAlign: "center" }}
+              className="px-2.5 py-1 rounded-md bg-transparent text-text-muted text-[9px] text-center cursor-pointer border-none"
             >
               {mode === "login" ? t("noAccount") : t("hasAccount")}
             </button>
@@ -153,7 +163,7 @@ export default function AuthButton({ onAuthChange }: Props) {
             <button
               type="button"
               onClick={() => { setMode("login"); setError(""); setMessage(""); }}
-              style={{ ...btnStyle, background: "transparent", color: "rgba(255,255,255,0.3)", fontSize: 9, textAlign: "center" }}
+              className="px-2.5 py-1 rounded-md bg-transparent text-text-muted text-[9px] text-center cursor-pointer border-none"
             >
               {t("backToLogin")}
             </button>

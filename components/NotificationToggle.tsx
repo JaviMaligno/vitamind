@@ -127,13 +127,13 @@ export default function NotificationToggle({ lat, lon, tz, skinType, areaFractio
 
   if (status === "loading") {
     return (
-      <span className="text-xs text-white/20 italic">{t("loading")}</span>
+      <span className="text-xs text-text-faint italic">{t("loading")}</span>
     );
   }
 
   if (status === "unsupported") {
     return (
-      <span className="text-xs text-white/20">{t("unsupported")}</span>
+      <span className="text-xs text-text-faint">{t("unsupported")}</span>
     );
   }
 
@@ -146,7 +146,7 @@ export default function NotificationToggle({ lat, lon, tz, skinType, areaFractio
           ? "bg-amber-400/15 text-amber-400 font-semibold"
           : status === "denied"
             ? "bg-red-500/[0.08] text-red-400/40 opacity-50 cursor-not-allowed"
-            : "bg-white/[0.04] text-white/35 hover:bg-white/[0.08]"
+            : "bg-surface-elevated text-text-muted hover:bg-surface-input"
       }`}
       title={
         status === "denied"

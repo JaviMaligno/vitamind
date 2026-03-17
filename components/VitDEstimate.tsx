@@ -36,17 +36,11 @@ export default function VitDEstimate({ weather, curve, skinType, areaFraction, a
   const isTheoretical = !weatherResult && !!curveResult;
 
   return (
-    <div style={{
-      background: "rgba(255,255,255,0.02)",
-      borderRadius: 10,
-      padding: "12px 14px",
-      border: "1px solid rgba(255,255,255,0.05)",
-      marginTop: 10,
-    }}>
-      <div style={{ fontSize: 10, color: "rgba(255,255,255,0.45)", fontWeight: 600, marginBottom: 8, textTransform: "uppercase", letterSpacing: 1 }}>
+    <div className="bg-surface-card rounded-xl p-3.5 border border-border-subtle mt-2.5">
+      <div className="text-[10px] text-text-secondary font-semibold mb-2 uppercase tracking-wider">
         {t("title")}
         {isTheoretical && (
-          <span style={{ marginLeft: 8, fontSize: 9, color: "rgba(255,213,79,0.5)", fontWeight: 400, textTransform: "none", letterSpacing: 0 }}>
+          <span className="ml-2 text-[9px] text-amber-400/50 font-normal normal-case tracking-normal">
             {t("theoreticalHint")}
           </span>
         )}
@@ -54,10 +48,10 @@ export default function VitDEstimate({ weather, curve, skinType, areaFraction, a
 
       {!result && (
         <div>
-          <div style={{ fontSize: 12, color: "#ef5350", fontWeight: 600 }}>
+          <div className="text-xs text-red-500 font-semibold">
             {t("insufficientUV")}
           </div>
-          <div style={{ fontSize: 11, color: "rgba(255,255,255,0.4)", marginTop: 8, lineHeight: 1.5 }}>
+          <div className="text-[11px] text-text-muted mt-2 leading-relaxed">
             💊 {t("supplementAdvice")}
           </div>
         </div>
@@ -65,23 +59,23 @@ export default function VitDEstimate({ weather, curve, skinType, areaFraction, a
       {result && (
         <div>
           {/* Main result */}
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 16, alignItems: "baseline", marginBottom: 8 }}>
+          <div className="flex flex-wrap gap-4 items-baseline mb-2">
             <div>
-              <span style={{ fontSize: 28, fontWeight: 700, color: "#FFD54F", fontFamily: "'JetBrains Mono',monospace" }}>
+              <span className="text-[28px] font-bold text-amber-400 font-mono">
                 {fmtMin(result.minutesNeeded)}
               </span>
-              <span style={{ fontSize: 11, color: "rgba(255,255,255,0.4)", marginLeft: 6 }}>
+              <span className="text-[11px] text-text-muted ml-1.5">
                 {t("for1000IU")}
               </span>
             </div>
-            <div style={{ fontSize: 11, color: "rgba(255,255,255,0.35)", lineHeight: 1.6 }}>
-              <div>{t("bestHour")} <strong style={{ color: "#FFD54F" }}>{result.bestHour}:00</strong> (UVI {result.bestUVI.toFixed(1)})</div>
-              <div>{t("uvWindow")} <strong style={{ color: "rgba(255,255,255,0.5)" }}>{result.windowStart}:00 – {result.windowEnd}:00</strong></div>
+            <div className="text-[11px] text-text-muted leading-relaxed">
+              <div>{t("bestHour")} <strong className="text-amber-400">{result.bestHour}:00</strong> (UVI {result.bestUVI.toFixed(1)})</div>
+              <div>{t("uvWindow")} <strong className="text-text-secondary">{result.windowStart}:00 – {result.windowEnd}:00</strong></div>
             </div>
           </div>
 
           {/* Hourly bar chart */}
-          <div style={{ fontSize: 9, color: "rgba(255,255,255,0.2)", marginBottom: 4 }}>
+          <div className="text-[9px] text-text-faint mb-1">
             {t("hourlyTitle")}
           </div>
           <div style={{ display: "flex", gap: 1, alignItems: "flex-end", height: 50 }}>
@@ -108,21 +102,21 @@ export default function VitDEstimate({ weather, curve, skinType, areaFraction, a
                           : h.minutes !== null && h.minutes <= 30
                             ? "rgba(255,143,0,0.5)"
                             : "rgba(255,109,0,0.3)"
-                        : "rgba(255,255,255,0.05)",
+                        : "rgba(128,128,128,0.1)",
                     }} />
-                    <span style={{ fontSize: 7, color: "rgba(255,255,255,0.2)" }}>{h.hour}</span>
+                    <span className="text-[7px] text-text-faint">{h.hour}</span>
                   </div>
                 );
               })}
           </div>
-          <div style={{ display: "flex", gap: 10, marginTop: 6, fontSize: 8, color: "rgba(255,255,255,0.2)" }}>
+          <div className="flex gap-2.5 mt-1.5 text-[8px] text-text-faint">
             <span><span style={{ display: "inline-block", width: 8, height: 8, borderRadius: 2, background: "rgba(255,213,79,0.6)", marginRight: 3, verticalAlign: "middle" }} />{t("lte15")}</span>
             <span><span style={{ display: "inline-block", width: 8, height: 8, borderRadius: 2, background: "rgba(255,143,0,0.5)", marginRight: 3, verticalAlign: "middle" }} />{t("lte30")}</span>
             <span><span style={{ display: "inline-block", width: 8, height: 8, borderRadius: 2, background: "rgba(255,109,0,0.3)", marginRight: 3, verticalAlign: "middle" }} />{t("gt30")}</span>
           </div>
 
           {/* Disclaimer */}
-          <div style={{ fontSize: 8, color: "rgba(255,255,255,0.15)", marginTop: 8, lineHeight: 1.4 }}>
+          <div className="text-[8px] text-text-faint mt-2 leading-relaxed">
             {isTheoretical ? t("disclaimerTheoretical") : t("disclaimerReal")}
           </div>
         </div>
