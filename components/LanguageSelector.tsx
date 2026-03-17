@@ -1,6 +1,7 @@
 "use client";
 
 import { useLocale } from "next-intl";
+import { useRouter } from "next/navigation";
 
 const LANGUAGES = [
   { code: "es", label: "ES" },
@@ -13,10 +14,11 @@ const LANGUAGES = [
 
 export default function LanguageSelector() {
   const locale = useLocale();
+  const router = useRouter();
 
   const handleChange = (lang: string) => {
     document.cookie = `locale=${lang};path=/;max-age=${365 * 24 * 60 * 60}`;
-    window.location.reload();
+    router.refresh();
   };
 
   return (

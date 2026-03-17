@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useCallback, useEffect } from "react";
 import { BUILTIN_CITIES, findNearestCity } from "@/lib/cities";
-import { loadFavorites, saveFavorites, loadCustomLocations, saveCustomLocation, deleteCustomLocation } from "@/lib/storage";
+import { loadFavorites, saveFavorites, loadCustomLocations, saveCustomLocation, deleteCustomLocation, loadPreferences } from "@/lib/storage";
 import type { City } from "@/lib/types";
 
 export function useLocation() {
@@ -19,7 +19,26 @@ export function useLocation() {
   // Load persisted state on mount
   useEffect(() => {
     setFavorites(loadFavorites());
-    setCustomLocations(loadCustomLocations());
+    const custom = loadCustomLocations();
+    setCustomLocations(custom);
+
+    // Restore last selected city from preferences
+    const prefs = loadPreferences();
+    if (prefs.lastCityId && prefs.lastCityId !== "builtin:londres") {
+      const allAvailable = [
+        ...BUILTIN_CITIES,
+        ...custom,
+      ];
+      const saved = allAvailable.find((c) => c.id === prefs.lastCityId);
+      if (saved) {
+        setLat(saved.lat);
+        setLon(saved.lon);
+        setTz(saved.tz);
+        setCityName(saved.name);
+        setCityFlag(saved.flag || "\u{1F4CD}");
+        setCityId(saved.id);
+      }
+    }
   }, []);
 
   // Persist favorites
