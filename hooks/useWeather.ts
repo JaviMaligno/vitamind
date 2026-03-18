@@ -6,9 +6,9 @@ import type { WeatherData } from "@/lib/types";
 
 export function useWeather(lat: number, lon: number, date: Date) {
   const [weather, setWeather] = useState<WeatherData | null>(null);
+  const dateStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
 
   useEffect(() => {
-    const dateStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
     const cached = getCachedWeather(lat, lon, dateStr);
     if (cached) { setWeather(cached); return; }
 
@@ -26,7 +26,7 @@ export function useWeather(lat: number, lon: number, date: Date) {
       })
       .catch(() => setWeather(null));
     return () => controller.abort();
-  }, [lat, lon, date]);
+  }, [lat, lon, dateStr]);
 
   return weather;
 }
