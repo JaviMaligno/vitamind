@@ -166,8 +166,7 @@
   },
   "nav": {
     "myDay": "Mon jour",
-    "explore": "Explorer",
-    "profile": "Profil"
+    "explore": "Explorer"
   },
   "dashboard": {
     "goOutBetween": "Sortez entre {start} et {end}",
@@ -206,6 +205,9 @@
     "forecastCloud": "{percent}% de couverture nuageuse prévue",
     "forecastHourly": "Détail horaire",
     "noSynthesisDay": "UV insuffisant",
-    "tapToExpand": "Appuyez sur un jour pour voir les détails"
+    "noConditionsTap": "UV insuffisant ce jour",
+    "legendFavorable": "Favorable",
+    "legendConfirmed": "Confirmé",
+    "legendUnfavorable": "Sans UV"
   }
 }

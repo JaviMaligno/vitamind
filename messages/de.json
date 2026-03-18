@@ -166,8 +166,7 @@
   },
   "nav": {
     "myDay": "Mein Tag",
-    "explore": "Entdecken",
-    "profile": "Profil"
+    "explore": "Entdecken"
   },
   "dashboard": {
     "goOutBetween": "Geh zwischen {start} und {end} raus",
@@ -206,6 +205,9 @@
     "forecastCloud": "{percent}% Bewölkung vorhergesagt",
     "forecastHourly": "Stündliches Detail",
     "noSynthesisDay": "Unzureichende UV",
-    "tapToExpand": "Tippe auf einen Tag für Details"
+    "noConditionsTap": "Unzureichende UV an diesem Tag",
+    "legendFavorable": "Günstig",
+    "legendConfirmed": "Bestätigt",
+    "legendUnfavorable": "Kein UV"
   }
 }
