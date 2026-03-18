@@ -98,7 +98,7 @@ export default function ExplorePage() {
         <div className="flex items-center gap-2 flex-wrap">
           <button
             onClick={() => setDoy((d: number) => Math.max(1, d - 1))}
-            className="min-h-[44px] px-2 py-1.5 rounded-md bg-white/[0.06] text-white/80 cursor-pointer text-[10px]"
+            className="min-h-[44px] px-2 py-1.5 rounded-md bg-surface-elevated text-text-secondary cursor-pointer text-[10px]"
           >
             ◀
           </button>
@@ -112,7 +112,7 @@ export default function ExplorePage() {
           />
           <button
             onClick={() => setDoy((d: number) => Math.min(365, d + 1))}
-            className="min-h-[44px] px-2 py-1.5 rounded-md bg-white/[0.06] text-white/80 cursor-pointer text-[10px]"
+            className="min-h-[44px] px-2 py-1.5 rounded-md bg-surface-elevated text-text-secondary cursor-pointer text-[10px]"
           >
             ▶
           </button>

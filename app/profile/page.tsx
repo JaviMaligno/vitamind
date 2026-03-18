@@ -19,7 +19,7 @@ export default function ProfilePage() {
     <div className="mx-auto max-w-[960px] px-4 space-y-6">
       {/* Search city */}
       <section>
-        <h3 className="text-[11px] uppercase tracking-wider text-white/25 font-semibold mb-3">
+        <h3 className="text-[11px] uppercase tracking-wider text-text-faint font-semibold mb-3">
           {t("searchCity")}
         </h3>
         <div className="flex flex-wrap gap-3 items-center">
@@ -30,7 +30,7 @@ export default function ProfilePage() {
             allCities={app.allCities}
           />
           <div className="flex gap-1.5 items-center">
-            <span className="text-[9px] text-white/20">{tc("lat")}</span>
+            <span className="text-[9px] text-text-faint">{tc("lat")}</span>
             <input
               value={app.lat}
               onChange={(e) => {
@@ -38,9 +38,9 @@ export default function ProfilePage() {
                 app.setCityName(`${e.target.value}°`);
                 app.setCityFlag("📍");
               }}
-              className="w-16 px-2 py-1.5 rounded-lg bg-white/[0.07] border border-white/10 text-white/80 text-[11px] font-mono outline-none"
+              className="w-16 px-2 py-1.5 rounded-lg bg-surface-input border border-border-default text-text-primary text-[11px] font-mono outline-none"
             />
-            <span className="text-[9px] text-white/20">{tc("lon")}</span>
+            <span className="text-[9px] text-text-faint">{tc("lon")}</span>
             <input
               value={app.lon}
               onChange={(e) => {
@@ -49,7 +49,7 @@ export default function ProfilePage() {
                   Math.round((parseFloat(e.target.value) || 0) / 15),
                 );
               }}
-              className="w-16 px-2 py-1.5 rounded-lg bg-white/[0.07] border border-white/10 text-white/80 text-[11px] font-mono outline-none"
+              className="w-16 px-2 py-1.5 rounded-lg bg-surface-input border border-border-default text-text-primary text-[11px] font-mono outline-none"
             />
           </div>
         </div>
@@ -65,7 +65,7 @@ export default function ProfilePage() {
           )}
           <button
             onClick={() => setSavingLocation(true)}
-            className="min-h-[44px] px-3 py-1 rounded-full bg-white/[0.06] text-white/40 text-[10px] cursor-pointer"
+            className="min-h-[44px] px-3 py-1 rounded-full bg-surface-elevated text-text-muted text-[10px] cursor-pointer"
           >
             {tc("saveAs")}
           </button>
@@ -89,7 +89,7 @@ export default function ProfilePage() {
 
       {/* Favorites */}
       <section>
-        <h3 className="text-[11px] uppercase tracking-wider text-white/25 font-semibold mb-3">
+        <h3 className="text-[11px] uppercase tracking-wider text-text-faint font-semibold mb-3">
           {t("favorites")}
         </h3>
         <div className="flex flex-wrap gap-1 items-center">
@@ -108,7 +108,7 @@ export default function ProfilePage() {
                   } ${
                     isSel
                       ? "bg-amber-400/[0.18] text-amber-400 font-semibold"
-                      : "bg-white/[0.04] text-white/35"
+                      : "bg-surface-card text-text-muted"
                   }`}
                 >
                   {c.flag} {c.name}
@@ -132,7 +132,7 @@ export default function ProfilePage() {
             className={`min-h-[44px] px-2.5 py-1 rounded-xl text-[9px] cursor-pointer ${
               app.editingFavs
                 ? "bg-amber-400/10 text-amber-400"
-                : "bg-white/[0.04] text-white/20"
+                : "bg-surface-card text-text-faint"
             }`}
           >
             {app.editingFavs ? t("done") : t("edit")}
@@ -142,7 +142,7 @@ export default function ProfilePage() {
 
       {/* Solar profile */}
       <section>
-        <h3 className="text-[11px] uppercase tracking-wider text-white/25 font-semibold mb-3">
+        <h3 className="text-[11px] uppercase tracking-wider text-text-faint font-semibold mb-3">
           {t("solarProfile")}
         </h3>
         <SkinSelector
@@ -157,7 +157,7 @@ export default function ProfilePage() {
 
       {/* Threshold */}
       <section>
-        <h3 className="text-[11px] uppercase tracking-wider text-white/25 font-semibold mb-3">
+        <h3 className="text-[11px] uppercase tracking-wider text-text-faint font-semibold mb-3">
           {t("threshold")}
         </h3>
         <div className="flex gap-1.5">
@@ -168,7 +168,7 @@ export default function ProfilePage() {
               className={`min-h-[44px] px-3 py-1.5 rounded-md font-mono text-[10px] cursor-pointer ${
                 app.threshold === th
                   ? "bg-amber-400/15 text-amber-400 font-semibold"
-                  : "bg-white/[0.04] text-white/35"
+                  : "bg-surface-card text-text-muted"
               }`}
             >
               {th}°
@@ -179,7 +179,7 @@ export default function ProfilePage() {
 
       {/* Notifications */}
       <section>
-        <h3 className="text-[11px] uppercase tracking-wider text-white/25 font-semibold mb-3">
+        <h3 className="text-[11px] uppercase tracking-wider text-text-faint font-semibold mb-3">
           {t("notifications")}
         </h3>
         <NotificationToggle
