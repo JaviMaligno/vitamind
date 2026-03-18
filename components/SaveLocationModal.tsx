@@ -44,22 +44,22 @@ export default function SaveLocationModal({ lat, lon, cityName, cityFlag, onSave
   }
 
   return (
-    <div className="rounded-xl border border-amber-400/20 bg-black/60 p-4 space-y-3">
+    <div className="rounded-xl border border-amber-400/20 bg-surface p-4 space-y-3">
       {/* Show what we're saving */}
-      <div className="text-sm text-white/50">
-        {t("savingLocation")} <span className="text-white/80">{cityFlag} {lat.toFixed(2)}°, {lon.toFixed(2)}°</span>
+      <div className="text-sm text-text-secondary">
+        {t("savingLocation")} <span className="text-text-primary">{cityFlag} {lat.toFixed(2)}°, {lon.toFixed(2)}°</span>
       </div>
 
       {/* Name input */}
       <div>
-        <label className="text-xs text-white/30 block mb-1">{t("nameLabel")}</label>
+        <label className="text-xs text-text-muted block mb-1">{t("nameLabel")}</label>
         <input
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder={t("namePlaceholder")}
           autoFocus
           onKeyDown={(e) => { if (e.key === "Enter") handleSave(); if (e.key === "Escape") onCancel(); }}
-          className="w-full px-3 py-2 rounded-lg bg-white/10 border border-white/15 text-white text-sm outline-none focus:border-amber-400/40"
+          className="w-full px-3 py-2 rounded-lg bg-surface-input border border-border-default text-text-primary text-sm outline-none focus:border-amber-400/40"
         />
       </div>
 
@@ -73,7 +73,7 @@ export default function SaveLocationModal({ lat, lon, cityName, cityFlag, onSave
         </button>
         <button
           onClick={onCancel}
-          className="min-h-[44px] px-4 py-2 rounded-lg bg-white/[0.06] text-white/40 text-sm cursor-pointer hover:bg-white/[0.1] transition-colors"
+          className="min-h-[44px] px-4 py-2 rounded-lg bg-surface-elevated text-text-muted text-sm cursor-pointer hover:bg-surface-input transition-colors"
         >
           {t("cancel")}
         </button>

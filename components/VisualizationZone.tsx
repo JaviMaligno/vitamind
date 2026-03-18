@@ -74,8 +74,8 @@ export default function VisualizationZone({
             onClick={() => setTab(key)}
             className={`px-5 py-2 rounded-t-lg text-xs font-medium transition-colors cursor-pointer border-b-2 ${
               tab === key
-                ? "bg-white/[0.05] text-amber-400 border-amber-400 font-semibold"
-                : "bg-transparent text-white/25 border-transparent hover:text-white/40"
+                ? "bg-surface-elevated text-amber-400 border-amber-400 font-semibold"
+                : "bg-transparent text-text-muted border-transparent hover:text-text-secondary"
             }`}
           >
             {label}
@@ -84,14 +84,14 @@ export default function VisualizationZone({
       </div>
 
       {/* Visualization content */}
-      <div className="rounded-xl border border-white/[0.08] bg-white/[0.02] p-3">
+      <div className="rounded-xl border border-border-default bg-surface-card p-3">
         {tab === "curve" && (
           <>
-            <div className="text-[10px] text-white/30 mb-1 pl-2">
-              <strong className="text-white/45">{tViz("dailyCurveTitle")}</strong> ·{" "}
+            <div className="text-[10px] text-text-muted mb-1 pl-2">
+              <strong className="text-text-secondary">{tViz("dailyCurveTitle")}</strong> ·{" "}
               {cityFlag} {cityName} · {dateLabel}
               {weather && (
-                <span className="ml-2 text-white/20">
+                <span className="ml-2 text-text-faint">
                   · {tViz("withWeatherData")}
                 </span>
               )}
@@ -114,7 +114,7 @@ export default function VisualizationZone({
                 className={`px-3 py-1 rounded-md text-[9px] cursor-pointer ${
                   scrubMode
                     ? "bg-amber-400/15 text-amber-400 font-semibold"
-                    : "bg-white/[0.04] text-white/30"
+                    : "bg-surface-elevated text-text-muted"
                 }`}
               >
                 {scrubMode ? tViz("explore") : tViz("move")}
@@ -135,8 +135,8 @@ export default function VisualizationZone({
 
         {tab === "heatmap" && (
           <>
-            <div className="text-[10px] text-white/30 mb-1 pl-2">
-              <strong className="text-white/45">{tViz("heatmapTitle")}</strong> ·{" "}
+            <div className="text-[10px] text-text-muted mb-1 pl-2">
+              <strong className="text-text-secondary">{tViz("heatmapTitle")}</strong> ·{" "}
               {tViz("heatmapDesc", { threshold })} ·{" "}
               <em>{tViz("heatmapHint")}</em>
             </div>

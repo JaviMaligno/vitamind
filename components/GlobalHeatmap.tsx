@@ -143,7 +143,7 @@ export default function GlobalHeatmap({ selectedLat, selectedDoy, threshold, onS
           </g>
         )}
       </svg>
-      <div style={{ position: "absolute", bottom: 6, left: PAD.l, fontSize: 9, color: "rgba(255,255,255,0.2)", pointerEvents: "none" }}>
+      <div style={{ position: "absolute", bottom: 6, left: PAD.l, fontSize: 9, color: "var(--color-text-on-chart-faint)", pointerEvents: "none" }}>
         Clic y arrastra para explorar
       </div>
     </div>

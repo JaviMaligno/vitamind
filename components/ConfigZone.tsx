@@ -109,7 +109,7 @@ export default function ConfigZone({
       {/* Toggle button */}
       <button
         onClick={() => setOpen(!open)}
-        className="flex items-center gap-2 text-xs text-white/30 hover:text-white/50 transition-colors cursor-pointer mb-3"
+        className="flex items-center gap-2 text-xs text-text-muted hover:text-text-secondary transition-colors cursor-pointer mb-3"
       >
         <span
           className={`inline-block transition-transform ${open ? "rotate-90" : ""}`}
@@ -122,10 +122,10 @@ export default function ConfigZone({
       </button>
 
       {open && (
-        <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-5 space-y-6">
+        <div className="rounded-xl border border-border-subtle bg-surface-card p-5 space-y-6">
           {/* Search city */}
           <div>
-            <h3 className="text-[11px] uppercase tracking-wider text-white/25 font-semibold mb-3">
+            <h3 className="text-[11px] uppercase tracking-wider text-text-muted font-semibold mb-3">
               {t("searchCity")}
             </h3>
             <div className="flex flex-wrap gap-3 items-center">
@@ -136,7 +136,7 @@ export default function ConfigZone({
                 allCities={allCities}
               />
               <div className="flex gap-1.5 items-center">
-                <span className="text-[9px] text-white/20">{tc("lat")}</span>
+                <span className="text-[9px] text-text-faint">{tc("lat")}</span>
                 <input
                   value={lat}
                   onChange={(e) => {
@@ -144,9 +144,9 @@ export default function ConfigZone({
                     setCityName(`${e.target.value}°`);
                     setCityFlag("📍");
                   }}
-                  className="w-16 px-2 py-1.5 rounded-lg bg-white/[0.07] border border-white/10 text-white/80 text-[11px] font-mono outline-none"
+                  className="w-16 px-2 py-1.5 rounded-lg bg-surface-input border border-border-default text-text-primary text-[11px] font-mono outline-none"
                 />
-                <span className="text-[9px] text-white/20">{tc("lon")}</span>
+                <span className="text-[9px] text-text-faint">{tc("lon")}</span>
                 <input
                   value={lon}
                   onChange={(e) => {
@@ -155,7 +155,7 @@ export default function ConfigZone({
                       Math.round((parseFloat(e.target.value) || 0) / 15),
                     );
                   }}
-                  className="w-16 px-2 py-1.5 rounded-lg bg-white/[0.07] border border-white/10 text-white/80 text-[11px] font-mono outline-none"
+                  className="w-16 px-2 py-1.5 rounded-lg bg-surface-input border border-border-default text-text-primary text-[11px] font-mono outline-none"
                 />
               </div>
             </div>
@@ -171,7 +171,7 @@ export default function ConfigZone({
               )}
               <button
                 onClick={() => setSavingLocation(true)}
-                className="min-h-[44px] px-3 py-1 rounded-full bg-white/[0.06] text-white/40 text-[10px] cursor-pointer"
+                className="min-h-[44px] px-3 py-1 rounded-full bg-surface-elevated text-text-muted text-[10px] cursor-pointer"
               >
                 {tc("saveAs")}
               </button>
@@ -195,7 +195,7 @@ export default function ConfigZone({
 
           {/* Favorites */}
           <div>
-            <h3 className="text-[11px] uppercase tracking-wider text-white/25 font-semibold mb-3">
+            <h3 className="text-[11px] uppercase tracking-wider text-text-muted font-semibold mb-3">
               {t("favorites")}
             </h3>
             <div className="flex flex-wrap gap-1 items-center">
@@ -214,7 +214,7 @@ export default function ConfigZone({
                       } ${
                         isSel
                           ? "bg-amber-400/[0.18] text-amber-400 font-semibold"
-                          : "bg-white/[0.04] text-white/35"
+                          : "bg-surface-elevated text-text-muted"
                       }`}
                     >
                       {c.flag} {c.name}
@@ -238,7 +238,7 @@ export default function ConfigZone({
                 className={`min-h-[44px] px-2.5 py-1 rounded-xl text-[9px] cursor-pointer ${
                   editingFavs
                     ? "bg-amber-400/10 text-amber-400"
-                    : "bg-white/[0.04] text-white/20"
+                    : "bg-surface-elevated text-text-faint"
                 }`}
               >
                 {editingFavs ? t("done") : t("edit")}
@@ -248,7 +248,7 @@ export default function ConfigZone({
 
           {/* Solar profile */}
           <div>
-            <h3 className="text-[11px] uppercase tracking-wider text-white/25 font-semibold mb-3">
+            <h3 className="text-[11px] uppercase tracking-wider text-text-muted font-semibold mb-3">
               {t("solarProfile")}
             </h3>
             <SkinSelector
@@ -263,13 +263,13 @@ export default function ConfigZone({
 
           {/* Date controls */}
           <div>
-            <h3 className="text-[11px] uppercase tracking-wider text-white/25 font-semibold mb-3">
+            <h3 className="text-[11px] uppercase tracking-wider text-text-muted font-semibold mb-3">
               {t("date")}
             </h3>
             <div className="flex items-center gap-2 flex-wrap">
               <button
                 onClick={() => setDoy((d: number) => Math.max(1, d - 1))}
-                className="min-h-[44px] px-2 py-1.5 rounded-md bg-white/[0.06] text-white/80 cursor-pointer text-[10px]"
+                className="min-h-[44px] px-2 py-1.5 rounded-md bg-surface-elevated text-text-primary cursor-pointer text-[10px]"
               >
                 ◀
               </button>
@@ -283,7 +283,7 @@ export default function ConfigZone({
               />
               <button
                 onClick={() => setDoy((d: number) => Math.min(365, d + 1))}
-                className="min-h-[44px] px-2 py-1.5 rounded-md bg-white/[0.06] text-white/80 cursor-pointer text-[10px]"
+                className="min-h-[44px] px-2 py-1.5 rounded-md bg-surface-elevated text-text-primary cursor-pointer text-[10px]"
               >
                 ▶
               </button>
@@ -305,7 +305,7 @@ export default function ConfigZone({
 
           {/* Threshold */}
           <div>
-            <h3 className="text-[11px] uppercase tracking-wider text-white/25 font-semibold mb-3">
+            <h3 className="text-[11px] uppercase tracking-wider text-text-muted font-semibold mb-3">
               {t("threshold")}
             </h3>
             <div className="flex gap-1.5">
@@ -316,7 +316,7 @@ export default function ConfigZone({
                   className={`min-h-[44px] px-3 py-1.5 rounded-md font-mono text-[10px] cursor-pointer ${
                     threshold === th
                       ? "bg-amber-400/15 text-amber-400 font-semibold"
-                      : "bg-white/[0.04] text-white/35"
+                      : "bg-surface-elevated text-text-muted"
                   }`}
                 >
                   {th}°
@@ -327,7 +327,7 @@ export default function ConfigZone({
 
           {/* Notifications */}
           <div>
-            <h3 className="text-[11px] uppercase tracking-wider text-white/25 font-semibold mb-3">
+            <h3 className="text-[11px] uppercase tracking-wider text-text-muted font-semibold mb-3">
               {t("notifications")}
             </h3>
             <NotificationToggle {...notificationProps} />

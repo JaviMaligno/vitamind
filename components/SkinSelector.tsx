@@ -42,47 +42,41 @@ export default function SkinSelector({ skinType, areaFraction, age, onSkinChange
     0.40: t("areaSwimsuit"),
   };
 
-  const selectStyle: React.CSSProperties = {
-    padding: "5px 8px",
-    borderRadius: 6,
-    background: "rgba(255,255,255,0.06)",
-    border: "1px solid rgba(255,255,255,0.1)",
-    color: "#e0e0e0",
-    fontSize: 11,
-    fontFamily: "'DM Sans',sans-serif",
-    outline: "none",
-    cursor: "pointer",
-  };
-
   return (
-    <div style={{ marginBottom: 8 }}>
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
-        <span style={{ fontSize: 9, color: "rgba(255,255,255,0.2)", textTransform: "uppercase", letterSpacing: 1 }}>{t("type")}</span>
-        <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-          <select value={skinType} onChange={(e) => onSkinChange(Number(e.target.value) as SkinType)} style={selectStyle}>
+    <div className="mb-2">
+      <div className="flex flex-wrap gap-2 items-center">
+        <span className="text-[9px] text-text-faint uppercase tracking-wider">{t("type")}</span>
+        <div className="flex items-center gap-1">
+          <select
+            value={skinType}
+            onChange={(e) => onSkinChange(Number(e.target.value) as SkinType)}
+            className="px-2 py-1.5 rounded-md bg-surface-input border border-border-default text-text-primary text-[11px] outline-none cursor-pointer"
+          >
             {([1, 2, 3, 4, 5, 6] as SkinType[]).map((st) => (
               <option key={st} value={st}>{skinLabels[st]}</option>
             ))}
           </select>
           <button
             onClick={() => setShowHelp(!showHelp)}
-            style={{
-              width: 20, height: 20, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.15)",
-              background: showHelp ? "rgba(255,213,79,0.15)" : "rgba(255,255,255,0.05)",
-              color: showHelp ? "#FFD54F" : "rgba(255,255,255,0.4)",
-              fontSize: 11, fontWeight: 700, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
-              padding: 0, lineHeight: 1,
-            }}
+            className={`w-5 h-5 rounded-full border flex items-center justify-center text-[11px] font-bold cursor-pointer p-0 leading-none ${
+              showHelp
+                ? "border-amber-400/30 bg-amber-400/15 text-amber-400"
+                : "border-border-default bg-surface-elevated text-text-muted"
+            }`}
             title={t("help")}
           >?</button>
         </div>
-        <span style={{ fontSize: 9, color: "rgba(255,255,255,0.2)", textTransform: "uppercase", letterSpacing: 1 }}>{t("area")}</span>
-        <select value={areaFraction} onChange={(e) => onAreaChange(Number(e.target.value))} style={selectStyle}>
+        <span className="text-[9px] text-text-faint uppercase tracking-wider">{t("area")}</span>
+        <select
+          value={areaFraction}
+          onChange={(e) => onAreaChange(Number(e.target.value))}
+          className="px-2 py-1.5 rounded-md bg-surface-input border border-border-default text-text-primary text-[11px] outline-none cursor-pointer"
+        >
           {AREA_PRESETS.map((p) => (
             <option key={p.value} value={p.value}>{areaLabels[p.value] ?? p.label}</option>
           ))}
         </select>
-        <span style={{ fontSize: 9, color: "rgba(255,255,255,0.2)", textTransform: "uppercase", letterSpacing: 1 }}>{t("age")}</span>
+        <span className="text-[9px] text-text-faint uppercase tracking-wider">{t("age")}</span>
         <input
           type="number"
           min="1"
@@ -90,36 +84,33 @@ export default function SkinSelector({ skinType, areaFraction, age, onSkinChange
           placeholder="—"
           value={age ?? ""}
           onChange={(e) => onAgeChange(e.target.value ? parseInt(e.target.value) : null)}
-          style={{ ...selectStyle, width: 50, textAlign: "center" }}
+          className="w-[50px] px-2 py-1.5 rounded-md bg-surface-input border border-border-default text-text-primary text-[11px] text-center outline-none cursor-pointer"
         />
       </div>
 
       {showHelp && (
-        <div style={{
-          marginTop: 8, padding: "10px 12px", borderRadius: 8,
-          background: "rgba(255,213,79,0.04)", border: "1px solid rgba(255,213,79,0.1)",
-        }}>
-          <div style={{ fontSize: 11, fontWeight: 600, color: "#FFD54F", marginBottom: 6 }}>
+        <div className="mt-2 p-3 rounded-lg bg-amber-400/[0.04] border border-amber-400/10">
+          <div className="text-[11px] font-semibold text-amber-400 mb-1.5">
             {t("fitzpatrickTitle")}
           </div>
-          <div style={{ fontSize: 10, color: "rgba(255,255,255,0.4)", marginBottom: 8, lineHeight: 1.4 }}>
+          <div className="text-[10px] text-text-muted mb-2 leading-relaxed">
             {t("fitzpatrickHint")}
           </div>
-          <div style={{ display: "grid", gap: 4 }}>
+          <div className="grid gap-1">
             {skinHelp.map((s, i) => (
               <div
                 key={s.type}
                 onClick={() => { onSkinChange((i + 1) as SkinType); setShowHelp(false); }}
-                style={{
-                  display: "flex", gap: 8, padding: "6px 8px", borderRadius: 6, cursor: "pointer",
-                  background: skinType === i + 1 ? "rgba(255,213,79,0.1)" : "rgba(255,255,255,0.02)",
-                  border: skinType === i + 1 ? "1px solid rgba(255,213,79,0.2)" : "1px solid transparent",
-                }}
+                className={`flex gap-2 px-2 py-1.5 rounded-md cursor-pointer ${
+                  skinType === i + 1
+                    ? "bg-amber-400/10 border border-amber-400/20"
+                    : "bg-surface-card border border-transparent"
+                }`}
               >
-                <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 10, fontWeight: 700, color: "#FFD54F", minWidth: 18 }}>{s.type}</span>
+                <span className="font-mono text-[10px] font-bold text-amber-400 min-w-[18px]">{s.type}</span>
                 <div>
-                  <div style={{ fontSize: 10, color: "rgba(255,255,255,0.5)", lineHeight: 1.3 }}>{s.desc}</div>
-                  <div style={{ fontSize: 9, color: "rgba(255,255,255,0.2)", marginTop: 1 }}>{s.example}</div>
+                  <div className="text-[10px] text-text-secondary leading-snug">{s.desc}</div>
+                  <div className="text-[9px] text-text-faint mt-0.5">{s.example}</div>
                 </div>
               </div>
             ))}

@@ -48,7 +48,7 @@ export default function HeroZone({
   if (!hasLocation) {
     return (
       <section className="mx-auto max-w-[960px] py-12 px-4 text-center">
-        <h1 className="text-[36px] font-bold text-white mb-3">
+        <h1 className="text-[36px] font-bold text-text-primary mb-3">
           {t("whereAreYou")}
         </h1>
         <p className="text-sm text-text-muted mb-6">
@@ -151,7 +151,7 @@ export default function HeroZone({
 
         {canSynthesize ? (
           <>
-            <h2 className="text-[36px] md:text-[40px] font-bold text-white leading-tight mb-2">
+            <h2 className="text-[36px] md:text-[40px] font-bold text-text-primary leading-tight mb-2">
               {t("synthesisPossible")}
             </h2>
             <p className="text-sm text-text-muted mb-6">
@@ -186,7 +186,7 @@ export default function HeroZone({
           </>
         ) : (
           <>
-            <h2 className="text-[32px] md:text-[36px] font-bold text-white leading-tight mb-2">
+            <h2 className="text-[32px] md:text-[36px] font-bold text-text-primary leading-tight mb-2">
               {t("noSynthesisTitle")}
             </h2>
             <p className="text-sm text-text-muted mb-4">

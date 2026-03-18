@@ -115,16 +115,16 @@ export default function CitySearch({ onSelect, onAddFav, favorites, allCities }:
         <input
           value={query} onChange={handleChange} onFocus={() => setOpen(true)}
           placeholder={t("placeholder")}
-          className="flex-1 px-3 py-2 rounded-l-lg bg-white/[0.07] border border-white/10 text-white/80 text-sm outline-none focus:border-amber-400/30"
+          className="flex-1 px-3 py-2 rounded-l-lg bg-surface-input border border-border-default text-text-primary text-sm outline-none focus:border-amber-400/30"
         />
-        <div className="px-3 py-2 rounded-r-lg bg-white/[0.05] border border-white/10 border-l-0 text-white/30 text-sm flex items-center">
+        <div className="px-3 py-2 rounded-r-lg bg-surface-elevated border border-border-default border-l-0 text-text-muted text-sm flex items-center">
           {searching ? "⏳" : "🔍"}
         </div>
       </div>
       {open && query.length >= 2 && (
-        <div className="absolute top-full left-0 right-0 z-[200] mt-1 bg-[#141832] border border-white/[0.12] rounded-xl max-h-[350px] overflow-y-auto shadow-[0_12px_40px_rgba(0,0,0,0.7)]">
+        <div className="absolute top-full left-0 right-0 z-[200] mt-1 bg-surface border border-border-default rounded-xl max-h-[350px] overflow-y-auto shadow-[0_12px_40px_rgba(0,0,0,0.25)] dark:shadow-[0_12px_40px_rgba(0,0,0,0.7)]">
           {combined.length === 0 && !searching && (
-            <div className="p-3 text-sm text-white/30">{t("noResults")}</div>
+            <div className="p-3 text-sm text-text-muted">{t("noResults")}</div>
           )}
           {combined.map((c, i) => {
             const isFav = favorites.includes(c.id);
@@ -136,17 +136,17 @@ export default function CitySearch({ onSelect, onAddFav, favorites, allCities }:
                 tabIndex={0}
                 onClick={() => handleGoTo(c)}
                 onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); handleGoTo(c); } }}
-                className="flex items-center gap-2 px-3 py-2.5 border-b border-white/[0.04] hover:bg-white/[0.07] cursor-pointer transition-colors"
+                className="flex items-center gap-2 px-3 py-2.5 border-b border-border-subtle hover:bg-surface-elevated cursor-pointer transition-colors"
               >
                 {/* City info */}
                 <div className="flex-1 min-w-0">
-                  <div className="text-sm text-white/90">{c.flag} {c.name}</div>
+                  <div className="text-sm text-text-primary">{c.flag} {c.name}</div>
                   {(c as { _full?: string })._full && (
-                    <div className="text-[10px] text-white/25 truncate max-w-[260px]">
+                    <div className="text-[10px] text-text-muted truncate max-w-[260px]">
                       {(c as { _full?: string })._full}
                     </div>
                   )}
-                  <span className="text-[10px] text-white/20 font-mono">
+                  <span className="text-[10px] text-text-faint font-mono">
                     {c.lat.toFixed(2)}°, {c.lon.toFixed(2)}°
                     {c.population ? ` · ${(c.population / 1000).toFixed(0)}K` : ""}
                   </span>
@@ -158,7 +158,7 @@ export default function CitySearch({ onSelect, onAddFav, favorites, allCities }:
                   className={`shrink-0 px-2.5 py-1.5 rounded-lg text-xs cursor-pointer transition-colors ${
                     isFav || wasJustAdded
                       ? "bg-amber-400/15 text-amber-400"
-                      : "bg-white/[0.06] text-white/40 hover:bg-white/[0.1]"
+                      : "bg-surface-elevated text-text-muted hover:bg-surface-input"
                   }`}
                   title={t("addFavorite")}
                 >
@@ -168,7 +168,7 @@ export default function CitySearch({ onSelect, onAddFav, favorites, allCities }:
             );
           })}
           {searching && (
-            <div className="p-3 text-xs text-white/30 text-center">{t("searching")}</div>
+            <div className="p-3 text-xs text-text-muted text-center">{t("searching")}</div>
           )}
         </div>
       )}

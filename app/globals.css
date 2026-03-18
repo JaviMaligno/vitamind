@@ -3,17 +3,25 @@
 @theme {
   --color-surface: #ffffff;
   --color-surface-alt: #f8f9fa;
-  --color-surface-card: #ffffff;
-  --color-surface-elevated: #f0f1f3;
+  --color-surface-card: rgba(26, 26, 46, 0.03);
+  --color-surface-elevated: rgba(26, 26, 46, 0.06);
+  --color-surface-input: rgba(26, 26, 46, 0.06);
   --color-bg-page-from: #f5f0e8;
   --color-bg-page-via: #f0ebe3;
   --color-bg-page-to: #ede7df;
   --color-text-primary: #1a1a2e;
-  --color-text-secondary: rgba(26, 26, 46, 0.6);
-  --color-text-muted: rgba(26, 26, 46, 0.35);
-  --color-text-faint: rgba(26, 26, 46, 0.2);
-  --color-border-default: rgba(26, 26, 46, 0.1);
-  --color-border-subtle: rgba(26, 26, 46, 0.06);
+  --color-text-secondary: rgba(26, 26, 46, 0.7);
+  --color-text-muted: rgba(26, 26, 46, 0.55);
+  --color-text-faint: rgba(26, 26, 46, 0.4);
+  --color-border-default: rgba(26, 26, 46, 0.15);
+  --color-border-subtle: rgba(26, 26, 46, 0.08);
+  --color-chart-grid: rgba(255, 255, 255, 0.05);
+  --color-text-on-chart: rgba(255, 255, 255, 0.3);
+  --color-text-on-chart-faint: rgba(255, 255, 255, 0.2);
+  --color-chart-bar-fast: rgba(255, 213, 79, 0.6);
+  --color-chart-bar-medium: rgba(255, 143, 0, 0.5);
+  --color-chart-bar-slow: rgba(255, 109, 0, 0.3);
+  --color-chart-bar-inactive: rgba(128, 128, 128, 0.1);
 }
 
 .dark {
@@ -21,6 +29,7 @@
   --color-surface-alt: #080c20;
   --color-surface-card: rgba(255, 255, 255, 0.02);
   --color-surface-elevated: rgba(255, 255, 255, 0.06);
+  --color-surface-input: rgba(255, 255, 255, 0.07);
   --color-bg-page-from: #050816;
   --color-bg-page-via: #0a0e27;
   --color-bg-page-to: #080c20;
@@ -30,4 +39,11 @@
   --color-text-faint: rgba(255, 255, 255, 0.15);
   --color-border-default: rgba(255, 255, 255, 0.06);
   --color-border-subtle: rgba(255, 255, 255, 0.04);
+  --color-chart-grid: rgba(255, 255, 255, 0.05);
+  --color-text-on-chart: rgba(255, 255, 255, 0.3);
+  --color-text-on-chart-faint: rgba(255, 255, 255, 0.2);
+  --color-chart-bar-fast: rgba(255, 213, 79, 0.6);
+  --color-chart-bar-medium: rgba(255, 143, 0, 0.5);
+  --color-chart-bar-slow: rgba(255, 109, 0, 0.3);
+  --color-chart-bar-inactive: rgba(128, 128, 128, 0.1);
 }
