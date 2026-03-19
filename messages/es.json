@@ -94,7 +94,9 @@
     "targetPreset1000": "recomendado",
     "targetPreset2000": "dosis alta",
     "targetPreset4000": "dosis máx.",
-    "targetHint": "Con tu perfil actual, puedes sintetizar hasta ~{max} UI por sesión sin riesgo de quemadura. La fotodegradación impide la toxicidad por sol."
+    "targetHint": "Con tu perfil actual, puedes sintetizar hasta ~{max} UI por sesión sin riesgo de quemadura. La fotodegradación impide la toxicidad por sol.",
+    "tipSolarProfile": "Tu tipo de piel Fitzpatrick, la zona corporal expuesta y tu edad determinan la velocidad de síntesis de vitamina D. Piel más clara y más superficie expuesta = menos tiempo. La eficiencia también disminuye a partir de los ~65 años.",
+    "tipTargetIU": "400 UI/día es el mínimo; 1.000–2.000 UI es la recomendación habitual. Una sesión de mediodía en verano puede producir hasta 25.000 UI — la fotodegradación actúa como tope de seguridad natural."
   },
   "auth": {
     "login": "Iniciar sesión",
