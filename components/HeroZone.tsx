@@ -169,11 +169,19 @@ export default function HeroZone({
               </svg>
               {gpsLoading ? t("locating") : t("useMyLocation")}
             </button>
+            {gpsSlow && !gpsError && (
+              <p className="text-[10px] text-amber-400/60 max-w-[240px] leading-tight animate-pulse">
+                {t("gpsEnableHint")}
+              </p>
+            )}
             {gpsError && (
               <p className="text-[10px] text-red-400/70 max-w-[240px] leading-tight">
                 {t(gpsError)}
                 {gpsError === "gpsDenied" && (
                   <span className="block text-text-faint mt-0.5">{t("gpsDeniedHint")}</span>
+                )}
+                {(gpsError === "gpsTimeout" || gpsError === "gpsUnavailable") && (
+                  <span className="block text-text-faint mt-0.5">{t("gpsEnableHint")}</span>
                 )}
               </p>
             )}

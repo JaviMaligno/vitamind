@@ -74,11 +74,19 @@ export default function GpsButton() {
           </svg>
         )}
       </button>
+      {gps.slow && !gps.error && (
+        <p className="text-[10px] text-amber-400/60 max-w-[180px] leading-tight animate-pulse">
+          {t("gpsEnableHint")}
+        </p>
+      )}
       {gps.error && (
         <p className="text-[10px] text-red-400/70 max-w-[180px] leading-tight">
           {t(gps.error)}
           {isDenied && (
             <span className="block text-text-faint mt-0.5">{t("gpsDeniedHint")}</span>
+          )}
+          {(gps.error === "gpsTimeout" || gps.error === "gpsUnavailable") && (
+            <span className="block text-text-faint mt-0.5">{t("gpsEnableHint")}</span>
           )}
         </p>
       )}
