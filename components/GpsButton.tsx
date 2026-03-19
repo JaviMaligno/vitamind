@@ -35,6 +35,7 @@ export default function GpsButton() {
         onClick={gps.enableGps}
         disabled={gps.loading}
         title={t("useMyLocation")}
+        aria-label={t("useMyLocation")}
         className={`flex items-center justify-center w-9 h-9 rounded-lg transition-colors disabled:opacity-60 disabled:cursor-not-allowed ${bgColor}`}
       >
         {gps.loading ? (

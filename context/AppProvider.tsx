@@ -53,7 +53,7 @@ interface AppContextValue {
     lon: number | null;
     loading: boolean;
     slow: boolean;
-    error: string | null;
+    error: "gpsDenied" | "gpsTimeout" | "gpsUnavailable" | "gpsGenericError" | "gpsNotSupported" | null;
     permissionDenied: boolean;
     enableGps: () => void;
     disableGps: () => void;
