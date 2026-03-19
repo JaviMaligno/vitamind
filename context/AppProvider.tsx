@@ -20,6 +20,8 @@ interface AppContextValue {
   setAge: (v: number | null) => void;
   threshold: number;
   setThreshold: (v: number) => void;
+  targetIU: number;
+  setTargetIU: (v: number) => void;
   authUser: User | null;
   onAuthChange: (user: User | null) => void;
   // Location
@@ -102,7 +104,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     prefs.persistPreferences(loc.cityId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [prefs.threshold, loc.cityId, prefs.skinType, prefs.areaFraction, prefs.age, prefs.authUser]);
+  }, [prefs.threshold, loc.cityId, prefs.skinType, prefs.areaFraction, prefs.age, prefs.targetIU, prefs.authUser]);
 
   // Bridge: handleAuthChange needs setFavorites and setCityId from useLocation
   const onAuthChange = useCallback(
@@ -138,6 +140,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setAge: prefs.setAge,
     threshold: prefs.threshold,
     setThreshold: prefs.setThreshold,
+    targetIU: prefs.targetIU,
+    setTargetIU: prefs.setTargetIU,
     authUser: prefs.authUser,
     onAuthChange,
     lat: loc.lat,

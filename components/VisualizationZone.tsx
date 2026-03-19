@@ -25,6 +25,7 @@ interface Props {
   skinType: SkinType;
   areaFraction: number;
   age: number | null;
+  targetIU: number;
   onSelectCity: (c: City) => void;
   onSelectFromHeatmap: (lat: number, doy: number) => void;
   favorites: string[];
@@ -46,6 +47,7 @@ export default function VisualizationZone({
   skinType,
   areaFraction,
   age,
+  targetIU,
   onSelectCity,
   onSelectFromHeatmap,
   favorites,
@@ -158,6 +160,7 @@ export default function VisualizationZone({
           skinType={skinType}
           areaFraction={areaFraction}
           age={age}
+          targetIU={targetIU}
         />
       </div>
     </section>

@@ -177,6 +177,28 @@ export default function ProfilePage() {
         </div>
       </section>
 
+      {/* Target IU */}
+      <section>
+        <h3 className="text-[11px] uppercase tracking-wider text-text-faint font-semibold mb-3">
+          {t("targetIU")}
+        </h3>
+        <div className="flex gap-1.5">
+          {[400, 600, 1000, 2000].map((iu) => (
+            <button
+              key={iu}
+              onClick={() => app.setTargetIU(iu)}
+              className={`min-h-[44px] px-3 py-1.5 rounded-md font-mono text-[10px] cursor-pointer ${
+                app.targetIU === iu
+                  ? "bg-amber-400/15 text-amber-400 font-semibold"
+                  : "bg-surface-card text-text-muted"
+              }`}
+            >
+              {iu} IU
+            </button>
+          ))}
+        </div>
+      </section>
+
       {/* Notifications */}
       <section>
         <h3 className="text-[11px] uppercase tracking-wider text-text-faint font-semibold mb-3">

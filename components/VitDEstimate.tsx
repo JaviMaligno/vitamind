@@ -11,6 +11,7 @@ interface Props {
   skinType: SkinType;
   areaFraction: number;
   age: number | null;
+  targetIU: number;
 }
 
 function fmtMin(m: number): string {
@@ -21,16 +22,16 @@ function fmtMin(m: number): string {
   return r > 0 ? `${h}h ${r}min` : `${h}h`;
 }
 
-export default function VitDEstimate({ weather, curve, skinType, areaFraction, age }: Props) {
+export default function VitDEstimate({ weather, curve, skinType, areaFraction, age, targetIU }: Props) {
   const t = useTranslations("estimate");
 
   const weatherResult = useMemo(
-    () => weather ? computeExposure(weather.hours, skinType, areaFraction, 1000, age) : null,
-    [weather, skinType, areaFraction, age],
+    () => weather ? computeExposure(weather.hours, skinType, areaFraction, targetIU, age) : null,
+    [weather, skinType, areaFraction, targetIU, age],
   );
   const curveResult = useMemo(
-    () => (!weather && curve.length) ? computeExposureFromCurve(curve, skinType, areaFraction, 1000, age) : null,
-    [weather, curve, skinType, areaFraction, age],
+    () => (!weather && curve.length) ? computeExposureFromCurve(curve, skinType, areaFraction, targetIU, age) : null,
+    [weather, curve, skinType, areaFraction, targetIU, age],
   );
   const result = weatherResult ?? curveResult;
   const isTheoretical = !weatherResult && !!curveResult;
@@ -65,7 +66,7 @@ export default function VitDEstimate({ weather, curve, skinType, areaFraction, a
                 {fmtMin(result.minutesNeeded)}
               </span>
               <span className="text-[11px] text-text-muted ml-1.5">
-                {t("for1000IU")}
+                {t("forTargetIU", { iu: targetIU })}
               </span>
             </div>
             <div className="text-[11px] text-text-muted leading-relaxed">
@@ -76,7 +77,7 @@ export default function VitDEstimate({ weather, curve, skinType, areaFraction, a
 
           {/* Hourly bar chart */}
           <div className="text-[9px] text-text-faint mb-1">
-            {t("hourlyTitle")}
+            {t("hourlyTitleDynamic", { iu: targetIU })}
           </div>
           <div style={{ display: "flex", gap: 1, alignItems: "flex-end", height: 50 }}>
             {result.hourlyMinutes

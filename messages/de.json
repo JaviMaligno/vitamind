@@ -14,6 +14,7 @@
     "noSynthesis": "Kein Vitamin D heute",
     "minutesSun": "Minuten in der Sonne",
     "forVitD": "um ~1000 IE Vitamin D zu synthetisieren",
+    "forVitDDynamic": "um ~{iu} IE Vitamin D zu synthetisieren",
     "noSynthesisTitle": "Vitamin-D-Synthese ist heute nicht möglich",
     "noSynthesisHint": "Die Sonne erreicht nicht die erforderliche Höhe in",
     "advice": "Tipp:",
@@ -57,6 +58,7 @@
     "animate": "▶ Animieren",
     "pause": "⏸",
     "threshold": "Solarschwelle",
+    "targetIU": "Vitamin-D-Ziel",
     "notifications": "Benachrichtigungen"
   },
   "skin": {
@@ -155,9 +157,11 @@
     "insufficientUV": "Unzureichende UV (UVI < 3) — Vitamin-D-Synthese an diesem Datum nicht möglich",
     "supplementAdvice": "Erwägen Sie eine orale Vitamin-D-Supplementierung (800–2000 IE/Tag) in Monaten mit niedriger UV-Strahlung.",
     "for1000IU": "für 1000 IE",
+    "forTargetIU": "um {iu} IE zu synthetisieren",
     "bestHour": "Beste Stunde:",
     "uvWindow": "UV-Fenster:",
     "hourlyTitle": "Zeit pro Stunde (Min. für 1000 IE)",
+    "hourlyTitleDynamic": "Zeit pro Stunde (Min. für {iu} IE)",
     "lte15": "≤15 Min.",
     "lte30": "≤30 Min.",
     "gt30": ">30 Min.",
@@ -171,7 +175,7 @@
   },
   "dashboard": {
     "goOutBetween": "Geh zwischen {start} und {end} raus",
-    "youNeed": "Du brauchst ~{minutes} Min. mit {area} exponiert",
+    "youNeed": "Du brauchst ~{minutes} Min. mit {area} exponiert, um {iu} IE zu synthetisieren",
     "noWindowToday": "Heute keine geeigneten Bedingungen",
     "noWindowHint": "Der UV-Index ist zu niedrig für die Vitamin-D-Synthese",
     "currentUVI": "Aktueller UVI",

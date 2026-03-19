@@ -14,6 +14,7 @@
     "noSynthesis": "Šiandien vitamino D nėra",
     "minutesSun": "minučių saulėje",
     "forVitD": "sintezuoti ~1000 TV vitamino D",
+    "forVitDDynamic": "sintezuoti ~{iu} TV vitamino D",
     "noSynthesisTitle": "Šiandien vitamino D sintezė negalima",
     "noSynthesisHint": "Saulė nepasiekia reikiamo aukščio",
     "advice": "Patarimas:",
@@ -57,6 +58,7 @@
     "animate": "▶ Animuoti",
     "pause": "⏸",
     "threshold": "Saulės riba",
+    "targetIU": "Vitamino D tikslas",
     "notifications": "Pranešimai"
   },
   "skin": {
@@ -155,9 +157,11 @@
     "insufficientUV": "Nepakankamas UV (UVI < 3) — vitamino D sintezė šią datą negalima",
     "supplementAdvice": "Apsvarstykite geriamąjį vitamino D papildą (800–2000 TV/dieną) mėnesiais, kai UV spinduliuotė yra maža.",
     "for1000IU": "1000 TV",
+    "forTargetIU": "sintezuoti {iu} TV",
     "bestHour": "Geriausia valanda:",
     "uvWindow": "UV langas:",
     "hourlyTitle": "Laikas per valandą (min 1000 TV)",
+    "hourlyTitleDynamic": "Laikas per valandą (min {iu} TV)",
     "lte15": "≤15 min",
     "lte30": "≤30 min",
     "gt30": ">30 min",
@@ -171,7 +175,7 @@
   },
   "dashboard": {
     "goOutBetween": "Išeikite laukan tarp {start} ir {end}",
-    "youNeed": "Jums reikia ~{minutes} min. su {area} atidengtu",
+    "youNeed": "Jums reikia ~{minutes} min. su {area} atidengtu, kad sintezuotumėte {iu} TV",
     "noWindowToday": "Šiandien nėra tinkamų sąlygų",
     "noWindowHint": "UV indeksas per žemas vitamino D sintezei",
     "currentUVI": "Dabartinis UVI",

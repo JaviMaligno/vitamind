@@ -8,6 +8,7 @@ interface Props {
   cityName: string;
   cityFlag: string;
   areaFraction: number;
+  targetIU: number;
   loading: boolean;
 }
 
@@ -24,7 +25,7 @@ function getAreaKey(areaFraction: number): string {
   return "swimsuit";
 }
 
-export default function DayRecommendation({ record, cityName, cityFlag, areaFraction, loading }: Props) {
+export default function DayRecommendation({ record, cityName, cityFlag, areaFraction, targetIU, loading }: Props) {
   const t = useTranslations("dashboard");
 
   if (loading) {
@@ -69,7 +70,7 @@ export default function DayRecommendation({ record, cityName, cityFlag, areaFrac
             {t("goOutBetween", { start: formatHour(record.windowStart), end: formatHour(record.windowEnd) })}
           </h2>
           <p className="text-sm text-text-muted mb-4">
-            {t("youNeed", { minutes: Math.round(record.minutesNeeded), area: t(getAreaKey(areaFraction)) })}
+            {t("youNeed", { minutes: Math.round(record.minutesNeeded), area: t(getAreaKey(areaFraction)), iu: targetIU })}
           </p>
 
           <div className="flex gap-6 text-sm">

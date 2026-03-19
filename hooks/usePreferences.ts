@@ -11,6 +11,7 @@ export function usePreferences() {
   const [areaFraction, setAreaFraction] = useState(0.25);
   const [age, setAge] = useState<number | null>(null);
   const [threshold, setThreshold] = useState(50);
+  const [targetIU, setTargetIU] = useState(1000);
   const [authUser, setAuthUser] = useState<User | null>(null);
 
   // Load persisted preferences on mount
@@ -20,17 +21,18 @@ export function usePreferences() {
     if (prefs.skinType) setSkinType(prefs.skinType);
     if (prefs.areaFraction) setAreaFraction(prefs.areaFraction);
     if (prefs.age) setAge(prefs.age);
+    if (prefs.targetIU) setTargetIU(prefs.targetIU);
   }, []);
 
   // Persist preferences callback (called by page when cityId changes)
   const persistPreferences = useCallback(
     (cityId: string) => {
-      savePreferences({ threshold, lastCityId: cityId, skinType, areaFraction, age: age ?? undefined });
+      savePreferences({ threshold, lastCityId: cityId, skinType, areaFraction, age: age ?? undefined, targetIU });
       if (authUser) {
-        updateProfile(authUser.id, { threshold, lastCityId: cityId, skinType, areaFraction, age });
+        updateProfile(authUser.id, { threshold, lastCityId: cityId, skinType, areaFraction, age, targetIU });
       }
     },
-    [threshold, skinType, areaFraction, age, authUser],
+    [threshold, skinType, areaFraction, age, targetIU, authUser],
   );
 
   // Sync profile from Supabase on auth change
@@ -44,6 +46,7 @@ export function usePreferences() {
           setAreaFraction(profile.areaFraction);
           setAge(profile.age);
           setThreshold(profile.threshold);
+          setTargetIU(profile.targetIU);
           if (profile.favorites.length) setFavorites(profile.favorites);
           if (profile.lastCityId) setCityId(profile.lastCityId);
 
@@ -66,6 +69,8 @@ export function usePreferences() {
     setAge,
     threshold,
     setThreshold,
+    targetIU,
+    setTargetIU,
     authUser,
     persistPreferences,
     handleAuthChange,
