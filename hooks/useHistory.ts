@@ -3,8 +3,10 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { loadHistory, upsertDayRecord, toggleDayOverride as toggleOverrideStorage } from "@/lib/storage";
 import { computeExposure } from "@/lib/vitd";
+import { updateProfile } from "@/lib/profile";
 import type { DayRecord, WeatherHour } from "@/lib/types";
 import type { SkinType } from "@/lib/vitd";
+import type { User } from "@supabase/supabase-js";
 
 function toDateStr(d: Date): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
@@ -57,6 +59,11 @@ function datesToFill(startStr: string, endStr: string, existing: DayRecord[], ci
   return missing;
 }
 
+function syncHistoryToSupabase(user: User): void {
+  const updated = loadHistory();
+  updateProfile(user.id, { history: updated }).catch(() => {});
+}
+
 export function useHistory(
   lat: number,
   lon: number,
@@ -64,6 +71,7 @@ export function useHistory(
   skinType: SkinType,
   areaFraction: number,
   age: number | null,
+  authUser?: User | null,
 ) {
   const [records, setRecords] = useState<DayRecord[]>([]);
   const [loading, setLoading] = useState(true);
@@ -96,6 +104,7 @@ export function useHistory(
           const record = buildDayRecord(dateStr, cityId, data.hours, skinType, areaFraction, age);
           upsertDayRecord(record);
         }
+        if (authUser) syncHistoryToSupabase(authUser);
         setRecords(loadHistory());
       })
       .catch(() => {})
@@ -122,6 +131,7 @@ export function useHistory(
           const record = buildDayRecord(dateStr, cityId, data.hours, skinType, areaFraction, age);
           upsertDayRecord(record);
         }
+        if (authUser) syncHistoryToSupabase(authUser);
         setRecords(loadHistory());
       })
       .catch(() => {})
@@ -149,8 +159,9 @@ export function useHistory(
 
   const toggleOverride = useCallback((date: string) => {
     toggleOverrideStorage(date);
+    if (authUser) syncHistoryToSupabase(authUser);
     setRecords(loadHistory());
-  }, []);
+  }, [authUser]);
 
   const getToday = useCallback((): DayRecord | null => {
     const todayStr = toDateStr(new Date());

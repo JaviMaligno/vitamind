@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
-import { loadPreferences, savePreferences } from "@/lib/storage";
+import { loadPreferences, savePreferences, loadHistory, saveHistory, mergeHistory } from "@/lib/storage";
 import { loadProfile, updateProfile } from "@/lib/profile";
 import type { SkinType } from "@/lib/vitd";
 import type { User } from "@supabase/supabase-js";
@@ -46,6 +46,11 @@ export function usePreferences() {
           setThreshold(profile.threshold);
           if (profile.favorites.length) setFavorites(profile.favorites);
           if (profile.lastCityId) setCityId(profile.lastCityId);
+
+          // Merge histories: remote wins on conflict
+          const localHistory = loadHistory();
+          const merged = mergeHistory(localHistory, profile.history);
+          saveHistory(merged);
         }
       }
     },

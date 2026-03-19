@@ -117,3 +117,12 @@ export function toggleDayOverride(date: string): void {
   record.userOverride = record.userOverride === true ? null : true;
   saveHistory(records);
 }
+
+export function mergeHistory(local: DayRecord[], remote: DayRecord[]): DayRecord[] {
+  const map = new Map<string, DayRecord>();
+  for (const r of local) map.set(r.date, r);
+  for (const r of remote) map.set(r.date, r); // remote wins
+  return Array.from(map.values())
+    .sort((a, b) => a.date.localeCompare(b.date))
+    .slice(-90);
+}

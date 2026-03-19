@@ -15,7 +15,7 @@ export default function DashboardPage() {
   const app = useApp();
 
   const { records, loading, getToday, toggleOverride, requestBackfill } = useHistory(
-    app.lat, app.lon, app.cityId, app.skinType, app.areaFraction, app.age,
+    app.lat, app.lon, app.cityId, app.skinType, app.areaFraction, app.age, app.authUser,
   );
   const forecast = useForecast(app.lat, app.lon);
 
