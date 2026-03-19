@@ -18,9 +18,34 @@ export default function ProfilePage() {
   const app = useApp();
 
   const [savingLocation, setSavingLocation] = useState(false);
+  const [openTip, setOpenTip] = useState<string | null>(null);
+
+  function TipPanel({ id, text, href }: { id: string; text: string; href: string }) {
+    if (openTip !== id) return null;
+    return (
+      <div className="mt-2 mb-1 rounded-lg border border-border-subtle bg-surface-elevated px-3 py-2.5 text-[11px] text-text-muted leading-relaxed">
+        <p>{text}</p>
+        <Link href={href} className="block mt-1.5 text-amber-400/70 hover:text-amber-400 text-[10px]" onClick={() => setOpenTip(null)}>
+          {tc("learnMore")} →
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto max-w-[960px] px-4 space-y-6">
+      {/* Learn more — top entry point */}
+      <Link
+        href="/learn"
+        className="flex items-center justify-between rounded-xl border border-border-subtle bg-surface-card px-4 py-3 hover:bg-surface-elevated transition-colors"
+      >
+        <div className="flex items-center gap-2">
+          <span className="text-base">📖</span>
+          <span className="text-[12px] font-medium text-text-secondary">{tc("learnMore")}</span>
+        </div>
+        <span className="text-text-faint text-[11px]">→</span>
+      </Link>
+
       {/* Search city */}
       <section>
         <h3 className="text-[11px] uppercase tracking-wider text-text-faint font-semibold mb-3">
@@ -147,9 +172,16 @@ export default function ProfilePage() {
 
       {/* Solar profile */}
       <section>
-        <h3 className="text-[11px] uppercase tracking-wider text-text-faint font-semibold mb-3">
-          {t("solarProfile")}
-        </h3>
+        <div className="flex items-center gap-2 mb-3">
+          <h3 className="text-[11px] uppercase tracking-wider text-text-faint font-semibold flex-1">
+            {t("solarProfile")}
+          </h3>
+          <button
+            onClick={() => setOpenTip(openTip === "skin" ? null : "skin")}
+            className="w-5 h-5 rounded-full bg-surface-elevated text-text-faint hover:text-text-muted text-[9px] font-bold inline-flex items-center justify-center transition-colors cursor-pointer"
+          >ℹ</button>
+        </div>
+        <TipPanel id="skin" text={ts("tipSolarProfile")} href="/learn" />
         <SkinSelector
           skinType={app.skinType}
           areaFraction={app.areaFraction}
@@ -184,9 +216,16 @@ export default function ProfilePage() {
 
       {/* Target IU */}
       <section>
-        <h3 className="text-[11px] uppercase tracking-wider text-text-faint font-semibold mb-3">
-          {t("targetIU")}
-        </h3>
+        <div className="flex items-center gap-2 mb-3">
+          <h3 className="text-[11px] uppercase tracking-wider text-text-faint font-semibold flex-1">
+            {t("targetIU")}
+          </h3>
+          <button
+            onClick={() => setOpenTip(openTip === "iu" ? null : "iu")}
+            className="w-5 h-5 rounded-full bg-surface-elevated text-text-faint hover:text-text-muted text-[9px] font-bold inline-flex items-center justify-center transition-colors cursor-pointer"
+          >ℹ</button>
+        </div>
+        <TipPanel id="iu" text={ts("tipTargetIU")} href="/learn#supplement" />
         <div className="flex flex-wrap gap-1.5 items-center">
           {TARGET_IU_PRESETS.map(({ value, labelKey }) => (
             <button
@@ -238,19 +277,6 @@ export default function ProfilePage() {
         />
       </section>
 
-      {/* Learn more */}
-      <section>
-        <Link
-          href="/learn"
-          className="flex items-center justify-between rounded-xl border border-border-subtle bg-surface-card px-4 py-3 hover:bg-surface-elevated transition-colors"
-        >
-          <div className="flex items-center gap-2">
-            <span className="text-base">📖</span>
-            <span className="text-[12px] font-medium text-text-secondary">{tc("learnMore")}</span>
-          </div>
-          <span className="text-text-faint text-[11px]">→</span>
-        </Link>
-      </section>
     </div>
   );
 }

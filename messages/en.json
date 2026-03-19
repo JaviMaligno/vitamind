@@ -94,7 +94,9 @@
     "targetPreset1000": "recommended",
     "targetPreset2000": "high dose",
     "targetPreset4000": "max supplementation",
-    "targetHint": "With your current profile, you can synthesize up to ~{max} IU per session without burn risk. Photodegradation prevents sun-induced toxicity."
+    "targetHint": "With your current profile, you can synthesize up to ~{max} IU per session without burn risk. Photodegradation prevents sun-induced toxicity.",
+    "tipSolarProfile": "Your Fitzpatrick skin type, the body area you expose, and your age all affect how quickly you produce vitamin D. Lighter skin and more skin exposed = less time needed. Synthesis efficiency also drops after ~65.",
+    "tipTargetIU": "400 IU/day is the minimum; 1,000–2,000 IU is widely recommended. A midday summer session can produce up to 25,000 IU — with a built-in photodegradation cap that prevents overdose."
   },
   "auth": {
     "login": "Log in",
