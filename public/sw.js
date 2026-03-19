@@ -1,9 +1,10 @@
-const CACHE_NAME = "vitamind-v3";
+const CACHE_NAME = "vitamind-v4";
 
 const PRECACHE_URLS = [
   "/",
   "/dashboard",
   "/explore",
+  "/learn",
   "/offline",
 ];
 
