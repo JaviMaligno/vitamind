@@ -242,10 +242,13 @@ export default function ProfilePage() {
       <section>
         <Link
           href="/learn"
-          className="inline-flex items-center gap-1.5 text-[11px] text-text-faint hover:text-text-muted transition-colors"
+          className="flex items-center justify-between rounded-xl border border-border-subtle bg-surface-card px-4 py-3 hover:bg-surface-elevated transition-colors"
         >
-          <span>ℹ️</span>
-          <span>{tc("learnMore")}</span>
+          <div className="flex items-center gap-2">
+            <span className="text-base">📖</span>
+            <span className="text-[12px] font-medium text-text-secondary">{tc("learnMore")}</span>
+          </div>
+          <span className="text-text-faint text-[11px]">→</span>
         </Link>
       </section>
     </div>

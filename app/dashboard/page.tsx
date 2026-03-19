@@ -13,6 +13,7 @@ import Link from "next/link";
 
 export default function DashboardPage() {
   const t = useTranslations("dashboard");
+  const tc = useTranslations("common");
   const app = useApp();
 
   const { records, loading, getToday, toggleOverride, requestBackfill } = useHistory(
@@ -83,6 +84,18 @@ export default function DashboardPage() {
         onToggleOverride={toggleOverride}
         onNavigate={requestBackfill}
       />
+
+      {/* Learn more — always visible */}
+      <Link
+        href="/learn"
+        className="flex items-center justify-between rounded-xl border border-border-subtle bg-surface-card px-4 py-3 hover:bg-surface-elevated transition-colors"
+      >
+        <div className="flex items-center gap-2">
+          <span className="text-base">📖</span>
+          <span className="text-[12px] font-medium text-text-secondary">{tc("learnMore")}</span>
+        </div>
+        <span className="text-text-faint text-[11px]">→</span>
+      </Link>
     </div>
   );
 }
