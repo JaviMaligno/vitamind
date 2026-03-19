@@ -88,6 +88,8 @@ export function useHistory(
     const todayStr = toDateStr(today);
     const mondayStr = toDateStr(monday);
 
+    // Only fills missing dates — existing records are intentional snapshots
+    // and are not recalculated when targetIU changes.
     const missing = datesToFill(mondayStr, todayStr, stored, cityId);
     if (missing.length === 0) {
       setLoading(false);

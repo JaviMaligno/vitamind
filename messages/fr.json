@@ -93,7 +93,7 @@
     "targetPreset400": "minimum quotidien",
     "targetPreset1000": "recommandé",
     "targetPreset2000": "supplémentation élevée",
-    "targetPreset4000": "limite supérieure (UL)",
+    "targetPreset4000": "dose élevée",
     "targetHint": "Avec votre profil actuel, vous pouvez synthétiser jusqu'à ~{max} UI par session sans risque de brûlure. La photodégradation empêche la toxicité solaire."
   },
   "auth": {

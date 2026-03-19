@@ -35,14 +35,14 @@ const MIN_UVI = 3; // Below this, no meaningful vitamin D synthesis
  * Reference values for target IU presets.
  * Based on IOM/Endocrine Society recommendations:
  * - 400 IU: minimum daily for children/infants
- * - 600 IU: RDA for adults 19-70 (IOM)
  * - 1000 IU: common adult recommendation (Holick/Endocrine Society)
  * - 2000 IU: upper range common supplementation
- * - 4000 IU: Tolerable Upper Intake Level (IOM)
+ * - 4000 IU: high-end supplementation dose
  *
- * Note: vitamin D toxicity from sun exposure is impossible due to
- * photodegradation of previtamin D3, but higher targets require longer
- * exposure and approach erythemal (sunburn) risk.
+ * Note: the IOM Tolerable Upper Intake Level (4000 IU/day) applies to
+ * oral supplementation. Solar synthesis is self-limiting via photodegradation
+ * of previtamin D3 — toxicity from sun exposure is not possible.
+ * Higher targets require longer exposure and approach erythemal (sunburn) risk.
  */
 export const TARGET_IU_PRESETS: { value: number; labelKey: string }[] = [
   { value: 400, labelKey: "targetPreset400" },
@@ -74,12 +74,12 @@ export function ageFactor(age: number | null): number {
  *   drops to ~zero after 7.5 SED due to previtamin D3 → lumisterol/tachysterol
  */
 export function maxSessionIU(
-  skinType: SkinType,
   areaFraction: number,
   age: number | null = null,
 ): number {
   const af = ageFactor(age);
   // 0.8 * 24000 = 19200 IU for full body 1 MED, scaled by area and age
+  // Photodegradation ceiling is melanin-independent — skinType not needed
   return 19200 * areaFraction * af;
 }
 
@@ -100,8 +100,8 @@ export function maxSessionIU(
  *
  * Hard cap at 1 MED time (erythemal limit) to prevent burn risk.
  *
- * Returns { minutes, capped } where capped indicates if the target
- * exceeds what's safely achievable. Returns null if UVI < 3.
+ * Returns minutes needed (capped at 1 MED for safety), or null if UVI < 3.
+ * The `targetCapped` flag is computed externally in computeExposure() via ExposureResult.
  */
 export function minutesForVitD(
   uvi: number,
@@ -118,7 +118,7 @@ export function minutesForVitD(
   const R = (24000 * areaFraction * uvi * af) / med;
 
   // Saturation ceiling: max IU achievable per session
-  const iuSat = maxSessionIU(skinType, areaFraction, age);
+  const iuSat = maxSessionIU(areaFraction, age);
 
   // Safety ceiling: 1 MED time (prevent erythema/burns)
   const medTimeMin = med / uvi; // minutes to reach 1 MED
@@ -151,7 +151,7 @@ export function iuForMinutes(
   const med = MED[skinType];
   const af = ageFactor(age);
   const R = (24000 * areaFraction * uvi * af) / med;
-  const iuSat = maxSessionIU(skinType, areaFraction, age);
+  const iuSat = maxSessionIU(areaFraction, age);
   const tau = iuSat / R;
   return iuSat * (1 - Math.exp(-minutes / tau));
 }
@@ -207,7 +207,7 @@ export function computeExposure(
   const minutesNeeded = minutesForVitD(bestUVI, skinType, areaFraction, targetIU, age);
   if (minutesNeeded === null) return null;
 
-  const maxIU = maxSessionIU(skinType, areaFraction, age);
+  const maxIU = maxSessionIU(areaFraction, age);
   const targetCapped = targetIU >= maxIU;
 
   return { bestHour, bestUVI, minutesNeeded, maxIU, targetCapped, windowStart, windowEnd, hourlyMinutes };
@@ -264,7 +264,7 @@ export function computeExposureFromCurve(
   const minutesNeeded = minutesForVitD(bestUVI, skinType, areaFraction, targetIU, age);
   if (minutesNeeded === null) return null;
 
-  const maxIU = maxSessionIU(skinType, areaFraction, age);
+  const maxIU = maxSessionIU(areaFraction, age);
   const targetCapped = targetIU >= maxIU;
 
   return { bestHour, bestUVI, minutesNeeded, maxIU, targetCapped, windowStart, windowEnd, hourlyMinutes };

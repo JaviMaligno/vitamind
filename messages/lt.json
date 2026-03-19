@@ -93,7 +93,7 @@
     "targetPreset400": "dienos minimumas",
     "targetPreset1000": "rekomenduojama",
     "targetPreset2000": "didelė dozė",
-    "targetPreset4000": "viršutinė riba (UL)",
+    "targetPreset4000": "didelė dozė",
     "targetHint": "Su jūsų dabartiniu profiliu galite sintezuoti iki ~{max} TV per sesiją be nudegimo rizikos. Fotodegradacija apsaugo nuo saulės sukeltos toksikumo."
   },
   "auth": {

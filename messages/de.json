@@ -93,7 +93,7 @@
     "targetPreset400": "Tagesminimum",
     "targetPreset1000": "empfohlen",
     "targetPreset2000": "hohe Ergänzung",
-    "targetPreset4000": "Obergrenze (UL)",
+    "targetPreset4000": "hohe Dosis",
     "targetHint": "Mit deinem aktuellen Profil kannst du bis zu ~{max} IE pro Sitzung ohne Verbrennungsrisiko synthetisieren. Photodegradation verhindert sonnenbedingte Toxizität."
   },
   "auth": {

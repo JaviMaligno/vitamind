@@ -207,7 +207,7 @@ export default function ProfilePage() {
               value={app.targetIU}
               onChange={(e) => {
                 const v = parseInt(e.target.value);
-                if (v > 0 && v <= 10000) app.setTargetIU(v);
+                if (!isNaN(v) && v >= 100 && v <= 10000) app.setTargetIU(v);
               }}
               className="w-20 min-h-[44px] px-2 py-1.5 rounded-md bg-surface-input border border-border-default text-text-primary text-[11px] font-mono outline-none text-center"
             />
@@ -215,7 +215,7 @@ export default function ProfilePage() {
           </div>
         </div>
         <p className="text-[9px] text-text-faint mt-2 leading-relaxed">
-          {ts("targetHint", { max: Math.round(maxSessionIU(app.skinType, app.areaFraction, app.age)) })}
+          {ts("targetHint", { max: Math.round(maxSessionIU(app.areaFraction, app.age)) })}
         </p>
       </section>
 

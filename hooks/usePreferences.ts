@@ -21,7 +21,7 @@ export function usePreferences() {
     if (prefs.skinType) setSkinType(prefs.skinType);
     if (prefs.areaFraction) setAreaFraction(prefs.areaFraction);
     if (prefs.age) setAge(prefs.age);
-    if (prefs.targetIU) setTargetIU(prefs.targetIU);
+    if (prefs.targetIU !== undefined) setTargetIU(prefs.targetIU);
   }, []);
 
   // Persist preferences callback (called by page when cityId changes)
