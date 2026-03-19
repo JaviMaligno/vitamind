@@ -7,6 +7,9 @@ import { vitDHrs, getCurve, getWindow, dayOfYear, dateFromDoy, fmtTime, fmtDate 
 import { computeExposure, computeExposureFromCurve } from "@/lib/vitd";
 import HeroZone from "@/components/HeroZone";
 import VisualizationZone from "@/components/VisualizationZone";
+import CitySearch from "@/components/CitySearch";
+import GpsButton from "@/components/GpsButton";
+import type { City } from "@/lib/types";
 import { useWeather } from "@/hooks/useWeather";
 import { useAnimation } from "@/hooks/useAnimation";
 
@@ -19,14 +22,23 @@ export default function ExplorePage() {
   const [scrubMode, setScrubMode] = useState(false);
   const { animating, toggleAnim } = useAnimation(setDoy);
 
+  const [exploreCity, setExploreCity] = useState<City | null>(null);
+
+  // Local overrides — fall back to global when no local city selected
+  const lat = exploreCity?.lat ?? app.lat;
+  const lon = exploreCity?.lon ?? app.lon;
+  const tz = exploreCity?.tz ?? app.tz;
+  const cityName = exploreCity?.name ?? app.cityName;
+  const cityFlag = exploreCity?.flag ?? app.cityFlag;
+
   const date = dateFromDoy(doy);
-  const weather = useWeather(app.lat, app.lon, date);
+  const weather = useWeather(lat, lon, date);
 
   // Computed solar data
-  const curve = useMemo(() => getCurve(app.lat, app.lon, doy, app.tz), [app.lat, app.lon, doy, app.tz]);
+  const curve = useMemo(() => getCurve(lat, lon, doy, tz), [lat, lon, doy, tz]);
   const vitDWindow = useMemo(() => getWindow(curve, app.threshold), [curve, app.threshold]);
   const peak = useMemo(() => Math.max(...curve.map((p) => p.elevation)), [curve]);
-  const vdH = vitDHrs(app.lat, doy, app.threshold);
+  const vdH = vitDHrs(lat, doy, app.threshold);
 
   const exposure = useMemo(() => {
     if (weather?.hours) {
@@ -42,23 +54,29 @@ export default function ExplorePage() {
 
   // Bridge: selectFromHeatmap needs setDoy
   const onSelectFromHeatmap = useCallback(
-    (newLat: number, newDoy: number) => app.selectFromHeatmap(newLat, newDoy, setDoy),
-    [app.selectFromHeatmap],
+    (newLat: number, newDoy: number) => {
+      setExploreCity((prev) => ({
+        ...(prev ?? { id: "explore-heatmap", source: "custom" as const, lat: app.lat, lon: app.lon, tz: app.tz, name: app.cityName, flag: app.cityFlag }),
+        lat: newLat,
+      }));
+      setDoy(newDoy);
+    },
+    [app.lat, app.lon, app.tz, app.cityName, app.cityFlag],
   );
 
   return (
     <>
       {/* Zone 1 -- Hero */}
       <HeroZone
-        lat={app.lat}
-        lon={app.lon}
-        tz={app.tz}
+        lat={lat}
+        lon={lon}
+        tz={tz}
         doy={doy}
         threshold={app.threshold}
-        cityName={app.cityName}
-        cityFlag={app.cityFlag}
+        cityName={cityName}
+        cityFlag={cityFlag}
         hasLocation={app.hasLocation}
-        onSelectCity={app.selectCity}
+        onSelectCity={(c) => setExploreCity(c)}
         onAddFav={app.toggleFav}
         favorites={app.favorites}
         allCities={app.allCities}
@@ -71,15 +89,38 @@ export default function ExplorePage() {
         gpsError={app.gps.error}
       />
 
+      {/* Local city search — only affects Explore, not Dashboard */}
+      {app.hasLocation && (
+        <div className="mx-auto max-w-[960px] px-4 pb-2 flex items-center gap-2">
+          <div className="flex-1">
+            <CitySearch
+              onSelect={(city) => setExploreCity(city)}
+              onAddFav={app.toggleFav}
+              favorites={app.favorites}
+              allCities={app.allCities}
+            />
+          </div>
+          {exploreCity && (
+            <button
+              onClick={() => setExploreCity(null)}
+              className="px-3 py-2 rounded-lg bg-surface-card text-text-muted text-xs hover:bg-surface-elevated hover:text-text-secondary transition-colors whitespace-nowrap"
+            >
+              × {app.cityName}
+            </button>
+          )}
+          <GpsButton />
+        </div>
+      )}
+
       {/* Zone 2 -- Visualization */}
       <VisualizationZone
-        lat={app.lat}
-        lon={app.lon}
+        lat={lat}
+        lon={lon}
         doy={doy}
-        tz={app.tz}
+        tz={tz}
         threshold={app.threshold}
-        cityName={app.cityName}
-        cityFlag={app.cityFlag}
+        cityName={cityName}
+        cityFlag={cityFlag}
         dateLabel={dateLabel}
         curve={curve}
         weather={weather}
@@ -87,7 +128,7 @@ export default function ExplorePage() {
         areaFraction={app.areaFraction}
         age={app.age}
         targetIU={app.targetIU}
-        onSelectCity={app.selectCity}
+        onSelectCity={(c) => setExploreCity(c)}
         onSelectFromHeatmap={onSelectFromHeatmap}
         favorites={app.favorites}
         allCities={app.allCities}

@@ -9,7 +9,7 @@ export function useGeoLocation() {
   const [lon, setLon] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
   const [slow, setSlow] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<"gpsDenied" | "gpsTimeout" | "gpsUnavailable" | "gpsGenericError" | "gpsNotSupported" | null>(null);
   const [permissionDenied, setPermissionDenied] = useState(false);
   const slowTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 

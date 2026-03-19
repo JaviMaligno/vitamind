@@ -23,7 +23,7 @@ interface Props {
   onRequestGps?: () => void;
   gpsLoading?: boolean;
   gpsSlow?: boolean;
-  gpsError?: string | null;
+  gpsError?: "gpsDenied" | "gpsTimeout" | "gpsUnavailable" | "gpsGenericError" | "gpsNotSupported" | null;
 }
 
 export default function HeroZone({
@@ -141,14 +141,53 @@ export default function HeroZone({
           </span>
         </div>
 
-        {/* Quick action: return to GPS location */}
-        {onRequestGps && !cityName.includes("Mi ubicación") && !cityName.includes("My location") && (
-          <button
-            onClick={onRequestGps}
-            className="mb-4 px-3 py-1.5 rounded-lg bg-surface-card text-text-muted text-xs hover:bg-surface-elevated hover:text-text-secondary transition-colors cursor-pointer"
-          >
-            📍 {t("backToMyLocation")}
-          </button>
+        {/* Quick action: GPS button */}
+        {onRequestGps && (
+          <div className="mb-4 flex flex-col items-start gap-1">
+            <button
+              onClick={onRequestGps}
+              disabled={gpsLoading}
+              title={t("useMyLocation")}
+              aria-label={t("useMyLocation")}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs transition-colors disabled:opacity-60 disabled:cursor-not-allowed ${
+                gpsError === "gpsDenied"
+                  ? "bg-red-400/10 text-red-400/80 hover:bg-red-400/20"
+                  : gpsLoading
+                    ? "bg-surface-card text-text-muted"
+                    : "bg-surface-card text-text-muted hover:bg-surface-elevated hover:text-text-secondary"
+              }`}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                className="w-3.5 h-3.5"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M9.69 18.933l.003.001C9.89 19.02 10 19 10 19s.11.02.308-.066l.002-.001.006-.003.018-.008a5.741 5.741 0 00.281-.145c.187-.1.443-.247.745-.439a19.697 19.697 0 002.585-2.008c1.9-1.744 3.555-4.063 3.555-6.83A7.5 7.5 0 0010 2a7.5 7.5 0 00-7.5 7.5c0 2.767 1.655 5.086 3.555 6.83a19.697 19.697 0 002.585 2.008 13.77 13.77 0 00.745.439c.126.068.217.116.281.145l.018.008.006.003zM10 12.5a3 3 0 100-6 3 3 0 000 6z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              {gpsLoading ? t("locating") : t("useMyLocation")}
+            </button>
+            {gpsSlow && !gpsError && (
+              <p className="text-[10px] text-amber-400/60 max-w-[240px] leading-tight animate-pulse">
+                {t("gpsEnableHint")}
+              </p>
+            )}
+            {gpsError && (
+              <p className="text-[10px] text-red-400/70 max-w-[240px] leading-tight">
+                {t(gpsError)}
+                {gpsError === "gpsDenied" && (
+                  <span className="block text-text-faint mt-0.5">{t("gpsDeniedHint")}</span>
+                )}
+                {(gpsError === "gpsTimeout" || gpsError === "gpsUnavailable") && (
+                  <span className="block text-text-faint mt-0.5">{t("gpsEnableHint")}</span>
+                )}
+              </p>
+            )}
+          </div>
         )}
 
         {canSynthesize ? (

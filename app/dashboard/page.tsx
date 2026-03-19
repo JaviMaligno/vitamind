@@ -8,6 +8,7 @@ import DayRecommendation from "@/components/dashboard/DayRecommendation";
 import ForecastRow from "@/components/dashboard/ForecastRow";
 import HistoryCalendar from "@/components/dashboard/HistoryCalendar";
 import CitySearch from "@/components/CitySearch";
+import GpsButton from "@/components/GpsButton";
 import Link from "next/link";
 
 export default function DashboardPage() {
@@ -33,6 +34,7 @@ export default function DashboardPage() {
             allCities={app.allCities}
           />
         </div>
+        <GpsButton />
         <Link
           href="/profile"
           className="px-3 py-2 rounded-lg bg-surface-card text-text-muted text-xs hover:bg-surface-elevated hover:text-text-secondary transition-colors whitespace-nowrap"
