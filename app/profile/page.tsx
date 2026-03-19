@@ -7,6 +7,7 @@ import CitySearch from "@/components/CitySearch";
 import SkinSelector from "@/components/SkinSelector";
 import NotificationToggle from "@/components/NotificationToggle";
 import SaveLocationModal from "@/components/SaveLocationModal";
+import GpsButton from "@/components/GpsButton";
 
 export default function ProfilePage() {
   const t = useTranslations("config");
@@ -29,6 +30,7 @@ export default function ProfilePage() {
             favorites={app.favorites}
             allCities={app.allCities}
           />
+          <GpsButton />
           <div className="flex gap-1.5 items-center">
             <span className="text-[9px] text-text-faint">{tc("lat")}</span>
             <input
