@@ -54,8 +54,14 @@ export default function ExplorePage() {
 
   // Bridge: selectFromHeatmap needs setDoy
   const onSelectFromHeatmap = useCallback(
-    (newLat: number, newDoy: number) => app.selectFromHeatmap(newLat, newDoy, setDoy),
-    [app.selectFromHeatmap],
+    (newLat: number, newDoy: number) => {
+      setExploreCity((prev) => ({
+        ...(prev ?? { id: "explore-heatmap", source: "custom" as const, lat: app.lat, lon: app.lon, tz: app.tz, name: app.cityName, flag: app.cityFlag }),
+        lat: newLat,
+      }));
+      setDoy(newDoy);
+    },
+    [app.lat, app.lon, app.tz, app.cityName, app.cityFlag],
   );
 
   return (
@@ -70,7 +76,7 @@ export default function ExplorePage() {
         cityName={cityName}
         cityFlag={cityFlag}
         hasLocation={app.hasLocation}
-        onSelectCity={app.selectCity}
+        onSelectCity={(c) => setExploreCity(c)}
         onAddFav={app.toggleFav}
         favorites={app.favorites}
         allCities={app.allCities}
@@ -120,7 +126,7 @@ export default function ExplorePage() {
         skinType={app.skinType}
         areaFraction={app.areaFraction}
         age={app.age}
-        onSelectCity={app.selectCity}
+        onSelectCity={(c) => setExploreCity(c)}
         onSelectFromHeatmap={onSelectFromHeatmap}
         favorites={app.favorites}
         allCities={app.allCities}
