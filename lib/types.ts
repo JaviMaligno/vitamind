@@ -59,6 +59,7 @@ export interface UserProfile {
   favorites: string[];
   customLocations: City[];
   lastCityId: string | null;
+  history: DayRecord[];
 }
 
 export interface DayRecord {
