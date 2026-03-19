@@ -92,8 +92,8 @@
     "areaSwimsuit": "Bañador (40%)",
     "targetPreset400": "mínimo diario",
     "targetPreset1000": "recomendado",
-    "targetPreset2000": "suplementación alta",
-    "targetPreset4000": "supl. alta",
+    "targetPreset2000": "dosis alta",
+    "targetPreset4000": "dosis máx.",
     "targetHint": "Con tu perfil actual, puedes sintetizar hasta ~{max} UI por sesión sin riesgo de quemadura. La fotodegradación impide la toxicidad por sol."
   },
   "auth": {
@@ -212,7 +212,7 @@
     "confirmedCount": "{count} confirmados",
     "favorableSummary": "{count} de {total} días con condiciones favorables",
     "forecastWindow": "Ventana",
-    "forecastMinutes": "~{minutes} min con {area}",
+    "forecastMinutes": "~{minutes} min con {area} para {iu} UI",
     "forecastCloud": "{percent}% nubosidad prevista",
     "forecastHourly": "Detalle por hora",
     "noSynthesisDay": "UV insuficiente",

@@ -103,7 +103,7 @@ export default function ForecastRow({ forecast, skinType, areaFraction, age, tar
                 </div>
 
                 <p className="text-xs text-text-secondary">
-                  {t("forecastMinutes", { minutes: Math.round(exposure.minutesNeeded), area: t(getAreaKey(areaFraction)) })}
+                  {t("forecastMinutes", { minutes: Math.round(exposure.minutesNeeded), area: t(getAreaKey(areaFraction)), iu: targetIU })}
                 </p>
 
                 {/* Hourly table */}

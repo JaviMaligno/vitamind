@@ -92,8 +92,8 @@
     "areaSwimsuit": "Swimsuit (40%)",
     "targetPreset400": "daily minimum",
     "targetPreset1000": "recommended",
-    "targetPreset2000": "high supplementation",
-    "targetPreset4000": "high supplementation",
+    "targetPreset2000": "high dose",
+    "targetPreset4000": "max supplementation",
     "targetHint": "With your current profile, you can synthesize up to ~{max} IU per session without burn risk. Photodegradation prevents sun-induced toxicity."
   },
   "auth": {
@@ -212,7 +212,7 @@
     "confirmedCount": "{count} confirmed",
     "favorableSummary": "{count} of {total} days with favorable conditions",
     "forecastWindow": "Window",
-    "forecastMinutes": "~{minutes} min with {area}",
+    "forecastMinutes": "~{minutes} min with {area} for {iu} IU",
     "forecastCloud": "{percent}% cloud cover forecast",
     "forecastHourly": "Hourly detail",
     "noSynthesisDay": "Insufficient UV",

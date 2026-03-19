@@ -93,7 +93,7 @@
     "targetPreset400": "minimum quotidien",
     "targetPreset1000": "recommandé",
     "targetPreset2000": "supplémentation élevée",
-    "targetPreset4000": "dose élevée",
+    "targetPreset4000": "dose max.",
     "targetHint": "Avec votre profil actuel, vous pouvez synthétiser jusqu'à ~{max} UI par session sans risque de brûlure. La photodégradation empêche la toxicité solaire."
   },
   "auth": {
@@ -212,7 +212,7 @@
     "confirmedCount": "{count} confirmés",
     "favorableSummary": "{count} sur {total} jours avec des conditions favorables",
     "forecastWindow": "Fenêtre",
-    "forecastMinutes": "~{minutes} min avec {area}",
+    "forecastMinutes": "~{minutes} min avec {area} pour {iu} UI",
     "forecastCloud": "{percent}% de couverture nuageuse prévue",
     "forecastHourly": "Détail horaire",
     "noSynthesisDay": "UV insuffisant",

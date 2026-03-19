@@ -93,7 +93,7 @@
     "targetPreset400": "дневной минимум",
     "targetPreset1000": "рекомендуемое",
     "targetPreset2000": "высокая доза",
-    "targetPreset4000": "высокая доза",
+    "targetPreset4000": "макс. доза",
     "targetHint": "С вашим текущим профилем вы можете синтезировать до ~{max} МЕ за сеанс без риска ожога. Фотодеградация предотвращает токсичность от солнца."
   },
   "auth": {
@@ -212,7 +212,7 @@
     "confirmedCount": "{count} подтверждено",
     "favorableSummary": "{count} из {total} дней с благоприятными условиями",
     "forecastWindow": "Окно",
-    "forecastMinutes": "~{minutes} мин. с {area}",
+    "forecastMinutes": "~{minutes} мин. с {area} для {iu} МЕ",
     "forecastCloud": "{percent}% облачности по прогнозу",
     "forecastHourly": "Почасовая детализация",
     "noSynthesisDay": "Недостаточный UV",

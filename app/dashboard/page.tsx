@@ -48,7 +48,9 @@ export default function DashboardPage() {
         record={todayRecord}
         cityName={app.cityName}
         cityFlag={app.cityFlag}
+        skinType={app.skinType}
         areaFraction={app.areaFraction}
+        age={app.age}
         targetIU={app.targetIU}
         loading={loading}
       />

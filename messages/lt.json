@@ -93,7 +93,7 @@
     "targetPreset400": "dienos minimumas",
     "targetPreset1000": "rekomenduojama",
     "targetPreset2000": "didelė dozė",
-    "targetPreset4000": "didelė dozė",
+    "targetPreset4000": "maks. dozė",
     "targetHint": "Su jūsų dabartiniu profiliu galite sintezuoti iki ~{max} TV per sesiją be nudegimo rizikos. Fotodegradacija apsaugo nuo saulės sukeltos toksikumo."
   },
   "auth": {
@@ -212,7 +212,7 @@
     "confirmedCount": "{count} patvirtinta",
     "favorableSummary": "{count} iš {total} dienų su palankiomis sąlygomis",
     "forecastWindow": "Langas",
-    "forecastMinutes": "~{minutes} min. su {area}",
+    "forecastMinutes": "~{minutes} min. su {area} dėl {iu} TV",
     "forecastCloud": "{percent}% debesuotumas prognozuojamas",
     "forecastHourly": "Valandinis detalumas",
     "noSynthesisDay": "Nepakankamas UV",

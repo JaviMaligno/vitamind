@@ -1,13 +1,16 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { minutesForVitD, type SkinType } from "@/lib/vitd";
 import type { DayRecord } from "@/lib/types";
 
 interface Props {
   record: DayRecord | null;
   cityName: string;
   cityFlag: string;
+  skinType: SkinType;
   areaFraction: number;
+  age: number | null;
   targetIU: number;
   loading: boolean;
 }
@@ -25,7 +28,7 @@ function getAreaKey(areaFraction: number): string {
   return "swimsuit";
 }
 
-export default function DayRecommendation({ record, cityName, cityFlag, areaFraction, targetIU, loading }: Props) {
+export default function DayRecommendation({ record, cityName, cityFlag, skinType, areaFraction, age, targetIU, loading }: Props) {
   const t = useTranslations("dashboard");
 
   if (loading) {
@@ -70,7 +73,7 @@ export default function DayRecommendation({ record, cityName, cityFlag, areaFrac
             {t("goOutBetween", { start: formatHour(record.windowStart), end: formatHour(record.windowEnd) })}
           </h2>
           <p className="text-sm text-text-muted mb-4">
-            {t("youNeed", { minutes: Math.round(record.minutesNeeded), area: t(getAreaKey(areaFraction)), iu: targetIU })}
+            {t("youNeed", { minutes: Math.round(minutesForVitD(record.peakUVI, skinType, areaFraction, targetIU, age) ?? record.minutesNeeded), area: t(getAreaKey(areaFraction)), iu: targetIU })}
           </p>
 
           <div className="flex gap-6 text-sm">

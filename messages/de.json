@@ -93,7 +93,7 @@
     "targetPreset400": "Tagesminimum",
     "targetPreset1000": "empfohlen",
     "targetPreset2000": "hohe Ergänzung",
-    "targetPreset4000": "hohe Dosis",
+    "targetPreset4000": "max. Dosis",
     "targetHint": "Mit deinem aktuellen Profil kannst du bis zu ~{max} IE pro Sitzung ohne Verbrennungsrisiko synthetisieren. Photodegradation verhindert sonnenbedingte Toxizität."
   },
   "auth": {
@@ -212,7 +212,7 @@
     "confirmedCount": "{count} bestätigt",
     "favorableSummary": "{count} von {total} Tagen mit günstigen Bedingungen",
     "forecastWindow": "Fenster",
-    "forecastMinutes": "~{minutes} Min. mit {area}",
+    "forecastMinutes": "~{minutes} Min. mit {area} für {iu} IE",
     "forecastCloud": "{percent}% Bewölkung vorhergesagt",
     "forecastHourly": "Stündliches Detail",
     "noSynthesisDay": "Unzureichende UV",
