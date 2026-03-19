@@ -250,10 +250,10 @@ export default function HeroZone({
         )}
 
         {/* Learn more — conditional message */}
-        <div className="mt-4 pt-3 border-t border-white/5">
+        <div className="mt-4 pt-3 border-t border-border-subtle">
           <Link
             href={canSynthesize ? "/learn" : "/learn#supplement"}
-            className="flex items-center gap-1.5 text-[11px] text-text-faint hover:text-text-muted transition-colors"
+            className="flex items-center gap-1.5 text-[11px] text-text-muted hover:text-text-secondary transition-colors"
           >
             <span>📖</span>
             <span>{canSynthesize ? tc("learnMore") : td("noUvLearnTitle")}</span>
