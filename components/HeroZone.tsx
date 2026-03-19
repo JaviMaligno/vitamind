@@ -47,6 +47,8 @@ export default function HeroZone({
   gpsError,
 }: Props) {
   const t = useTranslations("hero");
+  const tc = useTranslations("common");
+  const td = useTranslations("dashboard");
 
   if (!hasLocation) {
     return (
@@ -246,6 +248,18 @@ export default function HeroZone({
             </div>
           </>
         )}
+
+        {/* Learn more — conditional message */}
+        <div className="mt-4 pt-3 border-t border-white/5">
+          <Link
+            href={canSynthesize ? "/learn" : "/learn#supplement"}
+            className="flex items-center gap-1.5 text-[11px] text-text-faint hover:text-text-muted transition-colors"
+          >
+            <span>📖</span>
+            <span>{canSynthesize ? tc("learnMore") : td("noUvLearnTitle")}</span>
+            <span className="ml-1">→</span>
+          </Link>
+        </div>
       </div>
     </section>
   );
