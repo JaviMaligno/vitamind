@@ -1,6 +1,6 @@
 import { getSupabase } from "./supabase";
-import { loadFavorites, saveFavorites, loadCustomLocations, saveCustomLocation, deleteCustomLocation, loadPreferences, savePreferences } from "./storage";
-import type { City, Preferences, UserProfile } from "./types";
+import { loadFavorites, saveFavorites, loadCustomLocations, saveCustomLocation, deleteCustomLocation, loadPreferences, savePreferences, loadHistory, saveHistory } from "./storage";
+import type { City, DayRecord, Preferences, UserProfile } from "./types";
 
 // Load full profile: from Supabase if logged in, localStorage otherwise
 export async function loadProfile(): Promise<{ profile: UserProfile | null; isLoggedIn: boolean }> {
@@ -25,6 +25,7 @@ export async function loadProfile(): Promise<{ profile: UserProfile | null; isLo
         favorites: data.favorites ?? [],
         customLocations: data.custom_locations ?? [],
         lastCityId: data.last_city_id ?? null,
+        history: (data.history as DayRecord[]) ?? [],
       },
     };
   }
@@ -43,6 +44,7 @@ export async function loadProfile(): Promise<{ profile: UserProfile | null; isLo
     favorites: favs,
     customLocations: custom,
     lastCityId: prefs.lastCityId ?? null,
+    history: loadHistory(),
   };
 
   await saveProfile(profile);
@@ -77,8 +79,11 @@ export async function saveProfile(profile: UserProfile): Promise<void> {
     favorites: profile.favorites,
     custom_locations: profile.customLocations,
     last_city_id: profile.lastCityId,
+    history: profile.history,
     updated_at: new Date().toISOString(),
   });
+
+  saveHistory(profile.history);
 }
 
 // Partial update
@@ -93,6 +98,7 @@ export async function updateProfile(id: string, updates: Partial<Omit<UserProfil
   savePreferences(prefs);
 
   if (updates.favorites) saveFavorites(updates.favorites);
+  if (updates.history) saveHistory(updates.history);
 
   const sb = getSupabase();
   if (!sb) return;
@@ -105,6 +111,7 @@ export async function updateProfile(id: string, updates: Partial<Omit<UserProfil
   if (updates.favorites !== undefined) dbUpdates.favorites = updates.favorites;
   if (updates.customLocations !== undefined) dbUpdates.custom_locations = updates.customLocations;
   if (updates.lastCityId !== undefined) dbUpdates.last_city_id = updates.lastCityId;
+  if (updates.history !== undefined) dbUpdates.history = updates.history;
 
   await sb.from("profiles").update(dbUpdates).eq("id", id);
 }
