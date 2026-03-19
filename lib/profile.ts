@@ -22,6 +22,7 @@ export async function loadProfile(): Promise<{ profile: UserProfile | null; isLo
         areaFraction: data.area_fraction ?? 0.25,
         age: data.age ?? null,
         threshold: data.threshold ?? 50,
+        targetIU: data.target_iu ?? 1000,
         favorites: data.favorites ?? [],
         customLocations: data.custom_locations ?? [],
         lastCityId: data.last_city_id ?? null,
@@ -41,6 +42,7 @@ export async function loadProfile(): Promise<{ profile: UserProfile | null; isLo
     areaFraction: prefs.areaFraction ?? 0.25,
     age: prefs.age ?? null,
     threshold: prefs.threshold,
+    targetIU: prefs.targetIU ?? 1000,
     favorites: favs,
     customLocations: custom,
     lastCityId: prefs.lastCityId ?? null,
@@ -60,6 +62,7 @@ export async function saveProfile(profile: UserProfile): Promise<void> {
     skinType: profile.skinType,
     areaFraction: profile.areaFraction,
     age: profile.age ?? undefined,
+    targetIU: profile.targetIU,
   });
   saveFavorites(profile.favorites);
   // Custom locations
@@ -76,6 +79,7 @@ export async function saveProfile(profile: UserProfile): Promise<void> {
     area_fraction: profile.areaFraction,
     age: profile.age,
     threshold: profile.threshold,
+    target_iu: profile.targetIU,
     favorites: profile.favorites,
     custom_locations: profile.customLocations,
     last_city_id: profile.lastCityId,
@@ -94,6 +98,7 @@ export async function updateProfile(id: string, updates: Partial<Omit<UserProfil
   if (updates.skinType !== undefined) prefs.skinType = updates.skinType;
   if (updates.areaFraction !== undefined) prefs.areaFraction = updates.areaFraction;
   if (updates.age !== undefined) prefs.age = updates.age ?? undefined;
+  if (updates.targetIU !== undefined) prefs.targetIU = updates.targetIU;
   if (updates.lastCityId !== undefined) prefs.lastCityId = updates.lastCityId ?? undefined;
   savePreferences(prefs);
 
@@ -108,6 +113,7 @@ export async function updateProfile(id: string, updates: Partial<Omit<UserProfil
   if (updates.skinType !== undefined) dbUpdates.skin_type = updates.skinType;
   if (updates.areaFraction !== undefined) dbUpdates.area_fraction = updates.areaFraction;
   if (updates.age !== undefined) dbUpdates.age = updates.age;
+  if (updates.targetIU !== undefined) dbUpdates.target_iu = updates.targetIU;
   if (updates.favorites !== undefined) dbUpdates.favorites = updates.favorites;
   if (updates.customLocations !== undefined) dbUpdates.custom_locations = updates.customLocations;
   if (updates.lastCityId !== undefined) dbUpdates.last_city_id = updates.lastCityId;

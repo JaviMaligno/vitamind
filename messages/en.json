@@ -14,6 +14,7 @@
     "noSynthesis": "No vitamin D today",
     "minutesSun": "minutes in the sun",
     "forVitD": "to synthesize ~1000 IU of vitamin D",
+    "forVitDDynamic": "to synthesize ~{iu} IU of vitamin D",
     "noSynthesisTitle": "Vitamin D synthesis is not possible today",
     "noSynthesisHint": "The sun does not reach the required elevation in",
     "advice": "Tip:",
@@ -57,6 +58,7 @@
     "animate": "▶ Animate",
     "pause": "⏸",
     "threshold": "Solar threshold",
+    "targetIU": "Vitamin D target",
     "notifications": "Notifications"
   },
   "skin": {
@@ -87,7 +89,12 @@
     "areaFaceHands": "Face + hands (10%)",
     "areaFaceArms": "Face + arms (18%)",
     "areaTshirtShort": "T-shirt + shorts (25%)",
-    "areaSwimsuit": "Swimsuit (40%)"
+    "areaSwimsuit": "Swimsuit (40%)",
+    "targetPreset400": "daily minimum",
+    "targetPreset1000": "recommended",
+    "targetPreset2000": "high supplementation",
+    "targetPreset4000": "high supplementation",
+    "targetHint": "With your current profile, you can synthesize up to ~{max} IU per session without burn risk. Photodegradation prevents sun-induced toxicity."
   },
   "auth": {
     "login": "Log in",
@@ -155,14 +162,17 @@
     "supplementAdvice": "Consider oral vitamin D supplementation (800–2000 IU/day) during months with low UV radiation.",
     "insufficientUV": "Insufficient UV (UVI < 3) — vitamin D synthesis not possible on this date",
     "for1000IU": "for 1000 IU",
+    "forTargetIU": "to synthesize {iu} IU",
     "bestHour": "Best hour:",
     "uvWindow": "UV Window:",
     "hourlyTitle": "Time per hour (min for 1000 IU)",
+    "hourlyTitleDynamic": "Time per hour (min for {iu} IU)",
     "lte15": "≤15 min",
     "lte30": "≤30 min",
     "gt30": ">30 min",
+    "targetCappedWarning": "Your target exceeds the ~{max} IU you can synthesize per session with your current profile. Showing maximum safe time (1 MED). Increase exposed skin or split into multiple sessions.",
     "disclaimerTheoretical": "Theoretical estimate with clear sky (no clouds or real data). Real weather data only covers ~14 days.",
-    "disclaimerReal": "Based on Holick's rule (Dowdy et al. 2010). Indicative estimate — does not replace medical advice."
+    "disclaimerReal": "Based on saturating exponential model (Holick/Dowdy 2010, de Gruijl 2016). Indicative estimate — does not replace medical advice."
   },
   "nav": {
     "myDay": "My Day",
@@ -171,7 +181,7 @@
   },
   "dashboard": {
     "goOutBetween": "Go out between {start} and {end}",
-    "youNeed": "You need ~{minutes} min with {area} exposed",
+    "youNeed": "You need ~{minutes} min with {area} exposed to synthesize {iu} IU",
     "noWindowToday": "No suitable conditions today",
     "noWindowHint": "UV index too low for vitamin D synthesis",
     "currentUVI": "Current UVI",

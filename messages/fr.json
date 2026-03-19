@@ -14,6 +14,7 @@
     "noSynthesis": "Pas de vitamine D aujourd'hui",
     "minutesSun": "minutes au soleil",
     "forVitD": "pour synthétiser ~1000 UI de vitamine D",
+    "forVitDDynamic": "pour synthétiser ~{iu} UI de vitamine D",
     "noSynthesisTitle": "La synthèse de vitamine D n'est pas possible aujourd'hui",
     "noSynthesisHint": "Le soleil n'atteint pas l'élévation nécessaire à",
     "advice": "Conseil :",
@@ -57,6 +58,7 @@
     "animate": "▶ Animer",
     "pause": "⏸",
     "threshold": "Seuil solaire",
+    "targetIU": "Objectif vitamine D",
     "notifications": "Notifications"
   },
   "skin": {
@@ -87,7 +89,12 @@
     "areaFaceHands": "Visage + mains (10%)",
     "areaFaceArms": "Visage + bras (18%)",
     "areaTshirtShort": "T-shirt + short (25%)",
-    "areaSwimsuit": "Maillot de bain (40%)"
+    "areaSwimsuit": "Maillot de bain (40%)",
+    "targetPreset400": "minimum quotidien",
+    "targetPreset1000": "recommandé",
+    "targetPreset2000": "supplémentation élevée",
+    "targetPreset4000": "dose élevée",
+    "targetHint": "Avec votre profil actuel, vous pouvez synthétiser jusqu'à ~{max} UI par session sans risque de brûlure. La photodégradation empêche la toxicité solaire."
   },
   "auth": {
     "login": "Se connecter",
@@ -155,14 +162,17 @@
     "insufficientUV": "UV insuffisant (IUV < 3) — synthèse de vitamine D impossible à cette date",
     "supplementAdvice": "Envisagez une supplémentation orale en vitamine D (800–2000 UI/jour) pendant les mois à faible rayonnement UV.",
     "for1000IU": "pour 1000 UI",
+    "forTargetIU": "pour synthétiser {iu} UI",
     "bestHour": "Meilleure heure :",
     "uvWindow": "Fenêtre UV :",
     "hourlyTitle": "Temps par heure (min pour 1000 UI)",
+    "hourlyTitleDynamic": "Temps par heure (min pour {iu} UI)",
     "lte15": "≤15 min",
     "lte30": "≤30 min",
     "gt30": ">30 min",
+    "targetCappedWarning": "Votre objectif dépasse les ~{max} UI synthétisables par session avec votre profil actuel. Temps maximum sûr affiché (1 MED). Augmentez la peau exposée ou divisez en plusieurs sessions.",
     "disclaimerTheoretical": "Estimation théorique avec ciel dégagé (sans nuages ni données réelles). Les données météo réelles ne couvrent que ~14 jours.",
-    "disclaimerReal": "Basé sur la règle de Holick (Dowdy et al. 2010). Estimation indicative — ne remplace pas un avis médical."
+    "disclaimerReal": "Basé sur un modèle exponentiel saturant (Holick/Dowdy 2010, de Gruijl 2016). Estimation indicative — ne remplace pas un avis médical."
   },
   "nav": {
     "myDay": "Mon jour",
@@ -171,7 +181,7 @@
   },
   "dashboard": {
     "goOutBetween": "Sortez entre {start} et {end}",
-    "youNeed": "Vous avez besoin de ~{minutes} min avec {area} exposés",
+    "youNeed": "Vous avez besoin de ~{minutes} min avec {area} exposés pour synthétiser {iu} UI",
     "noWindowToday": "Pas de conditions favorables aujourd'hui",
     "noWindowHint": "L'indice UV est trop bas pour synthétiser la vitamine D",
     "currentUVI": "IUV actuel",

@@ -19,6 +19,7 @@ interface Props {
   allCities: City[];
   peakElevation: number;
   dateLabel: string;
+  targetIU: number;
   onRequestGps?: () => void;
   gpsLoading?: boolean;
   gpsSlow?: boolean;
@@ -38,6 +39,7 @@ export default function HeroZone({
   allCities,
   peakElevation,
   dateLabel,
+  targetIU,
   onRequestGps,
   gpsLoading,
   gpsSlow,
@@ -194,7 +196,7 @@ export default function HeroZone({
               {t("synthesisPossible")}
             </h2>
             <p className="text-sm text-text-muted mb-6">
-              {t("forVitD")}
+              {t("forVitDDynamic", { iu: targetIU })}
             </p>
 
             {/* Details row - simplified */}

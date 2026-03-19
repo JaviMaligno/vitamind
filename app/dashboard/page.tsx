@@ -16,7 +16,7 @@ export default function DashboardPage() {
   const app = useApp();
 
   const { records, loading, getToday, toggleOverride, requestBackfill } = useHistory(
-    app.lat, app.lon, app.cityId, app.skinType, app.areaFraction, app.age, app.authUser,
+    app.lat, app.lon, app.cityId, app.skinType, app.areaFraction, app.age, app.targetIU, app.authUser,
   );
   const forecast = useForecast(app.lat, app.lon);
 
@@ -49,6 +49,7 @@ export default function DashboardPage() {
         cityName={app.cityName}
         cityFlag={app.cityFlag}
         areaFraction={app.areaFraction}
+        targetIU={app.targetIU}
         loading={loading}
       />
 
@@ -58,6 +59,7 @@ export default function DashboardPage() {
         skinType={app.skinType}
         areaFraction={app.areaFraction}
         age={app.age}
+        targetIU={app.targetIU}
       />
 
       {/* History calendar (replaces WeekTracker + MonthSummary) */}

@@ -25,9 +25,10 @@ function buildDayRecord(
   skinType: SkinType,
   areaFraction: number,
   age: number | null,
+  targetIU: number = 1000,
 ): DayRecord {
   const dayHours = hours.filter((h) => h.time.startsWith(dateStr));
-  const exposure = computeExposure(dayHours, skinType, areaFraction, 1000, age);
+  const exposure = computeExposure(dayHours, skinType, areaFraction, targetIU, age);
 
   return {
     date: dateStr,
@@ -71,6 +72,7 @@ export function useHistory(
   skinType: SkinType,
   areaFraction: number,
   age: number | null,
+  targetIU: number = 1000,
   authUser?: User | null,
 ) {
   const [records, setRecords] = useState<DayRecord[]>([]);
@@ -86,6 +88,8 @@ export function useHistory(
     const todayStr = toDateStr(today);
     const mondayStr = toDateStr(monday);
 
+    // Only fills missing dates — existing records are intentional snapshots
+    // and are not recalculated when targetIU changes.
     const missing = datesToFill(mondayStr, todayStr, stored, cityId);
     if (missing.length === 0) {
       setLoading(false);
@@ -101,7 +105,7 @@ export function useHistory(
       .then((data) => {
         if (!data?.hours) return;
         for (const dateStr of missing) {
-          const record = buildDayRecord(dateStr, cityId, data.hours, skinType, areaFraction, age);
+          const record = buildDayRecord(dateStr, cityId, data.hours, skinType, areaFraction, age, targetIU);
           upsertDayRecord(record);
         }
         if (authUser) syncHistoryToSupabase(authUser);
@@ -111,7 +115,7 @@ export function useHistory(
       .finally(() => setLoading(false));
 
     return () => controller.abort();
-  }, [lat, lon, cityId, skinType, areaFraction, age]);
+  }, [lat, lon, cityId, skinType, areaFraction, age, targetIU]);
 
   const requestBackfill = useCallback((startStr: string, endStr: string) => {
     const key = `${startStr}:${endStr}`;
@@ -128,7 +132,7 @@ export function useHistory(
       .then((data) => {
         if (!data?.hours) return;
         for (const dateStr of missing) {
-          const record = buildDayRecord(dateStr, cityId, data.hours, skinType, areaFraction, age);
+          const record = buildDayRecord(dateStr, cityId, data.hours, skinType, areaFraction, age, targetIU);
           upsertDayRecord(record);
         }
         if (authUser) syncHistoryToSupabase(authUser);
@@ -136,7 +140,7 @@ export function useHistory(
       })
       .catch(() => {})
       .finally(() => activeRequests.current.delete(key));
-  }, [lat, lon, cityId, skinType, areaFraction, age]);
+  }, [lat, lon, cityId, skinType, areaFraction, age, targetIU]);
 
   const getRecordsForWeek = useCallback((mondayDate: Date): DayRecord[] => {
     const week: DayRecord[] = [];

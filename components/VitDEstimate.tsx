@@ -11,6 +11,7 @@ interface Props {
   skinType: SkinType;
   areaFraction: number;
   age: number | null;
+  targetIU: number;
 }
 
 function fmtMin(m: number): string {
@@ -21,16 +22,16 @@ function fmtMin(m: number): string {
   return r > 0 ? `${h}h ${r}min` : `${h}h`;
 }
 
-export default function VitDEstimate({ weather, curve, skinType, areaFraction, age }: Props) {
+export default function VitDEstimate({ weather, curve, skinType, areaFraction, age, targetIU }: Props) {
   const t = useTranslations("estimate");
 
   const weatherResult = useMemo(
-    () => weather ? computeExposure(weather.hours, skinType, areaFraction, 1000, age) : null,
-    [weather, skinType, areaFraction, age],
+    () => weather ? computeExposure(weather.hours, skinType, areaFraction, targetIU, age) : null,
+    [weather, skinType, areaFraction, targetIU, age],
   );
   const curveResult = useMemo(
-    () => (!weather && curve.length) ? computeExposureFromCurve(curve, skinType, areaFraction, 1000, age) : null,
-    [weather, curve, skinType, areaFraction, age],
+    () => (!weather && curve.length) ? computeExposureFromCurve(curve, skinType, areaFraction, targetIU, age) : null,
+    [weather, curve, skinType, areaFraction, targetIU, age],
   );
   const result = weatherResult ?? curveResult;
   const isTheoretical = !weatherResult && !!curveResult;
@@ -65,7 +66,7 @@ export default function VitDEstimate({ weather, curve, skinType, areaFraction, a
                 {fmtMin(result.minutesNeeded)}
               </span>
               <span className="text-[11px] text-text-muted ml-1.5">
-                {t("for1000IU")}
+                {t("forTargetIU", { iu: targetIU })}
               </span>
             </div>
             <div className="text-[11px] text-text-muted leading-relaxed">
@@ -76,7 +77,7 @@ export default function VitDEstimate({ weather, curve, skinType, areaFraction, a
 
           {/* Hourly bar chart */}
           <div className="text-[9px] text-text-faint mb-1">
-            {t("hourlyTitle")}
+            {t("hourlyTitleDynamic", { iu: targetIU })}
           </div>
           <div style={{ display: "flex", gap: 1, alignItems: "flex-end", height: 50 }}>
             {result.hourlyMinutes
@@ -114,6 +115,13 @@ export default function VitDEstimate({ weather, curve, skinType, areaFraction, a
             <span><span style={{ display: "inline-block", width: 8, height: 8, borderRadius: 2, background: "var(--color-chart-bar-medium)", marginRight: 3, verticalAlign: "middle" }} />{t("lte30")}</span>
             <span><span style={{ display: "inline-block", width: 8, height: 8, borderRadius: 2, background: "var(--color-chart-bar-slow)", marginRight: 3, verticalAlign: "middle" }} />{t("gt30")}</span>
           </div>
+
+          {/* Warning if target exceeds safe max */}
+          {result.targetCapped && (
+            <div className="text-[10px] text-amber-500/80 mt-2 leading-relaxed">
+              {t("targetCappedWarning", { max: Math.round(result.maxIU) })}
+            </div>
+          )}
 
           {/* Disclaimer */}
           <div className="text-[8px] text-text-faint mt-2 leading-relaxed">

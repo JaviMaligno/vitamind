@@ -11,6 +11,7 @@ interface Props {
   skinType: SkinType;
   areaFraction: number;
   age: number | null;
+  targetIU: number;
 }
 
 function weatherIcon(avgCloud: number, peakUVI: number): string {
@@ -31,7 +32,7 @@ function getAreaKey(areaFraction: number): string {
   return "swimsuit";
 }
 
-export default function ForecastRow({ forecast, skinType, areaFraction, age }: Props) {
+export default function ForecastRow({ forecast, skinType, areaFraction, age, targetIU }: Props) {
   const t = useTranslations("dashboard");
   const [expandedDate, setExpandedDate] = useState<string | null>(null);
 
@@ -46,7 +47,7 @@ export default function ForecastRow({ forecast, skinType, areaFraction, age }: P
 
   const expandedDay = expandedDate ? forecast.find((d) => d.date === expandedDate) : null;
   const exposure = expandedDay
-    ? computeExposure(expandedDay.hours, skinType, areaFraction, 1000, age)
+    ? computeExposure(expandedDay.hours, skinType, areaFraction, targetIU, age)
     : null;
 
   return (

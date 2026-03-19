@@ -42,10 +42,10 @@ export default function ExplorePage() {
 
   const exposure = useMemo(() => {
     if (weather?.hours) {
-      return computeExposure(weather.hours, app.skinType, app.areaFraction, 1000, app.age);
+      return computeExposure(weather.hours, app.skinType, app.areaFraction, app.targetIU, app.age);
     }
-    return computeExposureFromCurve(curve, app.skinType, app.areaFraction, 1000, app.age);
-  }, [weather, curve, app.skinType, app.areaFraction, app.age]);
+    return computeExposureFromCurve(curve, app.skinType, app.areaFraction, app.targetIU, app.age);
+  }, [weather, curve, app.skinType, app.areaFraction, app.targetIU, app.age]);
 
   const windowLabel = vitDWindow
     ? `${fmtTime(vitDWindow.start)} \u2013 ${fmtTime(vitDWindow.end)}`
@@ -82,6 +82,7 @@ export default function ExplorePage() {
         allCities={app.allCities}
         peakElevation={peak}
         dateLabel={dateLabel}
+        targetIU={app.targetIU}
         onRequestGps={app.gps.enableGps}
         gpsLoading={app.gps.loading}
         gpsSlow={app.gps.slow}
@@ -126,6 +127,7 @@ export default function ExplorePage() {
         skinType={app.skinType}
         areaFraction={app.areaFraction}
         age={app.age}
+        targetIU={app.targetIU}
         onSelectCity={(c) => setExploreCity(c)}
         onSelectFromHeatmap={onSelectFromHeatmap}
         favorites={app.favorites}
