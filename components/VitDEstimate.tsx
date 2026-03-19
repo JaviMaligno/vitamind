@@ -2,6 +2,7 @@
 
 import { useMemo } from "react";
 import { useTranslations } from "next-intl";
+import Link from "next/link";
 import { computeExposure, computeExposureFromCurve, type SkinType } from "@/lib/vitd";
 import type { WeatherData, SolarPoint } from "@/lib/types";
 
@@ -53,7 +54,7 @@ export default function VitDEstimate({ weather, curve, skinType, areaFraction, a
             {t("insufficientUV")}
           </div>
           <div className="text-[11px] text-text-muted mt-2 leading-relaxed">
-            💊 {t("supplementAdvice")}
+            💊 <Link href="/learn#supplement" className="underline decoration-dotted hover:text-text-secondary transition-colors">{t("supplementAdvice")}</Link>
           </div>
         </div>
       )}

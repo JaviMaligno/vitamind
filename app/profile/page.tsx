@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
+import Link from "next/link";
 import { useApp } from "@/context/AppProvider";
 import { TARGET_IU_PRESETS, maxSessionIU } from "@/lib/vitd";
 import CitySearch from "@/components/CitySearch";
@@ -235,6 +236,17 @@ export default function ProfilePage() {
           threshold={app.threshold}
           cityName={app.cityName}
         />
+      </section>
+
+      {/* Learn more */}
+      <section>
+        <Link
+          href="/learn"
+          className="inline-flex items-center gap-1.5 text-[11px] text-text-faint hover:text-text-muted transition-colors"
+        >
+          <span>ℹ️</span>
+          <span>{tc("learnMore")}</span>
+        </Link>
       </section>
     </div>
   );

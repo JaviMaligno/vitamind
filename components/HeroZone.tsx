@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import Link from "next/link";
 import CitySearch from "@/components/CitySearch";
 import type { City } from "@/lib/types";
 
@@ -239,7 +240,9 @@ export default function HeroZone({
             </p>
             <div className="rounded-xl bg-surface-card border border-border-default px-4 py-3 text-sm text-text-secondary max-w-lg">
               <span className="text-amber-400/70 font-semibold">{t("advice")}</span>{" "}
-              {t("adviceText")}
+              <Link href="/learn#supplement" className="underline decoration-dotted hover:text-text-secondary transition-colors">
+                {t("adviceText")}
+              </Link>
             </div>
           </>
         )}
