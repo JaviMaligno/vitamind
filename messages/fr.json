@@ -144,7 +144,8 @@
     "cancel": "Annuler",
     "savedAs": "Enregistré sous",
     "lat": "Lat",
-    "lon": "Lon"
+    "lon": "Lon",
+    "learnMore": "En savoir plus sur la vitamine D →"
   },
   "search": {
     "placeholder": "Rechercher une ville dans le monde...",
@@ -219,6 +220,115 @@
     "noConditionsTap": "UV insuffisant ce jour",
     "legendFavorable": "Favorable",
     "legendConfirmed": "Confirmé",
-    "legendUnfavorable": "Sans UV"
+    "legendUnfavorable": "Sans UV",
+    "noUvLearnTitle": "Pas de fenêtre UV aujourd'hui — comment supplémenter",
+    "noUvLearnHint": "D3, K2, magnésium et sources alimentaires expliqués"
+  },
+  "learn": {
+    "pageTitle": "La Vitamine D & le Soleil",
+    "pageSubtitle": "Des réponses scientifiques aux questions courantes",
+    "block1": {
+      "title": "Le Soleil et la Vitamine D",
+      "subtitle": "Pourquoi l'angle solaire, l'indice UV et le verre ont tous de l'importance",
+      "q1": {
+        "q": "Pourquoi seuls les UVB produisent-ils de la vitamine D, et pas les UVA ?",
+        "a": "Le rayonnement ultraviolet se divise en UVA (315–400 nm) et UVB (280–315 nm). Seuls les UVB dans la bande étroite de 290–315 nm possèdent assez d'énergie pour isomériser le 7-déhydrocholestérol de la peau en pré-vitamine D3. Les UVA ont une longueur d'onde plus grande et une énergie plus faible — ils pénètrent plus profondément (provoquant le bronzage et le vieillissement cutané) mais ne peuvent pas déclencher la réaction photochimique qui initie la synthèse de la vitamine D. C'est aussi pourquoi les cabines de bronzage qui émettent principalement des UVA ne produisent pas de vitamine D."
+      },
+      "q2": {
+        "q": "Pourquoi l'angle solaire est-il important ? Que se passe-t-il en hiver ?",
+        "a": "L'angle du soleil au-dessus de l'horizon détermine la quantité d'atmosphère que les UVB doivent traverser avant d'atteindre votre peau. À de faibles angles — tôt le matin, en fin d'après-midi, ou à tout moment en hiver au-dessus d'environ 35° de latitude — les UVB sont presque entièrement absorbés par la couche d'ozone et n'atteignent jamais la surface. La « règle de l'ombre » illustre bien cela : si votre ombre est plus longue que votre taille, les UVB sont trop faibles pour la synthèse de la vitamine D. En hiver aux latitudes nordiques, cette condition persiste toute la journée pendant des mois. En dessous d'un IUV de 3, même une exposition prolongée ne produit que des quantités négligeables."
+      },
+      "q3": {
+        "q": "Pourquoi cela ne fonctionne-t-il pas à travers le verre ?",
+        "a": "Le verre de fenêtre standard et les pare-brise de voiture bloquent presque tous les UVB tout en laissant passer la majorité des UVA et de la lumière visible. Cela signifie que vous pouvez bronzer assis près d'une fenêtre ensoleillée — les UVA passent — mais vous ne pouvez pas synthétiser de vitamine D. Seul le verre de quartz spécial, utilisé dans certains dispositifs médicaux UV, transmet les UVB. L'implication pratique : ce soleil d'hiver chaud à travers votre fenêtre de bureau est agréable mais ne contribue en rien à vos taux de vitamine D."
+      },
+      "q4": {
+        "q": "Que signifie l'indice UV, et pourquoi l'application utilise-t-elle 3 comme minimum ?",
+        "a": "L'indice UV (IUV) est une norme internationale qui mesure l'intensité UV pondérée érythémale au niveau du sol. Il va de 0 (nul) à 11+ (extrême). L'application utilise IUV ≥ 3 comme seuil de synthèse, car en dessous de ce niveau l'intensité des UVB est trop faible pour une production significative de vitamine D, quelle que soit la durée passée à l'extérieur. Ce seuil est cohérent avec les recherches de Holick et ses collègues, et correspond approximativement à un soleil à plus de 30–35° au-dessus de l'horizon."
+      },
+      "q5": {
+        "q": "Les nuages annulent-ils les UVB ?",
+        "a": "Pas complètement. Un ciel couvert lourd réduit les UVB de 70–90 % ; une couverture nuageuse fine ou fragmentée d'environ 20–50 %. Paradoxalement, certaines formations de nuages fragmentés diffusent les UV et peuvent brièvement pousser les UVB au sol au-dessus des valeurs de ciel dégagé. L'application utilise des données UV réelles d'Open-Meteo lorsqu'elles sont disponibles, de sorte que les minutes affichées tiennent déjà compte des conditions nuageuses actuelles — aucun ajustement manuel n'est nécessaire."
+      }
+    },
+    "block2": {
+      "title": "Soleil vs Supplément",
+      "subtitle": "Comment la synthèse solaire se compare à la vitamine D orale",
+      "q1": {
+        "q": "Quelle quantité de vitamine D puis-je produire au soleil par rapport à un comprimé ?",
+        "a": "Une exposition corps entier à 1 MED (Dose Érythémale Minimale — juste avant tout rougissement) produit environ 10 000–25 000 UI de vitamine D. Une gélule de supplément standard contient 400–2 000 UI. Une session de 15–20 minutes à midi en été avec les bras et les jambes exposés peut facilement dépasser une semaine de supplémentation typique. Cependant, le soleil dispose d'un mécanisme de sécurité intégré (la photodégradation) qui prévient le surdosage — une protection que les suppléments oraux n'ont pas."
+      },
+      "q2": {
+        "q": "Peut-on faire une overdose de soleil ?",
+        "a": "Non. La synthèse solaire est autorégulée. Une fois que la pré-vitamine D3 s'accumule dans la peau, les UVB continus la convertissent en composés inertes — le lumistérol et le tachystérol — plutôt que de permettre une accumulation supplémentaire. Ce plafond de photodégradation signifie que votre corps ne produit jamais de niveaux toxiques par l'exposition solaire, quelle que soit la durée passée à l'extérieur. C'est pourquoi la limite supérieure d'apport tolérable de l'IOM de 4 000 UI/jour s'applique spécifiquement à la supplémentation orale, et non à l'exposition solaire."
+      },
+      "q3": {
+        "q": "Le soleil est-il meilleur que la supplémentation ?",
+        "a": "Les deux ont de véritables avantages. Le D3 produit par le soleil est lié aux protéines cutanées et libéré lentement dans la circulation sanguine, lui conférant une demi-vie plus longue que le D3 oral. L'exposition solaire procure également une libération d'oxyde nitrique induite par les UVA, des signaux lumineux circadiens, et d'autres bénéfices qu'aucun comprimé ne peut reproduire. Le D3 oral, en revanche, est contrôlable, à dose précise, et disponible toute l'année. La réponse pratique : profitez du soleil quand les conditions le permettent, supplémentez quand ce n'est pas le cas — ils se complètent."
+      },
+      "q4": {
+        "q": "D3 ou D2 dans les suppléments ?",
+        "a": "Le D3 (cholécalciférol) est significativement plus efficace que le D2 (ergocalciférol) pour augmenter et maintenir les taux sanguins de 25-OH-D — les recherches suggèrent que le D3 est environ 2–3× plus puissant par UI. Le D3 est également la forme produite par votre peau. Le D2, dérivé de sources végétales et fongiques, est utilisé dans les suppléments végétaliens mais moins performant que le D3 à doses équivalentes. Cherchez « cholécalciférol » sur l'étiquette ; le D3 végétalien issu de lichen est également disponible."
+      },
+      "q5": {
+        "q": "Quels taux sanguins de 25-OH-D sont considérés comme optimaux ?",
+        "a": "Plages de référence standard pour la 25-hydroxyvitamine D sérique : en dessous de 20 ng/mL (50 nmol/L) est déficient ; 20–30 ng/mL est insuffisant ; 30–50 ng/mL est suffisant. La Société d'Endocrinologie considère 40–60 ng/mL comme optimal pour les bénéfices non squelettiques. Au-dessus de 100 ng/mL (250 nmol/L), la supplémentation présente un risque de toxicité. La plupart des personnes aux latitudes nordiques ont un taux inférieur à 20 ng/mL en hiver sans supplémentation — une carence répandue mais facilement corrigeable."
+      }
+    },
+    "block3": {
+      "title": "Bien Supplémenter",
+      "subtitle": "Cofacteurs, moment de prise, sources alimentaires et posologie",
+      "q1": {
+        "q": "D3 ou D2 ? Quelle dose prendre ?",
+        "a": "Choisissez le D3 (cholécalciférol), sauf si vous êtes végétalien, auquel cas le D3 végétalien dérivé du lichen est disponible. Pour la plupart des adultes : 1 000–2 000 UI/jour si vous bénéficiez d'une exposition solaire régulière ; 2 000–4 000 UI/jour si votre exposition au soleil est limitée. La limite d'apport supérieure de la Société d'Endocrinologie est de 4 000 UI/jour pour les adultes par voie de supplémentation. Des doses plus élevées pour corriger une carence existent mais doivent être guidées par des analyses sanguines. Tester le 25-OH-D avant et après 3 mois de supplémentation est le meilleur moyen de trouver votre dose efficace personnelle."
+      },
+      "q2": {
+        "q": "Pourquoi le K2 est-il recommandé avec le D3 ?",
+        "a": "La vitamine D3 augmente l'absorption du calcium par l'intestin. La vitamine K2 — en particulier la forme MK-7 — active deux protéines clés : l'ostéocalcine (qui dirige le calcium vers les os) et la protéine Gla matricielle (qui empêche le calcium de se déposer dans les artères et les tissus mous). Sans un apport suffisant en K2, le calcium supplémentaire mobilisé par une supplémentation élevée en D3 peut contribuer à la calcification artérielle. Les sources naturelles de K2 comprennent le natto, les fromages à pâte dure affinés et les jaunes d'œuf. Si vous supplémentez plus de 1 000 UI/jour de D3, 100–200 mcg de MK-7 est largement recommandé."
+      },
+      "q3": {
+        "q": "Quel rôle joue le magnésium ?",
+        "a": "Le magnésium est un cofacteur des deux enzymes qui convertissent la vitamine D en ses formes actives (25-OH-D puis 1,25-OH-D). Sans un apport suffisant en magnésium, le D3 supplémenté peut ne pas se convertir correctement, et la supplémentation peut faire baisser les taux de magnésium, aggravant toute carence existante. On estime que 50 % des populations occidentales sont en insuffisance magnésique. Bonnes sources alimentaires : graines de courge, chocolat noir, épinards, amandes, avocat. Les suppléments de glycinate ou malate de magnésium sont bien tolérés si l'apport alimentaire est faible."
+      },
+      "q4": {
+        "q": "Pourquoi la vitamine D doit-elle être prise avec des graisses ?",
+        "a": "La vitamine D est liposoluble. Elle nécessite des graisses alimentaires dans l'intestin pour former des micelles — de minuscules paquets lipido-protéiques qui transportent la vitamine à travers la paroi intestinale dans la circulation sanguine. Des études montrent que prendre du D3 avec un repas contenant des graisses augmente l'absorption de 30–50 % par rapport à une prise à jeun. La règle pratique : prenez-le avec votre repas le plus riche en graisses de la journée. Une cuillère à soupe d'huile d'olive, une poignée de noix ou un repas au saumon fournissent tous suffisamment de graisses. Cela s'applique également aux vitamines A, E et K2."
+      },
+      "q5": {
+        "q": "Quels aliments contiennent naturellement de la vitamine D ?",
+        "a": "Très peu d'aliments en contiennent des quantités significatives : les poissons gras (saumon sauvage 600–1 000 UI pour 100 g ; maquereau, sardines, hareng), l'huile de foie de morue (~400 UI par cuillère à café, également riche en vitamine A), les jaunes d'œuf (~40 UI chacun, davantage si la poule a été exposée aux UV), les champignons exposés aux UV (peuvent fournir 400+ UI pour 100 g lorsqu'ils sont séchés lamelles vers le haut au soleil), et le foie de bœuf (petites quantités). Les aliments enrichis (lait, céréales, laits végétaux) apportent des quantités modestes selon les pays. L'alimentation seule ne peut réalistement pas atteindre la plage de 1 000–4 000 UI sans supplémentation."
+      },
+      "q6": {
+        "q": "Quel est le meilleur moment de la journée pour prendre de la vitamine D ?",
+        "a": "Avec votre repas le plus copieux de la journée — principalement pour le bénéfice d'absorption avec les graisses. Le matin ou à midi (avec le petit-déjeuner ou le déjeuner) est généralement préféré au soir, car la vitamine D peut légèrement augmenter la vigilance et certaines données suggèrent qu'une supplémentation en soirée pourrait légèrement interférer avec la production de mélatonine. Cela dit, la régularité importe bien plus que l'horaire : prenez-la au moment de la journée où vous vous en souviendrez de manière fiable."
+      }
+    },
+    "block4": {
+      "title": "Le Soleil au-delà de la Vitamine D",
+      "subtitle": "Oxyde nitrique, rythmes circadiens, humeur et immunité",
+      "q1": {
+        "q": "Qu'est-ce que l'oxyde nitrique et quel rapport avec le soleil ?",
+        "a": "L'oxyde nitrique (NO) est une molécule de signalisation qui dilate les vaisseaux sanguins, abaisse la pression artérielle et améliore la circulation. La peau stocke de grandes quantités de composés nitrite et nitrosothiol qui libèrent du NO dans la circulation sanguine en quelques minutes d'exposition aux UVA. Cela est entièrement indépendant de la synthèse de vitamine D — cela se produit à travers le verre, à l'ombre partielle, et même en hiver lorsque les UVB sont absents. Les recherches du groupe de Richard Weller à l'Université d'Édimbourg suggèrent que la libération de NO induite par les UVA pourrait expliquer l'association bien documentée entre l'exposition solaire et la réduction de la mortalité cardiovasculaire, au-delà de ce que la vitamine D seule peut expliquer."
+      },
+      "q2": {
+        "q": "Comment la lumière solaire affecte-t-elle les rythmes circadiens ?",
+        "a": "La lumière est le principal zeitgeber — « donneur de temps » — pour l'horloge circadienne humaine. La lumière matinale riche en lumière bleue à courte longueur d'onde (460–480 nm) stimule les cellules ganglionnaires rétiniennes, qui à leur tour indiquent au noyau suprachiasmatique (SCN) du cerveau de supprimer la mélatonine et de déclencher la réponse d'éveil au cortisol. Cela ancre l'horloge biologique de 24 heures. Une exposition insuffisante à la lumière matinale retarde l'endormissement, perturbe la régulation hormonale, et est associée aux troubles de l'humeur et au dysfonctionnement métabolique. La fenêtre idéale est les 30–60 premières minutes après le réveil, en plein air — même par temps couvert, la lumière extérieure est typiquement 10–50× plus lumineuse que l'éclairage intérieur."
+      },
+      "q3": {
+        "q": "À quoi sert la lumière de l'aube si elle ne produit pas de vitamine D ?",
+        "a": "La lumière de l'aube a un profil spectral complètement différent de celui du soleil de midi : elle est riche en longueurs d'onde rouge et proche infrarouge (600–1 000 nm), avec peu d'UVB et une lumière bleue modérée. Cette lumière infrarouge pénètre à plusieurs centimètres dans les tissus et active le cytochrome c oxydase dans les mitochondries, améliorant la production d'ATP et l'énergie cellulaire. Elle élimine également la mélatonine nocturne plus doucement qu'une lumière bleue de haute intensité, facilitant la transition vers l'éveil. Les dispositifs de thérapie par lumière rouge et proche infrarouge (longueurs d'onde 630–850 nm) reproduisent une partie de ce spectre à des fins thérapeutiques."
+      },
+      "q4": {
+        "q": "Existe-t-il un lien entre soleil et immunité au-delà de la vitamine D ?",
+        "a": "Oui. L'exposition aux UV module indépendamment la fonction immunitaire par des mécanismes distincts de la vitamine D : elle induit des lymphocytes T régulateurs et modifie les cellules présentatrices d'antigènes de manière à supprimer les réponses inflammatoires. C'est la base de la photothérapie UV utilisée cliniquement dans le psoriasis, l'eczéma et le vitiligo. Certains chercheurs relient cette immunomodulation UV plus large au gradient de latitude dans la prévalence des maladies auto-immunes — la sclérose en plaques, le diabète de type 1 et les maladies inflammatoires chroniques de l'intestin sont tous significativement plus fréquents aux latitudes élevées, un schéma seulement partiellement expliqué par les taux de vitamine D."
+      },
+      "q5": {
+        "q": "La lumière solaire affecte-t-elle l'humeur ? (sérotonine et mélatonine)",
+        "a": "Fortement. La lumière vive stimule la synthèse de sérotonine via les noyaux du raphé dans le tronc cérébral — ce mécanisme sous-tend la luminothérapie en tant que traitement de première ligne du Trouble Affectif Saisonnier (TAS). La sérotonine est également le précurseur de la mélatonine : une sérotonine diurne adéquate soutient une meilleure production de mélatonine la nuit, améliorant la qualité du sommeil. Par ailleurs, une lumière extérieure à haute luminosité déclenche la libération de dopamine dans la rétine, ce qui semble ralentir la progression de la myopie chez les enfants. Les études de population montrent systématiquement des associations entre le temps passé à l'extérieur, l'humeur et la qualité du sommeil qui vont bien au-delà du statut en vitamine D."
+      }
+    },
+    "backToApp": "Retour à l'application",
+    "learnMoreLink": "En savoir plus sur la vitamine D →",
+    "supplementLink": "Comment bien supplémenter →"
   }
 }

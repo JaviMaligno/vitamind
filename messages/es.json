@@ -144,7 +144,8 @@
     "cancel": "Cancelar",
     "savedAs": "Guardado como",
     "lat": "Lat",
-    "lon": "Lon"
+    "lon": "Lon",
+    "learnMore": "Más sobre vitamina D y el sol →"
   },
   "search": {
     "placeholder": "Buscar cualquier ciudad del mundo...",
@@ -219,6 +220,115 @@
     "noConditionsTap": "UV insuficiente este día",
     "legendFavorable": "Favorable",
     "legendConfirmed": "Confirmado",
-    "legendUnfavorable": "Sin UV"
+    "legendUnfavorable": "Sin UV",
+    "noUvLearnTitle": "Sin ventana UV hoy — cómo suplementar",
+    "noUvLearnHint": "D3, K2, magnesio y fuentes alimentarias explicados"
+  },
+  "learn": {
+    "pageTitle": "Vitamina D y el Sol",
+    "pageSubtitle": "Respuestas científicas a preguntas frecuentes",
+    "block1": {
+      "title": "El Sol y la Vitamina D",
+      "subtitle": "Por qué importan el ángulo solar, el índice UV y el cristal",
+      "q1": {
+        "q": "¿Por qué solo el UVB produce vitamina D y no el UVA?",
+        "a": "La radiación ultravioleta se divide en UVA (315–400 nm) y UVB (280–315 nm). Solo el UVB en la banda estrecha de 290–315 nm tiene suficiente energía para isomerizar el 7-dehidrocolesterol de la piel en pre-vitamina D3. Los rayos UVA tienen mayor longitud de onda y menor energía — penetran más profundo (causando bronceado y envejecimiento cutáneo) pero no pueden desencadenar la reacción fotoquímica que inicia la síntesis de vitamina D. Por eso los soláriums que emiten principalmente UVA tampoco producen vitamina D."
+      },
+      "q2": {
+        "q": "¿Por qué importa el ángulo solar? ¿Qué pasa en invierno?",
+        "a": "El ángulo del sol sobre el horizonte determina cuánta atmósfera debe atravesar el UVB antes de llegar a tu piel. Con ángulos bajos — primera hora de la mañana, última de la tarde, o cualquier momento en invierno por encima de unos 35° de latitud — la capa de ozono absorbe casi todo el UVB antes de que llegue a la superficie. La 'regla de la sombra' lo resume bien: si tu sombra es más larga que tu altura, el UVB es demasiado débil para sintetizar vitamina D. En invierno a latitudes altas, esta situación se mantiene todo el día durante meses. Por debajo de UVI 3, incluso una exposición prolongada produce cantidades despreciables."
+      },
+      "q3": {
+        "q": "¿Por qué no funciona a través del cristal?",
+        "a": "El vidrio estándar de ventanas y parabrisas bloquea casi todo el UVB mientras deja pasar la mayor parte del UVA y la luz visible. Eso significa que puedes broncearte junto a una ventana soleada — el UVA sí pasa — pero no puedes sintetizar vitamina D. Solo el vidrio de cuarzo especial, usado en algunos equipos médicos de UV, transmite UVB. La conclusión práctica: ese sol cálido de invierno a través de la ventana de la oficina sienta bien, pero no contribuye en nada a tus niveles de vitamina D."
+      },
+      "q4": {
+        "q": "¿Qué significa el índice UV y por qué la app usa 3 como mínimo?",
+        "a": "El Índice UV (UVI) es un estándar internacional que mide la intensidad UV a nivel del suelo ponderada por el espectro eritémico. Va de 0 (nulo) a 11+ (extremo). La app usa UVI ≥ 3 como umbral de síntesis porque por debajo de ese nivel la intensidad de UVB es demasiado baja para producir vitamina D de forma significativa, independientemente del tiempo que pases al aire libre. Este umbral es coherente con la investigación de Holick y colaboradores, y corresponde aproximadamente a un ángulo solar superior a 30–35°."
+      },
+      "q5": {
+        "q": "¿Las nubes anulan el UVB?",
+        "a": "No por completo. Un cielo muy nublado reduce el UVB entre un 70 y un 90%; una nubosidad parcial o fina, entre un 20 y un 50%. Paradójicamente, ciertas formaciones de nubes dispersas pueden reflejar el UV y elevar brevemente el UVB a nivel del suelo por encima de los valores de cielo despejado. La app usa datos UV reales de Open-Meteo cuando están disponibles, por lo que los minutos mostrados ya tienen en cuenta las condiciones nubosas actuales — no es necesario ningún ajuste manual."
+      }
+    },
+    "block2": {
+      "title": "Sol vs Suplemento",
+      "subtitle": "Cómo se compara la síntesis solar con la vitamina D oral",
+      "q1": {
+        "q": "¿Cuánta vitamina D puedo producir al sol comparado con una pastilla?",
+        "a": "Una exposición de cuerpo completo a 1 DEM (Dosis Eritémica Mínima — justo antes de que aparezca enrojecimiento) produce alrededor de 10.000–25.000 UI de vitamina D. Una cápsula estándar de suplemento contiene 400–2.000 UI. Una sesión de 15–20 minutos al mediodía en verano con brazos y piernas expuestos puede superar fácilmente una semana de suplementación típica. Sin embargo, el sol tiene un mecanismo de seguridad integrado (la fotodegradación) que previene la sobredosis — una protección que los suplementos orales no tienen."
+      },
+      "q2": {
+        "q": "¿Puedo intoxicarme con el sol?",
+        "a": "No. La síntesis solar es autolimitante. Una vez que la pre-vitamina D3 se acumula en la piel, el UVB continuo la convierte en compuestos inertes — lumisterol y taquisterol — en lugar de permitir más acumulación. Este techo de fotodegradación significa que tu cuerpo nunca produce niveles tóxicos por exposición solar, sin importar cuánto tiempo pases al aire libre. Por eso el Nivel Máximo Tolerable de Ingesta de la IOM de 4.000 UI/día se aplica específicamente a la suplementación oral, no a la luz solar."
+      },
+      "q3": {
+        "q": "¿Es mejor el sol que suplementar?",
+        "a": "Ambos tienen ventajas reales. La D3 producida por el sol está unida a proteínas cutáneas y se libera lentamente al torrente sanguíneo, lo que le da una vida media más larga que la D3 oral. La exposición solar también proporciona liberación de óxido nítrico mediada por UVA, señales de luz circadiana y otros beneficios que ninguna pastilla puede replicar. La D3 oral, por otro lado, es controlable, precisa en dosis y disponible durante todo el año. La respuesta práctica: usa el sol cuando las condiciones lo permitan, suplementa cuando no — se complementan."
+      },
+      "q4": {
+        "q": "¿D3 o D2 en los suplementos?",
+        "a": "La D3 (colecalciferol) es significativamente más eficaz que la D2 (ergocalciferol) para elevar y mantener los niveles de 25-OH-D en sangre — la investigación sugiere que la D3 es aproximadamente 2–3 veces más potente por UI. La D3 es además la forma que produce tu piel. La D2, derivada de fuentes vegetales y fúngicas, se usa en suplementos veganos pero tiene un rendimiento inferior a la D3 en dosis equivalentes. Busca 'colecalciferol' en la etiqueta; la D3 vegana de liquen también está disponible."
+      },
+      "q5": {
+        "q": "¿Qué niveles de 25-OH-D en sangre se consideran óptimos?",
+        "a": "Rangos de referencia estándar para la 25-hidroxivitamina D sérica: por debajo de 20 ng/mL (50 nmol/L) es deficiencia; 20–30 ng/mL es insuficiencia; 30–50 ng/mL es suficiente. La Sociedad de Endocrinología considera 40–60 ng/mL óptimo para beneficios no esqueléticos. Por encima de 100 ng/mL (250 nmol/L) existe riesgo de toxicidad por suplementación. La mayoría de las personas en latitudes altas tienen niveles por debajo de 20 ng/mL en invierno sin suplementación — una deficiencia generalizada pero fácilmente corregible."
+      }
+    },
+    "block3": {
+      "title": "Suplementar Bien",
+      "subtitle": "Cofactores, momento, fuentes alimentarias y dosis",
+      "q1": {
+        "q": "¿D3 o D2? ¿Cuánto tomar?",
+        "a": "Elige D3 (colecalciferol) salvo que seas vegano, en cuyo caso está disponible D3 vegana derivada de liquen. Para la mayoría de adultos: 1.000–2.000 UI/día si recibes sol regular; 2.000–4.000 UI/día si tienes exposición solar limitada. El límite máximo tolerable de la Sociedad de Endocrinología es de 4.000 UI/día para adultos en suplementación. Existen dosis más altas para corregir deficiencia, pero deben guiarse por análisis de sangre. Medir la 25-OH-D antes y después de 3 meses de suplementación es la mejor forma de encontrar tu dosis efectiva personal."
+      },
+      "q2": {
+        "q": "¿Por qué se recomienda tomar K2 junto con D3?",
+        "a": "La vitamina D3 aumenta la absorción de calcio en el intestino. La vitamina K2 — en particular la forma MK-7 — activa dos proteínas clave: la osteocalcina (dirige el calcio hacia los huesos) y la proteína Gla de la matriz (impide que el calcio se deposite en arterias y tejidos blandos). Sin K2 suficiente, el calcio extra movilizado por dosis altas de D3 puede contribuir a la calcificación arterial. Fuentes naturales de K2: natto, quesos curados duros y yemas de huevo. Si suplementas más de 1.000 UI/día de D3, se recomienda ampliamente añadir 100–200 mcg de MK-7."
+      },
+      "q3": {
+        "q": "¿Qué papel tiene el magnesio?",
+        "a": "El magnesio es cofactor de las dos enzimas que convierten la vitamina D en sus formas activas (25-OH-D y luego 1,25-OH-D). Sin magnesio suficiente, la D3 suplementada puede no convertirse correctamente, y la suplementación puede reducir aún más los niveles de magnesio, agravando cualquier déficit existente. Se estima que el 50% de la población occidental tiene insuficiencia de magnesio. Buenas fuentes dietéticas: semillas de calabaza, chocolate negro, espinacas, almendras, aguacate. El glicinato o malato de magnesio son bien tolerados si la ingesta dietética es baja."
+      },
+      "q4": {
+        "q": "¿Por qué hay que tomar la vitamina D con grasa?",
+        "a": "La vitamina D es liposoluble. Necesita grasa en el intestino para formar micelas — pequeños paquetes de grasa y proteínas que transportan la vitamina a través de la pared intestinal al torrente sanguíneo. Los estudios muestran que tomar D3 con una comida que contenga grasa aumenta la absorción entre un 30 y un 50% en comparación con tomarla en ayunas. La regla práctica: tómala con la comida más rica en grasas del día. Una cucharada de aceite de oliva, un puñado de frutos secos o una comida con salmón proporcionan grasa suficiente. Esto se aplica igualmente a las vitaminas A, E y K2."
+      },
+      "q5": {
+        "q": "¿Qué alimentos contienen vitamina D de forma natural?",
+        "a": "Muy pocos alimentos contienen cantidades significativas: pescado azul (salmón salvaje 600–1.000 UI por 100 g; caballa, sardinas, arenque), aceite de hígado de bacalao (~400 UI por cucharadita, también rico en vitamina A), yemas de huevo (~40 UI cada una, más si la gallina tuvo exposición UV), setas expuestas al sol (pueden aportar 400+ UI por 100 g cuando se secan con las láminas hacia arriba al sol) e hígado de ternera (cantidades pequeñas). Los alimentos fortificados (leche, cereales, bebidas vegetales) añaden cantidades modestas según el país. La dieta sola no puede alcanzar de manera realista el rango de 1.000–4.000 UI sin suplementación."
+      },
+      "q6": {
+        "q": "¿Cuál es el mejor momento del día para tomar la vitamina D?",
+        "a": "Con la comida más copiosa del día — principalmente por el beneficio de absorción con grasa. Se prefiere por la mañana o al mediodía (con el desayuno o el almuerzo) antes que por la noche porque la vitamina D puede aumentar ligeramente el estado de alerta y hay cierta evidencia de que la suplementación nocturna podría interferir levemente con la producción de melatonina. Dicho esto, la consistencia importa mucho más que el momento: tómala cuando sepas que lo recordarás de forma fiable."
+      }
+    },
+    "block4": {
+      "title": "El Sol Más Allá de la Vitamina D",
+      "subtitle": "Óxido nítrico, ritmos circadianos, estado de ánimo e inmunidad",
+      "q1": {
+        "q": "¿Qué es el óxido nítrico y qué tiene que ver con el sol?",
+        "a": "El óxido nítrico (NO) es una molécula de señalización que dilata los vasos sanguíneos, reduce la presión arterial y mejora la circulación. La piel almacena grandes cantidades de compuestos de nitrito y nitrosotiol que liberan NO al torrente sanguíneo en cuestión de minutos tras la exposición al UVA. Esto es completamente independiente de la síntesis de vitamina D — ocurre a través del cristal, en semisombra e incluso en invierno cuando el UVB está ausente. La investigación del grupo de Richard Weller en la Universidad de Edimburgo sugiere que la liberación de NO mediada por UVA puede explicar la bien documentada asociación entre la exposición solar y la reducción de la mortalidad cardiovascular, más allá de lo que puede explicar la vitamina D por sí sola."
+      },
+      "q2": {
+        "q": "¿Cómo afecta la luz solar a los ritmos circadianos?",
+        "a": "La luz es el principal zeitgeber — 'dador de tiempo' — del reloj circadiano humano. La luz solar de la mañana, rica en luz azul de longitud de onda corta (460–480 nm), activa las células ganglionares de la retina, que a su vez indican al núcleo supraquiasmático (NSQ) del cerebro que suprima la melatonina y active la respuesta de despertar del cortisol. Esto ancla el reloj corporal de 24 horas. Una exposición insuficiente a la luz matutina retrasa la conciliación del sueño, altera el timing hormonal y se asocia con trastornos del estado de ánimo y disfunción metabólica. La ventana ideal es los primeros 30–60 minutos tras despertar, en el exterior — incluso en días nublados, la luz exterior es típicamente 10–50 veces más brillante que la iluminación interior."
+      },
+      "q3": {
+        "q": "¿Para qué sirve la luz del amanecer si no produce vitamina D?",
+        "a": "La luz del amanecer tiene un perfil espectral completamente diferente al sol del mediodía: es rica en longitudes de onda roja e infrarroja cercana (600–1.000 nm), con poco UVB y luz azul moderada. Esta luz infrarroja penetra varios centímetros en el tejido y activa el citocromo c oxidasa en las mitocondrias, mejorando la producción de ATP y la energía celular. También elimina la melatonina nocturna de forma más suave que la luz azul de alta intensidad, facilitando la transición al estado de vigilia. Los dispositivos de terapia de luz roja e infrarroja cercana (longitudes de onda 630–850 nm) replican parte de este espectro con fines terapéuticos."
+      },
+      "q4": {
+        "q": "¿Hay relación entre el sol y la inmunidad más allá de la vitamina D?",
+        "a": "Sí. La exposición UV modula independientemente la función inmunitaria a través de mecanismos separados de la vitamina D: induce células T reguladoras y altera las células presentadoras de antígenos de forma que suprimen las respuestas inflamatorias. Esta es la base de la fototerapia UV utilizada clínicamente en psoriasis, eccema y vitíligo. Algunos investigadores vinculan esta inmunomodulación UV más amplia con el gradiente latitudinal en la prevalencia de enfermedades autoinmunes — la esclerosis múltiple, la diabetes tipo 1 y la enfermedad inflamatoria intestinal son significativamente más comunes a latitudes altas, un patrón que los niveles de vitamina D solo explican parcialmente."
+      },
+      "q5": {
+        "q": "¿Afecta la luz solar al estado de ánimo? (serotonina y melatonina)",
+        "a": "Claramente. La luz intensa estimula la síntesis de serotonina a través de los núcleos del rafe en el tronco encefálico — este mecanismo sustenta la fototerapia como tratamiento de primera línea para el Trastorno Afectivo Estacional (TAE). La serotonina es también el precursor de la melatonina: una serotonina diurna adecuada favorece una mejor producción de melatonina por la noche, mejorando la calidad del sueño. Por separado, la luz natural de alta luminancia desencadena la liberación de dopamina en la retina, lo que parece frenar la progresión de la miopía en niños. Los estudios poblacionales muestran de forma consistente asociaciones entre el tiempo al aire libre, el estado de ánimo y la calidad del sueño que van mucho más allá del estado de vitamina D."
+      }
+    },
+    "backToApp": "Volver a la app",
+    "learnMoreLink": "Más sobre vitamina D →",
+    "supplementLink": "Cómo suplementar bien →"
   }
 }

@@ -144,7 +144,8 @@
     "cancel": "Abbrechen",
     "savedAs": "Gespeichert als",
     "lat": "Lat",
-    "lon": "Lon"
+    "lon": "Lon",
+    "learnMore": "Mehr über Vitamin D und die Sonne →"
   },
   "search": {
     "placeholder": "Beliebige Stadt weltweit suchen...",
@@ -219,6 +220,115 @@
     "noConditionsTap": "Unzureichende UV an diesem Tag",
     "legendFavorable": "Günstig",
     "legendConfirmed": "Bestätigt",
-    "legendUnfavorable": "Kein UV"
+    "legendUnfavorable": "Kein UV",
+    "noUvLearnTitle": "Kein UV-Fenster heute — wie ergänzen",
+    "noUvLearnHint": "D3, K2, Magnesium und Nahrungsquellen erklärt"
+  },
+  "learn": {
+    "pageTitle": "Vitamin D & die Sonne",
+    "pageSubtitle": "Wissenschaftlich fundierte Antworten auf häufige Fragen",
+    "block1": {
+      "title": "Die Sonne und Vitamin D",
+      "subtitle": "Warum Sonnenwinkel, UV-Index und Glas eine Rolle spielen",
+      "q1": {
+        "q": "Warum erzeugt nur UVB Vitamin D, nicht UVA?",
+        "a": "Ultraviolette Strahlung unterteilt sich in UVA (315–400 nm) und UVB (280–315 nm). Nur UVB im engen Band von 290–315 nm trägt genug Energie, um 7-Dehydrocholesterin in der Haut zu Prä-Vitamin D3 zu isomerisieren. UVA-Strahlen haben eine längere Wellenlänge und niedrigere Energie — sie dringen tiefer ein (verursachen Bräunung und Hautalterung), können aber nicht die photochemische Reaktion auslösen, die die Vitamin-D-Synthese startet. Deshalb erzeugen Solarien, die hauptsächlich UVA emittieren, auch kein Vitamin D."
+      },
+      "q2": {
+        "q": "Warum spielt der Sonnenwinkel eine Rolle? Was passiert im Winter?",
+        "a": "Der Winkel der Sonne über dem Horizont bestimmt, wie viel Atmosphäre UVB durchqueren muss, bevor es deine Haut erreicht. Bei flachen Winkeln — früh morgens, spät nachmittags oder zu jeder Tages- und Jahreszeit im Winter oberhalb von ca. 35° Breite — wird UVB fast vollständig von der Ozonschicht absorbiert und erreicht die Erdoberfläche nicht. Die ‚Schattenregel' fasst dies treffend zusammen: Ist dein Schatten länger als deine Körpergröße, ist UVB zu schwach für die Vitamin-D-Synthese. Im Winter ist diese Bedingung in nördlichen Breiten monatelang den ganzen Tag über erfüllt. Unterhalb von UVI 3 ist die produzierte Menge selbst bei langer Exposition vernachlässigbar."
+      },
+      "q3": {
+        "q": "Warum funktioniert es nicht durch Glas?",
+        "a": "Normales Fensterglas und Windschutzscheiben blockieren fast das gesamte UVB, lassen jedoch den Großteil des UVA und des sichtbaren Lichts durch. Das bedeutet: Du kannst an einem sonnigen Fenster sitzen und bräunen — UVA gelangt hindurch —, aber du kannst kein Vitamin D synthetisieren. Nur spezielles Quarzglas, das in manchen medizinischen UV-Geräten verwendet wird, lässt UVB durch. Die praktische Konsequenz: Die wohlige Wintersonne durch dein Bürofenster tut gut, trägt aber nichts zu deinem Vitamin-D-Spiegel bei."
+      },
+      "q4": {
+        "q": "Was bedeutet der UV-Index, und warum verwendet die App 3 als Mindestwert?",
+        "a": "Der UV-Index (UVI) ist ein internationaler Standard, der die erythemgewichtete UV-Intensität auf Bodenniveau misst. Er reicht von 0 (keine Strahlung) bis 11+ (extrem). Die App verwendet UVI ≥ 3 als Syntheseschwelle, weil unterhalb dieses Wertes die UVB-Intensität für eine nennenswerte Vitamin-D-Produktion zu gering ist — unabhängig davon, wie lange du draußen bleibst. Diese Schwelle stimmt mit den Forschungsergebnissen von Holick und Kollegen überein und entspricht in etwa einer Sonnenhöhe von mehr als 30–35° über dem Horizont."
+      },
+      "q5": {
+        "q": "Unterdrücken Wolken UVB vollständig?",
+        "a": "Nicht vollständig. Dichte Bewölkung reduziert UVB um 70–90 %; dünne oder aufgelockerte Bewölkung um etwa 20–50 %. Paradoxerweise können bestimmte aufgelockerte Wolkenformationen UV streuen und die UVB-Intensität am Boden kurzzeitig über den Wert bei klarem Himmel anheben. Die App verwendet bei Verfügbarkeit reale UV-Daten von Open-Meteo, sodass die angezeigten Minuten bereits die aktuellen Wolkenbedingungen berücksichtigen — keine manuelle Anpassung nötig."
+      }
+    },
+    "block2": {
+      "title": "Sonne vs. Nahrungsergänzung",
+      "subtitle": "Wie die Sonnensynthese mit oralem Vitamin D verglichen wird",
+      "q1": {
+        "q": "Wie viel Vitamin D kann ich in der Sonne im Vergleich zu einer Kapsel produzieren?",
+        "a": "Eine Ganzkörperexposition von 1 MED (Minimale Erythemdosis — kurz vor einer leichten Rötung) erzeugt etwa 10.000–25.000 IE Vitamin D. Eine Standard-Nahrungsergänzungskapsel enthält 400–2.000 IE. Eine 15–20-minütige Mittagssitzung im Sommer mit exponierten Armen und Beinen kann leicht eine ganze Woche typischer Supplementierung übertreffen. Allerdings verfügt die Sonne über einen eingebauten Sicherheitsmechanismus (Photodegradation), der eine Überdosierung verhindert — eine Schutzfunktion, die oralen Nahrungsergänzungsmitteln fehlt."
+      },
+      "q2": {
+        "q": "Kann ich durch die Sonne eine Überdosierung erleiden?",
+        "a": "Nein. Die Sonnensynthese ist selbstlimitierend. Sobald sich Prä-Vitamin D3 in der Haut anreichert, wandelt weiteres UVB es in inerte Verbindungen um — Lumisterol und Tachysterol — anstatt weitere Mengen aufzubauen. Diese Photodegradationsgrenze bedeutet, dass dein Körper durch Sonnenexposition niemals toxische Mengen produziert, egal wie lange du draußen bist. Deshalb gilt die tolerierbare Obergrenze des IOM von 4.000 IE/Tag speziell für die orale Supplementierung, nicht für Sonnenlicht."
+      },
+      "q3": {
+        "q": "Ist die Sonne besser als Supplementierung?",
+        "a": "Beides hat echte Vorteile. Sonnenproduziiertes D3 ist an Hautproteine gebunden und wird langsam in den Blutkreislauf abgegeben, was ihm eine längere Halbwertszeit verleiht als oralem D3. Sonnenexposition liefert außerdem UVA-bedingte Stickstoffmonoxid-Freisetzung, zirkadiane Lichtsignale und andere Vorteile, die keine Kapsel ersetzen kann. Orales D3 hingegen ist kontrollierbar, dosisgenau und das ganze Jahr über verfügbar. Die praktische Antwort: Nutze die Sonne, wenn die Bedingungen es erlauben, und supplementiere, wenn nicht — beides ergänzt sich."
+      },
+      "q4": {
+        "q": "D3 oder D2 als Nahrungsergänzung?",
+        "a": "D3 (Cholecalciferol) ist deutlich wirksamer als D2 (Ergocalciferol) bei der Erhöhung und Aufrechterhaltung des 25-OH-D-Blutspiegels — Forschungsergebnisse legen nahe, dass D3 pro IE etwa 2–3-mal potenter ist. D3 ist auch die Form, die deine Haut produziert. D2, das aus pflanzlichen und pilzlichen Quellen gewonnen wird, wird in veganen Nahrungsergänzungsmitteln eingesetzt, schneidet bei äquivalenten Dosen aber schlechter ab als D3. Achte auf dem Etikett auf ‚Cholecalciferol'; veganes D3 aus Flechten ist ebenfalls erhältlich."
+      },
+      "q5": {
+        "q": "Welche Blutspiegel von 25-OH-D gelten als optimal?",
+        "a": "Standardreferenzbereiche für den Serumspiegel von 25-Hydroxyvitamin D: Unter 20 ng/ml (50 nmol/l) gilt als Mangel; 20–30 ng/ml als unzureichend; 30–50 ng/ml als ausreichend. Die Endocrine Society hält 40–60 ng/ml für optimal im Hinblick auf nicht-skelettale Vorteile. Über 100 ng/ml (250 nmol/l) besteht durch Supplementierung ein Toxizitätsrisiko. Die meisten Menschen in nördlichen Breiten haben im Winter ohne Supplementierung Werte unter 20 ng/ml — ein weit verbreiteter, aber leicht behebbarer Mangel."
+      }
+    },
+    "block3": {
+      "title": "Richtig supplementieren",
+      "subtitle": "Kofaktoren, Einnahmezeit, Nahrungsquellen und Dosis",
+      "q1": {
+        "q": "D3 oder D2? Wie viel nehmen?",
+        "a": "Wähle D3 (Cholecalciferol), es sei denn, du lebst vegan — in diesem Fall ist veganes D3 aus Flechten erhältlich. Für die meisten Erwachsenen: 1.000–2.000 IE/Tag bei regelmäßiger Sonnenexposition; 2.000–4.000 IE/Tag bei eingeschränkter Sonnenexposition. Die Obergrenze der Endocrine Society liegt bei 4.000 IE/Tag für Erwachsene aus Nahrungsergänzungsmitteln. Höhere Dosen zur Behebung eines Mangels sind möglich, sollten aber durch Bluttests gesteuert werden. Das Testen von 25-OH-D vor und nach 3 Monaten Supplementierung ist der beste Weg, deine persönlich wirksame Dosis zu finden."
+      },
+      "q2": {
+        "q": "Warum wird K2 zusammen mit D3 empfohlen?",
+        "a": "Vitamin D3 erhöht die Kalziumaufnahme aus dem Darm. Vitamin K2 — insbesondere die MK-7-Form — aktiviert zwei Schlüsselproteine: Osteocalcin (leitet Kalzium in die Knochen) und Matrix-Gla-Protein (verhindert die Ablagerung von Kalzium in Arterien und Weichgewebe). Ohne ausreichend K2 kann das durch hochdosierte D3-Supplementierung mobilisierte zusätzliche Kalzium zur arteriellen Verkalkung beitragen. Natürliche K2-Quellen sind Natto, gereifter Hartkäse und Eigelb. Wenn du mehr als 1.000 IE/Tag D3 supplementierst, werden 100–200 mcg MK-7 weitgehend empfohlen."
+      },
+      "q3": {
+        "q": "Welche Rolle spielt Magnesium?",
+        "a": "Magnesium ist ein Kofaktor beider Enzyme, die Vitamin D in seine aktiven Formen umwandeln (25-OH-D und dann 1,25-OH-D). Ohne ausreichend Magnesium kann supplementiertes D3 möglicherweise nicht richtig umgewandelt werden, und die Supplementierung kann den Magnesiumspiegel weiter senken und einen bestehenden Mangel verschlimmern. Schätzungsweise 50 % der westlichen Bevölkerung haben einen Magnesiummangel. Gute Nahrungsquellen: Kürbiskerne, dunkle Schokolade, Spinat, Mandeln, Avocado. Magnesiumglycinat- oder Malatpräparate werden gut vertragen, wenn die Nahrungsaufnahme gering ist."
+      },
+      "q4": {
+        "q": "Warum muss Vitamin D mit Fett eingenommen werden?",
+        "a": "Vitamin D ist fettlöslich. Es benötigt Nahrungsfett im Darm, um Mizellen zu bilden — winzige Fett-Protein-Pakete, die das Vitamin durch die Darmwand in den Blutkreislauf transportieren. Studien zeigen, dass die Einnahme von D3 mit einer fetthaltigen Mahlzeit die Absorption im Vergleich zur Einnahme auf nüchternen Magen um 30–50 % steigert. Die praktische Regel: Nimm es zur fettreichsten Mahlzeit des Tages ein. Ein Esslöffel Olivenöl, eine Handvoll Nüsse oder eine Mahlzeit mit Lachs liefern ausreichend Fett. Dies gilt gleichermaßen für die Vitamine A, E und K2."
+      },
+      "q5": {
+        "q": "Welche Lebensmittel enthalten natürlich Vitamin D?",
+        "a": "Nur sehr wenige Lebensmittel enthalten nennenswerte Mengen: Fettfische (Wildlachs 600–1.000 IE pro 100 g; Makrele, Sardinen, Hering), Lebertran (~400 IE pro Teelöffel, zudem reich an Vitamin A), Eigelb (~40 IE pro Stück, mehr wenn das Huhn UV-Exposition hatte), UV-exponierte Pilze (können 400+ IE pro 100 g liefern, wenn sie mit den Lamellen nach oben in der Sonne getrocknet werden) und Rinderleber (kleine Mengen). Angereicherte Lebensmittel (Milch, Cerealien, Pflanzenmilch) fügen je nach Land moderate Mengen hinzu. Die Ernährung allein kann den Bereich von 1.000–4.000 IE ohne Supplementierung realistisch nicht erreichen."
+      },
+      "q6": {
+        "q": "Was ist die beste Tageszeit zur Einnahme von Vitamin D?",
+        "a": "Mit der größten Mahlzeit des Tages — in erster Linie wegen des Fettabsorptionsvorteils. Morgens oder mittags (zum Frühstück oder Mittagessen) wird generell dem Abend vorgezogen, da Vitamin D die Wachheit leicht steigern kann und einige Hinweise darauf hindeuten, dass eine abendliche Supplementierung die Melatoninproduktion leicht beeinträchtigen könnte. Dennoch ist Konsequenz weitaus wichtiger als der Zeitpunkt: Nimm es zu dem Zeitpunkt des Tages ein, an dem du es zuverlässig nicht vergessen wirst."
+      }
+    },
+    "block4": {
+      "title": "Die Sonne jenseits von Vitamin D",
+      "subtitle": "Stickstoffmonoxid, zirkadiane Rhythmen, Stimmung und Immunsystem",
+      "q1": {
+        "q": "Was ist Stickstoffmonoxid und was hat es mit der Sonne zu tun?",
+        "a": "Stickstoffmonoxid (NO) ist ein Signalmolekül, das Blutgefäße erweitert, den Blutdruck senkt und die Durchblutung verbessert. Die Haut speichert große Mengen an Nitrit- und Nitrosothiolverbindungen, die innerhalb weniger Minuten nach UVA-Exposition NO in den Blutkreislauf freisetzen. Dies ist völlig unabhängig von der Vitamin-D-Synthese — es geschieht durch Glas, im Halbschatten und sogar im Winter, wenn kein UVB vorhanden ist. Forschungen der Gruppe von Richard Weller an der Universität Edinburgh legen nahe, dass die UVA-bedingte NO-Freisetzung die gut dokumentierte Assoziation zwischen Sonnenexposition und reduzierter kardiovaskulärer Sterblichkeit erklären könnte — über das hinaus, was Vitamin D allein erklären kann."
+      },
+      "q2": {
+        "q": "Wie beeinflusst Sonnenlicht den zirkadianen Rhythmus?",
+        "a": "Licht ist der primäre Zeitgeber für die zirkadiane Uhr des Menschen. Morgensonnenlicht, reich an kurzwelligem blauem Licht (460–480 nm), signalisiert den retinalen Ganglienzellen, die wiederum dem suprachiasmatischen Nucleus (SCN) im Gehirn mitteilen, Melatonin zu unterdrücken und die Cortisol-Aufwachreaktion auszulösen. Dies verankert die 24-Stunden-Körperuhr. Unzureichende Morgenlichtexposition verzögert den Schlafbeginn, stört das Hormon-Timing und ist mit Stimmungsstörungen und metabolischen Funktionsstörungen assoziiert. Das ideale Zeitfenster sind die ersten 30–60 Minuten nach dem Aufwachen, im Freien — selbst an bewölkten Tagen ist das Tageslicht draußen typischerweise 10–50-mal heller als Innenbeleuchtung."
+      },
+      "q3": {
+        "q": "Wozu ist Morgendämmerungslicht nützlich, wenn es kein Vitamin D produziert?",
+        "a": "Morgendämmerungslicht hat ein völlig anderes Spektralprofil als das Mittagssonnenlicht: Es ist reich an roten und nah-infraroten Wellenlängen (600–1.000 nm), mit wenig UVB und moderatem blauem Licht. Dieses Infrarotlicht dringt mehrere Zentimeter in das Gewebe ein und aktiviert Cytochrom-c-Oxidase in den Mitochondrien, verbessert die ATP-Produktion und die Zellenergie. Es baut auch das nächtliche Melatonin sanfter ab als intensives blaues Licht und erleichtert so den Übergang zum Wachsein. Rotlicht- und Nah-Infrarot-Therapiegeräte (Wellenlängen 630–850 nm) replizieren einen Teil dieses Spektrums für therapeutische Zwecke."
+      },
+      "q4": {
+        "q": "Gibt es eine Beziehung zwischen Sonne und Immunsystem jenseits von Vitamin D?",
+        "a": "Ja. UV-Exposition moduliert die Immunfunktion unabhängig durch Mechanismen, die von Vitamin D getrennt sind: Sie induziert regulatorische T-Zellen und verändert antigenpräsentierende Zellen auf eine Weise, die Entzündungsreaktionen unterdrückt. Dies ist die Grundlage für die UV-Phototherapie, die klinisch bei Psoriasis, Ekzemen und Vitiligo eingesetzt wird. Einige Forscher verknüpfen diese breitere UV-Immunmodulation mit dem Breitengradgradienten bei der Prävalenz von Autoimmunerkrankungen — Multiple Sklerose, Typ-1-Diabetes und entzündliche Darmerkrankungen sind in höheren Breiten alle deutlich häufiger, ein Muster, das nur teilweise durch den Vitamin-D-Spiegel erklärt wird."
+      },
+      "q5": {
+        "q": "Beeinflusst Sonnenlicht die Stimmung? (Serotonin und Melatonin)",
+        "a": "Deutlich. Helles Licht stimuliert die Serotoninproduktion über die Raphekerne im Hirnstamm — dieser Mechanismus ist die Grundlage der Lichttherapie als erstrangige Behandlung der Saisonalen Affektiven Störung (SAD). Serotonin ist auch die Vorstufe von Melatonin: Ausreichendes Serotonin tagsüber unterstützt eine bessere Melatoninproduktion in der Nacht und verbessert die Schlafqualität. Darüber hinaus löst helles Außenlicht eine Dopaminfreisetzung in der Netzhaut aus, die das Fortschreiten von Kurzsichtigkeit bei Kindern zu verlangsamen scheint. Bevölkerungsstudien zeigen konsistent Zusammenhänge zwischen Zeit im Freien, Stimmung und Schlafqualität, die weit über den Vitamin-D-Status hinausgehen."
+      }
+    },
+    "backToApp": "Zurück zur App",
+    "learnMoreLink": "Mehr über Vitamin D erfahren →",
+    "supplementLink": "Wie man richtig supplementiert →"
   }
 }

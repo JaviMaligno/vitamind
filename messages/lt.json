@@ -144,7 +144,8 @@
     "cancel": "Atšaukti",
     "savedAs": "Išsaugota kaip",
     "lat": "Plat",
-    "lon": "Ilg"
+    "lon": "Ilg",
+    "learnMore": "Sužinoti daugiau apie vitaminą D →"
   },
   "search": {
     "placeholder": "Ieškoti bet kurio miesto pasaulyje...",
@@ -219,6 +220,115 @@
     "noConditionsTap": "Nepakankamas UV šią dieną",
     "legendFavorable": "Palanku",
     "legendConfirmed": "Patvirtinta",
-    "legendUnfavorable": "Be UV"
+    "legendUnfavorable": "Be UV",
+    "noUvLearnTitle": "Šiandien nėra UV lango — kaip vartoti papildus",
+    "noUvLearnHint": "D3, K2, magnis ir maisto šaltiniai paaiškinti"
+  },
+  "learn": {
+    "pageTitle": "Vitaminas D ir Saulė",
+    "pageSubtitle": "Mokslu pagrįsti atsakymai į dažnus klausimus",
+    "block1": {
+      "title": "Saulė ir vitaminas D",
+      "subtitle": "Kodėl saulės kampas, UV indeksas ir stiklas yra svarbūs",
+      "q1": {
+        "q": "Kodėl tik UVB gamina vitaminą D, o ne UVA?",
+        "a": "Ultravioletinė spinduliuotė skirstoma į UVA (315–400 nm) ir UVB (280–315 nm). Tik UVB siaurame 290–315 nm diapazone turi pakankamai energijos, kad izomerizuotų 7-dehidrocholesterolį odoje į pre-vitamino D3 formą. UVA spinduliai yra ilgesnio bangos ilgio ir mažesnės energijos — jie prasiskverbia giliau (sukeldami įdegį ir odos senėjimą), tačiau negali sukelti fotocheminės reakcijos, pradedančios vitamino D sintezę. Dėl šios priežasties soliariumai, daugiausia skleidžiantys UVA, taip pat negamina vitamino D."
+      },
+      "q2": {
+        "q": "Kodėl svarbus saulės kampas? Kas vyksta žiemą?",
+        "a": "Saulės aukštis virš horizonto lemia, kiek atmosferos UVB turi įveikti prieš pasiekdamas jūsų odą. Esant žemiems kampams — anksti ryte, vėlai popiet arba bet kuriuo žiemos metu virš maždaug 35° platumos — UVB beveik visiškai sugeriamas ozono sluoksnio ir niekada nepasiekia žemės paviršiaus. „Šešėlio taisyklė” tai puikiai apibendrina: jei jūsų šešėlis ilgesnis nei jūsų ūgis, UVB yra per silpnas vitamino D sintezei. Šiaurės platumose žiemą ši sąlyga išlieka visą dieną kelis mėnesius. Kai UVI žemiau 3, net ilgas buvimas lauke duoda nereikšmingą kiekį vitamino D."
+      },
+      "q3": {
+        "q": "Kodėl pro stiklą tai neveikia?",
+        "a": "Standartinis lango stiklas ir automobilio priekinis stiklas blokuoja beveik visą UVB, tuo pačiu praleidžiant didžiąją dalį UVA ir matomą šviesą. Tai reiškia, kad sėdint prie saulėto lango galite įgyti įdegį — UVA praeina pro stiklą — tačiau negalite sintezuoti vitamino D. Tik specialus kvarco stiklas, naudojamas kai kuriuose medicininiuose UV prietaisuose, praleidžia UVB. Praktinė išvada: ta šilta žiemos saulė pro biuro langą jaučiasi maloniai, tačiau jūsų vitamino D lygiui nieko neprideda."
+      },
+      "q4": {
+        "q": "Ką reiškia UV indeksas ir kodėl programėlė naudoja 3 kaip minimumą?",
+        "a": "UV indeksas (UVI) yra tarptautinis standartas, matuojantis eriotemaliai svertinamą UV intensyvumą žemės paviršiuje. Jis svyruoja nuo 0 (nėra) iki 11+ (ekstremalus). Programėlė naudoja UVI ≥ 3 kaip sintezės slenkstį, nes žemiau šio lygio UVB intensyvumas yra per mažas reikšmingai vitamino D gamybai, nepriklausomai nuo to, kiek laiko praleidžiate lauke. Šis slenkstis atitinka Holick'o ir kolegų tyrimus ir maždaug atitinka saulę, esančią daugiau nei 30–35° virš horizonto."
+      },
+      "q5": {
+        "q": "Ar debesys panaikina UVB?",
+        "a": "Ne visiškai. Tankus debesuotumas sumažina UVB 70–90%; plonas arba pertraukiamas debesuotumas — apie 20–50%. Paradoksalu, kad tam tikros pertraukiamo debesuotumo formacijos išsklaido UV ir trumpam gali padidinti UV lygį žemės paviršiuje aukščiau aiškaus dangaus reikšmių. Programėlė naudoja realiuosius UV duomenis iš Open-Meteo, kai jie pasiekiami, todėl parodytos minutės jau atspindi dabartines debesuotumo sąlygas — rankinis koregavimas nereikalingas."
+      }
+    },
+    "block2": {
+      "title": "Saulė prieš papildus",
+      "subtitle": "Palyginimas tarp natūralios sintezės ir kapsulių",
+      "q1": {
+        "q": "Kiek vitamino D galiu pagaminti saulėje, palyginti su tableto?",
+        "a": "Viso kūno ekspozicija 1 MED dozei (minimali eriotemalinis doze — prieš bet kokį paraudimą) gamina apie 10 000–25 000 TV vitamino D. Standartinė papildo kapsulė turi 400–2 000 TV. 15–20 minučių vidurdienio sesija vasarą su atidengtosiomis rankomis ir kojomis gali lengvai viršyti savaitinę tipinio papildinimo normą. Tačiau saulė turi įgimtą saugumo mechanizmą (fotodegradaciją), kuris neleidžia persidozuoti — apsaugą, kurios neturi geriamieji papildai."
+      },
+      "q2": {
+        "q": "Ar galiu persidozuoti vitamino D nuo saulės?",
+        "a": "Ne. Saulės sintezė yra savaiminė. Kai pre-vitaminas D3 kaupiasi odoje, tęsiamas UVB jį paverčia inertiniais junginiais — lumisterolio ir tachysterolio — vietoj tolesnio kaupimosi. Ši fotodegradacijos riba reiškia, kad jūsų kūnas niekada nepagamina toksinių kiekių nuo saulės ekspozicijos, nesvarbu, kiek laiko praleidžiate lauke. Štai kodėl IOM toleruojamas viršutinis suvartojimo lygis 4 000 TV per dieną taikomas konkrečiai geriamajam papildinimui, o ne saulės šviesai."
+      },
+      "q3": {
+        "q": "Ar saulė geriau nei papildai?",
+        "a": "Abu turi realių privalumų. Saulės pagamintas D3 yra susijęs su odos baltymais ir lėtai išleidžiamas į kraują, suteikdamas jam ilgesnį pusperiodį nei geriamasis D3. Saulės ekspozicija taip pat suteikia UVA valdomą azoto oksido išsiskyrimą, paros šviesos signalus ir kitus privalumus, kurių jokia tabletė negali pakartoti. Kita vertus, geriamasis D3 yra kontroliuojamas, tikslios dozės ir pasiekiamas ištisus metus. Praktinis atsakymas: naudokite saulę, kai sąlygos leidžia, papildykite, kai neleidžia — jie papildo vienas kitą."
+      },
+      "q4": {
+        "q": "D3 ar D2 papilduose?",
+        "a": "D3 (cholekalciferolis) yra žymiai efektyvesnis nei D2 (ergokalciferolis) didinant ir palaikant 25-OH-D kraujyje — tyrimai rodo, kad D3 yra maždaug 2–3× stipresnis TV vienetui. D3 taip pat yra forma, kurią gamina jūsų oda. D2, gautas iš augalinių ir grybinių šaltinių, naudojamas veganiškuose papilduose, tačiau lyginamomis dozėmis atsilieka nuo D3. Ieškokite etiketėje „cholekalciferol\u201D; taip pat pasiekiamas veganiškasis D3 iš kerpių."
+      },
+      "q5": {
+        "q": "Kokie 25-OH-D kraujo lygiai laikomi optimaliais?",
+        "a": "Standartiniai serumo 25-hidroksi vitamino D atskaitos diapazonai: žemiau 20 ng/mL (50 nmol/L) — trūkumas; 20–30 ng/mL — nepakankamas; 30–50 ng/mL — pakankamas. Endokrininė draugija laiko 40–60 ng/mL optimaliu neskeleto naudai. Virš 100 ng/mL (250 nmol/L) kyla toksikumo rizika nuo papildinimo. Dauguma šiaurės platumų gyventojų žiemą be papildinimo turi žemiau 20 ng/mL — plačiai paplitęs, bet lengvai ištaisomas trūkumas."
+      }
+    },
+    "block3": {
+      "title": "Tinkamas papildinimas",
+      "subtitle": "D3, K2, magnis ir teisingas vartojimas",
+      "q1": {
+        "q": "D3 ar D2? Kiek vartoti?",
+        "a": "Pasirinkite D3 (cholekalciferolį), nebent esate veganas — tokiu atveju pasiekiamas kerpių kilmės veganiškasis D3. Daugumai suaugusiųjų: 1 000–2 000 TV per dieną, jei reguliariai gaunate saulės; 2 000–4 000 TV per dieną, jei saulės ekspozicija ribota. Endokrininės draugijos viršutinė suvartojimo riba suaugusiesiems iš papildų yra 4 000 TV per dieną. Didesnės dozės trūkumui koreguoti egzistuoja, tačiau jas turėtų lemti kraujo tyrimai. Geriausias būdas rasti asmeninę veiksmingą dozę — ištirti 25-OH-D prieš papildinimą ir po 3 mėnesių."
+      },
+      "q2": {
+        "q": "Kodėl rekomenduojama kartu vartoti K2 su D3?",
+        "a": "Vitaminas D3 padidina kalcio įsisavinimą žarnyne. Vitaminas K2 — ypač MK-7 forma — aktyvuoja du svarbius baltymus: osteokalciną (nukreipia kalcį į kaulus) ir matricos Gla baltymą (neleidžia kalciui nusėsti arterijose ir minkštuosiuose audiniuose). Be pakankamai K2, didelių dozių D3 papildinimo sukeltas papildomas kalcis gali prisidėti prie arterijų kalcifikacijos. Natūralūs K2 šaltiniai: natto, brandinti kieti sūriai ir kiaušinių tryniai. Jei vartojate daugiau nei 1 000 TV D3 per dieną, plačiai rekomenduojama 100–200 mcg MK-7."
+      },
+      "q3": {
+        "q": "Kokį vaidmenį atlieka magnis?",
+        "a": "Magnis yra kofaktorius abiem fermentams, paverčiantiems vitaminą D jo aktyviomis formomis (25-OH-D ir vėliau 1,25-OH-D). Be pakankamai magnio, papildomas D3 gali netinkamai konvertuotis, o papildinimas gali sumažinti magnio lygius, pablogindamas esamą trūkumą. Apytikriai 50% Vakarų gyventojų turi nepakankamą magnio kiekį. Geri maisto šaltiniai: moliūgų sėklos, juodasis šokoladas, špinatai, migdolai, avokadas. Magnio glicinatas arba malatas gerai toleruojami, jei maistinis suvartojimas yra mažas."
+      },
+      "q4": {
+        "q": "Kodėl vitaminas D turi būti vartojamas su riebalais?",
+        "a": "Vitaminas D yra riebaluose tirpus. Jam reikia maistinių riebalų žarnyne, kad susidarytų miceliai — maži riebalų-baltymų paketai, pernešantys vitaminą per žarnyno sienelę į kraują. Tyrimai rodo, kad D3 vartojimas su riebalus turinčiu patiekalu padidina įsisavinimą 30–50%, palyginti su vartojamu tuščiu skrandžiu. Praktinė taisyklė: vartokite su sočiausiu dienos patiekalu. Šaukštas alyvuogių aliejaus, sauja riešutų arba lašišos patiekalas suteikia pakankamai riebalų. Tai vienodai taikoma vitaminams A, E ir K2."
+      },
+      "q5": {
+        "q": "Kokiuose maisto produktuose natūraliai yra vitamino D?",
+        "a": "Labai nedaugelyje maisto produktų yra reikšmingų kiekių: riebioji žuvis (laukinė lašiša 600–1 000 TV 100 g; skumbrė, sardinės, silkė), menkių kepenų aliejus (~400 TV vienam šaukšteliui, taip pat turtingas vitamino A), kiaušinių tryniai (~40 TV kiekvienas, daugiau jei višta gavo UV ekspoziciją), UV veikiami grybai (gali suteikti 400+ TV 100 g, kai džiovinami žiaunomis į viršų saulės šviesoje) ir jautienos kepenys (nedideli kiekiai). Praturtinti maisto produktai (pienas, grūdai, augaliniai pieno produktai) prideda kuklių kiekių priklausomai nuo šalies. Vien mityba realistiškai negali pasiekti 1 000–4 000 TV diapazono be papildinimo."
+      },
+      "q6": {
+        "q": "Koks yra geriausias paros metas vartoti vitaminą D?",
+        "a": "Su didžiausiu dienos patiekalu — pirmiausia dėl riebalų įsisavinimo naudos. Rytas arba vidurdienis (su pusryčiais ar pietumis) paprastai pirmenybė prieš vakarą, nes vitaminas D gali švelniai didinti budrumą ir kai kurie įrodymai rodo, kad vakarinis papildinimas gali šiek tiek trikdyti melatonino gamybą. Vis dėlto nuoseklumas yra daug svarbiau nei laikas: vartokite tuo metu, kurį patikimai atsiminate."
+      }
+    },
+    "block4": {
+      "title": "Saulė anapus vitamino D",
+      "subtitle": "Azoto oksidas, cirkadiniai ritmai, nuotaika ir imunitetas",
+      "q1": {
+        "q": "Kas yra azoto oksidas ir ką jis turi bendro su saule?",
+        "a": "Azoto oksidas (NO) yra signalinis molekulas, plečiantis kraujagysles, mažinantis kraujospūdį ir gerinantis kraujotaką. Oda kaupia didelius kiekius nitrito ir nitrozotiolio junginių, kurie išleidžia NO į kraują per kelias minutes po UVA ekspozicijos. Tai yra visiškai nepriklausoma nuo vitamino D sintezės — tai vyksta pro stiklą, dalinėje pavėsyje ir net žiemą, kai UVB nėra. Richardo Wellerio grupės Edinburgo universitete tyrimas rodo, kad UVA valdomam NO išskyrimui gali būti paaiškinamas gerai dokumentuotas ryšys tarp saulės ekspozicijos ir sumažėjusio širdies ir kraujagyslių mirštamumo, išeinančio už tai, ką pats vitaminas D gali paaiškinti."
+      },
+      "q2": {
+        "q": "Kaip saulės šviesa veikia cirkadinius ritmus?",
+        "a": "Šviesa yra pagrindinis zeitgeberis — „laiko davėjas\u201D — žmogaus cirkadiniam laikrodžiui. Ryto saulės šviesa, turtinga trumpo bangos ilgio mėlynos šviesos (460–480 nm), signalizuoja tinklainės ganglinėms ląstelėms, kurios savo ruožtu liepia supra chiazminiam branduoliui (SCN) smegenyse slopinti melatoniną ir sukelti kortizolio pabudimo atsaką. Tai fiksuoja 24 valandų kūno laikrodį. Nepakankama ryto šviesos ekspozicija vėlina miego pradžią, sutrikdo hormonų laiką ir yra susijusi su nuotaikos sutrikimais ir medžiagų apykaitos disfunkcija. Idealus langas — pirmosios 30–60 minučių po pabudimo, lauke — net apsiniaukusiomis dienomis lauko šviesa paprastai yra 10–50× ryškesnė nei patalpų apšvietimas."
+      },
+      "q3": {
+        "q": "Kam naudinga aušros šviesa, jei ji negamina vitamino D?",
+        "a": "Aušros šviesa turi visiškai kitokį spektrinį profilį nei vidurdienio saulė: ji turtinga raudonų ir artimų infraraudonųjų bangų ilgių (600–1 000 nm), su mažai UVB ir vidutiniškai mėlynos šviesos. Ši infraraudonoji šviesa prasiskverbia kelis centimetrus į audinį ir aktyvuoja citochromą c oksidazę mitochondrijose, gerinant ATP gamybą ir ląstelių energiją. Ji taip pat švelniau išvalo nakties melatoniną nei didelio intensyvumo mėlyna šviesa, palengvindama perėjimą į budrumą. Raudonos šviesos ir artimų infraraudonųjų spindulių terapijos prietaisai (bangų ilgiai 630–850 nm) iš dalies atkartoja šį spektrą terapiniam naudojimui."
+      },
+      "q4": {
+        "q": "Ar yra ryšys tarp saulės ir imuniteto, nepriklausomai nuo vitamino D?",
+        "a": "Taip. UV ekspozicija nepriklausomai moduliuoja imuninę funkciją per mechanizmus, atskirtus nuo vitamino D: ji sukelia reguliuojamuosius T ląsteles ir keičia antigeno pristatančias ląsteles taip, kad slopina uždegiminį atsaką. Tai yra UV fototerapijos, kliniškai naudojamos gydant psoriazę, egzemą ir vitiligo, pagrindas. Kai kurie tyrėjai sieja šį platesnį UV imunomoduliavimą su autoimmuninio ligų paplitimo platumos gradientu — išsėtinė sklerozė, 1 tipo cukrinis diabetas ir uždegiminė žarnyno liga yra žymiai dažnesnės aukštesnėse platumose, o tai tik iš dalies paaiškinama vitamino D lygiais."
+      },
+      "q5": {
+        "q": "Ar saulės šviesa veikia nuotaiką? (serotoninas ir melatoninas)",
+        "a": "Stipriai. Ryški šviesa stimuliuoja serotonino sintezę per rafe branduolius smegenų kamiene — šis mechanizmas yra šviesos terapijos, kaip pirmosios eilės gydymo sezoniniu afektiniu sutrikimu (SAD), pagrindas. Serotoninas taip pat yra melatonino pirmtakas: pakankamas dieninis serotoninas palaiko geresnę melatonino gamybą naktį, gerinant miego kokybę. Atskirai didelio apšvietimo lauko šviesa sukelia dopamino išsiskyrimą tinklainėje, kuris, atrodo, sulėtina miopisjos progresavimą vaikams. Populiacijos tyrimai nuosekliai rodo ryšius tarp laiko lauke, nuotaikos ir miego kokybės, gerokai viršijančius vitamino D būklę."
+      }
+    },
+    "backToApp": "Grįžti į programėlę",
+    "learnMoreLink": "Sužinoti daugiau apie vitaminą D →",
+    "supplementLink": "Kaip tinkamai vartoti papildus →"
   }
 }
