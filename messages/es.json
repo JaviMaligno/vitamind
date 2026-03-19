@@ -89,7 +89,12 @@
     "areaFaceHands": "Cara + manos (10%)",
     "areaFaceArms": "Cara + brazos (18%)",
     "areaTshirtShort": "Camiseta + short (25%)",
-    "areaSwimsuit": "Bañador (40%)"
+    "areaSwimsuit": "Bañador (40%)",
+    "targetPreset400": "mínimo diario",
+    "targetPreset1000": "recomendado",
+    "targetPreset2000": "suplementación alta",
+    "targetPreset4000": "límite superior (UL)",
+    "targetHint": "Con tu perfil actual, puedes sintetizar hasta ~{max} UI por sesión sin riesgo de quemadura. La fotodegradación impide la toxicidad por sol."
   },
   "auth": {
     "login": "Iniciar sesión",
@@ -165,8 +170,9 @@
     "lte15": "≤15 min",
     "lte30": "≤30 min",
     "gt30": ">30 min",
+    "targetCappedWarning": "Tu objetivo supera las ~{max} UI que puedes sintetizar por sesión con tu perfil actual. Se muestra el tiempo máximo seguro (1 MED). Aumenta la piel expuesta o divide en varias sesiones.",
     "disclaimerTheoretical": "Estimación teórica con cielo despejado (sin nubes ni datos reales). Los datos meteo reales solo cubren ~14 días.",
-    "disclaimerReal": "Basado en la regla de Holick (Dowdy et al. 2010). Estimación orientativa — no sustituye consejo médico."
+    "disclaimerReal": "Basado en modelo exponencial saturante (Holick/Dowdy 2010, de Gruijl 2016). Estimación orientativa — no sustituye consejo médico."
   },
   "nav": {
     "myDay": "Mi día",

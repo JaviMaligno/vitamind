@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { useApp } from "@/context/AppProvider";
+import { TARGET_IU_PRESETS, maxSessionIU } from "@/lib/vitd";
 import CitySearch from "@/components/CitySearch";
 import SkinSelector from "@/components/SkinSelector";
 import NotificationToggle from "@/components/NotificationToggle";
@@ -11,6 +12,7 @@ import SaveLocationModal from "@/components/SaveLocationModal";
 export default function ProfilePage() {
   const t = useTranslations("config");
   const tc = useTranslations("common");
+  const ts = useTranslations("skin");
   const app = useApp();
 
   const [savingLocation, setSavingLocation] = useState(false);
@@ -182,21 +184,39 @@ export default function ProfilePage() {
         <h3 className="text-[11px] uppercase tracking-wider text-text-faint font-semibold mb-3">
           {t("targetIU")}
         </h3>
-        <div className="flex gap-1.5">
-          {[400, 600, 1000, 2000].map((iu) => (
+        <div className="flex flex-wrap gap-1.5 items-center">
+          {TARGET_IU_PRESETS.map(({ value, labelKey }) => (
             <button
-              key={iu}
-              onClick={() => app.setTargetIU(iu)}
-              className={`min-h-[44px] px-3 py-1.5 rounded-md font-mono text-[10px] cursor-pointer ${
-                app.targetIU === iu
+              key={value}
+              onClick={() => app.setTargetIU(value)}
+              className={`min-h-[44px] px-3 py-1.5 rounded-md text-[10px] cursor-pointer ${
+                app.targetIU === value
                   ? "bg-amber-400/15 text-amber-400 font-semibold"
                   : "bg-surface-card text-text-muted"
               }`}
             >
-              {iu} IU
+              <span className="font-mono">{value}</span> <span className="text-[9px]">{ts(labelKey)}</span>
             </button>
           ))}
+          <div className="flex items-center gap-1.5">
+            <input
+              type="number"
+              min={100}
+              max={10000}
+              step={100}
+              value={app.targetIU}
+              onChange={(e) => {
+                const v = parseInt(e.target.value);
+                if (v > 0 && v <= 10000) app.setTargetIU(v);
+              }}
+              className="w-20 min-h-[44px] px-2 py-1.5 rounded-md bg-surface-input border border-border-default text-text-primary text-[11px] font-mono outline-none text-center"
+            />
+            <span className="text-[10px] text-text-muted">IU</span>
+          </div>
         </div>
+        <p className="text-[9px] text-text-faint mt-2 leading-relaxed">
+          {ts("targetHint", { max: Math.round(maxSessionIU(app.skinType, app.areaFraction, app.age)) })}
+        </p>
       </section>
 
       {/* Notifications */}

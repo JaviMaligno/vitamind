@@ -89,7 +89,12 @@
     "areaFaceHands": "Veidas + rankos (10%)",
     "areaFaceArms": "Veidas + rankos pilnai (18%)",
     "areaTshirtShort": "Marškinėliai + šortai (25%)",
-    "areaSwimsuit": "Maudymosi kostiumėlis (40%)"
+    "areaSwimsuit": "Maudymosi kostiumėlis (40%)",
+    "targetPreset400": "dienos minimumas",
+    "targetPreset1000": "rekomenduojama",
+    "targetPreset2000": "didelė dozė",
+    "targetPreset4000": "viršutinė riba (UL)",
+    "targetHint": "Su jūsų dabartiniu profiliu galite sintezuoti iki ~{max} TV per sesiją be nudegimo rizikos. Fotodegradacija apsaugo nuo saulės sukeltos toksikumo."
   },
   "auth": {
     "login": "Prisijungti",
@@ -165,8 +170,9 @@
     "lte15": "≤15 min",
     "lte30": "≤30 min",
     "gt30": ">30 min",
+    "targetCappedWarning": "Jūsų tikslas viršija ~{max} TV, kuriuos galite sintezuoti per sesiją su dabartiniu profiliu. Rodomas maksimalus saugus laikas (1 MED). Padidinkite atvirą odą arba padalinkite į kelias sesijas.",
     "disclaimerTheoretical": "Teorinis įvertinimas esant giedram dangui (be debesų ar realių duomenų). Realūs orų duomenys apima tik ~14 dienų.",
-    "disclaimerReal": "Remiantis Holick taisykle (Dowdy et al. 2010). Orientacinis įvertinimas — nepakeičia medicininės konsultacijos."
+    "disclaimerReal": "Remiantis sotinančiu eksponentiniu modeliu (Holick/Dowdy 2010, de Gruijl 2016). Orientacinis įvertinimas — nepakeičia medicininės konsultacijos."
   },
   "nav": {
     "myDay": "Mano diena",

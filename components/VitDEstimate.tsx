@@ -116,6 +116,13 @@ export default function VitDEstimate({ weather, curve, skinType, areaFraction, a
             <span><span style={{ display: "inline-block", width: 8, height: 8, borderRadius: 2, background: "var(--color-chart-bar-slow)", marginRight: 3, verticalAlign: "middle" }} />{t("gt30")}</span>
           </div>
 
+          {/* Warning if target exceeds safe max */}
+          {result.targetCapped && (
+            <div className="text-[10px] text-amber-500/80 mt-2 leading-relaxed">
+              {t("targetCappedWarning", { max: Math.round(result.maxIU) })}
+            </div>
+          )}
+
           {/* Disclaimer */}
           <div className="text-[8px] text-text-faint mt-2 leading-relaxed">
             {isTheoretical ? t("disclaimerTheoretical") : t("disclaimerReal")}

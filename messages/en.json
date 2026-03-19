@@ -89,7 +89,12 @@
     "areaFaceHands": "Face + hands (10%)",
     "areaFaceArms": "Face + arms (18%)",
     "areaTshirtShort": "T-shirt + shorts (25%)",
-    "areaSwimsuit": "Swimsuit (40%)"
+    "areaSwimsuit": "Swimsuit (40%)",
+    "targetPreset400": "daily minimum",
+    "targetPreset1000": "recommended",
+    "targetPreset2000": "high supplementation",
+    "targetPreset4000": "upper limit (UL)",
+    "targetHint": "With your current profile, you can synthesize up to ~{max} IU per session without burn risk. Photodegradation prevents sun-induced toxicity."
   },
   "auth": {
     "login": "Log in",
@@ -165,8 +170,9 @@
     "lte15": "≤15 min",
     "lte30": "≤30 min",
     "gt30": ">30 min",
+    "targetCappedWarning": "Your target exceeds the ~{max} IU you can synthesize per session with your current profile. Showing maximum safe time (1 MED). Increase exposed skin or split into multiple sessions.",
     "disclaimerTheoretical": "Theoretical estimate with clear sky (no clouds or real data). Real weather data only covers ~14 days.",
-    "disclaimerReal": "Based on Holick's rule (Dowdy et al. 2010). Indicative estimate — does not replace medical advice."
+    "disclaimerReal": "Based on saturating exponential model (Holick/Dowdy 2010, de Gruijl 2016). Indicative estimate — does not replace medical advice."
   },
   "nav": {
     "myDay": "My Day",

@@ -89,7 +89,12 @@
     "areaFaceHands": "Gesicht + Hände (10%)",
     "areaFaceArms": "Gesicht + Arme (18%)",
     "areaTshirtShort": "T-Shirt + Shorts (25%)",
-    "areaSwimsuit": "Badeanzug (40%)"
+    "areaSwimsuit": "Badeanzug (40%)",
+    "targetPreset400": "Tagesminimum",
+    "targetPreset1000": "empfohlen",
+    "targetPreset2000": "hohe Ergänzung",
+    "targetPreset4000": "Obergrenze (UL)",
+    "targetHint": "Mit deinem aktuellen Profil kannst du bis zu ~{max} IE pro Sitzung ohne Verbrennungsrisiko synthetisieren. Photodegradation verhindert sonnenbedingte Toxizität."
   },
   "auth": {
     "login": "Anmelden",
@@ -165,8 +170,9 @@
     "lte15": "≤15 Min.",
     "lte30": "≤30 Min.",
     "gt30": ">30 Min.",
+    "targetCappedWarning": "Dein Ziel übersteigt die ~{max} IE, die du pro Sitzung mit deinem aktuellen Profil synthetisieren kannst. Maximale sichere Zeit (1 MED) wird angezeigt. Erhöhe die exponierte Haut oder teile es in mehrere Sitzungen.",
     "disclaimerTheoretical": "Theoretische Schätzung bei klarem Himmel (ohne Wolken oder reale Daten). Reale Wetterdaten decken nur ~14 Tage ab.",
-    "disclaimerReal": "Basierend auf Holicks Regel (Dowdy et al. 2010). Orientierende Schätzung — ersetzt keinen ärztlichen Rat."
+    "disclaimerReal": "Basierend auf sättigendem Exponentialmodell (Holick/Dowdy 2010, de Gruijl 2016). Orientierende Schätzung — ersetzt keinen ärztlichen Rat."
   },
   "nav": {
     "myDay": "Mein Tag",
