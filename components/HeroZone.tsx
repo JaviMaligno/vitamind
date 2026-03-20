@@ -10,7 +10,7 @@ interface Props {
   lon: number;
   tz: number;
   doy: number;
-  threshold: number;
+  canSynthesize: boolean;
   cityName: string;
   cityFlag: string;
   hasLocation: boolean;
@@ -30,7 +30,7 @@ interface Props {
 export default function HeroZone({
   lat,
   lon,
-  threshold,
+  canSynthesize,
   cityName,
   cityFlag,
   hasLocation,
@@ -116,8 +116,6 @@ export default function HeroZone({
       </section>
     );
   }
-
-  const canSynthesize = peakElevation > threshold;
 
   return (
     <section className="mx-auto max-w-[960px] px-4 py-8">
