@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo, useCallback, useRef, useEffect } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { searchCities } from "@/lib/cities-api";
 import type { City } from "@/lib/types";
 
@@ -22,23 +22,43 @@ export default function CitySearch({ onSelect, onAddFav, favorites, allCities }:
   const ref = useRef<HTMLDivElement>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
   const t = useTranslations("search");
+  const tc = useTranslations("cities");
+  const locale = useLocale();
+
+  // Helper: get translated name for builtin cities
+  const displayName = useCallback((city: City): string => {
+    if (city.id.startsWith("builtin:")) {
+      const slug = city.id.replace("builtin:", "");
+      try { return tc(slug); } catch { return city.name; }
+    }
+    return city.name;
+  }, [tc]);
 
   // Local match against builtin + custom cities (instant, no network)
   const builtIn = useMemo(() => {
     if (!query.trim()) return [];
     const q = query.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-    return allCities.filter((c) => c.name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(q)).slice(0, 5);
-  }, [query, allCities]);
+    return allCities.filter((c) => {
+      const rawMatch = c.name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(q);
+      if (rawMatch) return true;
+      // Also match against translated name for builtin cities
+      const translated = displayName(c);
+      if (translated !== c.name) {
+        return translated.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(q);
+      }
+      return false;
+    }).slice(0, 5);
+  }, [query, allCities, displayName]);
 
   const doSearch = useCallback((q: string) => {
     if (q.length < 2) { setApiResults([]); setNominatimResults([]); return; }
     setSearching(true);
 
-    searchCities(q).then((results) => {
+    searchCities(q, locale).then((results) => {
       setApiResults(results);
     });
 
-    fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&limit=4&accept-language=es`, { headers: { "User-Agent": "VitD/1" } })
+    fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&limit=4&accept-language=${locale}`, { headers: { "User-Agent": "VitD/1" } })
       .then((r) => r.json())
       .then((data) => {
         setNominatimResults(
@@ -140,7 +160,7 @@ export default function CitySearch({ onSelect, onAddFav, favorites, allCities }:
               >
                 {/* City info */}
                 <div className="flex-1 min-w-0">
-                  <div className="text-sm text-text-primary">{c.flag} {c.name}</div>
+                  <div className="text-sm text-text-primary">{c.flag} {displayName(c)}</div>
                   {(c as { _full?: string })._full && (
                     <div className="text-[10px] text-text-muted truncate max-w-[260px]">
                       {(c as { _full?: string })._full}

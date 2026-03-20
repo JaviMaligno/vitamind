@@ -2,6 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { useApp } from "@/context/AppProvider";
+import { useCityDisplayName } from "@/hooks/useCityDisplayName";
 import { useHistory } from "@/hooks/useHistory";
 import { useForecast } from "@/hooks/useForecast";
 import DayRecommendation from "@/components/dashboard/DayRecommendation";
@@ -15,6 +16,8 @@ export default function DashboardPage() {
   const t = useTranslations("dashboard");
   const tc = useTranslations("common");
   const app = useApp();
+  const getCityDisplayName = useCityDisplayName();
+  const cityName = getCityDisplayName(app.cityId, app.cityName);
 
   const { records, loading, getToday, toggleOverride, requestBackfill } = useHistory(
     app.lat, app.lon, app.cityId, app.skinType, app.areaFraction, app.age, app.targetIU, app.authUser,
@@ -47,7 +50,7 @@ export default function DashboardPage() {
       {/* Hero: Today's recommendation */}
       <DayRecommendation
         record={todayRecord}
-        cityName={app.cityName}
+        cityName={cityName}
         cityFlag={app.cityFlag}
         skinType={app.skinType}
         areaFraction={app.areaFraction}

@@ -5,7 +5,7 @@ import { usePreferences } from "@/hooks/usePreferences";
 import { useLocation } from "@/hooks/useLocation";
 import { useGeoLocation } from "@/hooks/useGeoLocation";
 import { findNearestCityApi } from "@/lib/cities-api";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import type { User } from "@supabase/supabase-js";
 import type { City } from "@/lib/types";
 import type { SkinType } from "@/lib/vitd";
@@ -74,6 +74,7 @@ export function useApp(): AppContextValue {
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
   const t = useTranslations();
+  const locale = useLocale();
 
   const prefs = usePreferences();
   const loc = useLocation();
@@ -89,7 +90,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       loc.setCityFlag("\u{1F4CD}");
       loc.setCityId(`gps:${gps.lat.toFixed(4)},${gps.lon.toFixed(4)}`);
 
-      findNearestCityApi(gps.lat, gps.lon).then((city) => {
+      findNearestCityApi(gps.lat, gps.lon, locale).then((city) => {
         if (city) {
           loc.setCityName(`${t("common.myLocation")} (${t("common.near")} ${city.name})`);
           loc.setCityFlag(city.flag ?? "\u{1F4CD}");

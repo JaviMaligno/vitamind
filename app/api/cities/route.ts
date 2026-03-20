@@ -13,6 +13,7 @@ export async function GET(request: NextRequest) {
   const q = searchParams.get("q");
   const latParam = searchParams.get("lat");
   const lonParam = searchParams.get("lon");
+  const locale = searchParams.get("locale") ?? "en";
   const limit = Math.min(parseInt(searchParams.get("limit") ?? "10", 10), 50);
 
   const supabase = getSupabaseServer();
@@ -23,8 +24,9 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  const headers = {
+  const headers: Record<string, string> = {
     "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=7200",
+    Vary: "Accept-Language",
   };
 
   try {
@@ -40,7 +42,17 @@ export async function GET(request: NextRequest) {
         );
       }
 
-      // Try RPC first (search_cities_nearby function)
+      // Try localized RPC first
+      const { data: localizedData, error: localizedError } = await supabase.rpc(
+        "search_cities_nearby_localized",
+        { p_lat: lat, p_lon: lon, p_locale: locale, p_limit: limit }
+      );
+
+      if (!localizedError && localizedData && localizedData.length > 0) {
+        return NextResponse.json(localizedData, { headers });
+      }
+
+      // Fallback: non-localized RPC
       const { data: rpcData, error: rpcError } = await supabase.rpc(
         "search_cities_nearby",
         { p_lat: lat, p_lon: lon, p_limit: limit }
@@ -68,8 +80,19 @@ export async function GET(request: NextRequest) {
       return NextResponse.json(data ?? [], { headers });
     }
 
-    // Name search: GET /api/cities?q=ecija&limit=10
+    // Name search: GET /api/cities?q=ecija&locale=es&limit=10
     if (q && q.length >= 2) {
+      // Try localized RPC first (searches both ascii_name and localized names)
+      const { data: localizedData, error: localizedError } = await supabase.rpc(
+        "search_cities_localized",
+        { p_query: q, p_locale: locale, p_limit: limit }
+      );
+
+      if (!localizedError && localizedData) {
+        return NextResponse.json(localizedData, { headers });
+      }
+
+      // Fallback: non-localized ilike query
       const { data, error } = await supabase
         .from("cities")
         .select("*")

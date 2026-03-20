@@ -3,6 +3,7 @@
 import { useState, useMemo, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { useApp } from "@/context/AppProvider";
+import { useCityDisplayName } from "@/hooks/useCityDisplayName";
 import { vitDHrs, getCurve, getWindow, dayOfYear, dateFromDoy, fmtTime, fmtDate } from "@/lib/solar";
 import { computeExposure, computeExposureFromCurve } from "@/lib/vitd";
 import HeroZone from "@/components/HeroZone";
@@ -24,11 +25,15 @@ export default function ExplorePage() {
 
   const [exploreCity, setExploreCity] = useState<City | null>(null);
 
+  const getCityDisplayName = useCityDisplayName();
+
   // Local overrides — fall back to global when no local city selected
   const lat = exploreCity?.lat ?? app.lat;
   const lon = exploreCity?.lon ?? app.lon;
   const tz = exploreCity?.tz ?? app.tz;
-  const cityName = exploreCity?.name ?? app.cityName;
+  const cityId = exploreCity?.id ?? app.cityId;
+  const rawCityName = exploreCity?.name ?? app.cityName;
+  const cityName = getCityDisplayName(cityId, rawCityName);
   const cityFlag = exploreCity?.flag ?? app.cityFlag;
 
   const date = dateFromDoy(doy);
@@ -72,7 +77,7 @@ export default function ExplorePage() {
         lon={lon}
         tz={tz}
         doy={doy}
-        threshold={app.threshold}
+        canSynthesize={exposure !== null}
         cityName={cityName}
         cityFlag={cityFlag}
         hasLocation={app.hasLocation}

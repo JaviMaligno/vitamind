@@ -1,6 +1,6 @@
 import type { City } from "./types";
 
-/** Raw row from the Supabase cities table */
+/** Raw row from the Supabase cities table (with optional localized name) */
 interface SupabaseCity {
   geoname_id: number;
   name: string;
@@ -10,6 +10,7 @@ interface SupabaseCity {
   lon: number;
   population: number;
   timezone: string;
+  display_name?: string;
 }
 
 /** Convert a 2-letter country code to a flag emoji using regional indicator symbols */
@@ -44,7 +45,7 @@ function tzOffset(timezone: string): number {
 function toCity(row: SupabaseCity): City {
   return {
     id: `geonames:${row.geoname_id}`,
-    name: row.name,
+    name: row.display_name ?? row.name,
     lat: row.lat,
     lon: row.lon,
     tz: tzOffset(row.timezone),
@@ -59,11 +60,11 @@ function toCity(row: SupabaseCity): City {
  * Search cities by name via the /api/cities endpoint.
  * Returns up to 10 results sorted by population.
  */
-export async function searchCities(query: string): Promise<City[]> {
+export async function searchCities(query: string, locale: string = "en"): Promise<City[]> {
   if (!query || query.length < 2) return [];
   try {
     const res = await fetch(
-      `/api/cities?q=${encodeURIComponent(query)}&limit=10`
+      `/api/cities?q=${encodeURIComponent(query)}&limit=10&locale=${encodeURIComponent(locale)}`
     );
     if (!res.ok) return [];
     const rows: SupabaseCity[] = await res.json();
@@ -79,11 +80,12 @@ export async function searchCities(query: string): Promise<City[]> {
  */
 export async function findNearestCityApi(
   lat: number,
-  lon: number
+  lon: number,
+  locale: string = "en"
 ): Promise<City | null> {
   try {
     const res = await fetch(
-      `/api/cities?lat=${lat.toFixed(4)}&lon=${lon.toFixed(4)}&limit=1`
+      `/api/cities?lat=${lat.toFixed(4)}&lon=${lon.toFixed(4)}&limit=1&locale=${encodeURIComponent(locale)}`
     );
     if (!res.ok) return null;
     const rows: SupabaseCity[] = await res.json();
