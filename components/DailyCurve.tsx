@@ -141,8 +141,8 @@ export default function DailyCurve({ curve, threshold, onThresholdChange, hoverT
       ))}
       <line x1={PAD.l} y1={y(0)} x2={PAD.l + plotW} y2={y(0)} stroke="rgba(255,255,255,0.18)" strokeDasharray="3,3" />
       <line x1={PAD.l} y1={y(threshold)} x2={PAD.l + plotW} y2={y(threshold)} stroke="#FF6D00" strokeWidth="1.5" strokeDasharray="6,3" opacity=".8" />
-      <foreignObject x={PAD.l + plotW + 2} y={y(threshold) - 11} width="72" height="22">
-        <div style={{ display: "flex", alignItems: "center", gap: 1 }}>
+      <foreignObject x={PAD.l + plotW - 74} y={y(threshold) - 11} width="72" height="22">
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 2, background: "rgba(0,0,0,0.7)", borderRadius: 4, padding: "1px 4px" }}>
           <button
             onClick={() => onThresholdChange(Math.max(20, threshold - 5))}
             style={{ background: "none", border: "none", color: "#FFB74D", fontSize: 10, cursor: "pointer", padding: "0 2px", lineHeight: 1 }}
