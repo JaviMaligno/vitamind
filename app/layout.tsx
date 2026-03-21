@@ -6,7 +6,7 @@ import AppShell from "@/components/AppShell";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://vitamind-app.vercel.app"),
+  metadataBase: new URL("https://vitamind-six.vercel.app"),
   title: "Vitamina D Explorer — Know When You Can Synthesize Vitamin D",
   description: "Free solar vitamin D calculator. Find out exactly when and where you can synthesize vitamin D based on your location, skin type, and real-time UV data.",
   manifest: "/manifest.json",
