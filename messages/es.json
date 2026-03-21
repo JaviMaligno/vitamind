@@ -42,7 +42,7 @@
     "dailyCurveTitle": "CURVA DEL DÍA",
     "withWeatherData": "Con datos meteorológicos",
     "heatmapTitle": "HEATMAP GLOBAL",
-    "heatmapDesc": "Latitud × Día del año · Horas ≥ {threshold}°",
+    "heatmapDesc": "Latitud × Día del año · Horas con UVI ≥ 3",
     "heatmapHint": "Clic y arrastra para explorar",
     "explore": "🔍 Explorar",
     "move": "✋ Mover"

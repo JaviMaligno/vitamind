@@ -42,7 +42,7 @@
     "dailyCurveTitle": "DIENOS KREIVĖ",
     "withWeatherData": "Su orų duomenimis",
     "heatmapTitle": "GLOBALUS ŠILUMOS ŽEMĖLAPIS",
-    "heatmapDesc": "Platuma × Metų diena · Valandos ≥ {threshold}°",
+    "heatmapDesc": "Platuma × Metų diena · Valandos su UVI ≥ 3",
     "heatmapHint": "Spustelėkite ir vilkite, kad tyrinėtumėte",
     "explore": "🔍 Tyrinėti",
     "move": "✋ Judinti"

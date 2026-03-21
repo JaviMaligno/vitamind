@@ -8,7 +8,6 @@ export interface StoredSubscription {
   tz: number;
   skinType: number;
   areaFraction: number;
-  threshold: number;
   cityName: string;
   createdAt: number;
 }
@@ -35,7 +34,6 @@ export async function saveSubscription(sub: StoredSubscription): Promise<void> {
     tz: sub.tz,
     skin_type: sub.skinType,
     area_fraction: sub.areaFraction,
-    threshold: sub.threshold,
     city_name: sub.cityName,
     updated_at: new Date().toISOString(),
   }, { onConflict: "endpoint" });
@@ -63,7 +61,6 @@ export async function getAllSubscriptions(): Promise<StoredSubscription[]> {
     tz: row.tz,
     skinType: row.skin_type,
     areaFraction: row.area_fraction,
-    threshold: row.threshold,
     cityName: row.city_name,
     createdAt: new Date(row.created_at).getTime(),
   }));

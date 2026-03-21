@@ -28,6 +28,7 @@ interface Props {
   targetIU: number;
   onSelectCity: (c: City) => void;
   onSelectFromHeatmap: (lat: number, doy: number) => void;
+  onThresholdChange: (v: number) => void;
   favorites: string[];
   allCities: City[];
   scrubMode: boolean;
@@ -50,6 +51,7 @@ export default function VisualizationZone({
   targetIU,
   onSelectCity,
   onSelectFromHeatmap,
+  onThresholdChange,
   favorites,
   allCities,
   scrubMode,
@@ -101,6 +103,7 @@ export default function VisualizationZone({
             <DailyCurve
               curve={curve}
               threshold={threshold}
+              onThresholdChange={onThresholdChange}
               hoverTime={hoverTime}
               onHover={setHoverTime}
               weather={weather}
@@ -126,7 +129,6 @@ export default function VisualizationZone({
               lat={lat}
               lon={lon}
               doy={doy}
-              threshold={threshold}
               onSelect={onSelectCity}
               favorites={favorites}
               allCities={allCities}
@@ -139,13 +141,12 @@ export default function VisualizationZone({
           <>
             <div className="text-[10px] text-text-muted mb-1 pl-2">
               <strong className="text-text-secondary">{tViz("heatmapTitle")}</strong> ·{" "}
-              {tViz("heatmapDesc", { threshold })} ·{" "}
+              {tViz("heatmapDesc")} ·{" "}
               <em>{tViz("heatmapHint")}</em>
             </div>
             <GlobalHeatmap
               selectedLat={lat}
               selectedDoy={doy}
-              threshold={threshold}
               onSelect={onSelectFromHeatmap}
             />
           </>

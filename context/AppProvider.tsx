@@ -105,7 +105,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     prefs.persistPreferences(loc.cityId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [prefs.threshold, loc.cityId, prefs.skinType, prefs.areaFraction, prefs.age, prefs.targetIU, prefs.authUser]);
+  }, [loc.cityId, prefs.skinType, prefs.areaFraction, prefs.age, prefs.targetIU, prefs.authUser]);
 
   // Bridge: handleAuthChange needs setFavorites and setCityId from useLocation
   const onAuthChange = useCallback(

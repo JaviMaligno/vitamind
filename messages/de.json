@@ -42,7 +42,7 @@
     "dailyCurveTitle": "TAGESKURVE",
     "withWeatherData": "Mit Wetterdaten",
     "heatmapTitle": "GLOBALE HEATMAP",
-    "heatmapDesc": "Breitengrad × Tag des Jahres · Stunden ≥ {threshold}°",
+    "heatmapDesc": "Breitengrad × Tag des Jahres · Stunden mit UVI ≥ 3",
     "heatmapHint": "Klicken und ziehen zum Erkunden",
     "explore": "🔍 Erkunden",
     "move": "✋ Bewegen"

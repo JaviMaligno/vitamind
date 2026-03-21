@@ -192,28 +192,6 @@ export default function ProfilePage() {
         />
       </section>
 
-      {/* Threshold */}
-      <section>
-        <h3 className="text-[11px] uppercase tracking-wider text-text-faint font-semibold mb-3">
-          {t("threshold")}
-        </h3>
-        <div className="flex gap-1.5">
-          {[45, 50].map((th) => (
-            <button
-              key={th}
-              onClick={() => app.setThreshold(th)}
-              className={`min-h-[44px] px-3 py-1.5 rounded-md font-mono text-[10px] cursor-pointer ${
-                app.threshold === th
-                  ? "bg-amber-400/15 text-amber-400 font-semibold"
-                  : "bg-surface-card text-text-muted"
-              }`}
-            >
-              {th}°
-            </button>
-          ))}
-        </div>
-      </section>
-
       {/* Target IU */}
       <section>
         <div className="flex items-center gap-2 mb-3">
@@ -272,7 +250,6 @@ export default function ProfilePage() {
           tz={app.tz}
           skinType={app.skinType}
           areaFraction={app.areaFraction}
-          threshold={app.threshold}
           cityName={app.cityName}
         />
       </section>

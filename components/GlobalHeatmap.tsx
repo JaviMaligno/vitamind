@@ -2,11 +2,11 @@
 
 import { useRef, useState, useEffect, useMemo, useCallback } from "react";
 import { vitDHrs, fmtDate, dateFromDoy } from "@/lib/solar";
+import { MIN_UVI_ELEVATION } from "@/lib/vitd";
 
 interface Props {
   selectedLat: number;
   selectedDoy: number;
-  threshold: number;
   onSelect: (lat: number, doy: number) => void;
 }
 
@@ -15,7 +15,7 @@ const PAD = { t: 20, r: 14, b: 40, l: 50 };
 const plotW = W - PAD.l - PAD.r, plotH = H - PAD.t - PAD.b;
 const LAT_MIN = -60, LAT_MAX = 70, latCount = 130, doyCount = 183;
 
-export default function GlobalHeatmap({ selectedLat, selectedDoy, threshold, onSelect }: Props) {
+export default function GlobalHeatmap({ selectedLat, selectedDoy, onSelect }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
   const [hover, setHover] = useState<{ lat: number; doy: number; hrs: number } | null>(null);
@@ -24,10 +24,10 @@ export default function GlobalHeatmap({ selectedLat, selectedDoy, threshold, onS
     const d = new Float32Array(latCount * doyCount);
     for (let li = 0; li < latCount; li++) {
       const lat = LAT_MAX - li;
-      for (let di = 0; di < doyCount; di++) d[li * doyCount + di] = vitDHrs(lat, 1 + di * 2, threshold);
+      for (let di = 0; di < doyCount; di++) d[li * doyCount + di] = vitDHrs(lat, 1 + di * 2, MIN_UVI_ELEVATION);
     }
     return d;
-  }, [threshold]);
+  }, []);
 
   useEffect(() => {
     const c = canvasRef.current; if (!c) return;
@@ -59,7 +59,7 @@ export default function GlobalHeatmap({ selectedLat, selectedDoy, threshold, onS
     mD.forEach((d, i) => ctx.fillText(mN[i], PAD.l + ((d + 14) / 365) * plotW, PAD.t + plotH + 16));
     ctx.textAlign = "right";
     [-60, -40, -20, 0, 20, 40, 60].forEach((la) => ctx.fillText(`${la}\u00B0`, PAD.l - 6, PAD.t + ((LAT_MAX - la) / (LAT_MAX - LAT_MIN)) * plotH + 4));
-  }, [heatData, threshold]);
+  }, [heatData]);
 
   const pxToCoord = useCallback((clientX: number, clientY: number) => {
     const el = overlayRef.current; if (!el) return null;
@@ -72,8 +72,8 @@ export default function GlobalHeatmap({ selectedLat, selectedDoy, threshold, onS
     };
   }, []);
 
-  const stableRef = useRef({ pxToCoord, onSelect, threshold });
-  useEffect(() => { stableRef.current = { pxToCoord, onSelect, threshold }; });
+  const stableRef = useRef({ pxToCoord, onSelect });
+  useEffect(() => { stableRef.current = { pxToCoord, onSelect }; });
 
   useEffect(() => {
     const el = overlayRef.current; if (!el) return;
@@ -85,9 +85,9 @@ export default function GlobalHeatmap({ selectedLat, selectedDoy, threshold, onS
       if (c) sel(c.lat, c.doy);
     }
     function hoverAt(cX: number, cY: number) {
-      const { pxToCoord: p, threshold: thr } = stableRef.current;
+      const { pxToCoord: p } = stableRef.current;
       const c = p(cX, cY);
-      if (c) setHover({ ...c, hrs: vitDHrs(c.lat, c.doy, thr) });
+      if (c) setHover({ ...c, hrs: vitDHrs(c.lat, c.doy, MIN_UVI_ELEVATION) });
       else setHover(null);
     }
 

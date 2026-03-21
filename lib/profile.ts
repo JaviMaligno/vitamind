@@ -21,7 +21,6 @@ export async function loadProfile(): Promise<{ profile: UserProfile | null; isLo
         skinType: data.skin_type ?? 3,
         areaFraction: data.area_fraction ?? 0.25,
         age: data.age ?? null,
-        threshold: data.threshold ?? 50,
         targetIU: data.target_iu ?? 1000,
         favorites: data.favorites ?? [],
         customLocations: data.custom_locations ?? [],
@@ -41,7 +40,6 @@ export async function loadProfile(): Promise<{ profile: UserProfile | null; isLo
     skinType: prefs.skinType ?? 3,
     areaFraction: prefs.areaFraction ?? 0.25,
     age: prefs.age ?? null,
-    threshold: prefs.threshold,
     targetIU: prefs.targetIU ?? 1000,
     favorites: favs,
     customLocations: custom,
@@ -56,8 +54,9 @@ export async function loadProfile(): Promise<{ profile: UserProfile | null; isLo
 // Save profile: to Supabase if logged in, always to localStorage
 export async function saveProfile(profile: UserProfile): Promise<void> {
   // Always save to localStorage as cache
+  const currentPrefs = loadPreferences();
   savePreferences({
-    threshold: profile.threshold,
+    threshold: currentPrefs.threshold,
     lastCityId: profile.lastCityId ?? undefined,
     skinType: profile.skinType,
     areaFraction: profile.areaFraction,
@@ -78,7 +77,6 @@ export async function saveProfile(profile: UserProfile): Promise<void> {
     skin_type: profile.skinType,
     area_fraction: profile.areaFraction,
     age: profile.age,
-    threshold: profile.threshold,
     target_iu: profile.targetIU,
     favorites: profile.favorites,
     custom_locations: profile.customLocations,
@@ -94,7 +92,6 @@ export async function saveProfile(profile: UserProfile): Promise<void> {
 export async function updateProfile(id: string, updates: Partial<Omit<UserProfile, "id" | "email">>): Promise<void> {
   // Update localStorage
   const prefs = loadPreferences();
-  if (updates.threshold !== undefined) prefs.threshold = updates.threshold;
   if (updates.skinType !== undefined) prefs.skinType = updates.skinType;
   if (updates.areaFraction !== undefined) prefs.areaFraction = updates.areaFraction;
   if (updates.age !== undefined) prefs.age = updates.age ?? undefined;
@@ -109,7 +106,6 @@ export async function updateProfile(id: string, updates: Partial<Omit<UserProfil
   if (!sb) return;
 
   const dbUpdates: Record<string, unknown> = { updated_at: new Date().toISOString() };
-  if (updates.threshold !== undefined) dbUpdates.threshold = updates.threshold;
   if (updates.skinType !== undefined) dbUpdates.skin_type = updates.skinType;
   if (updates.areaFraction !== undefined) dbUpdates.area_fraction = updates.areaFraction;
   if (updates.age !== undefined) dbUpdates.age = updates.age;

@@ -10,7 +10,7 @@ export function usePreferences() {
   const [skinType, setSkinType] = useState<SkinType>(3);
   const [areaFraction, setAreaFraction] = useState(0.25);
   const [age, setAge] = useState<number | null>(null);
-  const [threshold, setThreshold] = useState(50);
+  const [threshold, setThreshold] = useState(45);
   const [targetIU, setTargetIU] = useState(1000);
   const [authUser, setAuthUser] = useState<User | null>(null);
 
@@ -29,10 +29,10 @@ export function usePreferences() {
     (cityId: string) => {
       savePreferences({ threshold, lastCityId: cityId, skinType, areaFraction, age: age ?? undefined, targetIU });
       if (authUser) {
-        updateProfile(authUser.id, { threshold, lastCityId: cityId, skinType, areaFraction, age, targetIU });
+        updateProfile(authUser.id, { lastCityId: cityId, skinType, areaFraction, age, targetIU });
       }
     },
-    [threshold, skinType, areaFraction, age, targetIU, authUser],
+    [skinType, areaFraction, age, targetIU, authUser],
   );
 
   // Sync profile from Supabase on auth change
@@ -45,7 +45,6 @@ export function usePreferences() {
           setSkinType(profile.skinType);
           setAreaFraction(profile.areaFraction);
           setAge(profile.age);
-          setThreshold(profile.threshold);
           setTargetIU(profile.targetIU);
           if (profile.favorites.length) setFavorites(profile.favorites);
           if (profile.lastCityId) setCityId(profile.lastCityId);

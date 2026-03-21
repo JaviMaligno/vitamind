@@ -42,7 +42,7 @@
     "dailyCurveTitle": "ДНЕВНАЯ КРИВАЯ",
     "withWeatherData": "С данными о погоде",
     "heatmapTitle": "ГЛОБАЛЬНАЯ ТЕПЛОВАЯ КАРТА",
-    "heatmapDesc": "Широта × День года · Часы ≥ {threshold}°",
+    "heatmapDesc": "Широта × День года · Часы с UVI ≥ 3",
     "heatmapHint": "Нажмите и перетащите для исследования",
     "explore": "🔍 Исследовать",
     "move": "✋ Переместить"

@@ -56,7 +56,6 @@ export interface UserProfile {
   skinType: 1 | 2 | 3 | 4 | 5 | 6;
   areaFraction: number;
   age: number | null;
-  threshold: number;
   targetIU: number;
   favorites: string[];
   customLocations: City[];

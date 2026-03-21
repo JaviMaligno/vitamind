@@ -2,11 +2,13 @@
 
 import { useRef, useCallback } from "react";
 import { fmtTime } from "@/lib/solar";
+import { MIN_UVI_ELEVATION } from "@/lib/vitd";
 import type { SolarPoint, WeatherData } from "@/lib/types";
 
 interface Props {
   curve: SolarPoint[];
   threshold: number;
+  onThresholdChange: (v: number) => void;
   hoverTime: number | null;
   onHover: (h: number | null) => void;
   weather?: WeatherData | null;
@@ -68,7 +70,7 @@ function buildVisiblePath(
   return parts.join(" ");
 }
 
-export default function DailyCurve({ curve, threshold, hoverTime, onHover, weather }: Props) {
+export default function DailyCurve({ curve, threshold, onThresholdChange, hoverTime, onHover, weather }: Props) {
   const ref = useRef<SVGSVGElement>(null);
   const maxE = Math.max(55, ...curve.map((p) => Math.max(p.elevation, 0)));
   const minE = Math.max(-15, Math.min(-5, ...curve.map((p) => p.elevation)));
@@ -78,11 +80,11 @@ export default function DailyCurve({ curve, threshold, hoverTime, onHover, weath
 
   const pathD = buildVisiblePath(curve, minE, x, y);
 
-  const aP = curve.filter((p) => p.elevation >= threshold);
+  const aP = curve.filter((p) => p.elevation >= MIN_UVI_ELEVATION);
   let aD = "";
   if (aP.length > 1) {
     aD = aP.map((p, i) => `${i === 0 ? "M" : "L"}${x(p.localHours).toFixed(1)},${y(p.elevation).toFixed(1)}`).join(" ");
-    aD += ` L${x(aP[aP.length - 1].localHours).toFixed(1)},${y(threshold).toFixed(1)} L${x(aP[0].localHours).toFixed(1)},${y(threshold).toFixed(1)} Z`;
+    aD += ` L${x(aP[aP.length - 1].localHours).toFixed(1)},${y(MIN_UVI_ELEVATION).toFixed(1)} L${x(aP[0].localHours).toFixed(1)},${y(MIN_UVI_ELEVATION).toFixed(1)} Z`;
   }
 
   const handleMove = useCallback((e: React.MouseEvent) => {
@@ -139,13 +141,31 @@ export default function DailyCurve({ curve, threshold, hoverTime, onHover, weath
       ))}
       <line x1={PAD.l} y1={y(0)} x2={PAD.l + plotW} y2={y(0)} stroke="rgba(255,255,255,0.18)" strokeDasharray="3,3" />
       <line x1={PAD.l} y1={y(threshold)} x2={PAD.l + plotW} y2={y(threshold)} stroke="#FF6D00" strokeWidth="1.5" strokeDasharray="6,3" opacity=".8" />
-      <text x={PAD.l + plotW + 4} y={y(threshold) + 4} fill="#FFB74D" fontSize="9" fontWeight="600" fontFamily="'JetBrains Mono',monospace">{threshold}&deg;</text>
+      <foreignObject x={PAD.l + plotW + 2} y={y(threshold) - 11} width="72" height="22">
+        <div style={{ display: "flex", alignItems: "center", gap: 1 }}>
+          <button
+            onClick={() => onThresholdChange(Math.max(20, threshold - 5))}
+            style={{ background: "none", border: "none", color: "#FFB74D", fontSize: 10, cursor: "pointer", padding: "0 2px", lineHeight: 1 }}
+          >
+            ◀
+          </button>
+          <span style={{ color: "#FFB74D", fontSize: 9, fontWeight: 600, fontFamily: "'JetBrains Mono',monospace" }}>
+            {threshold}°
+          </span>
+          <button
+            onClick={() => onThresholdChange(Math.min(70, threshold + 5))}
+            style={{ background: "none", border: "none", color: "#FFB74D", fontSize: 10, cursor: "pointer", padding: "0 2px", lineHeight: 1 }}
+          >
+            ▶
+          </button>
+        </div>
+      </foreignObject>
       {aD && <path d={aD} fill="url(#vg3)" />}
       <path d={pathD} fill="none" stroke="#FFD54F" strokeWidth="2.5" strokeLinecap="round" />
       {hp && hoverTime !== null && (
         <g>
           <line x1={x(hp.localHours)} y1={PAD.t} x2={x(hp.localHours)} y2={PAD.t + plotH} stroke="rgba(255,255,255,0.2)" strokeDasharray="2,2" />
-          <circle cx={x(hp.localHours)} cy={y(Math.max(hp.elevation, minE))} r="5" fill={hp.elevation >= threshold ? "#FFD54F" : "#FF6D00"} stroke="#fff" strokeWidth="1.5" />
+          <circle cx={x(hp.localHours)} cy={y(Math.max(hp.elevation, minE))} r="5" fill={hp.elevation >= MIN_UVI_ELEVATION ? "#FFD54F" : "#FF6D00"} stroke="#fff" strokeWidth="1.5" />
           <rect x={x(hp.localHours) - 46} y={PAD.t - 18} width="92" height="16" rx="4" fill="rgba(0,0,0,0.8)" />
           <text x={x(hp.localHours)} y={PAD.t - 7} textAnchor="middle" fill="#FFD54F" fontSize="10" fontWeight="600" fontFamily="'JetBrains Mono',monospace">
             {fmtTime(hp.localHours)} &rarr; {hp.elevation.toFixed(1)}&deg;

@@ -4,13 +4,13 @@ import { useState, useRef, useEffect, useMemo } from "react";
 import * as d3 from "d3";
 import { decodeTopo } from "@/lib/geo";
 import { vitDHrs } from "@/lib/solar";
+import { MIN_UVI_ELEVATION } from "@/lib/vitd";
 import type { City, HoverInfo } from "@/lib/types";
 
 interface Props {
   lat: number;
   lon: number;
   doy: number;
-  threshold: number;
   onSelect: (city: City) => void;
   favorites: string[];
   allCities: City[];
@@ -19,7 +19,7 @@ interface Props {
 
 const W = 860, H = 480;
 
-export default function WorldMap({ lat, lon, doy, threshold, onSelect, favorites, allCities, scrubMode = false }: Props) {
+export default function WorldMap({ lat, lon, doy, onSelect, favorites, allCities, scrubMode = false }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -33,11 +33,11 @@ export default function WorldMap({ lat, lon, doy, threshold, onSelect, favorites
   const limits = useMemo(() => {
     let n = 0, s = 0;
     for (let la = 0; la <= 90; la += 0.5) {
-      if (vitDHrs(la, doy, threshold) > 0) n = la;
-      if (vitDHrs(-la, doy, threshold) > 0) s = -la;
+      if (vitDHrs(la, doy, MIN_UVI_ELEVATION) > 0) n = la;
+      if (vitDHrs(-la, doy, MIN_UVI_ELEVATION) > 0) s = -la;
     }
     return { north: n, south: s };
-  }, [doy, threshold]);
+  }, [doy]);
 
   useEffect(() => {
     fetch("https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json")

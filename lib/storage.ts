@@ -54,7 +54,7 @@ export function deleteCustomLocation(id: string): void {
 
 // Preferences
 export function loadPreferences(): Preferences {
-  return getItem<Preferences>(KEYS.preferences, { threshold: 50 });
+  return getItem<Preferences>(KEYS.preferences, { threshold: 45 });
 }
 
 export function savePreferences(prefs: Preferences): void {

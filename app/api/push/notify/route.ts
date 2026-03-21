@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAllSubscriptions, removeSubscription } from "@/lib/push-store";
-import { getCurve, getWindow, dayOfYear, fmtTime } from "@/lib/solar";
-import { minutesForVitD, type SkinType } from "@/lib/vitd";
+import { getCurve, dayOfYear, fmtTime } from "@/lib/solar";
+import { minutesForVitD, computeExposureFromCurve, type SkinType } from "@/lib/vitd";
 
 // Dynamic import to avoid build-time issues with web-push native modules
 async function getWebPush() {
@@ -60,30 +60,34 @@ export async function GET(request: NextRequest) {
 
     for (const sub of subs) {
       try {
-        // Calculate solar window
+        // Calculate UV-based synthesis window
         const curve = getCurve(sub.lat, sub.lon, doy, sub.tz);
-        const win = getWindow(curve, sub.threshold);
+        const exposure = computeExposureFromCurve(
+          curve,
+          sub.skinType as SkinType,
+          sub.areaFraction,
+        );
 
-        if (!win) {
+        if (!exposure) {
           skipped++;
           continue; // No vitamin D window today
         }
 
-        // Fetch real UV data
+        // Fetch real UV data for more accurate minutes
         const uvData = await fetchUVI(sub.lat, sub.lon);
-        const peakUV = uvData.length ? Math.max(...uvData.map((h) => h.uvi)) : 0;
+        const peakUV = uvData.length ? Math.max(...uvData.map((h) => h.uvi)) : exposure.bestUVI;
 
         if (peakUV < 3) {
           skipped++;
           continue; // UV too low
         }
 
-        // Calculate exposure time
+        // Calculate exposure time with real UV if available
         const mins = minutesForVitD(peakUV, sub.skinType as SkinType, sub.areaFraction);
 
         const body = mins !== null
-          ? `${sub.cityName}: ${Math.round(mins)} min al sol para 1000 IU. Ventana: ${fmtTime(win.start)} – ${fmtTime(win.end)}. UV pico: ${peakUV.toFixed(1)}`
-          : `${sub.cityName}: Ventana de sol ${fmtTime(win.start)} – ${fmtTime(win.end)}`;
+          ? `${sub.cityName}: ${Math.round(mins)} min al sol para 1000 IU. Ventana: ${fmtTime(exposure.windowStart)} – ${fmtTime(exposure.windowEnd)}. UV pico: ${peakUV.toFixed(1)}`
+          : `${sub.cityName}: Ventana de sol ${fmtTime(exposure.windowStart)} – ${fmtTime(exposure.windowEnd)}`;
 
         await webpush.sendNotification(
           sub.subscription,

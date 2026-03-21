@@ -9,7 +9,6 @@ interface Props {
   tz: number;
   skinType: number;
   areaFraction: number;
-  threshold: number;
   cityName: string;
 }
 
@@ -24,7 +23,7 @@ function urlBase64ToUint8Array(base64String: string): Uint8Array {
   return arr;
 }
 
-export default function NotificationToggle({ lat, lon, tz, skinType, areaFraction, threshold, cityName }: Props) {
+export default function NotificationToggle({ lat, lon, tz, skinType, areaFraction, cityName }: Props) {
   const [status, setStatus] = useState<Status>("loading");
   const t = useTranslations("notifications");
 
@@ -100,12 +99,12 @@ export default function NotificationToggle({ lat, lon, tz, skinType, areaFractio
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           subscription: sub.toJSON(),
-          lat, lon, tz, skinType, areaFraction, threshold, cityName,
+          lat, lon, tz, skinType, areaFraction, cityName,
         }),
       });
       setStatus("on");
     }
-  }, [status, lat, lon, tz, skinType, areaFraction, threshold, cityName]);
+  }, [status, lat, lon, tz, skinType, areaFraction, cityName]);
 
   // Update subscription when preferences change
   useEffect(() => {
@@ -118,12 +117,12 @@ export default function NotificationToggle({ lat, lon, tz, skinType, areaFractio
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             subscription: sub.toJSON(),
-            lat, lon, tz, skinType, areaFraction, threshold, cityName,
+            lat, lon, tz, skinType, areaFraction, cityName,
           }),
         });
       });
     });
-  }, [status, lat, lon, tz, skinType, areaFraction, threshold, cityName]);
+  }, [status, lat, lon, tz, skinType, areaFraction, cityName]);
 
   if (status === "loading") {
     return (

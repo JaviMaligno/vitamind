@@ -29,7 +29,17 @@ export const AREA_PRESETS: { label: string; value: number }[] = [
   { label: "Banador (40%)", value: 0.40 },
 ];
 
-const MIN_UVI = 3; // Below this, no meaningful vitamin D synthesis
+export const MIN_UVI = 3; // Below this, no meaningful vitamin D synthesis
+
+/**
+ * Solar elevation (degrees) where clear-sky UVI reaches MIN_UVI.
+ * Inverse of the Madronich model used in estimateUVFromElevation().
+ * Used by heatmap/worldmap as the UV-based threshold for synthesis hours.
+ */
+export const MIN_UVI_ELEVATION = (() => {
+  const sinE = Math.pow(MIN_UVI / 12, 1 / 1.3);
+  return Math.asin(sinE) * (180 / Math.PI);
+})(); // ~19.1 degrees
 
 /**
  * Reference values for target IU presets.

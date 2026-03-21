@@ -4,7 +4,7 @@ import { useState, useMemo, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { useApp } from "@/context/AppProvider";
 import { useCityDisplayName } from "@/hooks/useCityDisplayName";
-import { vitDHrs, getCurve, getWindow, dayOfYear, dateFromDoy, fmtTime, fmtDate } from "@/lib/solar";
+import { getCurve, dayOfYear, dateFromDoy, fmtTime, fmtDate } from "@/lib/solar";
 import { computeExposure, computeExposureFromCurve } from "@/lib/vitd";
 import HeroZone from "@/components/HeroZone";
 import VisualizationZone from "@/components/VisualizationZone";
@@ -41,9 +41,7 @@ export default function ExplorePage() {
 
   // Computed solar data
   const curve = useMemo(() => getCurve(lat, lon, doy, tz), [lat, lon, doy, tz]);
-  const vitDWindow = useMemo(() => getWindow(curve, app.threshold), [curve, app.threshold]);
   const peak = useMemo(() => Math.max(...curve.map((p) => p.elevation)), [curve]);
-  const vdH = vitDHrs(lat, doy, app.threshold);
 
   const exposure = useMemo(() => {
     if (weather?.hours) {
@@ -52,8 +50,8 @@ export default function ExplorePage() {
     return computeExposureFromCurve(curve, app.skinType, app.areaFraction, app.targetIU, app.age);
   }, [weather, curve, app.skinType, app.areaFraction, app.targetIU, app.age]);
 
-  const windowLabel = vitDWindow
-    ? `${fmtTime(vitDWindow.start)} \u2013 ${fmtTime(vitDWindow.end)}`
+  const windowLabel = exposure
+    ? `${fmtTime(exposure.windowStart)} \u2013 ${fmtTime(exposure.windowEnd)}`
     : null;
   const dateLabel = fmtDate(date);
 
@@ -124,6 +122,7 @@ export default function ExplorePage() {
         doy={doy}
         tz={tz}
         threshold={app.threshold}
+        onThresholdChange={app.setThreshold}
         cityName={cityName}
         cityFlag={cityFlag}
         dateLabel={dateLabel}
