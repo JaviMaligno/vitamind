@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 
 const LS_KEY = "vitamind:useGps";
+const GLOBAL_TIMEOUT = 20_000;
 
 export function useGeoLocation() {
   const [lat, setLat] = useState<number | null>(null);
@@ -12,17 +13,38 @@ export function useGeoLocation() {
   const [error, setError] = useState<"gpsDenied" | "gpsTimeout" | "gpsUnavailable" | "gpsGenericError" | "gpsNotSupported" | null>(null);
   const [permissionDenied, setPermissionDenied] = useState(false);
   const slowTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const globalTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const watchId = useRef<number | null>(null);
+
+  const cleanup = useCallback(() => {
+    if (watchId.current !== null) {
+      navigator.geolocation.clearWatch(watchId.current);
+      watchId.current = null;
+    }
+    if (slowTimer.current) {
+      clearTimeout(slowTimer.current);
+      slowTimer.current = null;
+    }
+    if (globalTimer.current) {
+      clearTimeout(globalTimer.current);
+      globalTimer.current = null;
+    }
+  }, []);
 
   const requestLocation = useCallback(async () => {
     if (!navigator.geolocation) {
       setError("gpsNotSupported");
       return;
     }
+
+    // Clean up any previous watcher before starting a new one
+    cleanup();
+
     setLoading(true);
     setSlow(false);
     setError(null);
 
-    // If permission was already granted, show the hint faster (1s vs 4s)
+    // If permission was already granted, show the hint faster (1.5s vs 4s)
     // because the only reason it would be slow is that the device GPS is off
     let hintDelay = 4000;
     try {
@@ -36,9 +58,17 @@ export function useGeoLocation() {
 
     slowTimer.current = setTimeout(() => setSlow(true), hintDelay);
 
-    navigator.geolocation.getCurrentPosition(
+    // Global safety timeout: if no position after 20s, give up
+    globalTimer.current = setTimeout(() => {
+      cleanup();
+      setLoading(false);
+      setSlow(false);
+      setError("gpsTimeout");
+    }, GLOBAL_TIMEOUT);
+
+    watchId.current = navigator.geolocation.watchPosition(
       (pos) => {
-        if (slowTimer.current) clearTimeout(slowTimer.current);
+        cleanup();
         setLat(pos.coords.latitude);
         setLon(pos.coords.longitude);
         setLoading(false);
@@ -47,27 +77,24 @@ export function useGeoLocation() {
         setPermissionDenied(false);
       },
       (err) => {
-        if (slowTimer.current) clearTimeout(slowTimer.current);
-        setLoading(false);
-        setSlow(false);
+        // PERMISSION_DENIED is definitive — stop immediately
         if (err.code === err.PERMISSION_DENIED) {
+          cleanup();
+          setLoading(false);
+          setSlow(false);
           setPermissionDenied(true);
           setError("gpsDenied");
-        } else if (err.code === err.TIMEOUT) {
-          setError("gpsTimeout");
-        } else if (err.code === err.POSITION_UNAVAILABLE) {
-          setError("gpsUnavailable");
-        } else {
-          setError("gpsGenericError");
         }
+        // TIMEOUT and POSITION_UNAVAILABLE are transient —
+        // watchPosition keeps retrying, global timer handles the hard limit
       },
       {
-        enableHighAccuracy: false,
-        timeout: 12000,
+        enableHighAccuracy: true,
+        timeout: 15000,
         maximumAge: 600000,
       },
     );
-  }, []);
+  }, [cleanup]);
 
   const enableGps = useCallback(() => {
     try {
@@ -79,6 +106,7 @@ export function useGeoLocation() {
   }, [requestLocation]);
 
   const disableGps = useCallback(() => {
+    cleanup();
     try {
       localStorage.setItem(LS_KEY, "false");
     } catch {
@@ -86,9 +114,11 @@ export function useGeoLocation() {
     }
     setLat(null);
     setLon(null);
+    setLoading(false);
+    setSlow(false);
     setError(null);
     setPermissionDenied(false);
-  }, []);
+  }, [cleanup]);
 
   // On mount: auto-request if previously enabled
   useEffect(() => {
@@ -99,7 +129,8 @@ export function useGeoLocation() {
     } catch {
       // localStorage unavailable
     }
-  }, [requestLocation]);
+    return cleanup;
+  }, [requestLocation, cleanup]);
 
   return { lat, lon, loading, slow, error, permissionDenied, requestLocation, enableGps, disableGps };
 }
