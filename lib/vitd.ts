@@ -1,4 +1,4 @@
-import type { WeatherHour, SolarPoint } from "./types";
+import type { WeatherHour, SolarPoint, NowStatus } from "./types";
 
 export type SkinType = 1 | 2 | 3 | 4 | 5 | 6;
 
@@ -278,4 +278,156 @@ export function computeExposureFromCurve(
   const targetCapped = targetIU >= maxIU;
 
   return { bestHour, bestUVI, minutesNeeded, maxIU, targetCapped, windowStart, windowEnd, hourlyMinutes };
+}
+
+/**
+ * Cloud cover penalty factor for effective UVI.
+ * Reduces UVI based on cloud cover percentage from Open-Meteo.
+ */
+export function cloudFactor(cloudCover: number): number {
+  if (cloudCover <= 20) return 1.0;
+  if (cloudCover <= 50) return 0.7;
+  if (cloudCover <= 80) return 0.4;
+  return 0.15;
+}
+
+/**
+ * Linearly interpolate UVI between two hourly values.
+ */
+function interpolateUVI(uviCurrent: number, uviNext: number, minutesFraction: number): number {
+  return uviCurrent + (uviNext - uviCurrent) * minutesFraction;
+}
+
+/**
+ * Compute real-time "now" status from weather data or solar curve.
+ * Determines if the current moment is good for synthesis, and if not, when the next window is.
+ */
+export function getCurrentStatus(
+  weather: { hours: WeatherHour[] } | null,
+  curve: SolarPoint[],
+  skinType: SkinType,
+  areaFraction: number,
+  targetIU: number,
+  age: number | null,
+  now: Date,
+): NowStatus {
+  const currentHour = now.getHours();
+  const currentMinutes = now.getMinutes();
+  const minutesFraction = currentMinutes / 60;
+
+  // Build hourly UVI + cloud data
+  const hourlyUVI: { hour: number; uvi: number; cloud: number }[] = [];
+
+  if (weather && weather.hours.length > 0) {
+    for (const wh of weather.hours) {
+      const d = new Date(wh.time);
+      hourlyUVI.push({ hour: d.getHours(), uvi: wh.uvIndex, cloud: wh.cloudCover });
+    }
+  } else if (curve.length > 0) {
+    for (let h = 0; h < 24; h++) {
+      const pt = curve.find((p) => Math.floor(p.localHours) === h);
+      const elev = pt?.elevation ?? 0;
+      hourlyUVI.push({ hour: h, uvi: estimateUVFromElevation(elev), cloud: 0 });
+    }
+  }
+
+  if (hourlyUVI.length === 0) {
+    return {
+      state: "no_synthesis", currentUVI: 0, effectiveUVI: 0, intensity: null,
+      minutesNeeded: null, window: null, bestHour: null, bestMinutes: null,
+      minutesUntilWindow: null, windowClosesIn: null, cloudCover: null, cloudDegraded: false,
+    };
+  }
+
+  // Interpolate current UVI between hour boundaries
+  const curr = hourlyUVI.find((h) => h.hour === currentHour);
+  const next = hourlyUVI.find((h) => h.hour === currentHour + 1);
+  const rawUVI = curr
+    ? next
+      ? interpolateUVI(curr.uvi, next.uvi, minutesFraction)
+      : curr.uvi
+    : 0;
+  const currentCloud = curr?.cloud ?? null;
+  const cf = currentCloud !== null ? cloudFactor(currentCloud) : 1.0;
+  const effectiveUVI = rawUVI * cf;
+
+  // Compute effective UVI per hour for window detection
+  const effectiveHourly = hourlyUVI.map((h) => ({
+    hour: h.hour,
+    effectiveUVI: h.uvi * (weather ? cloudFactor(h.cloud) : 1.0),
+    rawUVI: h.uvi,
+  }));
+
+  // Find synthesis window
+  let wsStart = -1;
+  let wsEnd = -1;
+  let bHour: number | null = null;
+  let bEffUVI = 0;
+
+  for (const h of effectiveHourly) {
+    if (h.effectiveUVI >= MIN_UVI) {
+      if (wsStart === -1) wsStart = h.hour;
+      wsEnd = h.hour + 1;
+      if (h.effectiveUVI > bEffUVI) {
+        bEffUVI = h.effectiveUVI;
+        bHour = h.hour;
+      }
+    }
+  }
+
+  const synthWindow = wsStart !== -1 ? { start: wsStart, end: wsEnd } : null;
+  const bMinutes = bHour !== null
+    ? minutesForVitD(bEffUVI, skinType, areaFraction, targetIU, age)
+    : null;
+
+  const theoreticalWindow = hourlyUVI.some((h) => h.uvi >= MIN_UVI);
+  const cloudDegraded = theoreticalWindow && synthWindow === null;
+  const minutesNeededNow = minutesForVitD(effectiveUVI, skinType, areaFraction, targetIU, age);
+
+  // Determine state
+  let state: NowStatus["state"];
+  let intensity: NowStatus["intensity"] = null;
+  let minutesUntilWindow: number | null = null;
+  let windowClosesIn: number | null = null;
+
+  if (effectiveUVI >= MIN_UVI) {
+    state = "good_now";
+    intensity = effectiveUVI > 5 ? "optimal" : "moderate";
+    if (synthWindow) {
+      windowClosesIn = (synthWindow.end - currentHour) * 60 - currentMinutes;
+      if (windowClosesIn < 0) windowClosesIn = 0;
+    }
+  } else if (synthWindow && currentHour >= synthWindow.start && currentHour < synthWindow.end) {
+    // Inside window period but interpolated UVI dipped below threshold (e.g. cloud or transition)
+    // Scan forward for next hour with good UVI
+    const nextGood = effectiveHourly.find((h) => h.hour > currentHour && h.hour < synthWindow.end && h.effectiveUVI >= MIN_UVI);
+    if (nextGood) {
+      state = "upcoming";
+      minutesUntilWindow = (nextGood.hour - currentHour) * 60 - currentMinutes;
+    } else {
+      // Rest of window also below threshold — treat as closed
+      state = "window_closed";
+    }
+  } else if (synthWindow && currentHour < synthWindow.start) {
+    state = "upcoming";
+    minutesUntilWindow = (synthWindow.start - currentHour) * 60 - currentMinutes;
+  } else if (synthWindow && currentHour >= synthWindow.end) {
+    state = "window_closed";
+  } else if (!synthWindow && theoreticalWindow) {
+    const futureGood = effectiveHourly.find((h) => h.hour > currentHour && h.effectiveUVI >= MIN_UVI);
+    if (futureGood) {
+      state = "upcoming";
+      minutesUntilWindow = (futureGood.hour - currentHour) * 60 - currentMinutes;
+    } else {
+      state = "no_synthesis";
+    }
+  } else {
+    state = "no_synthesis";
+  }
+
+  return {
+    state, currentUVI: rawUVI, effectiveUVI, intensity,
+    minutesNeeded: minutesNeededNow, window: synthWindow, bestHour: bHour, bestMinutes: bMinutes,
+    minutesUntilWindow, windowClosesIn, cloudCover: currentCloud, cloudDegraded,
+  };
 }

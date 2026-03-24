@@ -224,7 +224,27 @@
     "legendConfirmed": "Confirmed",
     "legendUnfavorable": "No UV",
     "noUvLearnTitle": "No UV window today — how to supplement",
-    "noUvLearnHint": "D3, K2, magnesium, and food sources explained"
+    "noUvLearnHint": "D3, K2, magnesium, and food sources explained",
+    "now_optimal": "Optimal synthesis",
+    "now_moderate": "Synthesis possible",
+    "now_upcoming": "Not yet",
+    "now_windowClosed": "Window closed",
+    "now_insufficient": "No synthesis today",
+    "nowOptimalTitle": "Get out now! Excellent conditions",
+    "nowOptimalHint": "UV index is high — great time to synthesize vitamin D",
+    "nowModerateTitle": "Good time to get sun exposure",
+    "nowModerateHint": "UV is sufficient for vitamin D synthesis",
+    "nowUpcomingTitle": "Better in {countdown} (at {hour})",
+    "nowClosedTitle": "Today's window ended at {hour}",
+    "nowClosedHint": "There will be a new opportunity tomorrow",
+    "cloudDegraded": "Cloudy now — may improve later",
+    "cloudDegradedFull": "Clouds are blocking the UV needed for vitamin D synthesis",
+    "nowWindow": "Window",
+    "nowTimeNeeded": "Estimated time",
+    "nowClosesIn": "Closes in",
+    "nowBestHour": "Best hour",
+    "forIU": "for {iu} IU",
+    "atHour": "at {hour}"
   },
   "learn": {
     "pageTitle": "Vitamin D & the Sun",
@@ -251,6 +271,10 @@
       "q5": {
         "q": "Do clouds cancel UVB?",
         "a": "Not completely. Heavy overcast reduces UVB by 70–90%; thin or broken cloud cover by around 20–50%. Paradoxically, certain broken-cloud formations scatter UV and can briefly push ground-level UVB above clear-sky values. The app uses real UV data from Open-Meteo when available, so the minutes shown already account for current cloud conditions — no manual adjustment needed."
+      },
+      "q6": {
+        "q": "Do I need direct sunlight on my skin?",
+        "a": "Yes. Vitamin D synthesis requires direct UVB exposure on bare skin. Clothing blocks most UVB, even thin fabrics. In the shade — under a tree or awning — diffuse UVB is minimal and insufficient for meaningful synthesis. Sunscreen SPF 30+ reduces synthesis by approximately 95%; the practical recommendation is to go without for the first 10–20 minutes (depending on your skin type) and apply it afterwards if you stay in the sun. Important: for other benefits such as nitric oxide release, circadian rhythm regulation, and serotonin production, direct sun is NOT required — being outdoors on a bright day already helps. But for vitamin D, bare skin exposed to direct sunlight is necessary."
       }
     },
     "block2": {

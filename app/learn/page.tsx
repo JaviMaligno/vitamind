@@ -22,6 +22,7 @@ const BLOCKS: Block[] = [
       { qKey: "block1.q3.q", aKey: "block1.q3.a" },
       { qKey: "block1.q4.q", aKey: "block1.q4.a" },
       { qKey: "block1.q5.q", aKey: "block1.q5.a" },
+      { qKey: "block1.q6.q", aKey: "block1.q6.a" },
     ],
   },
   {

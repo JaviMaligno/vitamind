@@ -224,7 +224,27 @@
     "legendConfirmed": "Confirmé",
     "legendUnfavorable": "Sans UV",
     "noUvLearnTitle": "Pas de fenêtre UV aujourd'hui — comment supplémenter",
-    "noUvLearnHint": "D3, K2, magnésium et sources alimentaires expliqués"
+    "noUvLearnHint": "D3, K2, magnésium et sources alimentaires expliqués",
+    "now_optimal": "Synthèse optimale",
+    "now_moderate": "Synthèse possible",
+    "now_upcoming": "Pas encore",
+    "now_windowClosed": "Fenêtre fermée",
+    "now_insufficient": "Pas de synthèse aujourd'hui",
+    "nowOptimalTitle": "Sortez maintenant ! Conditions excellentes",
+    "nowOptimalHint": "L'indice UV est élevé — idéal pour synthétiser la vitamine D",
+    "nowModerateTitle": "Bon moment pour s'exposer au soleil",
+    "nowModerateHint": "Les UV sont suffisants pour la synthèse de vitamine D",
+    "nowUpcomingTitle": "Mieux dans {countdown} (à {hour})",
+    "nowClosedTitle": "La fenêtre d'aujourd'hui s'est fermée à {hour}",
+    "nowClosedHint": "Il y aura une nouvelle opportunité demain",
+    "cloudDegraded": "Nuageux maintenant — pourrait s'améliorer plus tard",
+    "cloudDegradedFull": "Les nuages bloquent les UV nécessaires à la synthèse de vitamine D",
+    "nowWindow": "Fenêtre",
+    "nowTimeNeeded": "Temps estimé",
+    "nowClosesIn": "Ferme dans",
+    "nowBestHour": "Meilleure heure",
+    "forIU": "pour {iu} UI",
+    "atHour": "à {hour}"
   },
   "learn": {
     "pageTitle": "La Vitamine D & le Soleil",
@@ -251,6 +271,10 @@
       "q5": {
         "q": "Les nuages annulent-ils les UVB ?",
         "a": "Pas complètement. Un ciel couvert lourd réduit les UVB de 70–90 % ; une couverture nuageuse fine ou fragmentée d'environ 20–50 %. Paradoxalement, certaines formations de nuages fragmentés diffusent les UV et peuvent brièvement pousser les UVB au sol au-dessus des valeurs de ciel dégagé. L'application utilise des données UV réelles d'Open-Meteo lorsqu'elles sont disponibles, de sorte que les minutes affichées tiennent déjà compte des conditions nuageuses actuelles — aucun ajustement manuel n'est nécessaire."
+      },
+      "q6": {
+        "q": "Ai-je besoin de soleil direct sur ma peau ?",
+        "a": "Oui. La synthèse de vitamine D nécessite une exposition directe aux UVB sur la peau nue. Les vêtements bloquent la majorité des UVB, même les tissus fins. À l'ombre — sous un arbre ou un auvent — les UVB diffus sont minimaux et insuffisants pour une synthèse significative. La crème solaire SPF 30+ réduit la synthèse d'environ 95 % ; la recommandation pratique est de s'exposer les 10 à 20 premières minutes sans protection (selon votre type de peau) puis d'appliquer la crème ensuite. Important : pour d'autres bienfaits comme la libération d'oxyde nitrique, la régulation du rythme circadien et la production de sérotonine, le soleil direct N'EST PAS nécessaire — être à l'extérieur par temps clair suffit. Mais pour la vitamine D, la peau nue exposée au soleil direct est indispensable."
       }
     },
     "block2": {

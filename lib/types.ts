@@ -63,6 +63,21 @@ export interface UserProfile {
   history: DayRecord[];
 }
 
+export interface NowStatus {
+  state: "good_now" | "upcoming" | "window_closed" | "no_synthesis";
+  currentUVI: number;
+  effectiveUVI: number;
+  intensity: "optimal" | "moderate" | null;
+  minutesNeeded: number | null;
+  window: { start: number; end: number } | null;
+  bestHour: number | null;
+  bestMinutes: number | null;
+  minutesUntilWindow: number | null;
+  windowClosesIn: number | null;
+  cloudCover: number | null;
+  cloudDegraded: boolean; // true if theoretical UVI >= 3 but effective < 3
+}
+
 export interface DayRecord {
   date: string;            // "2026-03-14" ISO date
   cityId: string;          // user's city that day

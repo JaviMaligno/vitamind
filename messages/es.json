@@ -224,7 +224,27 @@
     "legendConfirmed": "Confirmado",
     "legendUnfavorable": "Sin UV",
     "noUvLearnTitle": "Sin ventana UV hoy — cómo suplementar",
-    "noUvLearnHint": "D3, K2, magnesio y fuentes alimentarias explicados"
+    "noUvLearnHint": "D3, K2, magnesio y fuentes alimentarias explicados",
+    "now_optimal": "Síntesis óptima",
+    "now_moderate": "Síntesis posible",
+    "now_upcoming": "Aún no",
+    "now_windowClosed": "Ventana cerrada",
+    "now_insufficient": "Sin síntesis hoy",
+    "nowOptimalTitle": "¡Sal ya! Condiciones excelentes",
+    "nowOptimalHint": "El índice UV es alto — aprovecha para sintetizar vitamina D",
+    "nowModerateTitle": "Buen momento para exponerte al sol",
+    "nowModerateHint": "El UV es suficiente para sintetizar vitamina D",
+    "nowUpcomingTitle": "Mejor en {countdown} (a las {hour})",
+    "nowClosedTitle": "La ventana de hoy terminó a las {hour}",
+    "nowClosedHint": "Mañana habrá una nueva oportunidad",
+    "cloudDegraded": "Nublado ahora — podría mejorar más tarde",
+    "cloudDegradedFull": "Las nubes están bloqueando el UV necesario para sintetizar vitamina D",
+    "nowWindow": "Ventana",
+    "nowTimeNeeded": "Tiempo estimado",
+    "nowClosesIn": "Cierra en",
+    "nowBestHour": "Mejor hora",
+    "forIU": "para {iu} UI",
+    "atHour": "a las {hour}"
   },
   "learn": {
     "pageTitle": "Vitamina D y el Sol",
@@ -251,6 +271,10 @@
       "q5": {
         "q": "¿Las nubes anulan el UVB?",
         "a": "No por completo. Un cielo muy nublado reduce el UVB entre un 70 y un 90%; una nubosidad parcial o fina, entre un 20 y un 50%. Paradójicamente, ciertas formaciones de nubes dispersas pueden reflejar el UV y elevar brevemente el UVB a nivel del suelo por encima de los valores de cielo despejado. La app usa datos UV reales de Open-Meteo cuando están disponibles, por lo que los minutos mostrados ya tienen en cuenta las condiciones nubosas actuales — no es necesario ningún ajuste manual."
+      },
+      "q6": {
+        "q": "¿Necesito que el sol me dé directamente en la piel?",
+        "a": "Sí. Para sintetizar vitamina D necesitas exposición directa de UVB sobre la piel descubierta. La ropa bloquea la mayor parte del UVB, incluso las telas finas. En la sombra — bajo un árbol o toldo — el UVB difuso es mínimo e insuficiente para una síntesis significativa. El protector solar SPF 30+ reduce la síntesis aproximadamente un 95%; la recomendación práctica es exponerse los primeros 10–20 minutos sin protector (según tu tipo de piel) y aplicarlo después si sigues al sol. Importante: para otros beneficios como la liberación de óxido nítrico, el ritmo circadiano o la serotonina, no necesitas sol directo — estar al aire libre en un día claro ya aporta. Pero para vitamina D, sí hace falta piel expuesta al sol directo."
       }
     },
     "block2": {

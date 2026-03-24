@@ -5,6 +5,7 @@ import { useApp } from "@/context/AppProvider";
 import { useCityDisplayName } from "@/hooks/useCityDisplayName";
 import { useHistory } from "@/hooks/useHistory";
 import { useForecast } from "@/hooks/useForecast";
+import { useNowStatus } from "@/hooks/useNowStatus";
 import DayRecommendation from "@/components/dashboard/DayRecommendation";
 import ForecastRow from "@/components/dashboard/ForecastRow";
 import HistoryCalendar from "@/components/dashboard/HistoryCalendar";
@@ -23,6 +24,7 @@ export default function DashboardPage() {
     app.lat, app.lon, app.cityId, app.skinType, app.areaFraction, app.age, app.targetIU, app.authUser,
   );
   const forecast = useForecast(app.lat, app.lon);
+  const nowStatus = useNowStatus(app.lat, app.lon, app.tz, app.skinType, app.areaFraction, app.age, app.targetIU);
 
   const todayRecord = getToday();
 
@@ -49,7 +51,7 @@ export default function DashboardPage() {
 
       {/* Hero: Today's recommendation */}
       <DayRecommendation
-        record={todayRecord}
+        nowStatus={nowStatus}
         cityName={cityName}
         cityFlag={app.cityFlag}
         skinType={app.skinType}

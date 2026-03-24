@@ -224,7 +224,27 @@
     "legendConfirmed": "Bestätigt",
     "legendUnfavorable": "Kein UV",
     "noUvLearnTitle": "Kein UV-Fenster heute — wie ergänzen",
-    "noUvLearnHint": "D3, K2, Magnesium und Nahrungsquellen erklärt"
+    "noUvLearnHint": "D3, K2, Magnesium und Nahrungsquellen erklärt",
+    "now_optimal": "Optimale Synthese",
+    "now_moderate": "Synthese möglich",
+    "now_upcoming": "Noch nicht",
+    "now_windowClosed": "Fenster geschlossen",
+    "now_insufficient": "Heute keine Synthese",
+    "nowOptimalTitle": "Jetzt raus! Ausgezeichnete Bedingungen",
+    "nowOptimalHint": "Der UV-Index ist hoch — ideale Zeit für Vitamin-D-Synthese",
+    "nowModerateTitle": "Guter Zeitpunkt für Sonnenexposition",
+    "nowModerateHint": "Die UV-Strahlung reicht für die Vitamin-D-Synthese",
+    "nowUpcomingTitle": "Besser in {countdown} (um {hour})",
+    "nowClosedTitle": "Das heutige Fenster endete um {hour}",
+    "nowClosedHint": "Morgen gibt es eine neue Gelegenheit",
+    "cloudDegraded": "Bewölkt gerade — könnte sich später bessern",
+    "cloudDegradedFull": "Wolken blockieren die für die Vitamin-D-Synthese nötige UV-Strahlung",
+    "nowWindow": "Fenster",
+    "nowTimeNeeded": "Geschätzte Zeit",
+    "nowClosesIn": "Schließt in",
+    "nowBestHour": "Beste Stunde",
+    "forIU": "für {iu} IE",
+    "atHour": "um {hour}"
   },
   "learn": {
     "pageTitle": "Vitamin D & die Sonne",
@@ -251,6 +271,10 @@
       "q5": {
         "q": "Unterdrücken Wolken UVB vollständig?",
         "a": "Nicht vollständig. Dichte Bewölkung reduziert UVB um 70–90 %; dünne oder aufgelockerte Bewölkung um etwa 20–50 %. Paradoxerweise können bestimmte aufgelockerte Wolkenformationen UV streuen und die UVB-Intensität am Boden kurzzeitig über den Wert bei klarem Himmel anheben. Die App verwendet bei Verfügbarkeit reale UV-Daten von Open-Meteo, sodass die angezeigten Minuten bereits die aktuellen Wolkenbedingungen berücksichtigen — keine manuelle Anpassung nötig."
+      },
+      "q6": {
+        "q": "Brauche ich direktes Sonnenlicht auf der Haut?",
+        "a": "Ja. Für die Vitamin-D-Synthese ist eine direkte UVB-Exposition auf nackter Haut erforderlich. Kleidung blockiert den Großteil der UVB-Strahlung, selbst dünne Stoffe. Im Schatten — unter einem Baum oder einer Markise — ist die diffuse UVB-Strahlung minimal und für eine nennenswerte Synthese unzureichend. Sonnencreme mit LSF 30+ reduziert die Synthese um ca. 95 %; die praktische Empfehlung ist, die ersten 10–20 Minuten ohne Schutz in die Sonne zu gehen (je nach Hauttyp) und danach einzucremen. Wichtig: Für andere Vorteile wie Stickstoffmonoxid-Freisetzung, zirkadianen Rhythmus und Serotoninproduktion ist direktes Sonnenlicht NICHT erforderlich — allein der Aufenthalt im Freien an einem hellen Tag hilft bereits. Für Vitamin D ist jedoch nackte Haut im direkten Sonnenlicht nötig."
       }
     },
     "block2": {

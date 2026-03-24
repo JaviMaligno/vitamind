@@ -224,7 +224,27 @@
     "legendConfirmed": "Patvirtinta",
     "legendUnfavorable": "Be UV",
     "noUvLearnTitle": "Šiandien nėra UV lango — kaip vartoti papildus",
-    "noUvLearnHint": "D3, K2, magnis ir maisto šaltiniai paaiškinti"
+    "noUvLearnHint": "D3, K2, magnis ir maisto šaltiniai paaiškinti",
+    "now_optimal": "Optimali sintezė",
+    "now_moderate": "Sintezė įmanoma",
+    "now_upcoming": "Dar ne",
+    "now_windowClosed": "Langas uždarytas",
+    "now_insufficient": "Šiandien sintezės nėra",
+    "nowOptimalTitle": "Eikite laukan dabar! Puikios sąlygos",
+    "nowOptimalHint": "UV indeksas aukštas — puikus laikas vitamino D sintezei",
+    "nowModerateTitle": "Geras laikas būti saulėje",
+    "nowModerateHint": "UV pakanka vitamino D sintezei",
+    "nowUpcomingTitle": "Geriau po {countdown} ({hour})",
+    "nowClosedTitle": "Šiandienos langas užsidarė {hour}",
+    "nowClosedHint": "Rytoj bus nauja galimybė",
+    "cloudDegraded": "Debesuota dabar — gali pagerėti vėliau",
+    "cloudDegradedFull": "Debesys blokuoja UV, reikalingą vitamino D sintezei",
+    "nowWindow": "Langas",
+    "nowTimeNeeded": "Numatomas laikas",
+    "nowClosesIn": "Užsidaro po",
+    "nowBestHour": "Geriausia valanda",
+    "forIU": "{iu} TV",
+    "atHour": "{hour}"
   },
   "learn": {
     "pageTitle": "Vitaminas D ir Saulė",
@@ -251,6 +271,10 @@
       "q5": {
         "q": "Ar debesys panaikina UVB?",
         "a": "Ne visiškai. Tankus debesuotumas sumažina UVB 70–90%; plonas arba pertraukiamas debesuotumas — apie 20–50%. Paradoksalu, kad tam tikros pertraukiamo debesuotumo formacijos išsklaido UV ir trumpam gali padidinti UV lygį žemės paviršiuje aukščiau aiškaus dangaus reikšmių. Programėlė naudoja realiuosius UV duomenis iš Open-Meteo, kai jie pasiekiami, todėl parodytos minutės jau atspindi dabartines debesuotumo sąlygas — rankinis koregavimas nereikalingas."
+      },
+      "q6": {
+        "q": "Ar man reikia tiesioginės saulės šviesos ant odos?",
+        "a": "Taip. Vitamino D sintezei reikalingas tiesioginis UVB poveikis ant nuogos odos. Drabužiai blokuoja didžiąją dalį UVB, net ploni audiniai. Šešėlyje — po medžiu ar markize — difuzinė UVB spinduliuotė yra minimali ir nepakankama reikšmingai sintezei. Kremas nuo saulės su SPF 30+ sumažina sintezę maždaug 95%; praktinis patarimas — pirmąsias 10–20 minučių būti be apsaugos (priklausomai nuo odos tipo), o tada tepti kremą. Svarbu: kitiems naudingams poveikiams, tokiems kaip azoto oksido išskyrimas, cirkadinio ritmo reguliavimas ir serotonino gamyba, tiesioginė saulė NĖRA būtina — buvimas lauke aiškią dieną jau padeda. Tačiau vitaminui D reikalinga nuoga oda tiesioginėje saulės šviesoje."
       }
     },
     "block2": {
