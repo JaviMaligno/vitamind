@@ -348,13 +348,17 @@ export function getCurrentStatus(
       : curr.uvi
     : 0;
   const currentCloud = curr?.cloud ?? null;
-  const cf = currentCloud !== null ? cloudFactor(currentCloud) : 1.0;
+
+  // Open-Meteo UVI already accounts for cloud cover — only apply cloudFactor
+  // when using theoretical clear-sky curve (no weather data)
+  const useCloudFactor = !weather;
+  const cf = useCloudFactor && currentCloud !== null ? cloudFactor(currentCloud) : 1.0;
   const effectiveUVI = rawUVI * cf;
 
   // Compute effective UVI per hour for window detection
   const effectiveHourly = hourlyUVI.map((h) => ({
     hour: h.hour,
-    effectiveUVI: h.uvi * (weather ? cloudFactor(h.cloud) : 1.0),
+    effectiveUVI: useCloudFactor ? h.uvi * cloudFactor(h.cloud) : h.uvi,
     rawUVI: h.uvi,
   }));
 
@@ -380,8 +384,10 @@ export function getCurrentStatus(
     ? minutesForVitD(bEffUVI, skinType, areaFraction, targetIU, age)
     : null;
 
+  // cloudDegraded only meaningful with theoretical curve — with real API data,
+  // UVI already reflects clouds so there's no "theoretical vs effective" gap
   const theoreticalWindow = hourlyUVI.some((h) => h.uvi >= MIN_UVI);
-  const cloudDegraded = theoreticalWindow && synthWindow === null;
+  const cloudDegraded = useCloudFactor && theoreticalWindow && synthWindow === null;
   const minutesNeededNow = minutesForVitD(effectiveUVI, skinType, areaFraction, targetIU, age);
 
   // Determine state
