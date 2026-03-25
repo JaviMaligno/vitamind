@@ -190,6 +190,9 @@ export default function ProfilePage() {
           onAreaChange={app.setAreaFraction}
           onAgeChange={app.setAge}
         />
+        <p className="text-[9px] text-text-faint mt-1.5 leading-relaxed">
+          {ts("exposureDefaultHint")}
+        </p>
       </section>
 
       {/* Target IU */}

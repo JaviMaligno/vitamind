@@ -95,6 +95,7 @@
     "targetPreset2000": "didelė dozė",
     "targetPreset4000": "maks. dozė",
     "targetHint": "Su jūsų dabartiniu profiliu galite sintezuoti iki ~{max} TV per sesiją be nudegimo rizikos. Fotodegradacija apsaugo nuo saulės sukeltos toksikumo.",
+    "exposureDefaultHint": "Ekspozicija čia yra jūsų numatytoji reikšmė. Galite ją pakeisti kelyje iš Mano Diena.",
     "tipSolarProfile": "Jūsų Fitzpatrick odos tipas, atidengtas kūno plotas ir amžius lemia vitamino D sintezės greitį. Šviesesnė oda ir daugiau atidengtos odos = mažiau laiko reikia. Sintezės efektyvumas taip pat mažėja nuo ~65 metų.",
     "tipTargetIU": "400 TV/dieną yra minimumas; 1000–2000 TV yra plačiai rekomenduojama norma. Pietų dienos sesija vasarą gali pagaminti iki 25 000 TV — fotodegradacija veikia kaip natūralus apsaugos mechanizmas nuo perdozavimo."
   },
@@ -244,7 +245,13 @@
     "nowClosesIn": "Užsidaro po",
     "nowBestHour": "Geriausia valanda",
     "forIU": "{iu} TV",
-    "atHour": "{hour}"
+    "atHour": "{hour}",
+    "exposureLabel": "Oda eksponuota",
+    "exposureFaceHands": "Veidas+rankos",
+    "exposureFaceArms": "Veidas+rankos pilnai",
+    "exposureTshirt": "Marškinėliai",
+    "exposureSwimsuit": "Maudymosi k.",
+    "exposureResetDefault": "Grąžinti profilio numatytąjį"
   },
   "learn": {
     "pageTitle": "Vitaminas D ir Saulė",

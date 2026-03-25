@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { useApp } from "@/context/AppProvider";
 import { useCityDisplayName } from "@/hooks/useCityDisplayName";
@@ -9,6 +10,7 @@ import { useNowStatus } from "@/hooks/useNowStatus";
 import DayRecommendation from "@/components/dashboard/DayRecommendation";
 import ForecastRow from "@/components/dashboard/ForecastRow";
 import HistoryCalendar from "@/components/dashboard/HistoryCalendar";
+import ExposureQuickPicker from "@/components/dashboard/ExposureQuickPicker";
 import CitySearch from "@/components/CitySearch";
 import GpsButton from "@/components/GpsButton";
 import Link from "next/link";
@@ -20,11 +22,17 @@ export default function DashboardPage() {
   const getCityDisplayName = useCityDisplayName();
   const cityName = getCityDisplayName(app.cityId, app.cityName);
 
+  // Daily override for skin exposure (null = use profile default)
+  const [areaOverride, setAreaOverride] = useState<number | null>(null);
+  const effectiveArea = areaOverride ?? app.areaFraction;
+  const handleAreaChange = useCallback((v: number) => setAreaOverride(v), []);
+  const handleAreaReset = useCallback(() => setAreaOverride(null), []);
+
   const { records, loading, getToday, toggleOverride, requestBackfill } = useHistory(
-    app.lat, app.lon, app.cityId, app.skinType, app.areaFraction, app.age, app.targetIU, app.authUser,
+    app.lat, app.lon, app.cityId, app.skinType, effectiveArea, app.age, app.targetIU, app.authUser,
   );
   const forecast = useForecast(app.lat, app.lon);
-  const nowStatus = useNowStatus(app.lat, app.lon, app.tz, app.skinType, app.areaFraction, app.age, app.targetIU);
+  const nowStatus = useNowStatus(app.lat, app.lon, app.tz, app.skinType, effectiveArea, app.age, app.targetIU);
 
   const todayRecord = getToday();
 
@@ -55,17 +63,25 @@ export default function DashboardPage() {
         cityName={cityName}
         cityFlag={app.cityFlag}
         skinType={app.skinType}
-        areaFraction={app.areaFraction}
+        areaFraction={effectiveArea}
         age={app.age}
         targetIU={app.targetIU}
         loading={loading}
+      />
+
+      {/* Quick exposure picker */}
+      <ExposureQuickPicker
+        value={effectiveArea}
+        onChange={handleAreaChange}
+        isOverride={areaOverride !== null}
+        onReset={handleAreaReset}
       />
 
       {/* 5-day forecast (expandable) */}
       <ForecastRow
         forecast={forecast}
         skinType={app.skinType}
-        areaFraction={app.areaFraction}
+        areaFraction={effectiveArea}
         age={app.age}
         targetIU={app.targetIU}
       />
