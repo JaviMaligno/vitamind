@@ -95,7 +95,7 @@
     "targetPreset2000": "hohe Ergänzung",
     "targetPreset4000": "max. Dosis",
     "targetHint": "Mit deinem aktuellen Profil kannst du bis zu ~{max} IE pro Sitzung ohne Verbrennungsrisiko synthetisieren. Photodegradation verhindert sonnenbedingte Toxizität.",
-    "exposureDefaultHint": "Die Exposition hier ist Ihr Standardwert. Sie können ihn unterwegs in Mein Tag ändern.",
+    "exposureDefaultHint": "Die Exposition hier ist dein Standardwert. Du kannst ihn unterwegs in Mein Tag ändern.",
     "tipSolarProfile": "Dein Fitzpatrick-Hauttyp, die exponierte Körperfläche und dein Alter bestimmen, wie schnell du Vitamin D produzierst. Hellere Haut und mehr exponierte Haut = weniger Zeit. Die Syntheseeffizienz nimmt auch ab ~65 Jahren ab.",
     "tipTargetIU": "400 IE/Tag ist das Minimum; 1.000–2.000 IE ist die allgemeine Empfehlung. Eine Mittagssession im Sommer kann bis zu 25.000 IE produzieren — Photodegradation verhindert eine Überdosierung."
   },

@@ -34,8 +34,10 @@ export default function ExposureQuickPicker({ value, onChange, isOverride, onRes
       </span>
       {AREA_PRESETS.map((p) => (
         <button
+          type="button"
           key={p.value}
           onClick={() => onChange(p.value)}
+          aria-pressed={value === p.value}
           className={`px-2 py-1 rounded-full text-[10px] transition-all cursor-pointer ${
             value === p.value
               ? "bg-amber-400/20 text-amber-400 border border-amber-400/30 font-semibold"
@@ -47,7 +49,9 @@ export default function ExposureQuickPicker({ value, onChange, isOverride, onRes
       ))}
       {isOverride && (
         <button
+          type="button"
           onClick={onReset}
+          aria-label={t("exposureResetDefault")}
           className="text-[9px] text-text-faint hover:text-amber-400 transition-colors cursor-pointer ml-0.5"
           title={t("exposureResetDefault")}
         >
