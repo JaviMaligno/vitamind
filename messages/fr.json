@@ -95,6 +95,7 @@
     "targetPreset2000": "supplémentation élevée",
     "targetPreset4000": "dose max.",
     "targetHint": "Avec votre profil actuel, vous pouvez synthétiser jusqu'à ~{max} UI par session sans risque de brûlure. La photodégradation empêche la toxicité solaire.",
+    "exposureDefaultHint": "L'exposition ici est votre valeur par défaut. Vous pouvez la modifier à la volée depuis Mon jour.",
     "tipSolarProfile": "Votre type de peau Fitzpatrick, la zone corporelle exposée et votre âge déterminent la vitesse de synthèse de la vitamine D. Peau plus claire et plus de peau exposée = moins de temps nécessaire. L'efficacité diminue aussi après ~65 ans.",
     "tipTargetIU": "400 UI/jour est le minimum ; 1 000–2 000 UI est la recommandation courante. Une session de midi en été peut produire jusqu'à 25 000 UI — la photodégradation empêche naturellement tout surdosage."
   },
@@ -244,7 +245,13 @@
     "nowClosesIn": "Ferme dans",
     "nowBestHour": "Meilleure heure",
     "forIU": "pour {iu} UI",
-    "atHour": "à {hour}"
+    "atHour": "à {hour}",
+    "exposureLabel": "Peau exposée",
+    "exposureFaceHands": "Visage+mains",
+    "exposureFaceArms": "Visage+bras",
+    "exposureTshirt": "T-shirt",
+    "exposureSwimsuit": "Maillot",
+    "exposureResetDefault": "Revenir au profil par défaut"
   },
   "learn": {
     "pageTitle": "La Vitamine D & le Soleil",
