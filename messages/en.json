@@ -282,6 +282,10 @@
       "q6": {
         "q": "Do I need direct sunlight on my skin?",
         "a": "Yes. Vitamin D synthesis requires direct UVB exposure on bare skin. Clothing blocks most UVB, even thin fabrics. In the shade — under a tree or awning — diffuse UVB is minimal and insufficient for meaningful synthesis. Sunscreen SPF 30+ reduces synthesis by approximately 95%; the practical recommendation is to go without for the first 10–20 minutes (depending on your skin type) and apply it afterwards if you stay in the sun. Important: for other benefits such as nitric oxide release, circadian rhythm regulation, and serotonin production, direct sun is NOT required — being outdoors on a bright day already helps. But for vitamin D, bare skin exposed to direct sunlight is necessary."
+      },
+      "q7": {
+        "q": "Does body hair block UVB and reduce vitamin D synthesis?",
+        "a": "Yes, but modestly. Body hair acts as a physical barrier to UVB radiation. Research by Galvez et al. (2015) quantified a 'Hair UV Protection Factor': sparse, fine body hair provides the equivalent of roughly SPF 1–3, while very dense, dark terminal hair can reach SPF 2–4+. Computational models (Goyal & Raichur, 2020) suggest that typical limb hair may reduce UVB reaching the skin by 15–30%. However, no clinical study has directly measured the impact of body hair on serum 25(OH)D levels. Major scientific reviews of vitamin D photosynthesis determinants — including Neville et al. (2021) — do not list body hair as a significant factor. In practice, the most heavily haired areas (chest, back) are usually covered by clothing anyway, and the effect on commonly exposed areas like forearms and lower legs is small (SPF 1–2 range). The app does not include a body hair adjustment because the effect is minor compared to skin type, UV index, body area exposed, and age — and is already partially captured by the body area parameter."
       }
     },
     "block2": {

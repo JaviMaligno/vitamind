@@ -282,6 +282,10 @@
       "q6": {
         "q": "Ar man reikia tiesioginės saulės šviesos ant odos?",
         "a": "Taip. Vitamino D sintezei reikalingas tiesioginis UVB poveikis ant nuogos odos. Drabužiai blokuoja didžiąją dalį UVB, net ploni audiniai. Šešėlyje — po medžiu ar markize — difuzinė UVB spinduliuotė yra minimali ir nepakankama reikšmingai sintezei. Kremas nuo saulės su SPF 30+ sumažina sintezę maždaug 95%; praktinis patarimas — pirmąsias 10–20 minučių būti be apsaugos (priklausomai nuo odos tipo), o tada tepti kremą. Svarbu: kitiems naudingams poveikiams, tokiems kaip azoto oksido išskyrimas, cirkadinio ritmo reguliavimas ir serotonino gamyba, tiesioginė saulė NĖRA būtina — buvimas lauke aiškią dieną jau padeda. Tačiau vitaminui D reikalinga nuoga oda tiesioginėje saulės šviesoje."
+      },
+      "q7": {
+        "q": "Ar kūno plaukai blokuoja UVB ir mažina vitamino D sintezę?",
+        "a": "Taip, bet nedaug. Kūno plaukai veikia kaip fizinė barjeras nuo UVB spinduliuotės. Galvez ir kt. (2015) tyrimas kiekybiškai įvertino „plaukų UV apsaugos faktorių\u201d: reti, ploni kūno plaukai atitinka maždaug SPF 1–3, o labai tankūs, tamsūs terminaliniai plaukai gali siekti SPF 2–4+. Kompiuteriniai modeliai (Goyal ir Raichur, 2020) rodo, kad tipiniai galūnių plaukai gali sumažinti UVB, pasiekiančius odą, 15–30 %. Tačiau joks klinikinis tyrimas tiesiogiai neišmatavo kūno plaukų poveikio 25(OH)D lygiui serume. Pagrindinės mokslinės apžvalgos apie vitamino D fotosintezės veiksnius — įskaitant Neville ir kt. (2021) — kūno plaukų kaip reikšmingo faktoriaus neįtraukia. Praktiškai labiausiai apaugusios sritys (krūtinė, nugara) paprastai būna uždengtos drabužiais, o poveikis dažniausiai atviroms sritims, tokioms kaip dilbiai ir blauzdos, yra mažas (SPF 1–2). Programėlė neįtraukia kūno plaukų koregavimo, nes poveikis yra nereikšmingas palyginti su odos tipu, UV indeksu, eksponuojamu kūno plotu ir amžiumi — ir jau iš dalies atsispindi kūno ploto parametre."
       }
     },
     "block2": {
