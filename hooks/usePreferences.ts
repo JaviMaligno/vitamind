@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
-import { loadPreferences, savePreferences, loadHistory, saveHistory, mergeHistory } from "@/lib/storage";
+import { loadPreferences, savePreferences, loadHistory, saveHistory, mergeHistory, loadFavorites, loadCustomLocations, saveCustomLocation } from "@/lib/storage";
 import { loadProfile, updateProfile } from "@/lib/profile";
 import type { SkinType } from "@/lib/vitd";
+import type { City } from "@/lib/types";
 import type { User } from "@supabase/supabase-js";
 
 export function usePreferences() {
@@ -37,7 +38,7 @@ export function usePreferences() {
 
   // Sync profile from Supabase on auth change
   const handleAuthChange = useCallback(
-    async (user: User | null, setFavorites: (f: string[]) => void, setCityId: (id: string) => void) => {
+    async (user: User | null, setFavorites: (f: string[]) => void, setCityId: (id: string) => void, setCustomLocations: (c: City[]) => void) => {
       setAuthUser(user);
       if (user) {
         const { profile } = await loadProfile();
@@ -46,7 +47,20 @@ export function usePreferences() {
           setAreaFraction(profile.areaFraction);
           setAge(profile.age);
           setTargetIU(profile.targetIU);
-          if (profile.favorites.length) setFavorites(profile.favorites);
+
+          // Merge favorites: union of local + remote (prevent data loss)
+          const localFavs = loadFavorites();
+          const mergedFavs = [...new Set([...localFavs, ...profile.favorites])];
+          setFavorites(mergedFavs);
+
+          // Merge custom locations: union of local + remote by ID
+          const localCustom = loadCustomLocations();
+          const localIds = new Set(localCustom.map(c => c.id));
+          const remoteOnly = profile.customLocations.filter(c => !localIds.has(c.id));
+          const mergedCustom = [...localCustom, ...remoteOnly];
+          setCustomLocations(mergedCustom);
+          for (const c of remoteOnly) saveCustomLocation(c);
+
           if (profile.lastCityId) setCityId(profile.lastCityId);
 
           // Merge histories: remote wins on conflict

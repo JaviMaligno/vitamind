@@ -3,6 +3,7 @@
 import { createContext, useContext, useMemo, useCallback, useEffect } from "react";
 import { usePreferences } from "@/hooks/usePreferences";
 import { useLocation } from "@/hooks/useLocation";
+import { updateProfile } from "@/lib/profile";
 import { useGeoLocation } from "@/hooks/useGeoLocation";
 import { findNearestCityApi } from "@/lib/cities-api";
 import { useTranslations, useLocale } from "next-intl";
@@ -111,11 +112,19 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loc.cityId, prefs.skinType, prefs.areaFraction, prefs.age, prefs.targetIU, prefs.authUser]);
 
-  // Bridge: handleAuthChange needs setFavorites and setCityId from useLocation
+  // Bridge: handleAuthChange needs setFavorites, setCityId, and setCustomLocations from useLocation
   const onAuthChange = useCallback(
-    (user: User | null) => prefs.handleAuthChange(user, loc.setFavorites, loc.setCityId),
-    [prefs.handleAuthChange, loc.setFavorites, loc.setCityId],
+    (user: User | null) => prefs.handleAuthChange(user, loc.setFavorites, loc.setCityId, loc.setCustomLocations),
+    [prefs.handleAuthChange, loc.setFavorites, loc.setCityId, loc.setCustomLocations],
   );
+
+  // Sync favorites and custom locations to Supabase when they change
+  useEffect(() => {
+    if (prefs.authUser) {
+      updateProfile(prefs.authUser.id, { favorites: loc.favorites, customLocations: loc.customLocations });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loc.favorites, loc.customLocations, prefs.authUser]);
 
   const handleSaveLocation = useCallback(
     (city: City) => loc.handleSaveLocation(city),

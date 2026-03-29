@@ -111,7 +111,7 @@ export function useLocation() {
     cityFlag, setCityFlag,
     cityId, setCityId,
     favorites, setFavorites,
-    customLocations,
+    customLocations, setCustomLocations,
     editingFavs, setEditingFavs,
     allCities,
     selectCity,

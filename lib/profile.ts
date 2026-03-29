@@ -100,6 +100,9 @@ export async function updateProfile(id: string, updates: Partial<Omit<UserProfil
   savePreferences(prefs);
 
   if (updates.favorites) saveFavorites(updates.favorites);
+  if (updates.customLocations) {
+    for (const c of updates.customLocations) saveCustomLocation(c);
+  }
   if (updates.history) saveHistory(updates.history);
 
   const sb = getSupabase();
