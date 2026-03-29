@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { hourFromTimeString } from "@/lib/timezone";
 import type { WeatherHour } from "@/lib/types";
 
 export interface ForecastDay {
@@ -50,7 +51,7 @@ export function useForecast(lat: number, lon: number): ForecastDay[] | null {
           for (const h of hours) {
             if (h.uvIndex > peakUVI) peakUVI = h.uvIndex;
             if (h.uvIndex >= 3) {
-              const hr = new Date(h.time).getHours();
+              const hr = hourFromTimeString(h.time);
               if (windowStart === -1) windowStart = hr;
               windowEnd = hr + 1;
             }
