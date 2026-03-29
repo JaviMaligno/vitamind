@@ -9,6 +9,7 @@ export function useLocation() {
   const [lat, setLat] = useState(51.51);
   const [lon, setLon] = useState(-0.13);
   const [tz, setTz] = useState(0);
+  const [timezone, setTimezone] = useState<string | undefined>(undefined);
   const [cityName, setCityName] = useState("Londres");
   const [cityFlag, setCityFlag] = useState("\u{1F1EC}\u{1F1E7}");
   const [cityId, setCityId] = useState("builtin:londres");
@@ -32,6 +33,7 @@ export function useLocation() {
         setLat(saved.lat);
         setLon(saved.lon);
         setTz(saved.tz);
+        setTimezone(saved.timezone);
         setCityName(saved.name);
         setCityFlag(saved.flag || "\u{1F4CD}");
         setCityId(saved.id);
@@ -51,7 +53,7 @@ export function useLocation() {
   }, [customLocations]);
 
   const selectCity = useCallback((c: City) => {
-    setLat(c.lat); setLon(c.lon); setTz(c.tz);
+    setLat(c.lat); setLon(c.lon); setTz(c.tz); setTimezone(c.timezone);
     setCityName(c.name); setCityFlag(c.flag || "\u{1F4CD}"); setCityId(c.id);
     if (c.source === "nominatim" && !BUILTIN_CITIES.find((b) => b.id === c.id)) {
       setCustomLocations((prev) => {
@@ -68,9 +70,9 @@ export function useLocation() {
     setLat(rL); setDoy(Math.max(1, Math.min(365, Math.round(newDoy))));
     const near = findNearestCity(rL, BUILTIN_CITIES);
     if (near) {
-      setLon(near.lon); setTz(near.tz); setCityName(near.name); setCityFlag(near.flag || "\u{1F4CD}"); setCityId(near.id);
+      setLon(near.lon); setTz(near.tz); setTimezone(near.timezone); setCityName(near.name); setCityFlag(near.flag || "\u{1F4CD}"); setCityId(near.id);
     } else {
-      setLon(0); setTz(0);
+      setLon(0); setTz(0); setTimezone(undefined);
       setCityName(`Lat ${Math.round(rL)}\u00B0`); setCityFlag("\u{1F4CD}"); setCityId(`custom:lat-${rL}`);
     }
   }, []);
@@ -104,6 +106,7 @@ export function useLocation() {
     lat, setLat,
     lon, setLon,
     tz, setTz,
+    timezone, setTimezone,
     cityName, setCityName,
     cityFlag, setCityFlag,
     cityId, setCityId,

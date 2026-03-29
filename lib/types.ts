@@ -6,6 +6,7 @@ export interface City {
   lat: number;
   lon: number;
   tz: number;
+  timezone?: string;  // IANA timezone (e.g. "Europe/Madrid")
   country?: string;
   flag?: string;
   population?: number;

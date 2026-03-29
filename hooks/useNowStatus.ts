@@ -18,6 +18,7 @@ export function useNowStatus(
   lat: number,
   lon: number,
   tz: number,
+  timezone: string | undefined,
   skinType: SkinType,
   areaFraction: number,
   age: number | null,
@@ -66,8 +67,8 @@ export function useNowStatus(
   }, [now]);
 
   const curve = useMemo(
-    () => getCurve(lat, lon, doy, tz),
-    [lat, lon, doy, tz],
+    () => getCurve(lat, lon, doy, tz, timezone),
+    [lat, lon, doy, tz, timezone],
   );
 
   const weather = useMemo(
@@ -76,7 +77,7 @@ export function useNowStatus(
   );
 
   return useMemo(
-    () => getCurrentStatus(weather, curve, skinType, areaFraction, targetIU, age, now),
-    [weather, curve, skinType, areaFraction, targetIU, age, now],
+    () => getCurrentStatus(weather, curve, skinType, areaFraction, targetIU, age, now, timezone),
+    [weather, curve, skinType, areaFraction, targetIU, age, now, timezone],
   );
 }

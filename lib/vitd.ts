@@ -1,4 +1,5 @@
 import type { WeatherHour, SolarPoint, NowStatus } from "./types";
+import { hourFromTimeString } from "./timezone";
 
 export type SkinType = 1 | 2 | 3 | 4 | 5 | 6;
 
@@ -196,8 +197,7 @@ export function computeExposure(
   let windowEnd = -1;
 
   for (const wh of hours) {
-    const d = new Date(wh.time);
-    const h = d.getHours();
+    const h = hourFromTimeString(wh.time);
     const mins = minutesForVitD(wh.uvIndex, skinType, areaFraction, targetIU, age);
     hourlyMinutes.push({ hour: h, uvi: wh.uvIndex, minutes: mins });
 
@@ -310,9 +310,25 @@ export function getCurrentStatus(
   targetIU: number,
   age: number | null,
   now: Date,
+  timezone?: string,
 ): NowStatus {
-  const currentHour = now.getHours();
-  const currentMinutes = now.getMinutes();
+  let currentHour: number;
+  let currentMinutes: number;
+  if (timezone) {
+    const fmt = new Intl.DateTimeFormat("en-US", {
+      timeZone: timezone,
+      hour: "numeric",
+      minute: "numeric",
+      hour12: false,
+    });
+    const parts = fmt.formatToParts(now);
+    currentHour = parseInt(parts.find((p) => p.type === "hour")?.value ?? "0", 10);
+    currentMinutes = parseInt(parts.find((p) => p.type === "minute")?.value ?? "0", 10);
+    if (currentHour === 24) currentHour = 0;
+  } else {
+    currentHour = now.getHours();
+    currentMinutes = now.getMinutes();
+  }
   const minutesFraction = currentMinutes / 60;
 
   // Build hourly UVI + cloud data
@@ -320,8 +336,7 @@ export function getCurrentStatus(
 
   if (weather && weather.hours.length > 0) {
     for (const wh of weather.hours) {
-      const d = new Date(wh.time);
-      hourlyUVI.push({ hour: d.getHours(), uvi: wh.uvIndex, cloud: wh.cloudCover });
+      hourlyUVI.push({ hour: hourFromTimeString(wh.time), uvi: wh.uvIndex, cloud: wh.cloudCover });
     }
   } else if (curve.length > 0) {
     for (let h = 0; h < 24; h++) {

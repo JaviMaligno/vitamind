@@ -16,6 +16,7 @@ interface Props {
   lon: number;
   doy: number;
   tz: number;
+  timezone?: string;
   threshold: number;
   cityName: string;
   cityFlag: string;

@@ -251,6 +251,7 @@ export default function ProfilePage() {
           lat={app.lat}
           lon={app.lon}
           tz={app.tz}
+          timezone={app.timezone}
           skinType={app.skinType}
           areaFraction={app.areaFraction}
           cityName={app.cityName}

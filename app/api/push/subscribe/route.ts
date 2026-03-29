@@ -4,7 +4,7 @@ import { saveSubscription, removeSubscription } from "@/lib/push-store";
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { subscription, lat, lon, tz, skinType, areaFraction, cityName } = body;
+    const { subscription, lat, lon, tz, timezone, skinType, areaFraction, cityName } = body;
 
     if (!subscription?.endpoint) {
       return NextResponse.json({ error: "Invalid subscription" }, { status: 400 });
@@ -15,6 +15,7 @@ export async function POST(request: NextRequest) {
       lat: lat ?? 0,
       lon: lon ?? 0,
       tz: tz ?? 0,
+      timezone: timezone ?? undefined,
       skinType: skinType ?? 3,
       areaFraction: areaFraction ?? 0.25,
       cityName: cityName ?? "",

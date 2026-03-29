@@ -32,7 +32,7 @@ export default function DashboardPage() {
     app.lat, app.lon, app.cityId, app.skinType, effectiveArea, app.age, app.targetIU, app.authUser,
   );
   const forecast = useForecast(app.lat, app.lon);
-  const nowStatus = useNowStatus(app.lat, app.lon, app.tz, app.skinType, effectiveArea, app.age, app.targetIU);
+  const nowStatus = useNowStatus(app.lat, app.lon, app.tz, app.timezone, app.skinType, effectiveArea, app.age, app.targetIU);
 
   const todayRecord = getToday();
 

@@ -1,4 +1,5 @@
 import type { SolarPoint, VitDWindow } from "./types";
+import { tzOffsetForDate } from "./timezone";
 
 const RAD = Math.PI / 180;
 
@@ -28,11 +29,15 @@ export function solarElev(lat: number, lon: number, doy: number, utcH: number): 
   return Math.asin(Math.max(-1, Math.min(1, sinElev))) * 180 / Math.PI;
 }
 
-export function getCurve(lat: number, lon: number, doy: number, tz: number): SolarPoint[] {
+export function getCurve(lat: number, lon: number, doy: number, tz: number, timezone?: string): SolarPoint[] {
+  const effectiveTz = timezone
+    ? tzOffsetForDate(timezone, dateFromDoy(doy))
+    : tz;
+
   const p: SolarPoint[] = [];
   for (let m = 0; m <= 1440; m += 5) {
     const localH = m / 60;
-    const utcH = localH - tz;
+    const utcH = localH - effectiveTz;
     p.push({ localHours: localH, elevation: solarElev(lat, lon, doy, utcH) });
   }
   return p;

@@ -32,6 +32,7 @@ export async function GET(request: NextRequest) {
     url.searchParams.set("latitude", lat);
     url.searchParams.set("longitude", lon);
     url.searchParams.set("hourly", "uv_index,cloud_cover");
+    url.searchParams.set("timezone", "auto");
     if (start && end) {
       url.searchParams.set("start_date", start);
       url.searchParams.set("end_date", end);

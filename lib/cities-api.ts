@@ -49,6 +49,7 @@ function toCity(row: SupabaseCity): City {
     lat: row.lat,
     lon: row.lon,
     tz: tzOffset(row.timezone),
+    timezone: row.timezone,
     country: row.country_code,
     flag: ccToFlag(row.country_code),
     population: row.population,

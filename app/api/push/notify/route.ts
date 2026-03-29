@@ -18,13 +18,13 @@ export const dynamic = "force-dynamic";
 
 async function fetchUVI(lat: number, lon: number): Promise<{ hour: number; uvi: number }[]> {
   const today = new Date().toISOString().slice(0, 10);
-  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=uv_index&start_date=${today}&end_date=${today}`;
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=uv_index&start_date=${today}&end_date=${today}&timezone=auto`;
   const res = await fetch(url);
   if (!res.ok) return [];
   const data = await res.json();
   if (!data.hourly?.time) return [];
   return data.hourly.time.map((t: string, i: number) => ({
-    hour: new Date(t).getHours(),
+    hour: parseInt(t.slice(11, 13), 10),
     uvi: data.hourly.uv_index?.[i] ?? 0,
   }));
 }
@@ -61,7 +61,7 @@ export async function GET(request: NextRequest) {
     for (const sub of subs) {
       try {
         // Calculate UV-based synthesis window
-        const curve = getCurve(sub.lat, sub.lon, doy, sub.tz);
+        const curve = getCurve(sub.lat, sub.lon, doy, sub.tz, sub.timezone);
         const exposure = computeExposureFromCurve(
           curve,
           sub.skinType as SkinType,

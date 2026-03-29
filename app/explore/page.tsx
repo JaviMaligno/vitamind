@@ -31,6 +31,7 @@ export default function ExplorePage() {
   const lat = exploreCity?.lat ?? app.lat;
   const lon = exploreCity?.lon ?? app.lon;
   const tz = exploreCity?.tz ?? app.tz;
+  const timezone = exploreCity?.timezone ?? app.timezone;
   const cityId = exploreCity?.id ?? app.cityId;
   const rawCityName = exploreCity?.name ?? app.cityName;
   const cityName = getCityDisplayName(cityId, rawCityName);
@@ -59,7 +60,7 @@ export default function ExplorePage() {
   const onSelectFromHeatmap = useCallback(
     (newLat: number, newDoy: number) => {
       setExploreCity((prev) => ({
-        ...(prev ?? { id: "explore-heatmap", source: "custom" as const, lat: app.lat, lon: app.lon, tz: app.tz, name: app.cityName, flag: app.cityFlag }),
+        ...(prev ?? { id: "explore-heatmap", source: "custom" as const, lat: app.lat, lon: app.lon, tz: app.tz, timezone: app.timezone, name: app.cityName, flag: app.cityFlag }),
         lat: newLat,
       }));
       setDoy(newDoy);
@@ -74,6 +75,7 @@ export default function ExplorePage() {
         lat={lat}
         lon={lon}
         tz={tz}
+        timezone={timezone}
         doy={doy}
         canSynthesize={exposure !== null}
         cityName={cityName}
@@ -121,6 +123,7 @@ export default function ExplorePage() {
         lon={lon}
         doy={doy}
         tz={tz}
+        timezone={timezone}
         threshold={app.threshold}
         onThresholdChange={app.setThreshold}
         cityName={cityName}

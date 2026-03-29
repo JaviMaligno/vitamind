@@ -9,6 +9,7 @@ interface Props {
   lat: number;
   lon: number;
   tz: number;
+  timezone?: string;
   doy: number;
   canSynthesize: boolean;
   cityName: string;

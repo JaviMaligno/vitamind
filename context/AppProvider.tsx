@@ -31,6 +31,8 @@ interface AppContextValue {
   setLon: (v: number) => void;
   tz: number;
   setTz: (v: number) => void;
+  timezone: string | undefined;
+  setTimezone: (v: string | undefined) => void;
   cityName: string;
   setCityName: (v: string) => void;
   cityFlag: string;
@@ -86,6 +88,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       loc.setLat(gps.lat);
       loc.setLon(gps.lon);
       loc.setTz(Math.round(gps.lon / 15));
+      loc.setTimezone(undefined);
       loc.setCityName(t("common.myLocation"));
       loc.setCityFlag("\u{1F4CD}");
       loc.setCityId(`gps:${gps.lat.toFixed(4)},${gps.lon.toFixed(4)}`);
@@ -95,11 +98,12 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
           loc.setCityName(`${t("common.myLocation")} (${t("common.near")} ${city.name})`);
           loc.setCityFlag(city.flag ?? "\u{1F4CD}");
           loc.setTz(city.tz);
+          loc.setTimezone(city.timezone);
         }
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [gps.lat, gps.lon]);
+  }, [gps.lat, gps.lon, locale]);
 
   // Persist preferences when they change
   useEffect(() => {
@@ -151,6 +155,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setLon: loc.setLon,
     tz: loc.tz,
     setTz: loc.setTz,
+    timezone: loc.timezone,
+    setTimezone: loc.setTimezone,
     cityName: loc.cityName,
     setCityName: loc.setCityName,
     cityFlag: loc.cityFlag,

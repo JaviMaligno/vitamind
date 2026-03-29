@@ -6,6 +6,7 @@ export interface StoredSubscription {
   lat: number;
   lon: number;
   tz: number;
+  timezone?: string;
   skinType: number;
   areaFraction: number;
   cityName: string;
@@ -32,6 +33,7 @@ export async function saveSubscription(sub: StoredSubscription): Promise<void> {
     lat: sub.lat,
     lon: sub.lon,
     tz: sub.tz,
+    timezone: sub.timezone ?? null,
     skin_type: sub.skinType,
     area_fraction: sub.areaFraction,
     city_name: sub.cityName,
@@ -59,6 +61,7 @@ export async function getAllSubscriptions(): Promise<StoredSubscription[]> {
     lat: row.lat,
     lon: row.lon,
     tz: row.tz,
+    timezone: row.timezone ?? undefined,
     skinType: row.skin_type,
     areaFraction: row.area_fraction,
     cityName: row.city_name,

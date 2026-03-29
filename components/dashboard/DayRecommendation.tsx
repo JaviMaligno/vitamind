@@ -1,6 +1,6 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import type { SkinType } from "@/lib/vitd";
 import type { NowStatus } from "@/lib/types";
 
@@ -50,6 +50,7 @@ const COLOR_MAP: Record<StatusKey, { border: string; bg: string; dot: string; te
 
 export default function DayRecommendation({ nowStatus, cityName, cityFlag, skinType, areaFraction, age, targetIU, loading }: Props) {
   const t = useTranslations("dashboard");
+  const locale = useLocale();
   const ns = nowStatus;
 
   if (loading) {
@@ -63,7 +64,7 @@ export default function DayRecommendation({ nowStatus, cityName, cityFlag, skinT
 
   const statusKey = getStatusKey(ns);
   const colors = COLOR_MAP[statusKey];
-  const todayStr = new Date().toLocaleDateString(undefined, { weekday: "long", day: "numeric", month: "long" });
+  const todayStr = new Date().toLocaleDateString(locale, { weekday: "long", day: "numeric", month: "long" });
 
   return (
     <div className={`rounded-2xl border ${colors.border} bg-gradient-to-br ${colors.bg} p-6 shadow-lg`}>
