@@ -169,8 +169,8 @@ export function useHistory(
 
   const getToday = useCallback((): DayRecord | null => {
     const todayStr = toDateStr(new Date());
-    return records.find((r) => r.date === todayStr) ?? null;
-  }, [records]);
+    return records.find((r) => r.date === todayStr && r.cityId === cityId) ?? null;
+  }, [records, cityId]);
 
   return { records, loading, getRecordsForWeek, getRecordsForMonth, getToday, toggleOverride, requestBackfill };
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { useApp } from "@/context/AppProvider";
 import { useCityDisplayName } from "@/hooks/useCityDisplayName";
@@ -34,6 +34,10 @@ export default function DashboardPage() {
   const forecast = useForecast(app.lat, app.lon);
   const nowStatus = useNowStatus(app.lat, app.lon, app.tz, app.timezone, app.skinType, effectiveArea, app.age, app.targetIU);
 
+  const cityRecords = useMemo(
+    () => records.filter((r) => r.cityId === app.cityId),
+    [records, app.cityId],
+  );
   const todayRecord = getToday();
 
   return (
@@ -101,7 +105,7 @@ export default function DashboardPage() {
 
       {/* History calendar (replaces WeekTracker + MonthSummary) */}
       <HistoryCalendar
-        records={records}
+        records={cityRecords}
         onToggleOverride={toggleOverride}
         onNavigate={requestBackfill}
       />
