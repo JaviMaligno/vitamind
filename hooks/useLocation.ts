@@ -77,6 +77,16 @@ export function useLocation() {
     }
   }, []);
 
+  const restoreCity = useCallback((id: string, customCities: City[]) => {
+    const builtinIds = new Set(BUILTIN_CITIES.map((c) => c.id));
+    const city = [...BUILTIN_CITIES, ...customCities.filter((c) => !builtinIds.has(c.id))]
+      .find((c) => c.id === id);
+    if (city) {
+      setLat(city.lat); setLon(city.lon); setTz(city.tz); setTimezone(city.timezone);
+      setCityName(city.name); setCityFlag(city.flag || "\u{1F4CD}"); setCityId(city.id);
+    }
+  }, []);
+
   const toggleFav = useCallback((c: City | string) => {
     const id = typeof c === "string" ? c : c.id;
     setFavorites((f) => f.includes(id) ? f.filter((x) => x !== id) : [...f, id]);
@@ -116,6 +126,7 @@ export function useLocation() {
     allCities,
     selectCity,
     selectFromHeatmap,
+    restoreCity,
     toggleFav,
     handleSaveLocation,
     handleDeleteCustom,

@@ -81,7 +81,7 @@ export default function ExplorePage() {
         cityName={cityName}
         cityFlag={cityFlag}
         hasLocation={app.hasLocation}
-        onSelectCity={(c) => setExploreCity(c)}
+        onSelectCity={(c) => { setExploreCity(c); app.selectCity(c); }}
         onAddFav={app.toggleFav}
         favorites={app.favorites}
         allCities={app.allCities}
@@ -99,7 +99,7 @@ export default function ExplorePage() {
         <div className="mx-auto max-w-[960px] px-4 pb-2 flex items-center gap-2">
           <div className="flex-1">
             <CitySearch
-              onSelect={(city) => setExploreCity(city)}
+              onSelect={(city) => { setExploreCity(city); app.selectCity(city); }}
               onAddFav={app.toggleFav}
               favorites={app.favorites}
               allCities={app.allCities}
@@ -135,7 +135,7 @@ export default function ExplorePage() {
         areaFraction={app.areaFraction}
         age={app.age}
         targetIU={app.targetIU}
-        onSelectCity={(c) => setExploreCity(c)}
+        onSelectCity={(c) => { setExploreCity(c); app.selectCity(c); }}
         onSelectFromHeatmap={onSelectFromHeatmap}
         favorites={app.favorites}
         allCities={app.allCities}

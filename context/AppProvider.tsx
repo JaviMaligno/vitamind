@@ -114,8 +114,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   // Bridge: handleAuthChange needs setFavorites, setCityId, and setCustomLocations from useLocation
   const onAuthChange = useCallback(
-    (user: User | null) => prefs.handleAuthChange(user, loc.setFavorites, loc.setCityId, loc.setCustomLocations),
-    [prefs.handleAuthChange, loc.setFavorites, loc.setCityId, loc.setCustomLocations],
+    (user: User | null) => prefs.handleAuthChange(user, loc.setFavorites, loc.restoreCity, loc.setCustomLocations),
+    [prefs.handleAuthChange, loc.setFavorites, loc.restoreCity, loc.setCustomLocations],
   );
 
   // Sync favorites and custom locations to Supabase when they change

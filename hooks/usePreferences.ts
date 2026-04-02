@@ -38,7 +38,7 @@ export function usePreferences() {
 
   // Sync profile from Supabase on auth change
   const handleAuthChange = useCallback(
-    async (user: User | null, setFavorites: (f: string[]) => void, setCityId: (id: string) => void, setCustomLocations: (c: City[]) => void) => {
+    async (user: User | null, setFavorites: (f: string[]) => void, restoreCity: (id: string, customs: City[]) => void, setCustomLocations: (c: City[]) => void) => {
       setAuthUser(user);
       if (user) {
         const { profile } = await loadProfile();
@@ -61,7 +61,7 @@ export function usePreferences() {
           setCustomLocations(mergedCustom);
           for (const c of remoteOnly) saveCustomLocation(c);
 
-          if (profile.lastCityId) setCityId(profile.lastCityId);
+          if (profile.lastCityId) restoreCity(profile.lastCityId, mergedCustom);
 
           // Merge histories: remote wins on conflict
           const localHistory = loadHistory();
