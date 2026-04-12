@@ -420,14 +420,23 @@ export function getCurrentStatus(
     }
   } else if (synthWindow && currentHour >= synthWindow.start && currentHour < synthWindow.end) {
     // Inside window period but interpolated UVI dipped below threshold (e.g. cloud or transition)
-    // Scan forward for next hour with good UVI
-    const nextGood = effectiveHourly.find((h) => h.hour > currentHour && h.hour < synthWindow.end && h.effectiveUVI >= MIN_UVI);
-    if (nextGood) {
-      state = "upcoming";
-      minutesUntilWindow = (nextGood.hour - currentHour) * 60 - currentMinutes;
+    // Check if the current hour itself still has good UVI (interpolation with next hour may dip
+    // but the hour's reported UVI is still valid for synthesis)
+    const currHourData = effectiveHourly.find((h) => h.hour === currentHour);
+    if (currHourData && currHourData.effectiveUVI >= MIN_UVI) {
+      state = "good_now";
+      intensity = currHourData.effectiveUVI > 5 ? "optimal" : "moderate";
+      windowClosesIn = (synthWindow.end - currentHour) * 60 - currentMinutes;
+      if (windowClosesIn < 0) windowClosesIn = 0;
     } else {
-      // Rest of window also below threshold — treat as closed
-      state = "window_closed";
+      // Current hour genuinely below threshold — scan forward for next good hour
+      const nextGood = effectiveHourly.find((h) => h.hour > currentHour && h.hour < synthWindow.end && h.effectiveUVI >= MIN_UVI);
+      if (nextGood) {
+        state = "upcoming";
+        minutesUntilWindow = (nextGood.hour - currentHour) * 60 - currentMinutes;
+      } else {
+        state = "window_closed";
+      }
     }
   } else if (synthWindow && currentHour < synthWindow.start) {
     state = "upcoming";

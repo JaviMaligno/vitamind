@@ -9,10 +9,12 @@ function toDateStr(d: Date): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
 
+const STALE_THRESHOLD = 30 * 60_000; // Re-fetch if data older than 30 minutes
+
 /**
  * Provides real-time NowStatus that updates every 60 seconds.
- * Fetches today's weather on mount and re-fetches every hour.
- * Single consolidated timer for both countdown and hourly re-fetch.
+ * Fetches today's weather on mount and re-fetches every 15 minutes.
+ * Also re-fetches when the app returns to the foreground (visibilitychange).
  */
 export function useNowStatus(
   lat: number,
@@ -26,7 +28,7 @@ export function useNowStatus(
 ): NowStatus {
   const [now, setNow] = useState(() => new Date());
   const [hours, setHours] = useState<WeatherHour[] | null>(null);
-  const lastFetchHour = useRef(-1);
+  const lastFetchTime = useRef(0);
 
   const fetchWeather = useCallback(() => {
     const dateStr = toDateStr(new Date());
@@ -35,7 +37,7 @@ export function useNowStatus(
       .then((data) => {
         if (data?.hours) {
           setHours(data.hours);
-          lastFetchHour.current = new Date().getHours();
+          lastFetchTime.current = Date.now();
         }
       })
       .catch(() => {});
@@ -46,16 +48,24 @@ export function useNowStatus(
     fetchWeather();
   }, [fetchWeather]);
 
-  // Single 60s timer: updates `now` and re-fetches weather on hour boundary
+  // 60s timer: updates `now` for countdown/status recalculation
   useEffect(() => {
-    const id = setInterval(() => {
-      const current = new Date();
-      setNow(current);
-      if (current.getHours() !== lastFetchHour.current) {
+    const id = setInterval(() => setNow(new Date()), 60_000);
+    return () => clearInterval(id);
+  }, []);
+
+  // Re-fetch when app returns to foreground after being in background
+  useEffect(() => {
+    const onVisible = () => {
+      if (
+        document.visibilityState === "visible" &&
+        Date.now() - lastFetchTime.current >= STALE_THRESHOLD
+      ) {
         fetchWeather();
       }
-    }, 60_000);
-    return () => clearInterval(id);
+    };
+    document.addEventListener("visibilitychange", onVisible);
+    return () => document.removeEventListener("visibilitychange", onVisible);
   }, [fetchWeather]);
 
   // Day-of-year derived from `now` so it updates at midnight

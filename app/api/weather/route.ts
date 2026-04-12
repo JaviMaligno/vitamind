@@ -65,7 +65,7 @@ export async function GET(request: NextRequest) {
     }));
 
     return NextResponse.json({ hours }, {
-      headers: { "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=7200" },
+      headers: { "Cache-Control": "public, s-maxage=1800, stale-while-revalidate=3600" },
     });
   } catch {
     return NextResponse.json({ error: "Failed to fetch weather" }, { status: 500 });
