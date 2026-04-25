@@ -13,6 +13,7 @@ import HistoryCalendar from "@/components/dashboard/HistoryCalendar";
 import ExposureQuickPicker from "@/components/dashboard/ExposureQuickPicker";
 import CitySearch from "@/components/CitySearch";
 import GpsButton from "@/components/GpsButton";
+import PartnerBadge from "@/components/PartnerBadge";
 import Link from "next/link";
 
 export default function DashboardPage() {
@@ -91,16 +92,19 @@ export default function DashboardPage() {
       />
 
       {!loading && todayRecord && !todayRecord.sufficient && (
-        <Link
-          href="/learn#supplement"
-          className="flex items-center justify-between rounded-xl border border-border-subtle bg-surface-card px-4 py-3 hover:bg-surface-elevated transition-colors"
-        >
-          <div>
-            <p className="text-[12px] font-medium text-text-secondary">{t("noUvLearnTitle")}</p>
-            <p className="text-[10px] text-text-faint mt-0.5">{t("noUvLearnHint")}</p>
-          </div>
-          <span className="text-text-faint text-[11px]">→</span>
-        </Link>
+        <div className="space-y-2">
+          <Link
+            href="/learn#supplement"
+            className="flex items-center justify-between rounded-xl border border-border-subtle bg-surface-card px-4 py-3 hover:bg-surface-elevated transition-colors"
+          >
+            <div>
+              <p className="text-[12px] font-medium text-text-secondary">{t("noUvLearnTitle")}</p>
+              <p className="text-[10px] text-text-faint mt-0.5">{t("noUvLearnHint")}</p>
+            </div>
+            <span className="text-text-faint text-[11px]">→</span>
+          </Link>
+          <PartnerBadge />
+        </div>
       )}
 
       {/* History calendar (replaces WeekTracker + MonthSummary) */}

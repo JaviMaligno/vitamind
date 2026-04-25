@@ -3,6 +3,7 @@
 import { useState, useCallback, useEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
 import { useSwipe } from "@/hooks/useSwipe";
+import PartnerBadge from "@/components/PartnerBadge";
 import type { DayRecord } from "@/lib/types";
 
 type ViewMode = "week" | "month";
@@ -325,9 +326,12 @@ export default function HistoryCalendar({ records, onToggleOverride, onNavigate 
           </p>
         )}
         {summary.total >= 7 && summary.favorable < summary.total * 0.4 && (
-          <p className="text-xs text-amber-400/50">
-            {t("supplementHint")}
-          </p>
+          <>
+            <p className="text-xs text-amber-400/50">
+              {t("supplementHint")}
+            </p>
+            <PartnerBadge className="mt-1" />
+          </>
         )}
       </div>
 

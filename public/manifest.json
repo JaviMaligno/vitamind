@@ -1,7 +1,9 @@
 {
   "name": "Vitamina D Explorer",
   "short_name": "VitaminD",
-  "description": "Descubre cuando y donde puedes sintetizar vitamina D gracias al sol",
+  "description": "Free solar vitamin D calculator — know when, where, and how long to be in the sun based on your location, skin type, and real-time UV data.",
+  "categories": ["health", "lifestyle", "weather"],
+  "lang": "es",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0a0a1a",

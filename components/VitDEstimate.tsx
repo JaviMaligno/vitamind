@@ -3,6 +3,7 @@
 import { useMemo } from "react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
+import PartnerBadge from "@/components/PartnerBadge";
 import { computeExposure, computeExposureFromCurve, type SkinType } from "@/lib/vitd";
 import type { WeatherData, SolarPoint } from "@/lib/types";
 
@@ -56,6 +57,7 @@ export default function VitDEstimate({ weather, curve, skinType, areaFraction, a
           <div className="text-[11px] text-text-muted mt-2 leading-relaxed">
             💊 <Link href="/learn#supplement" className="underline decoration-dotted hover:text-text-secondary transition-colors">{t("supplementAdvice")}</Link>
           </div>
+          <PartnerBadge className="mt-2" />
         </div>
       )}
       {result && (

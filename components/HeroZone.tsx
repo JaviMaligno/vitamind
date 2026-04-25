@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import CitySearch from "@/components/CitySearch";
+import PartnerBadge from "@/components/PartnerBadge";
 import type { City } from "@/lib/types";
 
 interface Props {
@@ -244,6 +245,7 @@ export default function HeroZone({
               <Link href="/learn#supplement" className="underline decoration-dotted hover:text-text-secondary transition-colors">
                 {t("adviceText")}
               </Link>
+              <PartnerBadge className="mt-2" />
             </div>
           </>
         )}
