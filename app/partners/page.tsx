@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 
-const CONTACT_EMAIL = "javiturco33@gmail.com";
+const CONTACT_EMAIL = "javiecija96@gmail.com";
 
 const WHY_ITEMS = [
   { icon: "🎯", titleKey: "why1Title", textKey: "why1Text" },
