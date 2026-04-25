@@ -31,7 +31,7 @@
     "gpsNotSupported": "Tu navegador no soporta geolocalización",
     "gpsGenericError": "Error al obtener la ubicación",
     "gpsEnableHint": "Asegúrate de tener activada la ubicación en tu dispositivo (Ajustes > Ubicación/GPS)",
-    "gpsDeniedHint": "Permiso denegado. En Chrome: pulsa el candado en la barra de direcciones > Permisos > Ubicación > Permitir. Luego recarga la página."
+    "gpsDeniedHint": "En Chrome: pulsa el candado en la barra de direcciones > Permisos > Ubicación > Permitir. Luego recarga la página."
   },
   "tabs": {
     "dailyCurve": "📈 Curva del Día",

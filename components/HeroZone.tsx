@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import CitySearch from "@/components/CitySearch";
+import GpsErrorHint from "@/components/GpsErrorHint";
 import PartnerBadge from "@/components/PartnerBadge";
 import type { City } from "@/lib/types";
 
@@ -90,14 +91,15 @@ export default function HeroZone({
               </p>
             )}
             {gpsError && (
-              <div className="mt-3 text-xs text-red-400/80 max-w-sm mx-auto">
-                <p>{t(gpsError)}</p>
-                {gpsError === "gpsDenied" && (
-                  <p className="mt-1 text-text-muted">{t("gpsDeniedHint")}</p>
-                )}
-                {(gpsError === "gpsTimeout" || gpsError === "gpsUnavailable") && (
-                  <p className="mt-1 text-text-muted">{t("gpsEnableHint")}</p>
-                )}
+              <div className="mt-3 mx-auto">
+                <GpsErrorHint
+                  error={t(gpsError)}
+                  hint={
+                    gpsError === "gpsDenied" ? t("gpsDeniedHint")
+                    : (gpsError === "gpsTimeout" || gpsError === "gpsUnavailable") ? t("gpsEnableHint")
+                    : undefined
+                  }
+                />
               </div>
             )}
           </div>
@@ -180,15 +182,14 @@ export default function HeroZone({
               </p>
             )}
             {gpsError && (
-              <p className="text-[10px] text-red-400/70 max-w-[240px] leading-tight">
-                {t(gpsError)}
-                {gpsError === "gpsDenied" && (
-                  <span className="block text-text-faint mt-0.5">{t("gpsDeniedHint")}</span>
-                )}
-                {(gpsError === "gpsTimeout" || gpsError === "gpsUnavailable") && (
-                  <span className="block text-text-faint mt-0.5">{t("gpsEnableHint")}</span>
-                )}
-              </p>
+              <GpsErrorHint
+                error={t(gpsError)}
+                hint={
+                  gpsError === "gpsDenied" ? t("gpsDeniedHint")
+                  : (gpsError === "gpsTimeout" || gpsError === "gpsUnavailable") ? t("gpsEnableHint")
+                  : undefined
+                }
+              />
             )}
           </div>
         )}

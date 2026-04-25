@@ -2,6 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { useApp } from "@/context/AppProvider";
+import GpsErrorHint from "@/components/GpsErrorHint";
 
 export default function GpsButton() {
   const t = useTranslations("hero");
@@ -80,15 +81,14 @@ export default function GpsButton() {
         </p>
       )}
       {gps.error && (
-        <p className="text-[10px] text-red-400/70 max-w-[180px] leading-tight">
-          {t(gps.error)}
-          {isDenied && (
-            <span className="block text-text-faint mt-0.5">{t("gpsDeniedHint")}</span>
-          )}
-          {(gps.error === "gpsTimeout" || gps.error === "gpsUnavailable") && (
-            <span className="block text-text-faint mt-0.5">{t("gpsEnableHint")}</span>
-          )}
-        </p>
+        <GpsErrorHint
+          error={t(gps.error)}
+          hint={
+            isDenied ? t("gpsDeniedHint")
+            : (gps.error === "gpsTimeout" || gps.error === "gpsUnavailable") ? t("gpsEnableHint")
+            : undefined
+          }
+        />
       )}
     </div>
   );
