@@ -3,20 +3,25 @@ import { NextIntlClientProvider } from "next-intl";
 import { getMessages, getLocale } from "next-intl/server";
 import { Analytics } from "@vercel/analytics/react";
 import AppShell from "@/components/AppShell";
+import { SITE_URL, IS_PRODUCTION_DEPLOY } from "@/lib/site";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://vitamind-six.vercel.app"),
+  metadataBase: new URL(SITE_URL),
   title: "Vitamina D Explorer — Know When You Can Synthesize Vitamin D from Sunlight",
   description: "Free solar vitamin D calculator. Find out exactly when and how long to stay in the sun based on your location, skin type, age, and real-time UV data. Science-based estimates using Holick/Dowdy models.",
   keywords: ["vitamin D", "solar calculator", "UV index", "vitamin D synthesis", "sun exposure", "supplement advice", "vitamin D deficiency", "skin type", "UVB"],
   manifest: "/manifest.json",
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
     title: "Vitamina D Explorer — Know When You Can Synthesize Vitamin D",
     description: "Enter your city, skin type & age. Get personalized sun exposure times, 5-day forecasts, and supplement advice — all based on real UV data and peer-reviewed science.",
     type: "website",
     locale: "es_ES",
     alternateLocale: ["en_US", "fr_FR", "de_DE"],
+    url: SITE_URL,
     images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "Vitamina D Explorer — Solar Vitamin D Calculator" }],
   },
   twitter: {
@@ -25,7 +30,9 @@ export const metadata: Metadata = {
     description: "Know exactly when & how long to stay in the sun for your vitamin D. Free, science-based, works worldwide. 6 languages.",
     images: ["/og-image.png"],
   },
-  robots: { index: true, follow: true },
+  robots: IS_PRODUCTION_DEPLOY
+    ? { index: true, follow: true }
+    : { index: false, follow: false },
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
@@ -65,7 +72,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               "@context": "https://schema.org",
               "@type": "WebApplication",
               "name": "Vitamina D Explorer",
-              "url": "https://vitamind-six.vercel.app",
+              "url": SITE_URL,
               "description": "Free solar vitamin D calculator. Find out exactly when and where you can synthesize vitamin D based on your location, skin type, and real-time UV data.",
               "applicationCategory": "HealthApplication",
               "operatingSystem": "Any",

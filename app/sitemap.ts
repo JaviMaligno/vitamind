@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
+import { SITE_URL } from "@/lib/site";
 
-const BASE_URL = "https://vitamind-six.vercel.app";
+const BASE_URL = SITE_URL;
 const LOCALES = ["es", "en", "fr", "de", "ru", "lt"];
 
 export default function sitemap(): MetadataRoute.Sitemap {
