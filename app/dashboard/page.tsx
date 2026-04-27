@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useMemo } from "react";
 import { useTranslations } from "next-intl";
+import { useSearchParams } from "next/navigation";
 import { useApp } from "@/context/AppProvider";
 import { useCityDisplayName } from "@/hooks/useCityDisplayName";
 import { useHistory } from "@/hooks/useHistory";
@@ -15,13 +16,24 @@ import CitySearch from "@/components/CitySearch";
 import GpsButton from "@/components/GpsButton";
 import PartnerBadge from "@/components/PartnerBadge";
 import Link from "next/link";
+import { getDemoScenario, getDemoForecast } from "@/lib/demo";
 
 export default function DashboardPage() {
   const t = useTranslations("dashboard");
   const tc = useTranslations("common");
   const app = useApp();
   const getCityDisplayName = useCityDisplayName();
-  const cityName = getCityDisplayName(app.cityId, app.cityName);
+
+  // Demo mode: ?demo=<scenarioId> overrides nowStatus, forecast, city display.
+  // Scenario IDs are defined in lib/demo.ts. This branch is for promotional
+  // screenshots only and is not merged into master.
+  const searchParams = useSearchParams();
+  const demoId = searchParams.get("demo");
+  const demo = getDemoScenario(demoId);
+  const demoForecast = useMemo(() => getDemoForecast(demoId), [demoId]);
+
+  const cityName = demo ? demo.cityName : getCityDisplayName(app.cityId, app.cityName);
+  const cityFlag = demo ? demo.cityFlag : app.cityFlag;
 
   // Daily override for skin exposure (null = use profile default)
   const [areaOverride, setAreaOverride] = useState<number | null>(null);
@@ -32,8 +44,11 @@ export default function DashboardPage() {
   const { records, loading, getToday, toggleOverride, requestBackfill } = useHistory(
     app.lat, app.lon, app.cityId, app.skinType, effectiveArea, app.age, app.targetIU, app.authUser,
   );
-  const forecast = useForecast(app.lat, app.lon);
-  const nowStatus = useNowStatus(app.lat, app.lon, app.tz, app.timezone, app.skinType, effectiveArea, app.age, app.targetIU);
+  const realForecast = useForecast(app.lat, app.lon);
+  const realNowStatus = useNowStatus(app.lat, app.lon, app.tz, app.timezone, app.skinType, effectiveArea, app.age, app.targetIU);
+  const nowStatus = demo ? demo.nowStatus : realNowStatus;
+  const forecast = demo ? demoForecast : realForecast;
+  const dashboardLoading = demo ? false : loading;
 
   const cityRecords = useMemo(
     () => records.filter((r) => r.cityId === app.cityId),
@@ -66,12 +81,12 @@ export default function DashboardPage() {
       <DayRecommendation
         nowStatus={nowStatus}
         cityName={cityName}
-        cityFlag={app.cityFlag}
+        cityFlag={cityFlag}
         skinType={app.skinType}
         areaFraction={effectiveArea}
         age={app.age}
         targetIU={app.targetIU}
-        loading={loading}
+        loading={dashboardLoading}
       />
 
       {/* Quick exposure picker */}
