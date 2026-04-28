@@ -5,7 +5,8 @@ out/
 *.tsbuildinfo
 next-env.d.ts
 .vercel
-supabase/
+supabase/*
+!supabase/migrations/
 
 .vercel
 .worktrees/
