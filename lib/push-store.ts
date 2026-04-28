@@ -37,6 +37,7 @@ export async function saveSubscription(sub: StoredSubscription): Promise<void> {
     skin_type: sub.skinType,
     area_fraction: sub.areaFraction,
     city_name: sub.cityName,
+    vapid_public_key: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY ?? null,
     updated_at: new Date().toISOString(),
   }, { onConflict: "endpoint" });
 }
@@ -53,7 +54,13 @@ export async function getAllSubscriptions(): Promise<StoredSubscription[]> {
   const sb = getServiceClient();
   if (!sb) return [];
 
-  const { data, error } = await sb.from("push_subscriptions").select("*");
+  // Filter by current project's VAPID public key so prod and dev (vitamind-dev)
+  // don't try to push to each other's subscriptions on the shared table.
+  const publicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
+  const query = sb.from("push_subscriptions").select("*");
+  const { data, error } = publicKey
+    ? await query.eq("vapid_public_key", publicKey)
+    : await query;
   if (error || !data) return [];
 
   return data.map((row) => ({
