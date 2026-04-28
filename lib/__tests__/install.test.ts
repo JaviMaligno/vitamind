@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
-import { isStandalone } from "../install";
+import { isStandalone, getInstallBannerSeen, setInstallBannerSeen } from "../install";
 
 describe("isStandalone", () => {
   beforeEach(() => {
@@ -110,5 +110,25 @@ describe("detectPlatform", () => {
   it("returns 'unsupported' for unknown UAs without deferredPrompt", () => {
     setUA("Mozilla/5.0 SomeRandomBrowser/1.0");
     expect(detectPlatform(null)).toBe("unsupported");
+  });
+});
+
+describe("installBannerSeen flag", () => {
+  beforeEach(() => {
+    localStorage.clear();
+  });
+
+  it("returns false when flag is not set", () => {
+    expect(getInstallBannerSeen()).toBe(false);
+  });
+
+  it("returns true after setInstallBannerSeen()", () => {
+    setInstallBannerSeen();
+    expect(getInstallBannerSeen()).toBe(true);
+  });
+
+  it("survives JSON-incompatible legacy values without throwing", () => {
+    localStorage.setItem("vitamind:installBannerSeen", "not-json");
+    expect(() => getInstallBannerSeen()).not.toThrow();
   });
 });

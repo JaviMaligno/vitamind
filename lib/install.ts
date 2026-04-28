@@ -38,3 +38,21 @@ export function detectPlatform(deferredPrompt: Event | null): InstallPlatform {
 
   return "unsupported";
 }
+
+const SEEN_KEY = "vitamind:installBannerSeen";
+
+export function getInstallBannerSeen(): boolean {
+  if (typeof window === "undefined") return false;
+  try {
+    return localStorage.getItem(SEEN_KEY) === "true";
+  } catch {
+    return false;
+  }
+}
+
+export function setInstallBannerSeen(): void {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.setItem(SEEN_KEY, "true");
+  } catch { /* storage full — silently ignore */ }
+}
