@@ -6,3 +6,6 @@ out/
 next-env.d.ts
 .vercel
 supabase/
+
+.vercel
+.worktrees/
