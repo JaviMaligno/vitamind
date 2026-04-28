@@ -38,7 +38,7 @@ describe("isStandalone", () => {
   });
 });
 
-import { isInAppBrowser } from "../install";
+import { isInAppBrowser, detectPlatform } from "../install";
 
 describe("isInAppBrowser", () => {
   function setUA(ua: string) {
@@ -71,5 +71,44 @@ describe("isInAppBrowser", () => {
   it("returns false for desktop Chrome", () => {
     setUA("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36");
     expect(isInAppBrowser()).toBe(false);
+  });
+});
+
+describe("detectPlatform", () => {
+  function setUA(ua: string) {
+    Object.defineProperty(globalThis.navigator, "userAgent", {
+      value: ua,
+      configurable: true,
+    });
+  }
+
+  it("returns 'native' when deferredPrompt is provided", () => {
+    setUA("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0.0.0");
+    expect(detectPlatform({} as Event)).toBe("native");
+  });
+
+  it("returns 'ios-manual' for iOS Safari without deferredPrompt", () => {
+    setUA("Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 Version/17.0 Mobile/15E148 Safari/604.1");
+    expect(detectPlatform(null)).toBe("ios-manual");
+  });
+
+  it("returns 'manual' for Firefox desktop without deferredPrompt", () => {
+    setUA("Mozilla/5.0 (Windows NT 10.0; rv:120.0) Gecko/20100101 Firefox/120.0");
+    expect(detectPlatform(null)).toBe("manual");
+  });
+
+  it("returns 'manual' for Safari macOS without deferredPrompt", () => {
+    setUA("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 Version/17.0 Safari/605.1.15");
+    expect(detectPlatform(null)).toBe("manual");
+  });
+
+  it("returns 'unsupported' when iOS UA is inside an in-app browser", () => {
+    setUA("Mozilla/5.0 (iPhone) AppleWebKit/605.1.15 Mobile/15E148 Instagram 320.0.0.0.0");
+    expect(detectPlatform(null)).toBe("unsupported");
+  });
+
+  it("returns 'unsupported' for unknown UAs without deferredPrompt", () => {
+    setUA("Mozilla/5.0 SomeRandomBrowser/1.0");
+    expect(detectPlatform(null)).toBe("unsupported");
   });
 });
