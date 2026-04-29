@@ -6,13 +6,13 @@ import { loadFavorites, saveFavorites, loadCustomLocations, saveCustomLocation, 
 import type { City } from "@/lib/types";
 
 export function useLocation() {
-  const [lat, setLat] = useState(51.51);
-  const [lon, setLon] = useState(-0.13);
+  const [lat, setLat] = useState(0);
+  const [lon, setLon] = useState(0);
   const [tz, setTz] = useState(0);
   const [timezone, setTimezone] = useState<string | undefined>(undefined);
-  const [cityName, setCityName] = useState("Londres");
-  const [cityFlag, setCityFlag] = useState("\u{1F1EC}\u{1F1E7}");
-  const [cityId, setCityId] = useState("builtin:londres");
+  const [cityName, setCityName] = useState("");
+  const [cityFlag, setCityFlag] = useState("");
+  const [cityId, setCityId] = useState("");
   const [favorites, setFavorites] = useState<string[]>([]);
   const [customLocations, setCustomLocations] = useState<City[]>([]);
   const [editingFavs, setEditingFavs] = useState(false);
@@ -23,9 +23,9 @@ export function useLocation() {
     const custom = loadCustomLocations();
     setCustomLocations(custom);
 
-    // Restore last selected city from preferences
+    // Restore last selected city from preferences (real saved choice, not the legacy Londres default)
     const prefs = loadPreferences();
-    if (prefs.lastCityId && prefs.lastCityId !== "builtin:londres") {
+    if (prefs.lastCityId) {
       const builtinIds = new Set(BUILTIN_CITIES.map((c) => c.id));
       const saved = [...BUILTIN_CITIES, ...custom.filter((c) => !builtinIds.has(c.id))]
         .find((c) => c.id === prefs.lastCityId);

@@ -19,9 +19,11 @@ import Link from "next/link";
 export default function DashboardPage() {
   const t = useTranslations("dashboard");
   const tc = useTranslations("common");
+  const tHero = useTranslations("hero");
   const app = useApp();
   const getCityDisplayName = useCityDisplayName();
   const cityName = getCityDisplayName(app.cityId, app.cityName);
+  const hasCity = app.cityId !== "";
 
   // Daily override for skin exposure (null = use profile default)
   const [areaOverride, setAreaOverride] = useState<number | null>(null);
@@ -54,14 +56,24 @@ export default function DashboardPage() {
           />
         </div>
         <GpsButton />
-        <Link
-          href="/profile"
-          className="px-3 py-2 rounded-lg bg-surface-card text-text-muted text-xs hover:bg-surface-elevated hover:text-text-secondary transition-colors whitespace-nowrap"
-        >
-          {t("editProfile")}
-        </Link>
+        {hasCity && (
+          <Link
+            href="/profile"
+            className="px-3 py-2 rounded-lg bg-surface-card text-text-muted text-xs hover:bg-surface-elevated hover:text-text-secondary transition-colors whitespace-nowrap"
+          >
+            {t("editProfile")}
+          </Link>
+        )}
       </div>
 
+      {!hasCity && (
+        <div className="rounded-xl border border-border-subtle bg-surface-card p-6 text-center space-y-2">
+          <h2 className="text-base font-semibold text-text-primary">{tHero("whereAreYou")}</h2>
+          <p className="text-[12px] text-text-faint">{tHero("searchHint")}</p>
+        </div>
+      )}
+
+      {hasCity && <>
       {/* Hero: Today's recommendation */}
       <DayRecommendation
         nowStatus={nowStatus}
@@ -113,6 +125,7 @@ export default function DashboardPage() {
         onToggleOverride={toggleOverride}
         onNavigate={requestBackfill}
       />
+      </>}
 
       {/* Learn more — always visible */}
       <Link

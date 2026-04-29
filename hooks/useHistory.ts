@@ -83,6 +83,11 @@ export function useHistory(
     const stored = loadHistory();
     setRecords(stored);
 
+    if (!cityId) {
+      setLoading(false);
+      return;
+    }
+
     const today = new Date();
     const monday = getMonday(today);
     const todayStr = toDateStr(today);
@@ -118,6 +123,7 @@ export function useHistory(
   }, [lat, lon, cityId, skinType, areaFraction, age, targetIU]);
 
   const requestBackfill = useCallback((startStr: string, endStr: string) => {
+    if (!cityId) return;
     const key = `${startStr}:${endStr}`;
     if (activeRequests.current.has(key)) return;
 

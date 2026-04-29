@@ -67,6 +67,7 @@ export function useForecast(lat: number, lon: number): ForecastDay[] | null {
   const lastFetchTime = useRef(0);
 
   const fetchForecast = useCallback(() => {
+    if (lat === 0 && lon === 0) return; // no city chosen yet
     fetch(`/api/weather?lat=${lat.toFixed(2)}&lon=${lon.toFixed(2)}&days=5`)
       .then((r) => (r.ok ? r.json() : null))
       .then((data) => {
