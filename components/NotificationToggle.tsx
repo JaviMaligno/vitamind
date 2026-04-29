@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useTranslations } from "next-intl";
+import { useInstallPrompt } from "@/hooks/useInstallPrompt";
+import { isStandalone, setInstallBannerSeen } from "@/lib/install";
 
 interface Props {
   lat: number;
@@ -27,6 +29,27 @@ function urlBase64ToUint8Array(base64String: string): Uint8Array {
 export default function NotificationToggle({ lat, lon, tz, timezone, skinType, areaFraction, cityName }: Props) {
   const [status, setStatus] = useState<Status>("loading");
   const t = useTranslations("notifications");
+  const tInstall = useTranslations("install");
+  const { platform, isInAppBrowser, openModal, trigger } = useInstallPrompt();
+
+  const showAndroidTipToast = useCallback(() => {
+    setInstallBannerSeen();
+    const toast = document.createElement("div");
+    toast.className = "fixed left-1/2 -translate-x-1/2 bottom-24 z-[110] px-4 py-3 rounded-xl bg-text-primary text-bg-page-from font-medium text-sm shadow-2xl flex items-center gap-3";
+    toast.setAttribute("role", "status");
+    toast.setAttribute("aria-live", "polite");
+    toast.setAttribute("aria-atomic", "true");
+    const text = document.createElement("span");
+    text.textContent = tInstall("tip.android");
+    text.className = "flex-1";
+    const cta = document.createElement("button");
+    cta.textContent = tInstall("banner.cta");
+    cta.className = "px-3 py-1 rounded-md bg-amber-400 text-text-primary font-bold text-xs";
+    cta.onclick = async () => { toast.remove(); await trigger(); };
+    toast.append(text, cta);
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 8000);
+  }, [tInstall, trigger]);
 
   // Check permission on mount and when user returns to tab (e.g. after changing browser settings)
   useEffect(() => {
@@ -63,7 +86,7 @@ export default function NotificationToggle({ lat, lon, tz, timezone, skinType, a
 
   const toggle = useCallback(async () => {
     if (status === "on") {
-      // Unsubscribe
+      // Unsubscribe — unchanged path, no flow D
       const reg = await navigator.serviceWorker.ready;
       const sub = await reg.pushManager.getSubscription();
       if (sub) {
@@ -75,37 +98,60 @@ export default function NotificationToggle({ lat, lon, tz, timezone, skinType, a
         await sub.unsubscribe();
       }
       setStatus("off");
-    } else {
-      // Subscribe
-      const permission = await Notification.requestPermission();
-      if (permission !== "granted") {
-        setStatus("denied");
-        return;
-      }
-
-      const vapidKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
-      if (!vapidKey) {
-        console.error("VAPID key not configured");
-        return;
-      }
-
-      const reg = await navigator.serviceWorker.ready;
-      const sub = await reg.pushManager.subscribe({
-        userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array(vapidKey) as BufferSource,
-      });
-
-      await fetch("/api/push/subscribe", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          subscription: sub.toJSON(),
-          lat, lon, tz, timezone, skinType, areaFraction, cityName,
-        }),
-      });
-      setStatus("on");
+      return;
     }
-  }, [status, lat, lon, tz, timezone, skinType, areaFraction, cityName]);
+
+    // Subscribe path — flow D gating
+    const permission = Notification.permission;
+
+    // Flow D fires only when permission is still 'default' AND user is not already standalone.
+    if (permission === "default" && !isStandalone()) {
+      if (isInAppBrowser) {
+        openModal("gating");
+        return;
+      }
+      if (platform === "ios-manual") {
+        openModal("gating");
+        return;
+      }
+      // 'native' | 'manual' | 'unsupported': continue to permission flow.
+    }
+
+    const granted = permission === "granted"
+      ? "granted"
+      : await Notification.requestPermission();
+    if (granted !== "granted") {
+      setStatus("denied");
+      return;
+    }
+
+    const vapidKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
+    if (!vapidKey) {
+      console.error("VAPID key not configured");
+      return;
+    }
+
+    const reg = await navigator.serviceWorker.ready;
+    const sub = await reg.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: urlBase64ToUint8Array(vapidKey) as BufferSource,
+    });
+
+    await fetch("/api/push/subscribe", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        subscription: sub.toJSON(),
+        lat, lon, tz, timezone, skinType, areaFraction, cityName,
+      }),
+    });
+    setStatus("on");
+
+    // Post-success: Android tip toast (only when native install API is available and not standalone)
+    if (platform === "native" && !isStandalone()) {
+      showAndroidTipToast();
+    }
+  }, [status, lat, lon, tz, timezone, skinType, areaFraction, cityName, platform, isInAppBrowser, openModal, showAndroidTipToast]);
 
   // Update subscription when preferences change
   useEffect(() => {
