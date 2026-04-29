@@ -34,12 +34,18 @@ function TopBar() {
 }
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
+  const t = useTranslations();
   return (
     <ThemeProvider>
       <AppProvider>
         <div className="min-h-screen bg-gradient-to-br from-bg-page-from via-bg-page-via via-60% to-bg-page-to text-text-primary font-[DM_Sans,sans-serif] pb-20">
           <TopBar />
           {children}
+          <div className="mx-auto max-w-[960px] px-4 mt-6 mb-2 text-center text-[10px] text-text-faint">
+            <a href="https://javieraguilar.ai" target="_blank" rel="noopener" className="underline hover:text-text-secondary">
+              {t("app.builtBy")}
+            </a>
+          </div>
           <BottomTabBar />
         </div>
       </AppProvider>
