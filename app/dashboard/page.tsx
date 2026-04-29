@@ -14,6 +14,7 @@ import ExposureQuickPicker from "@/components/dashboard/ExposureQuickPicker";
 import CitySearch from "@/components/CitySearch";
 import GpsButton from "@/components/GpsButton";
 import PartnerBadge from "@/components/PartnerBadge";
+import InstallBanner from "@/components/InstallBanner";
 import Link from "next/link";
 
 export default function DashboardPage() {
@@ -125,6 +126,7 @@ export default function DashboardPage() {
         </div>
         <span className="text-text-faint text-[11px]">→</span>
       </Link>
+      <InstallBanner />
     </div>
   );
 }
