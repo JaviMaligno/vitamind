@@ -10,9 +10,17 @@ import HeroZone from "@/components/HeroZone";
 import VisualizationZone from "@/components/VisualizationZone";
 import CitySearch from "@/components/CitySearch";
 import GpsButton from "@/components/GpsButton";
+import Link from "next/link";
 import type { City } from "@/lib/types";
 import { useWeather } from "@/hooks/useWeather";
 import { useAnimation } from "@/hooks/useAnimation";
+
+const FAQ_LINKS = [
+  { anchor: "block-1", titleKey: "learn.block1.title", subKey: "learn.block1.subtitle", emoji: "☀️" },
+  { anchor: "block-2", titleKey: "learn.block2.title", subKey: "learn.block2.subtitle", emoji: "💊" },
+  { anchor: "block-3", titleKey: "learn.block3.title", subKey: "learn.block3.subtitle", emoji: "🧪" },
+  { anchor: "block-4", titleKey: "learn.block4.title", subKey: "learn.block4.subtitle", emoji: "🌅" },
+] as const;
 
 export default function ExplorePage() {
   const t = useTranslations();
@@ -200,6 +208,43 @@ export default function ExplorePage() {
           )}
         </div>
       </div>
+
+      {/* Related questions — deep links to /learn anchors */}
+      <section className="mx-auto max-w-[960px] px-4 mt-8">
+        <div className="mb-3">
+          <h2 className="text-[13px] font-semibold text-text-primary">
+            {t("explore.faqHeading")}
+          </h2>
+          <p className="text-[10px] text-text-faint mt-0.5">
+            {t("explore.faqSubheading")}
+          </p>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          {FAQ_LINKS.map((link) => (
+            <Link
+              key={link.anchor}
+              href={`/learn#${link.anchor}`}
+              className="flex items-start gap-2 rounded-xl border border-border-subtle bg-surface-card px-3 py-2 hover:bg-surface-elevated transition-colors"
+            >
+              <span className="text-base leading-none mt-0.5">{link.emoji}</span>
+              <div className="flex-1 min-w-0">
+                <p className="text-[12px] font-medium text-text-secondary truncate">
+                  {t(link.titleKey)}
+                </p>
+                <p className="text-[10px] text-text-faint mt-0.5 line-clamp-2">
+                  {t(link.subKey)}
+                </p>
+              </div>
+              <span className="text-text-faint text-[11px] mt-1">→</span>
+            </Link>
+          ))}
+        </div>
+        <div className="mt-3">
+          <Link href="/learn" className="text-[11px] text-text-muted hover:text-text-secondary transition-colors">
+            {t("explore.faqCta")}
+          </Link>
+        </div>
+      </section>
 
       {/* Footer */}
       <div className="mx-auto max-w-[960px] px-4 mt-3 text-[9px] text-text-faint leading-relaxed">

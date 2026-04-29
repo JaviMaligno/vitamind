@@ -477,5 +477,10 @@
     "ctaText": "Ob Sie eine Ergänzungsmittel-Marke, eine Gesundheitsplattform oder ein Wellness-Unternehmen sind — wir würden gerne erkunden, wie Vitamina D Explorer für Ihr Publikum funktionieren kann.",
     "ctaEmail": "Kontaktieren Sie uns",
     "ctaNote": "Wir antworten innerhalb von 48 Stunden. Partnerschaftsvorschläge sind für Marken jeder Größe willkommen."
+  },
+  "explore": {
+    "faqHeading": "Häufig gestellte Fragen",
+    "faqSubheading": "Tauche tiefer in die Wissenschaft hinter der App ein",
+    "faqCta": "Alle Fragen ansehen →"
   }
 }

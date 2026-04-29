@@ -286,7 +286,7 @@
       },
       "q7": {
         "q": "Ar kūno plaukai blokuoja UVB ir mažina vitamino D sintezę?",
-        "a": "Taip, bet nedaug. Kūno plaukai veikia kaip fizinė barjeras nuo UVB spinduliuotės. Galvez ir kt. (2015) tyrimas kiekybiškai įvertino „plaukų UV apsaugos faktorių\u201d: reti, ploni kūno plaukai atitinka maždaug SPF 1–3, o labai tankūs, tamsūs terminaliniai plaukai gali siekti SPF 2–4+. Kompiuteriniai modeliai (Goyal ir Raichur, 2020) rodo, kad tipiniai galūnių plaukai gali sumažinti UVB, pasiekiančius odą, 15–30 %. Tačiau joks klinikinis tyrimas tiesiogiai neišmatavo kūno plaukų poveikio 25(OH)D lygiui serume. Pagrindinės mokslinės apžvalgos apie vitamino D fotosintezės veiksnius — įskaitant Neville ir kt. (2021) — kūno plaukų kaip reikšmingo faktoriaus neįtraukia. Praktiškai labiausiai apaugusios sritys (krūtinė, nugara) paprastai būna uždengtos drabužiais, o poveikis dažniausiai atviroms sritims, tokioms kaip dilbiai ir blauzdos, yra mažas (SPF 1–2). Programėlė neįtraukia kūno plaukų koregavimo, nes poveikis yra nereikšmingas palyginti su odos tipu, UV indeksu, eksponuojamu kūno plotu ir amžiumi — ir jau iš dalies atsispindi kūno ploto parametre."
+        "a": "Taip, bet nedaug. Kūno plaukai veikia kaip fizinė barjeras nuo UVB spinduliuotės. Galvez ir kt. (2015) tyrimas kiekybiškai įvertino „plaukų UV apsaugos faktorių”: reti, ploni kūno plaukai atitinka maždaug SPF 1–3, o labai tankūs, tamsūs terminaliniai plaukai gali siekti SPF 2–4+. Kompiuteriniai modeliai (Goyal ir Raichur, 2020) rodo, kad tipiniai galūnių plaukai gali sumažinti UVB, pasiekiančius odą, 15–30 %. Tačiau joks klinikinis tyrimas tiesiogiai neišmatavo kūno plaukų poveikio 25(OH)D lygiui serume. Pagrindinės mokslinės apžvalgos apie vitamino D fotosintezės veiksnius — įskaitant Neville ir kt. (2021) — kūno plaukų kaip reikšmingo faktoriaus neįtraukia. Praktiškai labiausiai apaugusios sritys (krūtinė, nugara) paprastai būna uždengtos drabužiais, o poveikis dažniausiai atviroms sritims, tokioms kaip dilbiai ir blauzdos, yra mažas (SPF 1–2). Programėlė neįtraukia kūno plaukų koregavimo, nes poveikis yra nereikšmingas palyginti su odos tipu, UV indeksu, eksponuojamu kūno plotu ir amžiumi — ir jau iš dalies atsispindi kūno ploto parametre."
       }
     },
     "block2": {
@@ -306,7 +306,7 @@
       },
       "q4": {
         "q": "D3 ar D2 papilduose?",
-        "a": "D3 (cholekalciferolis) yra žymiai efektyvesnis nei D2 (ergokalciferolis) didinant ir palaikant 25-OH-D kraujyje — tyrimai rodo, kad D3 yra maždaug 2–3× stipresnis TV vienetui. D3 taip pat yra forma, kurią gamina jūsų oda. D2, gautas iš augalinių ir grybinių šaltinių, naudojamas veganiškuose papilduose, tačiau lyginamomis dozėmis atsilieka nuo D3. Ieškokite etiketėje „cholekalciferol\u201D; taip pat pasiekiamas veganiškasis D3 iš kerpių."
+        "a": "D3 (cholekalciferolis) yra žymiai efektyvesnis nei D2 (ergokalciferolis) didinant ir palaikant 25-OH-D kraujyje — tyrimai rodo, kad D3 yra maždaug 2–3× stipresnis TV vienetui. D3 taip pat yra forma, kurią gamina jūsų oda. D2, gautas iš augalinių ir grybinių šaltinių, naudojamas veganiškuose papilduose, tačiau lyginamomis dozėmis atsilieka nuo D3. Ieškokite etiketėje „cholekalciferol”; taip pat pasiekiamas veganiškasis D3 iš kerpių."
       },
       "q5": {
         "q": "Kokie 25-OH-D kraujo lygiai laikomi optimaliais?",
@@ -350,7 +350,7 @@
       },
       "q2": {
         "q": "Kaip saulės šviesa veikia cirkadinius ritmus?",
-        "a": "Šviesa yra pagrindinis zeitgeberis — „laiko davėjas\u201D — žmogaus cirkadiniam laikrodžiui. Ryto saulės šviesa, turtinga trumpo bangos ilgio mėlynos šviesos (460–480 nm), signalizuoja tinklainės ganglinėms ląstelėms, kurios savo ruožtu liepia supra chiazminiam branduoliui (SCN) smegenyse slopinti melatoniną ir sukelti kortizolio pabudimo atsaką. Tai fiksuoja 24 valandų kūno laikrodį. Nepakankamas ryto šviesos poveikis vėlina miego pradžią, sutrikdo hormonų laiką ir yra susijusi su nuotaikos sutrikimais ir medžiagų apykaitos disfunkcija. Idealus langas — pirmosios 30–60 minučių po pabudimo, lauke — net apsiniaukusiomis dienomis lauko šviesa paprastai yra 10–50× ryškesnė nei patalpų apšvietimas."
+        "a": "Šviesa yra pagrindinis zeitgeberis — „laiko davėjas” — žmogaus cirkadiniam laikrodžiui. Ryto saulės šviesa, turtinga trumpo bangos ilgio mėlynos šviesos (460–480 nm), signalizuoja tinklainės ganglinėms ląstelėms, kurios savo ruožtu liepia supra chiazminiam branduoliui (SCN) smegenyse slopinti melatoniną ir sukelti kortizolio pabudimo atsaką. Tai fiksuoja 24 valandų kūno laikrodį. Nepakankamas ryto šviesos poveikis vėlina miego pradžią, sutrikdo hormonų laiką ir yra susijusi su nuotaikos sutrikimais ir medžiagų apykaitos disfunkcija. Idealus langas — pirmosios 30–60 minučių po pabudimo, lauke — net apsiniaukusiomis dienomis lauko šviesa paprastai yra 10–50× ryškesnė nei patalpų apšvietimas."
       },
       "q3": {
         "q": "Kam naudinga aušros šviesa, jei ji negamina vitamino D?",
@@ -477,5 +477,10 @@
     "ctaText": "Nesvarbu, ar esate papildų prekės ženklas, sveikatos platforma ar sveikatingumo įmonė — norėtume ištirti, kaip Vitamina D Explorer gali veikti jūsų auditorijai.",
     "ctaEmail": "Susisiekite su mumis",
     "ctaNote": "Atsakome per 48 valandas. Partnerystės pasiūlymai laukiami visų dydžių prekės ženklams."
+  },
+  "explore": {
+    "faqHeading": "Dažnai užduodami klausimai",
+    "faqSubheading": "Įsigilinkite į mokslą, slypintį už programos",
+    "faqCta": "Žiūrėti visus klausimus →"
   }
 }

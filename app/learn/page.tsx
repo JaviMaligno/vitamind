@@ -78,7 +78,13 @@ export default function LearnPage() {
 
       {/* Blocks */}
       {BLOCKS.map((block, bi) => (
-        <section key={bi} id={bi === 2 ? "supplement" : undefined}>
+        <section
+          key={bi}
+          id={`block-${bi + 1}`}
+          {...(bi === 2 ? { "data-alias": "supplement" } : {})}
+        >
+          {/* Anchor alias for /learn#supplement */}
+          {bi === 2 && <div id="supplement" className="sr-only" />}
           <div className="flex items-center gap-2 mb-3">
             <span className="text-lg">{block.emoji}</span>
             <div>

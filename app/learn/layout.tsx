@@ -1,10 +1,15 @@
 import type { Metadata } from "next";
 import { getLocale, getMessages } from "next-intl/server";
 
+const FAQ_BLOCKS = [
+  { id: "block1", questions: 7 },
+  { id: "block2", questions: 5 },
+  { id: "block3", questions: 6 },
+  { id: "block4", questions: 5 },
+] as const;
+
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocale();
-  const messages = await getMessages();
-  const t = (messages as Record<string, Record<string, string>>).learn ?? {};
 
   const titles: Record<string, string> = {
     es: "Aprende sobre Vitamina D — Guía Completa de Síntesis Solar y Suplementación",
@@ -34,6 +39,43 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default function LearnLayout({ children }: { children: React.ReactNode }) {
-  return children;
+type LearnMessages = {
+  [block: string]: {
+    [question: string]: { q?: string; a?: string };
+  };
+};
+
+export default async function LearnLayout({ children }: { children: React.ReactNode }) {
+  const messages = (await getMessages()) as { learn?: LearnMessages };
+  const learn = messages.learn ?? {};
+
+  const mainEntity = FAQ_BLOCKS.flatMap((block) =>
+    Array.from({ length: block.questions }, (_, i) => i + 1)
+      .map((n) => {
+        const node = learn[block.id]?.[`q${n}`];
+        if (!node?.q || !node?.a) return null;
+        return {
+          "@type": "Question",
+          name: node.q,
+          acceptedAnswer: { "@type": "Answer", text: node.a },
+        };
+      })
+      .filter((x): x is NonNullable<typeof x> => x !== null),
+  );
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity,
+          }),
+        }}
+      />
+      {children}
+    </>
+  );
 }
