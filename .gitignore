@@ -10,3 +10,4 @@ supabase/*
 
 .vercel
 .worktrees/
+scripts/.probe-out/
