@@ -1,8 +1,9 @@
 {
   "app": {
     "title": "Vitaminas D",
-    "subtitle": "Globalus saulės naršyklė",
-    "footer": "Astronominiai skaičiavimai + realūs UV duomenys (Open-Meteo). Vitamino D įvertinimas pagal Holick/Dowdy (2010). Žemėlapis: Natural Earth. Paieška: OpenStreetMap Nominatim. Riba 45° (in vitro) / 50° (konservatyvus)."
+    "subtitle": "Globalus saulės tyrinėtojas",
+    "footer": "Astronominiai skaičiavimai + realūs UV duomenys (Open-Meteo). Vitamino D įvertinimas pagal Holick/Dowdy (2010). Žemėlapis: Natural Earth. Paieška: OpenStreetMap Nominatim. Riba 45° (in vitro) / 50° (konservatyvus).",
+    "builtBy": "Sukūrė Javier Aguilar"
   },
   "hero": {
     "whereAreYou": "Kur esate?",
@@ -94,10 +95,10 @@
     "targetPreset1000": "rekomenduojama",
     "targetPreset2000": "didelė dozė",
     "targetPreset4000": "maks. dozė",
-    "targetHint": "Su jūsų dabartiniu profiliu galite sintezuoti iki ~{max} TV per sesiją be nudegimo rizikos. Fotodegradacija apsaugo nuo saulės sukeltos toksikumo.",
+    "targetHint": "Su jūsų dabartiniu profiliu galite sintezuoti iki ~{max} TV per sesiją be nudegimo rizikos. Natūralus organizmo ribojimo mechanizmas apsaugo nuo saulės sukelto toksikumo.",
     "exposureDefaultHint": "Ekspozicija čia yra jūsų numatytoji reikšmė. Galite ją pakeisti kelyje iš Mano Diena.",
     "tipSolarProfile": "Jūsų Fitzpatrick odos tipas, atidengtas kūno plotas ir amžius lemia vitamino D sintezės greitį. Šviesesnė oda ir daugiau atidengtos odos = mažiau laiko reikia. Sintezės efektyvumas taip pat mažėja nuo ~65 metų.",
-    "tipTargetIU": "400 TV/dieną yra minimumas; 1000–2000 TV yra plačiai rekomenduojama norma. Pietų dienos sesija vasarą gali pagaminti iki 25 000 TV — fotodegradacija veikia kaip natūralus apsaugos mechanizmas nuo perdozavimo."
+    "tipTargetIU": "400 TV/dieną yra minimumas; 1000–2000 TV yra plačiai rekomenduojama norma. Pietų dienos sesija vasarą gali pagaminti iki 25 000 TV — organizmas natūraliai riboja gamybą ir apsaugo nuo perdozavimo."
   },
   "auth": {
     "login": "Prisijungti",
@@ -293,15 +294,15 @@
       "subtitle": "Palyginimas tarp natūralios sintezės ir kapsulių",
       "q1": {
         "q": "Kiek vitamino D galiu pagaminti saulėje, palyginti su tableto?",
-        "a": "Viso kūno ekspozicija 1 MED dozei (minimali eriotemalinis doze — prieš bet kokį paraudimą) gamina apie 10 000–25 000 TV vitamino D. Standartinė papildo kapsulė turi 400–2 000 TV. 15–20 minučių vidurdienio sesija vasarą su atidengtosiomis rankomis ir kojomis gali lengvai viršyti savaitinę tipinio papildinimo normą. Tačiau saulė turi įgimtą saugumo mechanizmą (fotodegradaciją), kuris neleidžia persidozuoti — apsaugą, kurios neturi geriamieji papildai."
+        "a": "Viso kūno poveikis 1 MED dozei (minimali eriteminė dozė — prieš bet kokį paraudimą) gamina apie 10 000–25 000 TV vitamino D. Standartinė papildo kapsulė turi 400–2 000 TV. 15–20 minučių vidurdienio sesija vasarą su atidengtosiomis rankomis ir kojomis gali lengvai viršyti savaitinę tipinio papildinimo normą. Tačiau saulė turi įgimtą saugumo mechanizmą (natūralų irimą), kuris neleidžia persidozuoti — apsaugą, kurios neturi geriamieji papildai."
       },
       "q2": {
         "q": "Ar galiu persidozuoti vitamino D nuo saulės?",
-        "a": "Ne. Saulės sintezė yra savaiminė. Kai pre-vitaminas D3 kaupiasi odoje, tęsiamas UVB jį paverčia inertiniais junginiais — lumisterolio ir tachysterolio — vietoj tolesnio kaupimosi. Ši fotodegradacijos riba reiškia, kad jūsų kūnas niekada nepagamina toksinių kiekių nuo saulės ekspozicijos, nesvarbu, kiek laiko praleidžiate lauke. Štai kodėl IOM toleruojamas viršutinis suvartojimo lygis 4 000 TV per dieną taikomas konkrečiai geriamajam papildinimui, o ne saulės šviesai."
+        "a": "Ne. Saulės sintezė yra savaime ribojama. Kai pre-vitaminas D3 kaupiasi odoje, tęsiamas UVB jį paverčia inertiniais junginiais — lumisterolio ir tachysterolio — vietoj tolesnio kaupimosi. Šis natūralus irimo procesas reiškia, kad jūsų kūnas niekada nepagamina toksinių kiekių nuo saulės poveikio, nesvarbu, kiek laiko praleidžiate lauke. Štai kodėl IOM toleruojamas viršutinis suvartojimo lygis 4 000 TV per dieną taikomas konkrečiai geriamajam papildinimui, o ne saulės šviesai."
       },
       "q3": {
         "q": "Ar saulė geriau nei papildai?",
-        "a": "Abu turi realių privalumų. Saulės pagamintas D3 yra susijęs su odos baltymais ir lėtai išleidžiamas į kraują, suteikdamas jam ilgesnį pusperiodį nei geriamasis D3. Saulės ekspozicija taip pat suteikia UVA valdomą azoto oksido išsiskyrimą, paros šviesos signalus ir kitus privalumus, kurių jokia tabletė negali pakartoti. Kita vertus, geriamasis D3 yra kontroliuojamas, tikslios dozės ir pasiekiamas ištisus metus. Praktinis atsakymas: naudokite saulę, kai sąlygos leidžia, papildykite, kai neleidžia — jie papildo vienas kitą."
+        "a": "Abu turi realių privalumų. Saulės pagamintas D3 yra susijęs su odos baltymais ir lėtai išleidžiamas į kraują, suteikdamas jam ilgesnį pusperiodį nei geriamasis D3. Buvimas saulėje taip pat suteikia UVA valdomą azoto oksido išsiskyrimą, paros šviesos signalus ir kitus privalumus, kurių jokia tabletė negali pakartoti. Kita vertus, geriamasis D3 yra kontroliuojamas, tikslios dozės ir pasiekiamas ištisus metus. Praktinis atsakymas: naudokite saulę, kai sąlygos leidžia, papildykite, kai neleidžia — jie papildo vienas kitą."
       },
       "q4": {
         "q": "D3 ar D2 papilduose?",
@@ -317,7 +318,7 @@
       "subtitle": "D3, K2, magnis ir teisingas vartojimas",
       "q1": {
         "q": "D3 ar D2? Kiek vartoti?",
-        "a": "Pasirinkite D3 (cholekalciferolį), nebent esate veganas — tokiu atveju pasiekiamas kerpių kilmės veganiškasis D3. Daugumai suaugusiųjų: 1 000–2 000 TV per dieną, jei reguliariai gaunate saulės; 2 000–4 000 TV per dieną, jei saulės ekspozicija ribota. Endokrininės draugijos viršutinė suvartojimo riba suaugusiesiems iš papildų yra 4 000 TV per dieną. Didesnės dozės trūkumui koreguoti egzistuoja, tačiau jas turėtų lemti kraujo tyrimai. Geriausias būdas rasti asmeninę veiksmingą dozę — ištirti 25-OH-D prieš papildinimą ir po 3 mėnesių."
+        "a": "Pasirinkite D3 (cholekalciferolį), nebent esate veganas — tokiu atveju pasiekiamas kerpių kilmės veganiškasis D3. Daugumai suaugusiųjų: 1 000–2 000 TV per dieną, jei reguliariai gaunate saulės; 2 000–4 000 TV per dieną, jei saulės poveikis ribotas. Endokrininės draugijos viršutinė suvartojimo riba suaugusiesiems iš papildų yra 4 000 TV per dieną. Didesnės dozės trūkumui koreguoti egzistuoja, tačiau jas turėtų lemti kraujo tyrimai. Geriausias būdas rasti asmeninę veiksmingą dozę — ištirti 25-OH-D prieš papildinimą ir po 3 mėnesių."
       },
       "q2": {
         "q": "Kodėl rekomenduojama kartu vartoti K2 su D3?",
@@ -333,7 +334,7 @@
       },
       "q5": {
         "q": "Kokiuose maisto produktuose natūraliai yra vitamino D?",
-        "a": "Labai nedaugelyje maisto produktų yra reikšmingų kiekių: riebioji žuvis (laukinė lašiša 600–1 000 TV 100 g; skumbrė, sardinės, silkė), menkių kepenų aliejus (~400 TV vienam šaukšteliui, taip pat turtingas vitamino A), kiaušinių tryniai (~40 TV kiekvienas, daugiau jei višta gavo UV ekspoziciją), UV veikiami grybai (gali suteikti 400+ TV 100 g, kai džiovinami žiaunomis į viršų saulės šviesoje) ir jautienos kepenys (nedideli kiekiai). Praturtinti maisto produktai (pienas, grūdai, augaliniai pieno produktai) prideda kuklių kiekių priklausomai nuo šalies. Vien mityba realistiškai negali pasiekti 1 000–4 000 TV diapazono be papildinimo."
+        "a": "Labai nedaugelyje maisto produktų yra reikšmingų kiekių: riebioji žuvis (laukinė lašiša 600–1 000 TV 100 g; skumbrė, sardinės, silkė), menkių kepenų aliejus (~400 TV vienam šaukšteliui, taip pat turtingas vitamino A), kiaušinių tryniai (~40 TV kiekvienas, daugiau jei višta gavo UV poveikį), UV veikiami grybai (gali suteikti 400+ TV 100 g, kai džiovinami žiaunomis į viršų saulės šviesoje) ir jautienos kepenys (nedideli kiekiai). Praturtinti maisto produktai (pienas, grūdai, augaliniai pieno produktai) prideda kuklių kiekių priklausomai nuo šalies. Vien mityba realistiškai negali pasiekti 1 000–4 000 TV diapazono be papildinimo."
       },
       "q6": {
         "q": "Koks yra geriausias paros metas vartoti vitaminą D?",
@@ -345,11 +346,11 @@
       "subtitle": "Azoto oksidas, cirkadiniai ritmai, nuotaika ir imunitetas",
       "q1": {
         "q": "Kas yra azoto oksidas ir ką jis turi bendro su saule?",
-        "a": "Azoto oksidas (NO) yra signalinis molekulas, plečiantis kraujagysles, mažinantis kraujospūdį ir gerinantis kraujotaką. Oda kaupia didelius kiekius nitrito ir nitrozotiolio junginių, kurie išleidžia NO į kraują per kelias minutes po UVA ekspozicijos. Tai yra visiškai nepriklausoma nuo vitamino D sintezės — tai vyksta pro stiklą, dalinėje pavėsyje ir net žiemą, kai UVB nėra. Richardo Wellerio grupės Edinburgo universitete tyrimas rodo, kad UVA valdomam NO išskyrimui gali būti paaiškinamas gerai dokumentuotas ryšys tarp saulės ekspozicijos ir sumažėjusio širdies ir kraujagyslių mirštamumo, išeinančio už tai, ką pats vitaminas D gali paaiškinti."
+        "a": "Azoto oksidas (NO) yra signalinis molekulas, plečiantis kraujagysles, mažinantis kraujospūdį ir gerinantis kraujotaką. Oda kaupia didelius kiekius nitrito ir nitrozotiolio junginių, kurie išleidžia NO į kraują per kelias minutes po UVA poveikio. Tai yra visiškai nepriklausoma nuo vitamino D sintezės — tai vyksta pro stiklą, dalinėje pavėsyje ir net žiemą, kai UVB nėra. Richardo Wellerio grupės Edinburgo universitete tyrimas rodo, kad UVA valdomam NO išskyrimui gali būti paaiškinamas gerai dokumentuotas ryšys tarp saulės poveikio ir sumažėjusio širdies ir kraujagyslių mirštamumo, išeinančio už tai, ką pats vitaminas D gali paaiškinti."
       },
       "q2": {
         "q": "Kaip saulės šviesa veikia cirkadinius ritmus?",
-        "a": "Šviesa yra pagrindinis zeitgeberis — „laiko davėjas\u201D — žmogaus cirkadiniam laikrodžiui. Ryto saulės šviesa, turtinga trumpo bangos ilgio mėlynos šviesos (460–480 nm), signalizuoja tinklainės ganglinėms ląstelėms, kurios savo ruožtu liepia supra chiazminiam branduoliui (SCN) smegenyse slopinti melatoniną ir sukelti kortizolio pabudimo atsaką. Tai fiksuoja 24 valandų kūno laikrodį. Nepakankama ryto šviesos ekspozicija vėlina miego pradžią, sutrikdo hormonų laiką ir yra susijusi su nuotaikos sutrikimais ir medžiagų apykaitos disfunkcija. Idealus langas — pirmosios 30–60 minučių po pabudimo, lauke — net apsiniaukusiomis dienomis lauko šviesa paprastai yra 10–50× ryškesnė nei patalpų apšvietimas."
+        "a": "Šviesa yra pagrindinis zeitgeberis — „laiko davėjas\u201D — žmogaus cirkadiniam laikrodžiui. Ryto saulės šviesa, turtinga trumpo bangos ilgio mėlynos šviesos (460–480 nm), signalizuoja tinklainės ganglinėms ląstelėms, kurios savo ruožtu liepia supra chiazminiam branduoliui (SCN) smegenyse slopinti melatoniną ir sukelti kortizolio pabudimo atsaką. Tai fiksuoja 24 valandų kūno laikrodį. Nepakankamas ryto šviesos poveikis vėlina miego pradžią, sutrikdo hormonų laiką ir yra susijusi su nuotaikos sutrikimais ir medžiagų apykaitos disfunkcija. Idealus langas — pirmosios 30–60 minučių po pabudimo, lauke — net apsiniaukusiomis dienomis lauko šviesa paprastai yra 10–50× ryškesnė nei patalpų apšvietimas."
       },
       "q3": {
         "q": "Kam naudinga aušros šviesa, jei ji negamina vitamino D?",
@@ -357,7 +358,7 @@
       },
       "q4": {
         "q": "Ar yra ryšys tarp saulės ir imuniteto, nepriklausomai nuo vitamino D?",
-        "a": "Taip. UV ekspozicija nepriklausomai moduliuoja imuninę funkciją per mechanizmus, atskirtus nuo vitamino D: ji sukelia reguliuojamuosius T ląsteles ir keičia antigeno pristatančias ląsteles taip, kad slopina uždegiminį atsaką. Tai yra UV fototerapijos, kliniškai naudojamos gydant psoriazę, egzemą ir vitiligo, pagrindas. Kai kurie tyrėjai sieja šį platesnį UV imunomoduliavimą su autoimmuninio ligų paplitimo platumos gradientu — išsėtinė sklerozė, 1 tipo cukrinis diabetas ir uždegiminė žarnyno liga yra žymiai dažnesnės aukštesnėse platumose, o tai tik iš dalies paaiškinama vitamino D lygiais."
+        "a": "Taip. UV poveikis nepriklausomai moduliuoja imuninę funkciją per mechanizmus, atskirtus nuo vitamino D: ji sukelia reguliuojamuosius T ląsteles ir keičia antigeno pristatančias ląsteles taip, kad slopina uždegiminį atsaką. Tai yra UV fototerapijos, kliniškai naudojamos gydant psoriazę, egzemą ir vitiligo, pagrindas. Kai kurie tyrėjai sieja šį platesnį UV imunomoduliavimą su autoimmuninio ligų paplitimo platumos gradientu — išsėtinė sklerozė, 1 tipo cukrinis diabetas ir uždegiminė žarnyno liga yra žymiai dažnesnės aukštesnėse platumose, o tai tik iš dalies paaiškinama vitamino D lygiais."
       },
       "q5": {
         "q": "Ar saulės šviesa veikia nuotaiką? (serotoninas ir melatoninas)",

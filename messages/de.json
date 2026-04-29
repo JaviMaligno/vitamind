@@ -2,7 +2,8 @@
   "app": {
     "title": "Vitamin D",
     "subtitle": "Globaler Solar-Explorer",
-    "footer": "Astronomische Berechnungen + reale UV-Daten (Open-Meteo). Vitamin-D-Schätzung basierend auf Holick/Dowdy (2010). Karte: Natural Earth. Suche: OpenStreetMap Nominatim. Schwelle 45° (in vitro) / 50° (konservativ)."
+    "footer": "Astronomische Berechnungen + reale UV-Daten (Open-Meteo). Vitamin-D-Schätzung basierend auf Holick/Dowdy (2010). Karte: Natural Earth. Suche: OpenStreetMap Nominatim. Schwelle 45° (in vitro) / 50° (konservativ).",
+    "builtBy": "Erstellt von Javier Aguilar"
   },
   "hero": {
     "whereAreYou": "Wo bist du?",

@@ -204,6 +204,10 @@ export default function ExplorePage() {
       {/* Footer */}
       <div className="mx-auto max-w-[960px] px-4 mt-3 text-[9px] text-text-faint leading-relaxed">
         {t("app.footer")}
+        <span className="mx-1">·</span>
+        <a href="https://javieraguilar.ai" target="_blank" rel="noopener" className="underline hover:text-text-secondary">
+          {t("app.builtBy")}
+        </a>
       </div>
     </>
   );

@@ -2,7 +2,8 @@
   "app": {
     "title": "Vitamin D",
     "subtitle": "Global Solar Explorer",
-    "footer": "Astronomical calculations + real UV data (Open-Meteo). Vitamin D estimation based on Holick/Dowdy (2010). Map: Natural Earth. Search: OpenStreetMap Nominatim. Threshold 45° (in vitro) / 50° (conservative)."
+    "footer": "Astronomical calculations + real UV data (Open-Meteo). Vitamin D estimation based on Holick/Dowdy (2010). Map: Natural Earth. Search: OpenStreetMap Nominatim. Threshold 45° (in vitro) / 50° (conservative).",
+    "builtBy": "Built by Javier Aguilar"
   },
   "hero": {
     "whereAreYou": "Where are you?",

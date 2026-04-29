@@ -2,7 +2,8 @@
   "app": {
     "title": "Витамин D",
     "subtitle": "Глобальный солнечный обозреватель",
-    "footer": "Астрономические расчёты + реальные UV-данные (Open-Meteo). Оценка витамина D на основе Holick/Dowdy (2010). Карта: Natural Earth. Поиск: OpenStreetMap Nominatim. Порог 45° (in vitro) / 50° (консервативный)."
+    "footer": "Астрономические расчёты + реальные UV-данные (Open-Meteo). Оценка витамина D на основе Holick/Dowdy (2010). Карта: Natural Earth. Поиск: OpenStreetMap Nominatim. Порог 45° (in vitro) / 50° (консервативный).",
+    "builtBy": "Создано Javier Aguilar"
   },
   "hero": {
     "whereAreYou": "Где вы?",

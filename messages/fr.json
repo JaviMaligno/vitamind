@@ -2,7 +2,8 @@
   "app": {
     "title": "Vitamine D",
     "subtitle": "Explorateur Solaire Global",
-    "footer": "Calculs astronomiques + données UV réelles (Open-Meteo). Estimation Vit D basée sur Holick/Dowdy (2010). Carte : Natural Earth. Recherche : OpenStreetMap Nominatim. Seuil 45° (in vitro) / 50° (conservateur)."
+    "footer": "Calculs astronomiques + données UV réelles (Open-Meteo). Estimation Vit D basée sur Holick/Dowdy (2010). Carte : Natural Earth. Recherche : OpenStreetMap Nominatim. Seuil 45° (in vitro) / 50° (conservateur).",
+    "builtBy": "Créé par Javier Aguilar"
   },
   "hero": {
     "whereAreYou": "Où êtes-vous ?",
