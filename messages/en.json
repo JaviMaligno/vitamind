@@ -476,5 +476,31 @@
     "ctaText": "Whether you're a supplement brand, health platform, or wellness company — we'd love to explore how Vitamina D Explorer can work for your audience.",
     "ctaEmail": "Contact us",
     "ctaNote": "We respond within 48 hours. Partnership proposals welcome for brands of any size."
+  },
+  "install": {
+    "banner": {
+      "title": "Add to home screen for instant access",
+      "cta": "Install"
+    },
+    "modal": {
+      "title": "Add VitaminD to your Home Screen",
+      "subtitle": "Two taps and you're done.",
+      "step1": "Tap the Share button in Safari's bottom bar",
+      "step2": "Scroll down and tap Add to Home Screen",
+      "foot": "VitaminD will appear on your home screen, no app store needed.",
+      "iosBlock": "Install VitaminD first to enable notifications.",
+      "iosBlockSub": "iOS only delivers daily notifications when the app is on your home screen.",
+      "fallback": "Use your browser's menu to add VitaminD to your home screen.",
+      "inAppBrowser": "Open in Safari first",
+      "copyUrl": "Copy link",
+      "linkCopied": "Link copied",
+      "close": "Close"
+    },
+    "installed": {
+      "toast": "Installed! Open VitaminD from your home screen ☀️"
+    },
+    "tip": {
+      "android": "Tip: install VitaminD for more reliable notifications"
+    }
   }
 }

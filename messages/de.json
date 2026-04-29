@@ -476,5 +476,31 @@
     "ctaText": "Ob Sie eine Ergänzungsmittel-Marke, eine Gesundheitsplattform oder ein Wellness-Unternehmen sind — wir würden gerne erkunden, wie Vitamina D Explorer für Ihr Publikum funktionieren kann.",
     "ctaEmail": "Kontaktieren Sie uns",
     "ctaNote": "Wir antworten innerhalb von 48 Stunden. Partnerschaftsvorschläge sind für Marken jeder Größe willkommen."
+  },
+  "install": {
+    "banner": {
+      "title": "Zum Startbildschirm hinzufügen für sofortigen Zugriff",
+      "cta": "Installieren"
+    },
+    "modal": {
+      "title": "VitaminD zu deinem Startbildschirm hinzufügen",
+      "subtitle": "Zwei Tippen und fertig.",
+      "step1": "Tippe auf den Teilen-Button in Safaris unterer Leiste",
+      "step2": "Scrolle nach unten und tippe auf Zum Home-Bildschirm",
+      "foot": "VitaminD erscheint auf deinem Startbildschirm – ohne App Store.",
+      "iosBlock": "Installiere VitaminD zuerst, um Benachrichtigungen zu aktivieren.",
+      "iosBlockSub": "iOS sendet tägliche Benachrichtigungen nur, wenn die App auf deinem Startbildschirm ist.",
+      "fallback": "Verwende das Menü deines Browsers, um VitaminD zu deinem Startbildschirm hinzuzufügen.",
+      "inAppBrowser": "Zuerst in Safari öffnen",
+      "copyUrl": "Link kopieren",
+      "linkCopied": "Link kopiert",
+      "close": "Schließen"
+    },
+    "installed": {
+      "toast": "Installiert! Öffne VitaminD von deinem Startbildschirm ☀️"
+    },
+    "tip": {
+      "android": "Tipp: Installiere VitaminD für zuverlässigere Benachrichtigungen"
+    }
   }
 }
