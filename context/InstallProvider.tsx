@@ -68,6 +68,9 @@ export default function InstallProvider({ children }: { children: ReactNode }) {
         const toast = document.createElement("div");
         toast.textContent = t("installed.toast");
         toast.className = "fixed left-1/2 -translate-x-1/2 bottom-24 z-[110] px-4 py-2.5 rounded-xl bg-amber-400 text-text-primary font-semibold text-sm shadow-2xl";
+        toast.setAttribute("role", "status");
+        toast.setAttribute("aria-live", "polite");
+        toast.setAttribute("aria-atomic", "true");
         document.body.appendChild(toast);
         setTimeout(() => toast.remove(), 4000);
       }
