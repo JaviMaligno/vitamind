@@ -2,6 +2,7 @@
 
 import { AppProvider, useApp } from "@/context/AppProvider";
 import { ThemeProvider } from "@/context/ThemeProvider";
+import InstallProvider from "@/context/InstallProvider";
 import BottomTabBar from "@/components/BottomTabBar";
 import LanguageSelector from "@/components/LanguageSelector";
 import AuthButton from "@/components/AuthButton";
@@ -37,11 +38,13 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <ThemeProvider>
       <AppProvider>
-        <div className="min-h-screen bg-gradient-to-br from-bg-page-from via-bg-page-via via-60% to-bg-page-to text-text-primary font-[DM_Sans,sans-serif] pb-20">
-          <TopBar />
-          {children}
-          <BottomTabBar />
-        </div>
+        <InstallProvider>
+          <div className="min-h-screen bg-gradient-to-br from-bg-page-from via-bg-page-via via-60% to-bg-page-to text-text-primary font-[DM_Sans,sans-serif] pb-20">
+            <TopBar />
+            {children}
+            <BottomTabBar />
+          </div>
+        </InstallProvider>
       </AppProvider>
     </ThemeProvider>
   );
