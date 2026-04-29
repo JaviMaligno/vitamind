@@ -5,7 +5,7 @@ import Link from "next/link";
 import CitySearch from "@/components/CitySearch";
 import GpsErrorHint from "@/components/GpsErrorHint";
 import PartnerBadge from "@/components/PartnerBadge";
-import type { City } from "@/lib/types";
+import type { City, NowStatus } from "@/lib/types";
 
 interface Props {
   lat: number;
@@ -14,6 +14,11 @@ interface Props {
   timezone?: string;
   doy: number;
   canSynthesize: boolean;
+  // When viewing today, the now-status from useNowStatus so we can mirror the
+  // dashboard's window_closed / upcoming / good_now copy instead of falling
+  // back to the day-level "Síntesis posible" which says nothing about the
+  // current moment. null/undefined → use canSynthesize for other days.
+  nowStatus?: NowStatus | null;
   cityName: string;
   cityFlag: string;
   hasLocation: boolean;
@@ -30,10 +35,19 @@ interface Props {
   gpsError?: "gpsDenied" | "gpsTimeout" | "gpsUnavailable" | "gpsGenericError" | "gpsNotSupported" | null;
 }
 
+function formatCountdown(totalMinutes: number): string {
+  if (totalMinutes < 1) return "<1 min";
+  const h = Math.floor(totalMinutes / 60);
+  const m = Math.round(totalMinutes % 60);
+  if (h === 0) return `${m} min`;
+  return m > 0 ? `${h}h ${m}min` : `${h}h`;
+}
+
 export default function HeroZone({
   lat,
   lon,
   canSynthesize,
+  nowStatus,
   cityName,
   cityFlag,
   hasLocation,
@@ -52,6 +66,41 @@ export default function HeroZone({
   const t = useTranslations("hero");
   const tc = useTranslations("common");
   const td = useTranslations("dashboard");
+
+  // When nowStatus is provided we're on today's date — mirror the dashboard's
+  // four-state copy. Otherwise fall back to the day-level canSynthesize.
+  type Mode = "good_now" | "upcoming" | "window_closed" | "no_synthesis" | "day_possible" | "day_impossible";
+  const mode: Mode = nowStatus
+    ? nowStatus.state
+    : canSynthesize
+      ? "day_possible"
+      : "day_impossible";
+  const positive = mode === "good_now" || mode === "day_possible";
+  const muted = mode === "upcoming" || mode === "window_closed";
+
+  const dotClass = positive
+    ? "bg-amber-400"
+    : muted
+      ? "bg-gray-400"
+      : "bg-red-400";
+  const labelClass = positive
+    ? "text-amber-400/70"
+    : muted
+      ? "text-gray-400/80"
+      : "text-red-400/70";
+  const cardClass = positive
+    ? "border-amber-400/15 bg-gradient-to-br from-amber-400/[0.06] to-orange-600/[0.03]"
+    : muted
+      ? "border-gray-400/15 bg-gradient-to-br from-gray-400/[0.04] to-gray-600/[0.02]"
+      : "border-red-400/10 bg-gradient-to-br from-red-500/[0.06] to-red-900/[0.03]";
+
+  const statusLabel = (() => {
+    if (mode === "good_now") return t("synthesisPossible");
+    if (mode === "upcoming") return td("now_upcoming");
+    if (mode === "window_closed") return td("now_windowClosed");
+    if (mode === "no_synthesis" || mode === "day_impossible") return t("noSynthesis");
+    return t("synthesisPossible");
+  })();
 
   if (!hasLocation) {
     return (
@@ -123,26 +172,12 @@ export default function HeroZone({
 
   return (
     <section className="mx-auto max-w-[960px] px-4 py-8">
-      <div
-        className={`rounded-2xl border p-6 md:p-8 shadow-lg ${
-          canSynthesize
-            ? "border-amber-400/15 bg-gradient-to-br from-amber-400/[0.06] to-orange-600/[0.03]"
-            : "border-red-400/10 bg-gradient-to-br from-red-500/[0.06] to-red-900/[0.03]"
-        }`}
-      >
+      <div className={`rounded-2xl border p-6 md:p-8 shadow-lg ${cardClass}`}>
         {/* Status indicator */}
         <div className="flex items-center gap-2 mb-4">
-          <span
-            className={`inline-block w-2.5 h-2.5 rounded-full ${
-              canSynthesize ? "bg-amber-400" : "bg-red-400"
-            }`}
-          />
-          <span
-            className={`text-xs font-semibold uppercase tracking-wider ${
-              canSynthesize ? "text-amber-400/70" : "text-red-400/70"
-            }`}
-          >
-            {canSynthesize ? t("synthesisPossible") : t("noSynthesis")}
+          <span className={`inline-block w-2.5 h-2.5 rounded-full ${dotClass}`} />
+          <span className={`text-xs font-semibold uppercase tracking-wider ${labelClass}`}>
+            {statusLabel}
           </span>
         </div>
 
@@ -194,7 +229,7 @@ export default function HeroZone({
           </div>
         )}
 
-        {canSynthesize ? (
+        {(mode === "good_now" || mode === "day_possible") && (
           <>
             <h2 className="text-[36px] md:text-[40px] font-bold text-text-primary leading-tight mb-2">
               {t("synthesisPossible")}
@@ -202,34 +237,37 @@ export default function HeroZone({
             <p className="text-sm text-text-muted mb-6">
               {t("forVitDDynamic", { iu: targetIU })}
             </p>
-
-            {/* Details row - simplified */}
-            <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm">
-              <div>
-                <span className="text-[11px] uppercase tracking-wider text-text-faint block mb-0.5">
-                  {t("peakSolar")}
-                </span>
-                <span className="font-mono text-[15px] font-semibold text-text-primary">
-                  {peakElevation.toFixed(1)}°
-                </span>
-              </div>
-              <div>
-                <span className="text-[11px] uppercase tracking-wider text-text-faint block mb-0.5">
-                  {t("location")}
-                </span>
-                <span className="text-[15px] text-text-secondary">
-                  {cityFlag} {cityName}
-                </span>
-              </div>
-              <div>
-                <span className="text-[11px] uppercase tracking-wider text-text-faint block mb-0.5">
-                  {t("date")}
-                </span>
-                <span className="text-[15px] text-text-secondary">{dateLabel}</span>
-              </div>
-            </div>
           </>
-        ) : (
+        )}
+
+        {mode === "upcoming" && (
+          <>
+            <h2 className="text-[28px] md:text-[32px] font-bold text-text-primary leading-tight mb-2">
+              {td("nowUpcomingTitle", {
+                countdown: formatCountdown(nowStatus?.minutesUntilWindow ?? 0),
+                hour: `${nowStatus?.window?.start ?? 0}:00`,
+              })}
+            </h2>
+            {nowStatus?.cloudDegraded && (
+              <p className="text-sm text-amber-400/70 mb-4">
+                {td("cloudDegraded")}
+              </p>
+            )}
+          </>
+        )}
+
+        {mode === "window_closed" && (
+          <>
+            <h2 className="text-[28px] md:text-[32px] font-bold text-text-primary leading-tight mb-2">
+              {td("nowClosedTitle", { hour: `${nowStatus?.window?.end ?? 0}:00` })}
+            </h2>
+            <p className="text-sm text-text-muted mb-4">
+              {td("nowClosedHint")}
+            </p>
+          </>
+        )}
+
+        {(mode === "no_synthesis" || mode === "day_impossible") && (
           <>
             <h2 className="text-[32px] md:text-[36px] font-bold text-text-primary leading-tight mb-2">
               {t("noSynthesisTitle")}
@@ -251,14 +289,42 @@ export default function HeroZone({
           </>
         )}
 
+        {/* Details row — shared by states with a meaningful day */}
+        {(mode === "good_now" || mode === "upcoming" || mode === "window_closed" || mode === "day_possible") && (
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm mt-2">
+            <div>
+              <span className="text-[11px] uppercase tracking-wider text-text-faint block mb-0.5">
+                {t("peakSolar")}
+              </span>
+              <span className="font-mono text-[15px] font-semibold text-text-primary">
+                {peakElevation.toFixed(1)}°
+              </span>
+            </div>
+            <div>
+              <span className="text-[11px] uppercase tracking-wider text-text-faint block mb-0.5">
+                {t("location")}
+              </span>
+              <span className="text-[15px] text-text-secondary">
+                {cityFlag} {cityName}
+              </span>
+            </div>
+            <div>
+              <span className="text-[11px] uppercase tracking-wider text-text-faint block mb-0.5">
+                {t("date")}
+              </span>
+              <span className="text-[15px] text-text-secondary">{dateLabel}</span>
+            </div>
+          </div>
+        )}
+
         {/* Learn more — conditional message */}
         <div className="mt-4 pt-3 border-t border-border-subtle">
           <Link
-            href={canSynthesize ? "/learn" : "/learn#supplement"}
+            href={positive ? "/learn" : "/learn#supplement"}
             className="flex items-center gap-1.5 text-[11px] text-text-muted hover:text-text-secondary transition-colors"
           >
             <span>📖</span>
-            <span>{canSynthesize ? tc("learnMore") : td("noUvLearnTitle")}</span>
+            <span>{positive ? tc("learnMore") : td("noUvLearnTitle")}</span>
             <span className="ml-1">→</span>
           </Link>
         </div>

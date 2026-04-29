@@ -14,6 +14,7 @@ import Link from "next/link";
 import type { City } from "@/lib/types";
 import { useWeather } from "@/hooks/useWeather";
 import { useAnimation } from "@/hooks/useAnimation";
+import { useNowStatus } from "@/hooks/useNowStatus";
 
 const FAQ_LINKS = [
   { anchor: "block-1", titleKey: "learn.block1.title", subKey: "learn.block1.subtitle", emoji: "☀️" },
@@ -59,6 +60,12 @@ export default function ExplorePage() {
     return computeExposureFromCurve(curve, app.skinType, app.areaFraction, app.targetIU, app.age);
   }, [weather, curve, app.skinType, app.areaFraction, app.targetIU, app.age]);
 
+  // For today's date, mirror the dashboard's now-aware status copy in the hero
+  // instead of just "Síntesis posible / Sin vitamina D" (day-level). For other
+  // days the day-level signal is what makes sense.
+  const isToday = doy === dayOfYear(new Date());
+  const todayNowStatus = useNowStatus(lat, lon, tz, timezone, app.skinType, app.areaFraction, app.age, app.targetIU);
+
   const windowLabel = exposure
     ? `${fmtTime(exposure.windowStart)} \u2013 ${fmtTime(exposure.windowEnd)}`
     : null;
@@ -86,6 +93,7 @@ export default function ExplorePage() {
         timezone={timezone}
         doy={doy}
         canSynthesize={exposure !== null}
+        nowStatus={isToday ? todayNowStatus : null}
         cityName={cityName}
         cityFlag={cityFlag}
         hasLocation={app.hasLocation}
