@@ -465,7 +465,12 @@
       },
       "q3": {
         "q": "¿Para qué sirve la luz del amanecer si no produce vitamina D?",
-        "a": "La luz del amanecer tiene un perfil espectral completamente diferente al sol del mediodía: es rica en longitudes de onda roja e infrarroja cercana (600–1.000 nm), con poco UVB y luz azul moderada. Esta luz infrarroja penetra varios centímetros en el tejido y activa el citocromo c oxidasa en las mitocondrias, mejorando la producción de ATP y la energía celular. También elimina la melatonina nocturna de forma más suave que la luz azul de alta intensidad, facilitando la transición al estado de vigilia. Los dispositivos de terapia de luz roja e infrarroja cercana (longitudes de onda 630–850 nm) replican parte de este espectro con fines terapéuticos."
+        "a": "La luz del amanecer tiene un perfil espectral completamente diferente al sol del mediodía: es rica en longitudes de onda roja e infrarroja cercana (600–1.000 nm), con poco UVB y luz azul moderada. Esta luz infrarroja penetra varios centímetros en el tejido y activa el citocromo c oxidasa en las mitocondrias, mejorando la producción de ATP y la energía celular. También elimina la melatonina nocturna de forma más suave que la luz azul de alta intensidad, facilitando la transición al estado de vigilia. Los dispositivos de terapia de luz roja e infrarroja cercana (longitudes de onda 630–850 nm) replican parte de este espectro con fines terapéuticos.",
+        "sources": [
+          { "label": "Karu TI (2010) — Multiple roles of cytochrome c oxidase in mammalian cells under action of red and IR-A radiation. IUBMB Life 62(8):607-610", "url": "https://pubmed.ncbi.nlm.nih.gov/20681024/" },
+          { "label": "Hamblin MR (2017) — Mechanisms and Mitochondrial Redox Signaling in Photobiomodulation. Photochem Photobiol 94(2):199-212", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5844808/" },
+          { "label": "de Freitas LF, Hamblin MR (2016) — Proposed Mechanisms of Photobiomodulation or Low-Level Light Therapy. IEEE J Sel Top Quantum Electron 22(3):7000417", "url": "https://pubmed.ncbi.nlm.nih.gov/28070154/" }
+        ]
       },
       "q4": {
         "q": "¿Hay relación entre el sol y la inmunidad más allá de la vitamina D?",

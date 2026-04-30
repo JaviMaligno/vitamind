@@ -465,7 +465,12 @@
       },
       "q3": {
         "q": "What is dawn light useful for if it doesn't produce vitamin D?",
-        "a": "Dawn light has a completely different spectral profile from midday sun: it is rich in red and near-infrared wavelengths (600–1,000 nm), with little UVB and moderate blue light. This infrared light penetrates several centimetres into tissue and activates cytochrome c oxidase in mitochondria, improving ATP production and cellular energy. It also clears overnight melatonin more gently than high-intensity blue light, easing the transition to wakefulness. Red-light and near-infrared therapy devices (wavelengths 630–850 nm) replicate part of this spectrum for therapeutic use."
+        "a": "Dawn light has a completely different spectral profile from midday sun: it is rich in red and near-infrared wavelengths (600–1,000 nm), with little UVB and moderate blue light. This infrared light penetrates several centimetres into tissue and activates cytochrome c oxidase in mitochondria, improving ATP production and cellular energy. It also clears overnight melatonin more gently than high-intensity blue light, easing the transition to wakefulness. Red-light and near-infrared therapy devices (wavelengths 630–850 nm) replicate part of this spectrum for therapeutic use.",
+        "sources": [
+          { "label": "Karu TI (2010) — Multiple roles of cytochrome c oxidase in mammalian cells under action of red and IR-A radiation. IUBMB Life 62(8):607-610", "url": "https://pubmed.ncbi.nlm.nih.gov/20681024/" },
+          { "label": "Hamblin MR (2017) — Mechanisms and Mitochondrial Redox Signaling in Photobiomodulation. Photochem Photobiol 94(2):199-212", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5844808/" },
+          { "label": "de Freitas LF, Hamblin MR (2016) — Proposed Mechanisms of Photobiomodulation or Low-Level Light Therapy. IEEE J Sel Top Quantum Electron 22(3):7000417", "url": "https://pubmed.ncbi.nlm.nih.gov/28070154/" }
+        ]
       },
       "q4": {
         "q": "Is there a relationship between sun and immunity beyond vitamin D?",

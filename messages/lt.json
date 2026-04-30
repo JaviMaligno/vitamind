@@ -465,7 +465,12 @@
       },
       "q3": {
         "q": "Kam naudinga aušros šviesa, jei ji negamina vitamino D?",
-        "a": "Aušros šviesa turi visiškai kitokį spektrinį profilį nei vidurdienio saulė: ji turtinga raudonų ir artimų infraraudonųjų bangų ilgių (600–1 000 nm), su mažai UVB ir vidutiniškai mėlynos šviesos. Ši infraraudonoji šviesa prasiskverbia kelis centimetrus į audinį ir aktyvuoja citochromą c oksidazę mitochondrijose, gerinant ATP gamybą ir ląstelių energiją. Ji taip pat švelniau išvalo nakties melatoniną nei didelio intensyvumo mėlyna šviesa, palengvindama perėjimą į budrumą. Raudonos šviesos ir artimų infraraudonųjų spindulių terapijos prietaisai (bangų ilgiai 630–850 nm) iš dalies atkartoja šį spektrą terapiniam naudojimui."
+        "a": "Aušros šviesa turi visiškai kitokį spektrinį profilį nei vidurdienio saulė: ji turtinga raudonų ir artimų infraraudonųjų bangų ilgių (600–1 000 nm), su mažai UVB ir vidutiniškai mėlynos šviesos. Ši infraraudonoji šviesa prasiskverbia kelis centimetrus į audinį ir aktyvuoja citochromą c oksidazę mitochondrijose, gerinant ATP gamybą ir ląstelių energiją. Ji taip pat švelniau išvalo nakties melatoniną nei didelio intensyvumo mėlyna šviesa, palengvindama perėjimą į budrumą. Raudonos šviesos ir artimų infraraudonųjų spindulių terapijos prietaisai (bangų ilgiai 630–850 nm) iš dalies atkartoja šį spektrą terapiniam naudojimui.",
+        "sources": [
+          { "label": "Karu TI (2010) — Multiple roles of cytochrome c oxidase in mammalian cells under action of red and IR-A radiation. IUBMB Life 62(8):607-610", "url": "https://pubmed.ncbi.nlm.nih.gov/20681024/" },
+          { "label": "Hamblin MR (2017) — Mechanisms and Mitochondrial Redox Signaling in Photobiomodulation. Photochem Photobiol 94(2):199-212", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5844808/" },
+          { "label": "de Freitas LF, Hamblin MR (2016) — Proposed Mechanisms of Photobiomodulation or Low-Level Light Therapy. IEEE J Sel Top Quantum Electron 22(3):7000417", "url": "https://pubmed.ncbi.nlm.nih.gov/28070154/" }
+        ]
       },
       "q4": {
         "q": "Ar yra ryšys tarp saulės ir imuniteto, nepriklausomai nuo vitamino D?",

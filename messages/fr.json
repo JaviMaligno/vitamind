@@ -465,7 +465,12 @@
       },
       "q3": {
         "q": "À quoi sert la lumière de l'aube si elle ne produit pas de vitamine D ?",
-        "a": "La lumière de l'aube a un profil spectral complètement différent de celui du soleil de midi : elle est riche en longueurs d'onde rouge et proche infrarouge (600–1 000 nm), avec peu d'UVB et une lumière bleue modérée. Cette lumière infrarouge pénètre à plusieurs centimètres dans les tissus et active le cytochrome c oxydase dans les mitochondries, améliorant la production d'ATP et l'énergie cellulaire. Elle élimine également la mélatonine nocturne plus doucement qu'une lumière bleue de haute intensité, facilitant la transition vers l'éveil. Les dispositifs de thérapie par lumière rouge et proche infrarouge (longueurs d'onde 630–850 nm) reproduisent une partie de ce spectre à des fins thérapeutiques."
+        "a": "La lumière de l'aube a un profil spectral complètement différent de celui du soleil de midi : elle est riche en longueurs d'onde rouge et proche infrarouge (600–1 000 nm), avec peu d'UVB et une lumière bleue modérée. Cette lumière infrarouge pénètre à plusieurs centimètres dans les tissus et active le cytochrome c oxydase dans les mitochondries, améliorant la production d'ATP et l'énergie cellulaire. Elle élimine également la mélatonine nocturne plus doucement qu'une lumière bleue de haute intensité, facilitant la transition vers l'éveil. Les dispositifs de thérapie par lumière rouge et proche infrarouge (longueurs d'onde 630–850 nm) reproduisent une partie de ce spectre à des fins thérapeutiques.",
+        "sources": [
+          { "label": "Karu TI (2010) — Multiple roles of cytochrome c oxidase in mammalian cells under action of red and IR-A radiation. IUBMB Life 62(8):607-610", "url": "https://pubmed.ncbi.nlm.nih.gov/20681024/" },
+          { "label": "Hamblin MR (2017) — Mechanisms and Mitochondrial Redox Signaling in Photobiomodulation. Photochem Photobiol 94(2):199-212", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5844808/" },
+          { "label": "de Freitas LF, Hamblin MR (2016) — Proposed Mechanisms of Photobiomodulation or Low-Level Light Therapy. IEEE J Sel Top Quantum Electron 22(3):7000417", "url": "https://pubmed.ncbi.nlm.nih.gov/28070154/" }
+        ]
       },
       "q4": {
         "q": "Existe-t-il un lien entre soleil et immunité au-delà de la vitamine D ?",
