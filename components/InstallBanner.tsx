@@ -15,8 +15,14 @@ export default function InstallBanner() {
   const dismissTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
-    if (isInstalled || isStandalone()) return;
-    if (getInstallBannerSeen()) return;
+    if (isInstalled || isStandalone()) {
+      setShouldRender(false);
+      return;
+    }
+    if (getInstallBannerSeen()) {
+      // Already shown once. Don't auto-show again. (We only set this state on first mount.)
+      return;
+    }
 
     const prefs = loadPreferences();
     if (!prefs.lastCityId || !prefs.skinType) return;
