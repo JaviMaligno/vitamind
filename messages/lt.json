@@ -257,6 +257,7 @@
   "learn": {
     "pageTitle": "Vitaminas D ir Saulė",
     "pageSubtitle": "Mokslu pagrįsti atsakymai į dažnus klausimus",
+    "sourcesLabel": "Šaltiniai",
     "block1": {
       "title": "Saulė ir vitaminas D",
       "subtitle": "Kodėl saulės kampas, UV indeksas ir stiklas yra svarbūs",
@@ -287,6 +288,16 @@
       "q7": {
         "q": "Ar kūno plaukai blokuoja UVB ir mažina vitamino D sintezę?",
         "a": "Taip, bet nedaug. Kūno plaukai veikia kaip fizinė barjeras nuo UVB spinduliuotės. Galvez ir kt. (2015) tyrimas kiekybiškai įvertino „plaukų UV apsaugos faktorių”: reti, ploni kūno plaukai atitinka maždaug SPF 1–3, o labai tankūs, tamsūs terminaliniai plaukai gali siekti SPF 2–4+. Kompiuteriniai modeliai (Goyal ir Raichur, 2020) rodo, kad tipiniai galūnių plaukai gali sumažinti UVB, pasiekiančius odą, 15–30 %. Tačiau joks klinikinis tyrimas tiesiogiai neišmatavo kūno plaukų poveikio 25(OH)D lygiui serume. Pagrindinės mokslinės apžvalgos apie vitamino D fotosintezės veiksnius — įskaitant Neville ir kt. (2021) — kūno plaukų kaip reikšmingo faktoriaus neįtraukia. Praktiškai labiausiai apaugusios sritys (krūtinė, nugara) paprastai būna uždengtos drabužiais, o poveikis dažniausiai atviroms sritims, tokioms kaip dilbiai ir blauzdos, yra mažas (SPF 1–2). Programėlė neįtraukia kūno plaukų koregavimo, nes poveikis yra nereikšmingas palyginti su odos tipu, UV indeksu, eksponuojamu kūno plotu ir amžiumi — ir jau iš dalies atsispindi kūno ploto parametre."
+      },
+      "q8": {
+        "q": "Ar 10 minučių saulės iš eilės yra tas pats, kas 10 × 1 minutė?",
+        "a": "Vitamino D sintezei iš esmės taip — su sąlyga, kad UV indeksas kiekviename atkarpoje yra panašus. Oda integruoja bendrą UVB dozę pagal Bunzeno–Roscoe abipusiškumo dėsnį: fotoreakcija priklauso nuo intensyvumo × laiko sandaugos, o ne nuo to, kaip laikas paskirstytas. In vivo tyrimai patvirtina, kad ekvivalentiškas vitamino D3 padidėjimas pasiekiamas tiek esant didelei spinduliuotei trumpą laiką, tiek mažai — ilgą. Trys svarbūs niuansai. Pirma, sesijos riba: previtaminas D3 pasiekia odos maksimumą maždaug ties trečdaliu minimalios eriteminės dozės (MED), o ties 1 MED sintezė sustoja, nes UVB paverčia previtaminą D3 inertiniais junginiais (liumisteroliu ir tachisteroliu). Jeigu viena ilga sesija peržengia šią ribą, papildomos minutės nebepriduria vitamino D — tik nudegimo rizikos; o dešimt vienos minutės sesijų niekada nepasiekia įsotinimo. Antra, minimalus UVI slenkstis: pastebimas serumo 25-OH-D padidėjimas reikalauja maždaug 18–20 mJ/cm² UVB, t. y. apytiksliai UVI ≥ 3, tad žemiau šios ribos jokia minučių sankaupa nesusintetina reikšmingo vitamino D kiekio. Trečia, terminė kinetika lėta: previtamino D3 virtimo vitaminu D3 pusinis amžius odos temperatūroje yra apie 2,5 val., o procesas baigiasi per ~8 val., todėl per dieną pagamintas vitaminas D toliau formuojasi pasibaigus saulės poveikiui. Praktinė išvada: pakartotinės sub-eriteminės ekspozicijos duoda tą patį vitamino D kiekį su mažesne DNR žala nei viena ilga sesija — būtent tokią schemą rekomenduoja medicininės gairės (Holick 2007; Neville ir kt. apžvalga, JBMR Plus 2021).",
+        "sources": [
+          { "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/" },
+          { "label": "Neville JJ et al. (2021) — Physical Determinants of Vitamin D Photosynthesis: A Review. JBMR Plus 5(1):e10460", "url": "https://academic.oup.com/jbmrplus/article/5/1/e10460/7486276" },
+          { "label": "Young AR et al. (2021) — A revised action spectrum for vitamin D synthesis by suberythemal UV. PNAS 118(40):e2015867118", "url": "https://www.pnas.org/doi/10.1073/pnas.2015867118" },
+          { "label": "Schindl A et al. (2022) — Bunsen-Roscoe reciprocity: Is it still valid? Indian J Ophthalmol", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9672781/" }
+        ]
       }
     },
     "block2": {

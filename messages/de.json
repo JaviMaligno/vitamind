@@ -257,6 +257,7 @@
   "learn": {
     "pageTitle": "Vitamin D & die Sonne",
     "pageSubtitle": "Wissenschaftlich fundierte Antworten auf häufige Fragen",
+    "sourcesLabel": "Quellen",
     "block1": {
       "title": "Die Sonne und Vitamin D",
       "subtitle": "Warum Sonnenwinkel, UV-Index und Glas eine Rolle spielen",
@@ -287,6 +288,16 @@
       "q7": {
         "q": "Blockiert Körperbehaarung UVB und reduziert sie die Vitamin-D-Synthese?",
         "a": "Ja, aber nur geringfügig. Körperbehaarung wirkt als physische Barriere gegen UVB-Strahlung. Die Forschung von Galvez et al. (2015) quantifizierte einen ‚Haar-UV-Schutzfaktor': spärliche, feine Körperbehaarung entspricht etwa LSF 1–3, während sehr dichtes, dunkles Terminalhaar LSF 2–4+ erreichen kann. Computermodelle (Goyal und Raichur, 2020) legen nahe, dass typische Behaarung an den Gliedmaßen die UVB-Strahlung, die die Haut erreicht, um 15–30 % reduzieren kann. Allerdings hat keine klinische Studie den Einfluss der Körperbehaarung auf den 25(OH)D-Serumspiegel direkt gemessen. Die wichtigsten wissenschaftlichen Übersichtsarbeiten zu den Determinanten der Vitamin-D-Photosynthese — darunter Neville et al. (2021) — führen Körperbehaarung nicht als signifikanten Faktor auf. In der Praxis sind die am stärksten behaarten Bereiche (Brust, Rücken) ohnehin meist von Kleidung bedeckt, und der Effekt auf typischerweise freiliegende Bereiche wie Unterarme und Unterschenkel ist gering (LSF 1–2). Die App enthält keine Anpassung für Körperbehaarung, da der Effekt im Vergleich zu Hauttyp, UV-Index, exponierter Körperfläche und Alter gering ist — und bereits teilweise durch den Parameter der Körperfläche erfasst wird."
+      },
+      "q8": {
+        "q": "Sind 10 Minuten Sonne am Stück dasselbe wie 10 × 1 Minute?",
+        "a": "Für die Vitamin-D-Synthese in der Praxis ja — sofern der UV-Index in jedem Abschnitt ähnlich ist. Die Haut integriert die gesamte UVB-Dosis nach dem Reziprozitätsgesetz von Bunsen–Roscoe: Die Photoreaktion hängt vom Produkt aus Intensität × Zeit ab, nicht von der Aufteilung. In-vivo-Studien bestätigen, dass äquivalente Anstiege von Vitamin D3 mit hohen Bestrahlungsstärken über kurze Zeiträume oder mit niedrigen Bestrahlungsstärken über lange Zeiträume erreicht werden. Drei wichtige Einschränkungen. Erstens, die Sättigungsgrenze pro Sitzung: Prävitamin D3 erreicht sein kutanes Maximum bei etwa einem Drittel der minimalen Erythemdosis (MED), und bei 1 MED stoppt die Synthese, weil UVB Prävitamin D3 in inerte Verbindungen (Lumisterin und Tachysterin) umwandelt. Wird diese Grenze in einer einzigen langen Sitzung überschritten, fügen weitere Minuten kein Vitamin D mehr hinzu — nur Verbrennungsrisiko; zehn Ein-Minuten-Sitzungen erreichen die Sättigung dagegen nie. Zweitens, die UVI-Mindestschwelle: ein messbarer Anstieg des Serum-25-OH-D erfordert etwa 18–20 mJ/cm² UVB, was etwa UVI ≥ 3 entspricht, sodass darunter auch das Anhäufen von Minuten zu keiner nennenswerten Vitamin-D-Synthese führt. Drittens, die thermische Kinetik ist langsam: die Umwandlung von Prävitamin D3 in Vitamin D3 hat bei Hauttemperatur eine Halbwertszeit von ~2,5 h und ist nach ~8 h abgeschlossen, sodass das tagsüber gebildete Vitamin D nach Ende der Exposition weiter entsteht. Praktische Schlussfolgerung: Wiederholte suberythemale Expositionen erzeugen dasselbe Vitamin D mit weniger DNA-Schäden als eine einzige lange Sitzung — genau dieses Muster empfehlen die medizinischen Leitlinien (Holick 2007; Übersicht von Neville et al., JBMR Plus 2021).",
+        "sources": [
+          { "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/" },
+          { "label": "Neville JJ et al. (2021) — Physical Determinants of Vitamin D Photosynthesis: A Review. JBMR Plus 5(1):e10460", "url": "https://academic.oup.com/jbmrplus/article/5/1/e10460/7486276" },
+          { "label": "Young AR et al. (2021) — A revised action spectrum for vitamin D synthesis by suberythemal UV. PNAS 118(40):e2015867118", "url": "https://www.pnas.org/doi/10.1073/pnas.2015867118" },
+          { "label": "Schindl A et al. (2022) — Bunsen-Roscoe reciprocity: Is it still valid? Indian J Ophthalmol", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9672781/" }
+        ]
       }
     },
     "block2": {

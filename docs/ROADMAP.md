@@ -116,6 +116,55 @@
 
 ---
 
+## Futuro - Modelo de exposicion refinado (basado en evidencia)
+
+Mejoras al motor de calculo y a la UX derivadas del FAQ "Es lo mismo 10 minutos seguidos al sol que 10 veces 1 minuto?" (learn block1.q8).
+
+El motor actual (lib/vitd.ts) ya implementa MED por tipo Fitzpatrick, modelo saturante exponencial con cap a 1 MED (Holick 1982; de Gruijl 2016) y umbral UVI >= 3. Lo que falta es superficie para el usuario y contabilidad acumulada en tiempo real.
+
+- Contador de exposicion en tiempo real (dose tracker)
+  - Que: integrar UVI(t) x tiempo en una "stopwatch" que muestra IU acumuladas a lo largo del dia mientras el usuario esta al sol.
+  - Dificultad: Media-Alta. Tracking pasivo fiable necesita geolocation activa o sensor de luz ambiente y choca con limites de background en PWA.
+  - Viabilidad: Alta como sesion manual ("iniciar/parar sesion al sol"); Media para tracking pasivo. App nativa lo haria mejor.
+  - Valor: Muy alto. Convierte la app de prediccion en medicion real y la diferencia frente a apps de UV genericas.
+
+- Agregacion diaria multi-sesion con conciencia de cinetica termica
+  - Que: sumar IU producidas en varias sesiones fragmentadas del mismo dia. Cada sesion truncada a maxSessionIU por bout (1/3 MED zona de rendimiento, techo 1 MED). Conversion previtamin D3 -> vitamin D3 con vida media ~2.5 h, completa en ~8 h: justifica ventana de 24 h como horizonte natural.
+  - Dificultad: Baja-Media. Es contabilidad sobre el motor existente; basta persistir sesiones (localStorage / Supabase) y agregar.
+  - Viabilidad: Alta.
+  - Valor: Alto. Refleja el patron real de uso (varias salidas cortas) y refuerza el mensaje cientifico del FAQ q8.
+
+- Barra de progreso MED y alerta de sobreexposicion
+  - Que: mostrar % de MED diario alcanzado en la zona expuesta y avisar antes de aproximarse a 1 MED (riesgo de eritema).
+  - Dificultad: Baja. El dato ya existe en el motor (med = MED[skinType] / uvi); solo falta surfacearlo en UI.
+  - Viabilidad: Alta.
+  - Valor: Alto. Feature de seguridad unica, alineada con el discurso "el sol no intoxica pero si quema".
+
+- Recomendacion adaptativa "objetivo cumplido"
+  - Que: cuando el dose tracker confirma que se ha alcanzado el target diario (p.ej. 1000 IU), cambiar el copy de "necesitas X minutos mas" a "objetivo cubierto, considera sombra/protector".
+  - Dificultad: Baja una vez exista el tracker.
+  - Viabilidad: Alta.
+  - Valor: Medio-Alto. Cierra el bucle prediccion -> medicion -> accion.
+
+- Visualizacion de la curva de saturacion por sesion
+  - Que: en VitDEstimate o en el grafico horario, mostrar la curva saturante con marcadores en 1/3 MED ("rendimientos decrecientes") y 1 MED ("riesgo de quemadura"). El modelo ya se aplica internamente (lib/vitd.ts: minutesForVitD), pero no se ve.
+  - Dificultad: Media. Componente de grafico nuevo o extension de DailyCurve.
+  - Viabilidad: Alta.
+  - Valor: Medio. Educativo, refuerza diferenciacion cientifica de la app.
+
+- Mostrar MED personal junto al selector de piel
+  - Que: render del MED concreto del usuario (p.ej. "Tu DEM a UVI 6 = ~21 min") debajo de SkinSelector. Pequena explicacion de que es la dosis hasta enrojecer y por que importa.
+  - Dificultad: Trivial.
+  - Viabilidad: Alta.
+  - Valor: Medio. Educativo y aumenta confianza en la personalizacion.
+
+Notas:
+- Una version "lite" del tracker como sesion manual ("Pulsa cuando salgas al sol / cuando entres") cubre el 80% del valor con 20% del coste y sin permisos invasivos.
+- Tracking pasivo serio requiere considerar privacidad (geolocation continua) y bateria.
+- La cinetica termica de ~8 h justifica una ventana diaria de 24 h como unidad natural de agregacion.
+
+---
+
 ## Futuro - Funcionalidades adicionales
 
 - Autodeteccion tipo de piel con foto (IA / vision model)

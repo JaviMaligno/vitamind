@@ -257,6 +257,7 @@
   "learn": {
     "pageTitle": "Vitamina D y el Sol",
     "pageSubtitle": "Respuestas científicas a preguntas frecuentes",
+    "sourcesLabel": "Fuentes",
     "block1": {
       "title": "El Sol y la Vitamina D",
       "subtitle": "Por qué importan el ángulo solar, el índice UV y el cristal",
@@ -287,6 +288,16 @@
       "q7": {
         "q": "¿El vello corporal bloquea el UVB y reduce la síntesis de vitamina D?",
         "a": "Sí, pero de forma modesta. El vello corporal actúa como barrera física frente a la radiación UVB. La investigación de Galvez et al. (2015) cuantificó un 'Factor de Protección UV del Cabello': el vello fino y escaso equivale aproximadamente a un SPF 1–3, mientras que el vello terminal muy denso y oscuro puede alcanzar un SPF 2–4+. Modelos computacionales (Goyal y Raichur, 2020) sugieren que el vello típico de las extremidades puede reducir el UVB que llega a la piel entre un 15 y un 30%. Sin embargo, ningún estudio clínico ha medido directamente el impacto del vello corporal en los niveles séricos de 25(OH)D. Las principales revisiones científicas sobre los factores determinantes de la fotosíntesis de vitamina D — incluida Neville et al. (2021) — no incluyen el vello corporal como factor significativo. En la práctica, las zonas con más vello (pecho, espalda) suelen estar cubiertas por ropa, y el efecto en las zonas comúnmente expuestas como antebrazos y piernas es pequeño (rango SPF 1–2). La app no incluye un ajuste por vello corporal porque el efecto es menor comparado con el tipo de piel, el índice UV, el área corporal expuesta y la edad — y ya queda parcialmente reflejado en el parámetro de área corporal."
+      },
+      "q8": {
+        "q": "¿Es lo mismo 10 minutos seguidos al sol que 10 veces 1 minuto?",
+        "a": "Para la vitamina D, en la práctica sí — siempre que el índice UV sea similar en cada tramo. La piel integra la dosis total de UVB según la ley de reciprocidad de Bunsen–Roscoe: la fotorreacción depende del producto intensidad × tiempo, no del reparto. Estudios in vivo confirman que se obtienen aumentos equivalentes de vitamina D3 con irradiancias altas en periodos cortos o irradiancias bajas en periodos largos. Hay tres matices importantes. Primero, el techo por sesión: la previtamina D3 alcanza su máximo cutáneo en torno a un tercio de la Dosis Eritémica Mínima (DEM), y a 1 DEM la síntesis se detiene porque el UVB convierte la previtamina D3 en compuestos inertes (lumisterol y taquisterol). Si una sesión muy larga supera ese techo, los minutos extra no añaden vitamina D, solo aumentan el riesgo de quemadura — mientras que diez sesiones de 1 minuto nunca llegan a saturación. Segundo, el umbral mínimo de UVI: un aumento medible en 25-OH-D sérica requiere alrededor de 18–20 mJ/cm² de UVB, equivalente a UVI ≥ 3, así que por debajo de ese nivel ni acumulando minutos se sintetiza vitamina D significativa. Tercero, la cinética térmica es lenta: la conversión de previtamina D3 a vitamina D3 tiene una vida media de unas 2,5 h a temperatura cutánea y se completa en ~8 h, así que la vitamina D que generas durante el día sigue formándose tras la exposición. Conclusión práctica: las exposiciones repetidas suberitemales producen la misma vitamina D con menos daño en el ADN que una sola sesión larga — por eso las guías médicas (Holick 2007; revisión de Neville et al., JBMR Plus 2021) recomiendan exactamente ese patrón.",
+        "sources": [
+          { "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/" },
+          { "label": "Neville JJ et al. (2021) — Physical Determinants of Vitamin D Photosynthesis: A Review. JBMR Plus 5(1):e10460", "url": "https://academic.oup.com/jbmrplus/article/5/1/e10460/7486276" },
+          { "label": "Young AR et al. (2021) — A revised action spectrum for vitamin D synthesis by suberythemal UV. PNAS 118(40):e2015867118", "url": "https://www.pnas.org/doi/10.1073/pnas.2015867118" },
+          { "label": "Schindl A et al. (2022) — Bunsen-Roscoe reciprocity: Is it still valid? Indian J Ophthalmol", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9672781/" }
+        ]
       }
     },
     "block2": {

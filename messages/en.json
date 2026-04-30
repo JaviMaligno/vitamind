@@ -257,6 +257,7 @@
   "learn": {
     "pageTitle": "Vitamin D & the Sun",
     "pageSubtitle": "Science-backed answers to common questions",
+    "sourcesLabel": "Sources",
     "block1": {
       "title": "The Sun and Vitamin D",
       "subtitle": "Why solar angle, UV index, and glass all matter",
@@ -287,6 +288,16 @@
       "q7": {
         "q": "Does body hair block UVB and reduce vitamin D synthesis?",
         "a": "Yes, but modestly. Body hair acts as a physical barrier to UVB radiation. Research by Galvez et al. (2015) quantified a 'Hair UV Protection Factor': sparse, fine body hair provides the equivalent of roughly SPF 1–3, while very dense, dark terminal hair can reach SPF 2–4+. Computational models (Goyal & Raichur, 2020) suggest that typical limb hair may reduce UVB reaching the skin by 15–30%. However, no clinical study has directly measured the impact of body hair on serum 25(OH)D levels. Major scientific reviews of vitamin D photosynthesis determinants — including Neville et al. (2021) — do not list body hair as a significant factor. In practice, the most heavily haired areas (chest, back) are usually covered by clothing anyway, and the effect on commonly exposed areas like forearms and lower legs is small (SPF 1–2 range). The app does not include a body hair adjustment because the effect is minor compared to skin type, UV index, body area exposed, and age — and is already partially captured by the body area parameter."
+      },
+      "q8": {
+        "q": "Is 10 minutes of sun in one go the same as 10 × 1 minute?",
+        "a": "For vitamin D synthesis, in practice yes — as long as the UV index is similar in each segment. The skin integrates the total UVB dose following the Bunsen–Roscoe reciprocity law: the photoreaction depends on the product of intensity × time, not on how the time is split. In vivo studies confirm that equivalent rises in vitamin D3 are obtained with high irradiances over short periods or low irradiances over long periods. Three important caveats. First, the per-session ceiling: previtamin D3 reaches its cutaneous maximum at around one third of the Minimal Erythemal Dose (MED), and at 1 MED synthesis halts because UVB converts previtamin D3 into inert compounds (lumisterol and tachysterol). If a single long session exceeds that ceiling, extra minutes add no vitamin D, only burn risk — whereas ten 1-minute sessions never approach saturation. Second, the minimum UVI threshold: a measurable rise in serum 25-OH-D requires about 18–20 mJ/cm² of UVB, roughly UVI ≥ 3, so below that level no amount of accumulated minutes produces meaningful vitamin D. Third, thermal kinetics are slow: the conversion of previtamin D3 to vitamin D3 has a half-life of ~2.5 h at skin temperature and completes in ~8 h, so the vitamin D you generate during the day continues forming after exposure ends. Practical takeaway: repeated suberythemal exposures produce the same vitamin D with less DNA damage than a single long session — which is exactly the pattern medical guidelines (Holick 2007; Neville et al. review, JBMR Plus 2021) recommend.",
+        "sources": [
+          { "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/" },
+          { "label": "Neville JJ et al. (2021) — Physical Determinants of Vitamin D Photosynthesis: A Review. JBMR Plus 5(1):e10460", "url": "https://academic.oup.com/jbmrplus/article/5/1/e10460/7486276" },
+          { "label": "Young AR et al. (2021) — A revised action spectrum for vitamin D synthesis by suberythemal UV. PNAS 118(40):e2015867118", "url": "https://www.pnas.org/doi/10.1073/pnas.2015867118" },
+          { "label": "Schindl A et al. (2022) — Bunsen-Roscoe reciprocity: Is it still valid? Indian J Ophthalmol", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9672781/" }
+        ]
       }
     },
     "block2": {

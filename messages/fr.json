@@ -257,6 +257,7 @@
   "learn": {
     "pageTitle": "La Vitamine D & le Soleil",
     "pageSubtitle": "Des réponses scientifiques aux questions courantes",
+    "sourcesLabel": "Sources",
     "block1": {
       "title": "Le Soleil et la Vitamine D",
       "subtitle": "Pourquoi l'angle solaire, l'indice UV et le verre ont tous de l'importance",
@@ -287,6 +288,16 @@
       "q7": {
         "q": "La pilosité corporelle bloque-t-elle les UVB et réduit-elle la synthèse de vitamine D ?",
         "a": "Oui, mais modestement. La pilosité corporelle agit comme une barrière physique contre le rayonnement UVB. Les travaux de Galvez et al. (2015) ont quantifié un « facteur de protection UV du cheveu » : une pilosité fine et clairsemée équivaut à environ SPF 1–3, tandis qu'une pilosité terminale très dense et foncée peut atteindre SPF 2–4+. Des modèles computationnels (Goyal et Raichur, 2020) suggèrent que la pilosité typique des membres peut réduire les UVB atteignant la peau de 15 à 30 %. Cependant, aucune étude clinique n'a directement mesuré l'impact de la pilosité corporelle sur les niveaux sériques de 25(OH)D. Les principales revues scientifiques sur les déterminants de la photosynthèse de vitamine D — dont Neville et al. (2021) — ne mentionnent pas la pilosité comme facteur significatif. En pratique, les zones les plus velues (torse, dos) sont généralement couvertes par les vêtements, et l'effet sur les zones couramment exposées comme les avant-bras et les jambes est faible (SPF 1–2). L'application n'inclut pas d'ajustement pour la pilosité car l'effet est mineur par rapport au type de peau, à l'indice UV, à la surface corporelle exposée et à l'âge — et est déjà partiellement pris en compte par le paramètre de surface corporelle."
+      },
+      "q8": {
+        "q": "10 minutes de soleil d'affilée, est-ce la même chose que 10 × 1 minute ?",
+        "a": "Pour la synthèse de vitamine D, en pratique oui — tant que l'indice UV est similaire dans chaque segment. La peau intègre la dose totale d'UVB selon la loi de réciprocité de Bunsen–Roscoe : la photoréaction dépend du produit intensité × temps, pas de la répartition. Des études in vivo confirment que des augmentations équivalentes de vitamine D3 sont obtenues avec de fortes irradiances sur de courtes périodes ou de faibles irradiances sur de longues périodes. Trois nuances importantes. D'abord, le plafond par séance : la pré-vitamine D3 atteint son maximum cutané à environ un tiers de la Dose Érythémale Minimale (DEM), et à 1 DEM la synthèse s'arrête car les UVB convertissent la pré-vitamine D3 en composés inertes (lumistérol et tachystérol). Si une seule séance longue dépasse ce plafond, les minutes supplémentaires n'ajoutent pas de vitamine D, seulement du risque de brûlure — alors que dix séances d'une minute n'atteignent jamais la saturation. Ensuite, le seuil minimal d'UVI : une élévation mesurable de la 25-OH-D sérique requiert environ 18–20 mJ/cm² d'UVB, soit environ UVI ≥ 3, donc en dessous aucune accumulation de minutes ne produit de vitamine D significative. Enfin, la cinétique thermique est lente : la conversion de pré-vitamine D3 en vitamine D3 a une demi-vie d'environ 2,5 h à température cutanée et s'achève en ~8 h, de sorte que la vitamine D générée pendant la journée continue de se former après la fin de l'exposition. Conclusion pratique : des expositions répétées sub-érythémales produisent la même vitamine D avec moins de dommages à l'ADN qu'une unique séance longue — c'est exactement le schéma recommandé par les guides médicaux (Holick 2007 ; revue de Neville et al., JBMR Plus 2021).",
+        "sources": [
+          { "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/" },
+          { "label": "Neville JJ et al. (2021) — Physical Determinants of Vitamin D Photosynthesis: A Review. JBMR Plus 5(1):e10460", "url": "https://academic.oup.com/jbmrplus/article/5/1/e10460/7486276" },
+          { "label": "Young AR et al. (2021) — A revised action spectrum for vitamin D synthesis by suberythemal UV. PNAS 118(40):e2015867118", "url": "https://www.pnas.org/doi/10.1073/pnas.2015867118" },
+          { "label": "Schindl A et al. (2022) — Bunsen-Roscoe reciprocity: Is it still valid? Indian J Ophthalmol", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9672781/" }
+        ]
       }
     },
     "block2": {
