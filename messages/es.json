@@ -407,7 +407,12 @@
       },
       "q3": {
         "q": "¿Qué papel tiene el magnesio?",
-        "a": "El magnesio es cofactor de las dos enzimas que convierten la vitamina D en sus formas activas (25-OH-D y luego 1,25-OH-D). Sin magnesio suficiente, la D3 suplementada puede no convertirse correctamente, y la suplementación puede reducir aún más los niveles de magnesio, agravando cualquier déficit existente. Se estima que el 50% de la población occidental tiene insuficiencia de magnesio. Buenas fuentes dietéticas: semillas de calabaza, chocolate negro, espinacas, almendras, aguacate. El glicinato o malato de magnesio son bien tolerados si la ingesta dietética es baja."
+        "a": "El magnesio es cofactor de las dos enzimas que convierten la vitamina D en sus formas activas (25-OH-D y luego 1,25-OH-D). Sin magnesio suficiente, la D3 suplementada puede no convertirse correctamente, y la suplementación puede reducir aún más los niveles de magnesio, agravando cualquier déficit existente. Se estima que el 50% de la población occidental tiene insuficiencia de magnesio. Buenas fuentes dietéticas: semillas de calabaza, chocolate negro, espinacas, almendras, aguacate. El glicinato o malato de magnesio son bien tolerados si la ingesta dietética es baja.",
+        "sources": [
+          { "label": "Uwitonze AM, Razzaque MS (2018) — Role of Magnesium in Vitamin D Activation and Function. J Am Osteopath Assoc 118(3):181-189", "url": "https://pubmed.ncbi.nlm.nih.gov/29480918/" },
+          { "label": "Rosanoff A, Weaver CM, Rude RK (2012) — Suboptimal magnesium status in the United States: are the health consequences underestimated? Nutr Rev 70(3):153-164", "url": "https://pubmed.ncbi.nlm.nih.gov/22364157/" },
+          { "label": "NIH Office of Dietary Supplements — Magnesium: Health Professional Fact Sheet", "url": "https://ods.od.nih.gov/factsheets/Magnesium-HealthProfessional/" }
+        ]
       },
       "q4": {
         "q": "¿Por qué hay que tomar la vitamina D con grasa?",

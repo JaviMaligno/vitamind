@@ -407,7 +407,12 @@
       },
       "q3": {
         "q": "Kokį vaidmenį atlieka magnis?",
-        "a": "Magnis yra kofaktorius abiem fermentams, paverčiantiems vitaminą D jo aktyviomis formomis (25-OH-D ir vėliau 1,25-OH-D). Be pakankamai magnio, papildomas D3 gali netinkamai konvertuotis, o papildinimas gali sumažinti magnio lygius, pablogindamas esamą trūkumą. Apytikriai 50% Vakarų gyventojų turi nepakankamą magnio kiekį. Geri maisto šaltiniai: moliūgų sėklos, juodasis šokoladas, špinatai, migdolai, avokadas. Magnio glicinatas arba malatas gerai toleruojami, jei maistinis suvartojimas yra mažas."
+        "a": "Magnis yra kofaktorius abiem fermentams, paverčiantiems vitaminą D jo aktyviomis formomis (25-OH-D ir vėliau 1,25-OH-D). Be pakankamai magnio, papildomas D3 gali netinkamai konvertuotis, o papildinimas gali sumažinti magnio lygius, pablogindamas esamą trūkumą. Apytikriai 50% Vakarų gyventojų turi nepakankamą magnio kiekį. Geri maisto šaltiniai: moliūgų sėklos, juodasis šokoladas, špinatai, migdolai, avokadas. Magnio glicinatas arba malatas gerai toleruojami, jei maistinis suvartojimas yra mažas.",
+        "sources": [
+          { "label": "Uwitonze AM, Razzaque MS (2018) — Role of Magnesium in Vitamin D Activation and Function. J Am Osteopath Assoc 118(3):181-189", "url": "https://pubmed.ncbi.nlm.nih.gov/29480918/" },
+          { "label": "Rosanoff A, Weaver CM, Rude RK (2012) — Suboptimal magnesium status in the United States: are the health consequences underestimated? Nutr Rev 70(3):153-164", "url": "https://pubmed.ncbi.nlm.nih.gov/22364157/" },
+          { "label": "NIH Office of Dietary Supplements — Magnesium: Health Professional Fact Sheet", "url": "https://ods.od.nih.gov/factsheets/Magnesium-HealthProfessional/" }
+        ]
       },
       "q4": {
         "q": "Kodėl vitaminas D turi būti vartojamas su riebalais?",

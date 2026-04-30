@@ -407,7 +407,12 @@
       },
       "q3": {
         "q": "What role does magnesium play?",
-        "a": "Magnesium is a cofactor for both enzymes that convert vitamin D to its active forms (25-OH-D and then 1,25-OH-D). Without sufficient magnesium, supplemental D3 may not convert properly, and supplementation can push magnesium levels lower, worsening any existing deficiency. An estimated 50% of Western populations are magnesium-insufficient. Good dietary sources: pumpkin seeds, dark chocolate, spinach, almonds, avocado. Magnesium glycinate or malate supplements are well tolerated if dietary intake is low."
+        "a": "Magnesium is a cofactor for both enzymes that convert vitamin D to its active forms (25-OH-D and then 1,25-OH-D). Without sufficient magnesium, supplemental D3 may not convert properly, and supplementation can push magnesium levels lower, worsening any existing deficiency. An estimated 50% of Western populations are magnesium-insufficient. Good dietary sources: pumpkin seeds, dark chocolate, spinach, almonds, avocado. Magnesium glycinate or malate supplements are well tolerated if dietary intake is low.",
+        "sources": [
+          { "label": "Uwitonze AM, Razzaque MS (2018) — Role of Magnesium in Vitamin D Activation and Function. J Am Osteopath Assoc 118(3):181-189", "url": "https://pubmed.ncbi.nlm.nih.gov/29480918/" },
+          { "label": "Rosanoff A, Weaver CM, Rude RK (2012) — Suboptimal magnesium status in the United States: are the health consequences underestimated? Nutr Rev 70(3):153-164", "url": "https://pubmed.ncbi.nlm.nih.gov/22364157/" },
+          { "label": "NIH Office of Dietary Supplements — Magnesium: Health Professional Fact Sheet", "url": "https://ods.od.nih.gov/factsheets/Magnesium-HealthProfessional/" }
+        ]
       },
       "q4": {
         "q": "Why must vitamin D be taken with fat?",

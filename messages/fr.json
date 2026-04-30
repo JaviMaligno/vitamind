@@ -407,7 +407,12 @@
       },
       "q3": {
         "q": "Quel rôle joue le magnésium ?",
-        "a": "Le magnésium est un cofacteur des deux enzymes qui convertissent la vitamine D en ses formes actives (25-OH-D puis 1,25-OH-D). Sans un apport suffisant en magnésium, le D3 supplémenté peut ne pas se convertir correctement, et la supplémentation peut faire baisser les taux de magnésium, aggravant toute carence existante. On estime que 50 % des populations occidentales sont en insuffisance magnésique. Bonnes sources alimentaires : graines de courge, chocolat noir, épinards, amandes, avocat. Les suppléments de glycinate ou malate de magnésium sont bien tolérés si l'apport alimentaire est faible."
+        "a": "Le magnésium est un cofacteur des deux enzymes qui convertissent la vitamine D en ses formes actives (25-OH-D puis 1,25-OH-D). Sans un apport suffisant en magnésium, le D3 supplémenté peut ne pas se convertir correctement, et la supplémentation peut faire baisser les taux de magnésium, aggravant toute carence existante. On estime que 50 % des populations occidentales sont en insuffisance magnésique. Bonnes sources alimentaires : graines de courge, chocolat noir, épinards, amandes, avocat. Les suppléments de glycinate ou malate de magnésium sont bien tolérés si l'apport alimentaire est faible.",
+        "sources": [
+          { "label": "Uwitonze AM, Razzaque MS (2018) — Role of Magnesium in Vitamin D Activation and Function. J Am Osteopath Assoc 118(3):181-189", "url": "https://pubmed.ncbi.nlm.nih.gov/29480918/" },
+          { "label": "Rosanoff A, Weaver CM, Rude RK (2012) — Suboptimal magnesium status in the United States: are the health consequences underestimated? Nutr Rev 70(3):153-164", "url": "https://pubmed.ncbi.nlm.nih.gov/22364157/" },
+          { "label": "NIH Office of Dietary Supplements — Magnesium: Health Professional Fact Sheet", "url": "https://ods.od.nih.gov/factsheets/Magnesium-HealthProfessional/" }
+        ]
       },
       "q4": {
         "q": "Pourquoi la vitamine D doit-elle être prise avec des graisses ?",

@@ -407,7 +407,12 @@
       },
       "q3": {
         "q": "Welche Rolle spielt Magnesium?",
-        "a": "Magnesium ist ein Kofaktor beider Enzyme, die Vitamin D in seine aktiven Formen umwandeln (25-OH-D und dann 1,25-OH-D). Ohne ausreichend Magnesium kann supplementiertes D3 möglicherweise nicht richtig umgewandelt werden, und die Supplementierung kann den Magnesiumspiegel weiter senken und einen bestehenden Mangel verschlimmern. Schätzungsweise 50 % der westlichen Bevölkerung haben einen Magnesiummangel. Gute Nahrungsquellen: Kürbiskerne, dunkle Schokolade, Spinat, Mandeln, Avocado. Magnesiumglycinat- oder Malatpräparate werden gut vertragen, wenn die Nahrungsaufnahme gering ist."
+        "a": "Magnesium ist ein Kofaktor beider Enzyme, die Vitamin D in seine aktiven Formen umwandeln (25-OH-D und dann 1,25-OH-D). Ohne ausreichend Magnesium kann supplementiertes D3 möglicherweise nicht richtig umgewandelt werden, und die Supplementierung kann den Magnesiumspiegel weiter senken und einen bestehenden Mangel verschlimmern. Schätzungsweise 50 % der westlichen Bevölkerung haben einen Magnesiummangel. Gute Nahrungsquellen: Kürbiskerne, dunkle Schokolade, Spinat, Mandeln, Avocado. Magnesiumglycinat- oder Malatpräparate werden gut vertragen, wenn die Nahrungsaufnahme gering ist.",
+        "sources": [
+          { "label": "Uwitonze AM, Razzaque MS (2018) — Role of Magnesium in Vitamin D Activation and Function. J Am Osteopath Assoc 118(3):181-189", "url": "https://pubmed.ncbi.nlm.nih.gov/29480918/" },
+          { "label": "Rosanoff A, Weaver CM, Rude RK (2012) — Suboptimal magnesium status in the United States: are the health consequences underestimated? Nutr Rev 70(3):153-164", "url": "https://pubmed.ncbi.nlm.nih.gov/22364157/" },
+          { "label": "NIH Office of Dietary Supplements — Magnesium: Health Professional Fact Sheet", "url": "https://ods.od.nih.gov/factsheets/Magnesium-HealthProfessional/" }
+        ]
       },
       "q4": {
         "q": "Warum muss Vitamin D mit Fett eingenommen werden?",
