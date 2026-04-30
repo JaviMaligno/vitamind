@@ -299,7 +299,12 @@
       },
       "q5": {
         "q": "¿Las nubes anulan el UVB?",
-        "a": "No por completo. Un cielo muy nublado reduce el UVB entre un 70 y un 90%; una nubosidad parcial o fina, entre un 20 y un 50%. Paradójicamente, ciertas formaciones de nubes dispersas pueden reflejar el UV y elevar brevemente el UVB a nivel del suelo por encima de los valores de cielo despejado. La app usa datos UV reales de Open-Meteo cuando están disponibles, por lo que los minutos mostrados ya tienen en cuenta las condiciones nubosas actuales — no es necesario ningún ajuste manual."
+        "a": "No por completo. Un cielo muy nublado reduce el UVB entre un 70 y un 90%; una nubosidad parcial o fina, entre un 20 y un 50%. Paradójicamente, ciertas formaciones de nubes dispersas pueden reflejar el UV y elevar brevemente el UVB a nivel del suelo por encima de los valores de cielo despejado. La app usa datos UV reales de Open-Meteo cuando están disponibles, por lo que los minutos mostrados ya tienen en cuenta las condiciones nubosas actuales — no es necesario ningún ajuste manual.",
+        "sources": [
+          { "label": "Calbó J, Pagès D, González J-A (2005) — Empirical studies of cloud effects on UV radiation: A review. Reviews of Geophysics 43:RG2002", "url": "https://agupubs.onlinelibrary.wiley.com/doi/full/10.1029/2004RG000155" },
+          { "label": "Mims FM III, Frederick JE (1994) — Cumulus clouds and UV-B. Nature 371:291", "url": "https://www.nature.com/articles/371291a0" },
+          { "label": "WHO/WMO/UNEP/ICNIRP (2002) — Global Solar UV Index: A Practical Guide. World Health Organization", "url": "https://www.who.int/publications/i/item/9241590076" }
+        ]
       },
       "q6": {
         "q": "¿Necesito que el sol me dé directamente en la piel?",

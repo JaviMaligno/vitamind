@@ -299,7 +299,12 @@
       },
       "q5": {
         "q": "Ar debesys panaikina UVB?",
-        "a": "Ne visiškai. Tankus debesuotumas sumažina UVB 70–90%; plonas arba pertraukiamas debesuotumas — apie 20–50%. Paradoksalu, kad tam tikros pertraukiamo debesuotumo formacijos išsklaido UV ir trumpam gali padidinti UV lygį žemės paviršiuje aukščiau aiškaus dangaus reikšmių. Programėlė naudoja realiuosius UV duomenis iš Open-Meteo, kai jie pasiekiami, todėl parodytos minutės jau atspindi dabartines debesuotumo sąlygas — rankinis koregavimas nereikalingas."
+        "a": "Ne visiškai. Tankus debesuotumas sumažina UVB 70–90%; plonas arba pertraukiamas debesuotumas — apie 20–50%. Paradoksalu, kad tam tikros pertraukiamo debesuotumo formacijos išsklaido UV ir trumpam gali padidinti UV lygį žemės paviršiuje aukščiau aiškaus dangaus reikšmių. Programėlė naudoja realiuosius UV duomenis iš Open-Meteo, kai jie pasiekiami, todėl parodytos minutės jau atspindi dabartines debesuotumo sąlygas — rankinis koregavimas nereikalingas.",
+        "sources": [
+          { "label": "Calbó J, Pagès D, González J-A (2005) — Empirical studies of cloud effects on UV radiation: A review. Reviews of Geophysics 43:RG2002", "url": "https://agupubs.onlinelibrary.wiley.com/doi/full/10.1029/2004RG000155" },
+          { "label": "Mims FM III, Frederick JE (1994) — Cumulus clouds and UV-B. Nature 371:291", "url": "https://www.nature.com/articles/371291a0" },
+          { "label": "WHO/WMO/UNEP/ICNIRP (2002) — Global Solar UV Index: A Practical Guide. World Health Organization", "url": "https://www.who.int/publications/i/item/9241590076" }
+        ]
       },
       "q6": {
         "q": "Ar man reikia tiesioginės saulės šviesos ant odos?",

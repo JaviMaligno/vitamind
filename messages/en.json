@@ -299,7 +299,12 @@
       },
       "q5": {
         "q": "Do clouds cancel UVB?",
-        "a": "Not completely. Heavy overcast reduces UVB by 70–90%; thin or broken cloud cover by around 20–50%. Paradoxically, certain broken-cloud formations scatter UV and can briefly push ground-level UVB above clear-sky values. The app uses real UV data from Open-Meteo when available, so the minutes shown already account for current cloud conditions — no manual adjustment needed."
+        "a": "Not completely. Heavy overcast reduces UVB by 70–90%; thin or broken cloud cover by around 20–50%. Paradoxically, certain broken-cloud formations scatter UV and can briefly push ground-level UVB above clear-sky values. The app uses real UV data from Open-Meteo when available, so the minutes shown already account for current cloud conditions — no manual adjustment needed.",
+        "sources": [
+          { "label": "Calbó J, Pagès D, González J-A (2005) — Empirical studies of cloud effects on UV radiation: A review. Reviews of Geophysics 43:RG2002", "url": "https://agupubs.onlinelibrary.wiley.com/doi/full/10.1029/2004RG000155" },
+          { "label": "Mims FM III, Frederick JE (1994) — Cumulus clouds and UV-B. Nature 371:291", "url": "https://www.nature.com/articles/371291a0" },
+          { "label": "WHO/WMO/UNEP/ICNIRP (2002) — Global Solar UV Index: A Practical Guide. World Health Organization", "url": "https://www.who.int/publications/i/item/9241590076" }
+        ]
       },
       "q6": {
         "q": "Do I need direct sunlight on my skin?",

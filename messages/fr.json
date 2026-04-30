@@ -299,7 +299,12 @@
       },
       "q5": {
         "q": "Les nuages annulent-ils les UVB ?",
-        "a": "Pas complètement. Un ciel couvert lourd réduit les UVB de 70–90 % ; une couverture nuageuse fine ou fragmentée d'environ 20–50 %. Paradoxalement, certaines formations de nuages fragmentés diffusent les UV et peuvent brièvement pousser les UVB au sol au-dessus des valeurs de ciel dégagé. L'application utilise des données UV réelles d'Open-Meteo lorsqu'elles sont disponibles, de sorte que les minutes affichées tiennent déjà compte des conditions nuageuses actuelles — aucun ajustement manuel n'est nécessaire."
+        "a": "Pas complètement. Un ciel couvert lourd réduit les UVB de 70–90 % ; une couverture nuageuse fine ou fragmentée d'environ 20–50 %. Paradoxalement, certaines formations de nuages fragmentés diffusent les UV et peuvent brièvement pousser les UVB au sol au-dessus des valeurs de ciel dégagé. L'application utilise des données UV réelles d'Open-Meteo lorsqu'elles sont disponibles, de sorte que les minutes affichées tiennent déjà compte des conditions nuageuses actuelles — aucun ajustement manuel n'est nécessaire.",
+        "sources": [
+          { "label": "Calbó J, Pagès D, González J-A (2005) — Empirical studies of cloud effects on UV radiation: A review. Reviews of Geophysics 43:RG2002", "url": "https://agupubs.onlinelibrary.wiley.com/doi/full/10.1029/2004RG000155" },
+          { "label": "Mims FM III, Frederick JE (1994) — Cumulus clouds and UV-B. Nature 371:291", "url": "https://www.nature.com/articles/371291a0" },
+          { "label": "WHO/WMO/UNEP/ICNIRP (2002) — Global Solar UV Index: A Practical Guide. World Health Organization", "url": "https://www.who.int/publications/i/item/9241590076" }
+        ]
       },
       "q6": {
         "q": "Ai-je besoin de soleil direct sur ma peau ?",

@@ -299,7 +299,12 @@
       },
       "q5": {
         "q": "Unterdrücken Wolken UVB vollständig?",
-        "a": "Nicht vollständig. Dichte Bewölkung reduziert UVB um 70–90 %; dünne oder aufgelockerte Bewölkung um etwa 20–50 %. Paradoxerweise können bestimmte aufgelockerte Wolkenformationen UV streuen und die UVB-Intensität am Boden kurzzeitig über den Wert bei klarem Himmel anheben. Die App verwendet bei Verfügbarkeit reale UV-Daten von Open-Meteo, sodass die angezeigten Minuten bereits die aktuellen Wolkenbedingungen berücksichtigen — keine manuelle Anpassung nötig."
+        "a": "Nicht vollständig. Dichte Bewölkung reduziert UVB um 70–90 %; dünne oder aufgelockerte Bewölkung um etwa 20–50 %. Paradoxerweise können bestimmte aufgelockerte Wolkenformationen UV streuen und die UVB-Intensität am Boden kurzzeitig über den Wert bei klarem Himmel anheben. Die App verwendet bei Verfügbarkeit reale UV-Daten von Open-Meteo, sodass die angezeigten Minuten bereits die aktuellen Wolkenbedingungen berücksichtigen — keine manuelle Anpassung nötig.",
+        "sources": [
+          { "label": "Calbó J, Pagès D, González J-A (2005) — Empirical studies of cloud effects on UV radiation: A review. Reviews of Geophysics 43:RG2002", "url": "https://agupubs.onlinelibrary.wiley.com/doi/full/10.1029/2004RG000155" },
+          { "label": "Mims FM III, Frederick JE (1994) — Cumulus clouds and UV-B. Nature 371:291", "url": "https://www.nature.com/articles/371291a0" },
+          { "label": "WHO/WMO/UNEP/ICNIRP (2002) — Global Solar UV Index: A Practical Guide. World Health Organization", "url": "https://www.who.int/publications/i/item/9241590076" }
+        ]
       },
       "q6": {
         "q": "Brauche ich direktes Sonnenlicht auf der Haut?",
