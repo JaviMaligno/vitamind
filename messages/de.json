@@ -367,7 +367,12 @@
       },
       "q4": {
         "q": "D3 oder D2 als Nahrungsergänzung?",
-        "a": "D3 (Cholecalciferol) ist deutlich wirksamer als D2 (Ergocalciferol) bei der Erhöhung und Aufrechterhaltung des 25-OH-D-Blutspiegels — Forschungsergebnisse legen nahe, dass D3 pro IE etwa 2–3-mal potenter ist. D3 ist auch die Form, die deine Haut produziert. D2, das aus pflanzlichen und pilzlichen Quellen gewonnen wird, wird in veganen Nahrungsergänzungsmitteln eingesetzt, schneidet bei äquivalenten Dosen aber schlechter ab als D3. Achte auf dem Etikett auf ‚Cholecalciferol'; veganes D3 aus Flechten ist ebenfalls erhältlich."
+        "a": "D3 (Cholecalciferol) ist deutlich wirksamer als D2 (Ergocalciferol) bei der Erhöhung und Aufrechterhaltung des 25-OH-D-Blutspiegels — Forschungsergebnisse legen nahe, dass D3 pro IE etwa 2–3-mal potenter ist. D3 ist auch die Form, die deine Haut produziert. D2, das aus pflanzlichen und pilzlichen Quellen gewonnen wird, wird in veganen Nahrungsergänzungsmitteln eingesetzt, schneidet bei äquivalenten Dosen aber schlechter ab als D3. Achte auf dem Etikett auf ‚Cholecalciferol'; veganes D3 aus Flechten ist ebenfalls erhältlich.",
+        "sources": [
+          { "label": "Tripkovic L et al. (2012) — Comparison of vitamin D2 and vitamin D3 supplementation in raising serum 25-hydroxyvitamin D status: a systematic review and meta-analysis. Am J Clin Nutr 95(6):1357-1364", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3349454/" },
+          { "label": "Heaney RP, Recker RR, Grote J, Horst RL, Armas LAG (2011) — Vitamin D3 Is More Potent Than Vitamin D2 in Humans. JCEM 96(3):E447-E452", "url": "https://pubmed.ncbi.nlm.nih.gov/21177785/" },
+          { "label": "Holick MF (2007) — Vitamin D Deficiency. NEJM 357:266-281", "url": "https://www.nejm.org/doi/full/10.1056/NEJMra070553" }
+        ]
       },
       "q5": {
         "q": "Welche Blutspiegel von 25-OH-D gelten als optimal?",

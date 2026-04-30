@@ -367,7 +367,12 @@
       },
       "q4": {
         "q": "D3 ou D2 dans les suppléments ?",
-        "a": "Le D3 (cholécalciférol) est significativement plus efficace que le D2 (ergocalciférol) pour augmenter et maintenir les taux sanguins de 25-OH-D — les recherches suggèrent que le D3 est environ 2–3× plus puissant par UI. Le D3 est également la forme produite par votre peau. Le D2, dérivé de sources végétales et fongiques, est utilisé dans les suppléments végétaliens mais moins performant que le D3 à doses équivalentes. Cherchez « cholécalciférol » sur l'étiquette ; le D3 végétalien issu de lichen est également disponible."
+        "a": "Le D3 (cholécalciférol) est significativement plus efficace que le D2 (ergocalciférol) pour augmenter et maintenir les taux sanguins de 25-OH-D — les recherches suggèrent que le D3 est environ 2–3× plus puissant par UI. Le D3 est également la forme produite par votre peau. Le D2, dérivé de sources végétales et fongiques, est utilisé dans les suppléments végétaliens mais moins performant que le D3 à doses équivalentes. Cherchez « cholécalciférol » sur l'étiquette ; le D3 végétalien issu de lichen est également disponible.",
+        "sources": [
+          { "label": "Tripkovic L et al. (2012) — Comparison of vitamin D2 and vitamin D3 supplementation in raising serum 25-hydroxyvitamin D status: a systematic review and meta-analysis. Am J Clin Nutr 95(6):1357-1364", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3349454/" },
+          { "label": "Heaney RP, Recker RR, Grote J, Horst RL, Armas LAG (2011) — Vitamin D3 Is More Potent Than Vitamin D2 in Humans. JCEM 96(3):E447-E452", "url": "https://pubmed.ncbi.nlm.nih.gov/21177785/" },
+          { "label": "Holick MF (2007) — Vitamin D Deficiency. NEJM 357:266-281", "url": "https://www.nejm.org/doi/full/10.1056/NEJMra070553" }
+        ]
       },
       "q5": {
         "q": "Quels taux sanguins de 25-OH-D sont considérés comme optimaux ?",

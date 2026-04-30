@@ -367,7 +367,12 @@
       },
       "q4": {
         "q": "¿D3 o D2 en los suplementos?",
-        "a": "La D3 (colecalciferol) es significativamente más eficaz que la D2 (ergocalciferol) para elevar y mantener los niveles de 25-OH-D en sangre — la investigación sugiere que la D3 es aproximadamente 2–3 veces más potente por UI. La D3 es además la forma que produce tu piel. La D2, derivada de fuentes vegetales y fúngicas, se usa en suplementos veganos pero tiene un rendimiento inferior a la D3 en dosis equivalentes. Busca 'colecalciferol' en la etiqueta; la D3 vegana de liquen también está disponible."
+        "a": "La D3 (colecalciferol) es significativamente más eficaz que la D2 (ergocalciferol) para elevar y mantener los niveles de 25-OH-D en sangre — la investigación sugiere que la D3 es aproximadamente 2–3 veces más potente por UI. La D3 es además la forma que produce tu piel. La D2, derivada de fuentes vegetales y fúngicas, se usa en suplementos veganos pero tiene un rendimiento inferior a la D3 en dosis equivalentes. Busca 'colecalciferol' en la etiqueta; la D3 vegana de liquen también está disponible.",
+        "sources": [
+          { "label": "Tripkovic L et al. (2012) — Comparison of vitamin D2 and vitamin D3 supplementation in raising serum 25-hydroxyvitamin D status: a systematic review and meta-analysis. Am J Clin Nutr 95(6):1357-1364", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3349454/" },
+          { "label": "Heaney RP, Recker RR, Grote J, Horst RL, Armas LAG (2011) — Vitamin D3 Is More Potent Than Vitamin D2 in Humans. JCEM 96(3):E447-E452", "url": "https://pubmed.ncbi.nlm.nih.gov/21177785/" },
+          { "label": "Holick MF (2007) — Vitamin D Deficiency. NEJM 357:266-281", "url": "https://www.nejm.org/doi/full/10.1056/NEJMra070553" }
+        ]
       },
       "q5": {
         "q": "¿Qué niveles de 25-OH-D en sangre se consideran óptimos?",
