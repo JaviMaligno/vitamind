@@ -474,7 +474,12 @@
       },
       "q4": {
         "q": "Gibt es eine Beziehung zwischen Sonne und Immunsystem jenseits von Vitamin D?",
-        "a": "Ja. UV-Exposition moduliert die Immunfunktion unabhängig durch Mechanismen, die von Vitamin D getrennt sind: Sie induziert regulatorische T-Zellen und verändert antigenpräsentierende Zellen auf eine Weise, die Entzündungsreaktionen unterdrückt. Dies ist die Grundlage für die UV-Phototherapie, die klinisch bei Psoriasis, Ekzemen und Vitiligo eingesetzt wird. Einige Forscher verknüpfen diese breitere UV-Immunmodulation mit dem Breitengradgradienten bei der Prävalenz von Autoimmunerkrankungen — Multiple Sklerose, Typ-1-Diabetes und entzündliche Darmerkrankungen sind in höheren Breiten alle deutlich häufiger, ein Muster, das nur teilweise durch den Vitamin-D-Spiegel erklärt wird."
+        "a": "Ja. UV-Exposition moduliert die Immunfunktion unabhängig durch Mechanismen, die von Vitamin D getrennt sind: Sie induziert regulatorische T-Zellen und verändert antigenpräsentierende Zellen auf eine Weise, die Entzündungsreaktionen unterdrückt. Dies ist die Grundlage für die UV-Phototherapie, die klinisch bei Psoriasis, Ekzemen und Vitiligo eingesetzt wird. Einige Forscher verknüpfen diese breitere UV-Immunmodulation mit dem Breitengradgradienten bei der Prävalenz von Autoimmunerkrankungen — Multiple Sklerose, Typ-1-Diabetes und entzündliche Darmerkrankungen sind in höheren Breiten alle deutlich häufiger, ein Muster, das nur teilweise durch den Vitamin-D-Spiegel erklärt wird.",
+        "sources": [
+          { "label": "Hart PH, Gorman S, Finlay-Jones JJ (2011) — Modulation of the immune system by UV radiation: more than just the effects of vitamin D? Nat Rev Immunol 11(9):584-596", "url": "https://www.nature.com/articles/nri3045" },
+          { "label": "Munger KL et al. (2006) — Serum 25-hydroxyvitamin D levels and risk of multiple sclerosis. JAMA 296(23):2832-2838", "url": "https://pubmed.ncbi.nlm.nih.gov/17179460/" },
+          { "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/" }
+        ]
       },
       "q5": {
         "q": "Beeinflusst Sonnenlicht die Stimmung? (Serotonin und Melatonin)",

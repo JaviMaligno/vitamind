@@ -474,7 +474,12 @@
       },
       "q4": {
         "q": "Ar yra ryšys tarp saulės ir imuniteto, nepriklausomai nuo vitamino D?",
-        "a": "Taip. UV poveikis nepriklausomai moduliuoja imuninę funkciją per mechanizmus, atskirtus nuo vitamino D: ji sukelia reguliuojamuosius T ląsteles ir keičia antigeno pristatančias ląsteles taip, kad slopina uždegiminį atsaką. Tai yra UV fototerapijos, kliniškai naudojamos gydant psoriazę, egzemą ir vitiligo, pagrindas. Kai kurie tyrėjai sieja šį platesnį UV imunomoduliavimą su autoimmuninio ligų paplitimo platumos gradientu — išsėtinė sklerozė, 1 tipo cukrinis diabetas ir uždegiminė žarnyno liga yra žymiai dažnesnės aukštesnėse platumose, o tai tik iš dalies paaiškinama vitamino D lygiais."
+        "a": "Taip. UV poveikis nepriklausomai moduliuoja imuninę funkciją per mechanizmus, atskirtus nuo vitamino D: ji sukelia reguliuojamuosius T ląsteles ir keičia antigeno pristatančias ląsteles taip, kad slopina uždegiminį atsaką. Tai yra UV fototerapijos, kliniškai naudojamos gydant psoriazę, egzemą ir vitiligo, pagrindas. Kai kurie tyrėjai sieja šį platesnį UV imunomoduliavimą su autoimmuninio ligų paplitimo platumos gradientu — išsėtinė sklerozė, 1 tipo cukrinis diabetas ir uždegiminė žarnyno liga yra žymiai dažnesnės aukštesnėse platumose, o tai tik iš dalies paaiškinama vitamino D lygiais.",
+        "sources": [
+          { "label": "Hart PH, Gorman S, Finlay-Jones JJ (2011) — Modulation of the immune system by UV radiation: more than just the effects of vitamin D? Nat Rev Immunol 11(9):584-596", "url": "https://www.nature.com/articles/nri3045" },
+          { "label": "Munger KL et al. (2006) — Serum 25-hydroxyvitamin D levels and risk of multiple sclerosis. JAMA 296(23):2832-2838", "url": "https://pubmed.ncbi.nlm.nih.gov/17179460/" },
+          { "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/" }
+        ]
       },
       "q5": {
         "q": "Ar saulės šviesa veikia nuotaiką? (serotoninas ir melatoninas)",

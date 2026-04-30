@@ -474,7 +474,12 @@
       },
       "q4": {
         "q": "Existe-t-il un lien entre soleil et immunité au-delà de la vitamine D ?",
-        "a": "Oui. L'exposition aux UV module indépendamment la fonction immunitaire par des mécanismes distincts de la vitamine D : elle induit des lymphocytes T régulateurs et modifie les cellules présentatrices d'antigènes de manière à supprimer les réponses inflammatoires. C'est la base de la photothérapie UV utilisée cliniquement dans le psoriasis, l'eczéma et le vitiligo. Certains chercheurs relient cette immunomodulation UV plus large au gradient de latitude dans la prévalence des maladies auto-immunes — la sclérose en plaques, le diabète de type 1 et les maladies inflammatoires chroniques de l'intestin sont tous significativement plus fréquents aux latitudes élevées, un schéma seulement partiellement expliqué par les taux de vitamine D."
+        "a": "Oui. L'exposition aux UV module indépendamment la fonction immunitaire par des mécanismes distincts de la vitamine D : elle induit des lymphocytes T régulateurs et modifie les cellules présentatrices d'antigènes de manière à supprimer les réponses inflammatoires. C'est la base de la photothérapie UV utilisée cliniquement dans le psoriasis, l'eczéma et le vitiligo. Certains chercheurs relient cette immunomodulation UV plus large au gradient de latitude dans la prévalence des maladies auto-immunes — la sclérose en plaques, le diabète de type 1 et les maladies inflammatoires chroniques de l'intestin sont tous significativement plus fréquents aux latitudes élevées, un schéma seulement partiellement expliqué par les taux de vitamine D.",
+        "sources": [
+          { "label": "Hart PH, Gorman S, Finlay-Jones JJ (2011) — Modulation of the immune system by UV radiation: more than just the effects of vitamin D? Nat Rev Immunol 11(9):584-596", "url": "https://www.nature.com/articles/nri3045" },
+          { "label": "Munger KL et al. (2006) — Serum 25-hydroxyvitamin D levels and risk of multiple sclerosis. JAMA 296(23):2832-2838", "url": "https://pubmed.ncbi.nlm.nih.gov/17179460/" },
+          { "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/" }
+        ]
       },
       "q5": {
         "q": "La lumière solaire affecte-t-elle l'humeur ? (sérotonine et mélatonine)",

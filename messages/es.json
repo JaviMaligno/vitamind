@@ -474,7 +474,12 @@
       },
       "q4": {
         "q": "¿Hay relación entre el sol y la inmunidad más allá de la vitamina D?",
-        "a": "Sí. La exposición UV modula independientemente la función inmunitaria a través de mecanismos separados de la vitamina D: induce células T reguladoras y altera las células presentadoras de antígenos de forma que suprimen las respuestas inflamatorias. Esta es la base de la fototerapia UV utilizada clínicamente en psoriasis, eccema y vitíligo. Algunos investigadores vinculan esta inmunomodulación UV más amplia con el gradiente latitudinal en la prevalencia de enfermedades autoinmunes — la esclerosis múltiple, la diabetes tipo 1 y la enfermedad inflamatoria intestinal son significativamente más comunes a latitudes altas, un patrón que los niveles de vitamina D solo explican parcialmente."
+        "a": "Sí. La exposición UV modula independientemente la función inmunitaria a través de mecanismos separados de la vitamina D: induce células T reguladoras y altera las células presentadoras de antígenos de forma que suprimen las respuestas inflamatorias. Esta es la base de la fototerapia UV utilizada clínicamente en psoriasis, eccema y vitíligo. Algunos investigadores vinculan esta inmunomodulación UV más amplia con el gradiente latitudinal en la prevalencia de enfermedades autoinmunes — la esclerosis múltiple, la diabetes tipo 1 y la enfermedad inflamatoria intestinal son significativamente más comunes a latitudes altas, un patrón que los niveles de vitamina D solo explican parcialmente.",
+        "sources": [
+          { "label": "Hart PH, Gorman S, Finlay-Jones JJ (2011) — Modulation of the immune system by UV radiation: more than just the effects of vitamin D? Nat Rev Immunol 11(9):584-596", "url": "https://www.nature.com/articles/nri3045" },
+          { "label": "Munger KL et al. (2006) — Serum 25-hydroxyvitamin D levels and risk of multiple sclerosis. JAMA 296(23):2832-2838", "url": "https://pubmed.ncbi.nlm.nih.gov/17179460/" },
+          { "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/" }
+        ]
       },
       "q5": {
         "q": "¿Afecta la luz solar al estado de ánimo? (serotonina y melatonina)",

@@ -474,7 +474,12 @@
       },
       "q4": {
         "q": "Is there a relationship between sun and immunity beyond vitamin D?",
-        "a": "Yes. UV exposure independently modulates immune function through mechanisms separate from vitamin D: it induces regulatory T cells and alters antigen-presenting cells in ways that suppress inflammatory responses. This is the basis for UV phototherapy used clinically in psoriasis, eczema, and vitiligo. Some researchers link this broader UV immunomodulation to the latitude gradient in autoimmune disease prevalence — multiple sclerosis, type 1 diabetes, and inflammatory bowel disease are all significantly more common at higher latitudes, a pattern only partially explained by vitamin D levels."
+        "a": "Yes. UV exposure independently modulates immune function through mechanisms separate from vitamin D: it induces regulatory T cells and alters antigen-presenting cells in ways that suppress inflammatory responses. This is the basis for UV phototherapy used clinically in psoriasis, eczema, and vitiligo. Some researchers link this broader UV immunomodulation to the latitude gradient in autoimmune disease prevalence — multiple sclerosis, type 1 diabetes, and inflammatory bowel disease are all significantly more common at higher latitudes, a pattern only partially explained by vitamin D levels.",
+        "sources": [
+          { "label": "Hart PH, Gorman S, Finlay-Jones JJ (2011) — Modulation of the immune system by UV radiation: more than just the effects of vitamin D? Nat Rev Immunol 11(9):584-596", "url": "https://www.nature.com/articles/nri3045" },
+          { "label": "Munger KL et al. (2006) — Serum 25-hydroxyvitamin D levels and risk of multiple sclerosis. JAMA 296(23):2832-2838", "url": "https://pubmed.ncbi.nlm.nih.gov/17179460/" },
+          { "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/" }
+        ]
       },
       "q5": {
         "q": "Does sunlight affect mood? (serotonin and melatonin)",
