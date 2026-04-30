@@ -290,7 +290,12 @@
       },
       "q4": {
         "q": "What does the UV index mean, and why does the app use 3 as the minimum?",
-        "a": "The UV Index (UVI) is an international standard that measures the erythemally-weighted UV intensity at ground level. It runs from 0 (none) to 11+ (extreme). The app uses UVI ≥ 3 as the synthesis threshold because below that level UVB intensity is too low for meaningful vitamin D production, regardless of how long you stay outside. This threshold is consistent with the research of Holick and colleagues, and corresponds roughly to the sun being more than 30–35° above the horizon."
+        "a": "The UV Index (UVI) is an international standard that measures the erythemally-weighted UV intensity at ground level. It runs from 0 (none) to 11+ (extreme). The app uses UVI ≥ 3 as the synthesis threshold because below that level UVB intensity is too low for meaningful vitamin D production, regardless of how long you stay outside. This threshold is consistent with the research of Holick and colleagues, and corresponds roughly to the sun being more than 30–35° above the horizon.",
+        "sources": [
+          { "label": "WHO/WMO/UNEP/ICNIRP (2002) — Global Solar UV Index: A Practical Guide. World Health Organization", "url": "https://www.who.int/publications/i/item/9241590076" },
+          { "label": "Engelsen O (2010) — The Relationship between Ultraviolet Radiation Exposure and Vitamin D Status. Nutrients 2(5):482-495", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3257661/" },
+          { "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/" }
+        ]
       },
       "q5": {
         "q": "Do clouds cancel UVB?",

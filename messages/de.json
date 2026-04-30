@@ -290,7 +290,12 @@
       },
       "q4": {
         "q": "Was bedeutet der UV-Index, und warum verwendet die App 3 als Mindestwert?",
-        "a": "Der UV-Index (UVI) ist ein internationaler Standard, der die erythemgewichtete UV-Intensität auf Bodenniveau misst. Er reicht von 0 (keine Strahlung) bis 11+ (extrem). Die App verwendet UVI ≥ 3 als Syntheseschwelle, weil unterhalb dieses Wertes die UVB-Intensität für eine nennenswerte Vitamin-D-Produktion zu gering ist — unabhängig davon, wie lange du draußen bleibst. Diese Schwelle stimmt mit den Forschungsergebnissen von Holick und Kollegen überein und entspricht in etwa einer Sonnenhöhe von mehr als 30–35° über dem Horizont."
+        "a": "Der UV-Index (UVI) ist ein internationaler Standard, der die erythemgewichtete UV-Intensität auf Bodenniveau misst. Er reicht von 0 (keine Strahlung) bis 11+ (extrem). Die App verwendet UVI ≥ 3 als Syntheseschwelle, weil unterhalb dieses Wertes die UVB-Intensität für eine nennenswerte Vitamin-D-Produktion zu gering ist — unabhängig davon, wie lange du draußen bleibst. Diese Schwelle stimmt mit den Forschungsergebnissen von Holick und Kollegen überein und entspricht in etwa einer Sonnenhöhe von mehr als 30–35° über dem Horizont.",
+        "sources": [
+          { "label": "WHO/WMO/UNEP/ICNIRP (2002) — Global Solar UV Index: A Practical Guide. World Health Organization", "url": "https://www.who.int/publications/i/item/9241590076" },
+          { "label": "Engelsen O (2010) — The Relationship between Ultraviolet Radiation Exposure and Vitamin D Status. Nutrients 2(5):482-495", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3257661/" },
+          { "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/" }
+        ]
       },
       "q5": {
         "q": "Unterdrücken Wolken UVB vollständig?",
