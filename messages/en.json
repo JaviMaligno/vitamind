@@ -483,7 +483,12 @@
       },
       "q5": {
         "q": "Does sunlight affect mood? (serotonin and melatonin)",
-        "a": "Strongly. Bright light stimulates serotonin synthesis via the raphe nuclei in the brainstem — this mechanism underpins light therapy as a first-line treatment for Seasonal Affective Disorder (SAD). Serotonin is also the precursor to melatonin: adequate daytime serotonin supports better melatonin production at night, improving sleep quality. Separately, high-lux outdoor light triggers dopamine release in the retina, which appears to slow myopia progression in children. Population studies consistently show associations between time outdoors, mood, and sleep quality that extend well beyond vitamin D status."
+        "a": "Strongly. Bright light stimulates serotonin synthesis via the raphe nuclei in the brainstem — this mechanism underpins light therapy as a first-line treatment for Seasonal Affective Disorder (SAD). Serotonin is also the precursor to melatonin: adequate daytime serotonin supports better melatonin production at night, improving sleep quality. Separately, high-lux outdoor light triggers dopamine release in the retina, which appears to slow myopia progression in children. Population studies consistently show associations between time outdoors, mood, and sleep quality that extend well beyond vitamin D status.",
+        "sources": [
+          { "label": "Lambert GW, Reid C, Kaye DM, Jennings GL, Esler MD (2002) — Effect of sunlight and season on serotonin turnover in the brain. Lancet 360(9348):1840-1842", "url": "https://pubmed.ncbi.nlm.nih.gov/12480364/" },
+          { "label": "Golden RN et al. (2005) — The efficacy of light therapy in the treatment of mood disorders: a review and meta-analysis. Am J Psychiatry 162(4):656-662", "url": "https://pubmed.ncbi.nlm.nih.gov/15800134/" },
+          { "label": "Wu PC, Tsai CL, Wu HL, Yang YH, Kuo HK (2013) — Outdoor activity during class recess reduces myopia onset and progression in school children. Ophthalmology 120(5):1080-1085", "url": "https://pubmed.ncbi.nlm.nih.gov/23462271/" }
+        ]
       }
     },
     "backToApp": "Back to the app",

@@ -483,7 +483,12 @@
       },
       "q5": {
         "q": "Ar saulės šviesa veikia nuotaiką? (serotoninas ir melatoninas)",
-        "a": "Stipriai. Ryški šviesa stimuliuoja serotonino sintezę per rafe branduolius smegenų kamiene — šis mechanizmas yra šviesos terapijos, kaip pirmosios eilės gydymo sezoniniu afektiniu sutrikimu (SAD), pagrindas. Serotoninas taip pat yra melatonino pirmtakas: pakankamas dieninis serotoninas palaiko geresnę melatonino gamybą naktį, gerinant miego kokybę. Atskirai didelio apšvietimo lauko šviesa sukelia dopamino išsiskyrimą tinklainėje, kuris, atrodo, sulėtina miopisjos progresavimą vaikams. Populiacijos tyrimai nuosekliai rodo ryšius tarp laiko lauke, nuotaikos ir miego kokybės, gerokai viršijančius vitamino D būklę."
+        "a": "Stipriai. Ryški šviesa stimuliuoja serotonino sintezę per rafe branduolius smegenų kamiene — šis mechanizmas yra šviesos terapijos, kaip pirmosios eilės gydymo sezoniniu afektiniu sutrikimu (SAD), pagrindas. Serotoninas taip pat yra melatonino pirmtakas: pakankamas dieninis serotoninas palaiko geresnę melatonino gamybą naktį, gerinant miego kokybę. Atskirai didelio apšvietimo lauko šviesa sukelia dopamino išsiskyrimą tinklainėje, kuris, atrodo, sulėtina miopisjos progresavimą vaikams. Populiacijos tyrimai nuosekliai rodo ryšius tarp laiko lauke, nuotaikos ir miego kokybės, gerokai viršijančius vitamino D būklę.",
+        "sources": [
+          { "label": "Lambert GW, Reid C, Kaye DM, Jennings GL, Esler MD (2002) — Effect of sunlight and season on serotonin turnover in the brain. Lancet 360(9348):1840-1842", "url": "https://pubmed.ncbi.nlm.nih.gov/12480364/" },
+          { "label": "Golden RN et al. (2005) — The efficacy of light therapy in the treatment of mood disorders: a review and meta-analysis. Am J Psychiatry 162(4):656-662", "url": "https://pubmed.ncbi.nlm.nih.gov/15800134/" },
+          { "label": "Wu PC, Tsai CL, Wu HL, Yang YH, Kuo HK (2013) — Outdoor activity during class recess reduces myopia onset and progression in school children. Ophthalmology 120(5):1080-1085", "url": "https://pubmed.ncbi.nlm.nih.gov/23462271/" }
+        ]
       }
     },
     "backToApp": "Grįžti į programėlę",

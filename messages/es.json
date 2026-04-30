@@ -483,7 +483,12 @@
       },
       "q5": {
         "q": "¿Afecta la luz solar al estado de ánimo? (serotonina y melatonina)",
-        "a": "Claramente. La luz intensa estimula la síntesis de serotonina a través de los núcleos del rafe en el tronco encefálico — este mecanismo sustenta la fototerapia como tratamiento de primera línea para el Trastorno Afectivo Estacional (TAE). La serotonina es también el precursor de la melatonina: una serotonina diurna adecuada favorece una mejor producción de melatonina por la noche, mejorando la calidad del sueño. Por separado, la luz natural de alta luminancia desencadena la liberación de dopamina en la retina, lo que parece frenar la progresión de la miopía en niños. Los estudios poblacionales muestran de forma consistente asociaciones entre el tiempo al aire libre, el estado de ánimo y la calidad del sueño que van mucho más allá del estado de vitamina D."
+        "a": "Claramente. La luz intensa estimula la síntesis de serotonina a través de los núcleos del rafe en el tronco encefálico — este mecanismo sustenta la fototerapia como tratamiento de primera línea para el Trastorno Afectivo Estacional (TAE). La serotonina es también el precursor de la melatonina: una serotonina diurna adecuada favorece una mejor producción de melatonina por la noche, mejorando la calidad del sueño. Por separado, la luz natural de alta luminancia desencadena la liberación de dopamina en la retina, lo que parece frenar la progresión de la miopía en niños. Los estudios poblacionales muestran de forma consistente asociaciones entre el tiempo al aire libre, el estado de ánimo y la calidad del sueño que van mucho más allá del estado de vitamina D.",
+        "sources": [
+          { "label": "Lambert GW, Reid C, Kaye DM, Jennings GL, Esler MD (2002) — Effect of sunlight and season on serotonin turnover in the brain. Lancet 360(9348):1840-1842", "url": "https://pubmed.ncbi.nlm.nih.gov/12480364/" },
+          { "label": "Golden RN et al. (2005) — The efficacy of light therapy in the treatment of mood disorders: a review and meta-analysis. Am J Psychiatry 162(4):656-662", "url": "https://pubmed.ncbi.nlm.nih.gov/15800134/" },
+          { "label": "Wu PC, Tsai CL, Wu HL, Yang YH, Kuo HK (2013) — Outdoor activity during class recess reduces myopia onset and progression in school children. Ophthalmology 120(5):1080-1085", "url": "https://pubmed.ncbi.nlm.nih.gov/23462271/" }
+        ]
       }
     },
     "backToApp": "Volver a la app",

@@ -483,7 +483,12 @@
       },
       "q5": {
         "q": "La lumière solaire affecte-t-elle l'humeur ? (sérotonine et mélatonine)",
-        "a": "Fortement. La lumière vive stimule la synthèse de sérotonine via les noyaux du raphé dans le tronc cérébral — ce mécanisme sous-tend la luminothérapie en tant que traitement de première ligne du Trouble Affectif Saisonnier (TAS). La sérotonine est également le précurseur de la mélatonine : une sérotonine diurne adéquate soutient une meilleure production de mélatonine la nuit, améliorant la qualité du sommeil. Par ailleurs, une lumière extérieure à haute luminosité déclenche la libération de dopamine dans la rétine, ce qui semble ralentir la progression de la myopie chez les enfants. Les études de population montrent systématiquement des associations entre le temps passé à l'extérieur, l'humeur et la qualité du sommeil qui vont bien au-delà du statut en vitamine D."
+        "a": "Fortement. La lumière vive stimule la synthèse de sérotonine via les noyaux du raphé dans le tronc cérébral — ce mécanisme sous-tend la luminothérapie en tant que traitement de première ligne du Trouble Affectif Saisonnier (TAS). La sérotonine est également le précurseur de la mélatonine : une sérotonine diurne adéquate soutient une meilleure production de mélatonine la nuit, améliorant la qualité du sommeil. Par ailleurs, une lumière extérieure à haute luminosité déclenche la libération de dopamine dans la rétine, ce qui semble ralentir la progression de la myopie chez les enfants. Les études de population montrent systématiquement des associations entre le temps passé à l'extérieur, l'humeur et la qualité du sommeil qui vont bien au-delà du statut en vitamine D.",
+        "sources": [
+          { "label": "Lambert GW, Reid C, Kaye DM, Jennings GL, Esler MD (2002) — Effect of sunlight and season on serotonin turnover in the brain. Lancet 360(9348):1840-1842", "url": "https://pubmed.ncbi.nlm.nih.gov/12480364/" },
+          { "label": "Golden RN et al. (2005) — The efficacy of light therapy in the treatment of mood disorders: a review and meta-analysis. Am J Psychiatry 162(4):656-662", "url": "https://pubmed.ncbi.nlm.nih.gov/15800134/" },
+          { "label": "Wu PC, Tsai CL, Wu HL, Yang YH, Kuo HK (2013) — Outdoor activity during class recess reduces myopia onset and progression in school children. Ophthalmology 120(5):1080-1085", "url": "https://pubmed.ncbi.nlm.nih.gov/23462271/" }
+        ]
       }
     },
     "backToApp": "Retour à l'application",
