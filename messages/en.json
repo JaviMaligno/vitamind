@@ -308,7 +308,12 @@
       },
       "q6": {
         "q": "Do I need direct sunlight on my skin?",
-        "a": "Yes. Vitamin D synthesis requires direct UVB exposure on bare skin. Clothing blocks most UVB, even thin fabrics. In the shade — under a tree or awning — diffuse UVB is minimal and insufficient for meaningful synthesis. Sunscreen SPF 30+ reduces synthesis by approximately 95%; the practical recommendation is to go without for the first 10–20 minutes (depending on your skin type) and apply it afterwards if you stay in the sun. Important: for other benefits such as nitric oxide release, circadian rhythm regulation, and serotonin production, direct sun is NOT required — being outdoors on a bright day already helps. But for vitamin D, bare skin exposed to direct sunlight is necessary."
+        "a": "Yes. Vitamin D synthesis requires direct UVB exposure on bare skin. Clothing blocks most UVB, even thin fabrics. In the shade — under a tree or awning — diffuse UVB is minimal and insufficient for meaningful synthesis. Sunscreen SPF 30+ reduces synthesis by approximately 95%; the practical recommendation is to go without for the first 10–20 minutes (depending on your skin type) and apply it afterwards if you stay in the sun. Important: for other benefits such as nitric oxide release, circadian rhythm regulation, and serotonin production, direct sun is NOT required — being outdoors on a bright day already helps. But for vitamin D, bare skin exposed to direct sunlight is necessary.",
+        "sources": [
+          { "label": "Matsuoka LY, Ide L, Wortsman J, MacLaughlin JA, Holick MF (1987) — Sunscreens suppress cutaneous vitamin D3 synthesis. JCEM 64(6):1165-1168", "url": "https://pubmed.ncbi.nlm.nih.gov/3033008/" },
+          { "label": "Matsuoka LY, Wortsman J, Hanifan N, Holick MF (1988) — Chronic sunscreen use decreases circulating concentrations of 25-OH-D. Arch Dermatol 124(12):1802-1804", "url": "https://pubmed.ncbi.nlm.nih.gov/3190255/" },
+          { "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/" }
+        ]
       },
       "q7": {
         "q": "Does body hair block UVB and reduce vitamin D synthesis?",

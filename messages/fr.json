@@ -308,7 +308,12 @@
       },
       "q6": {
         "q": "Ai-je besoin de soleil direct sur ma peau ?",
-        "a": "Oui. La synthèse de vitamine D nécessite une exposition directe aux UVB sur la peau nue. Les vêtements bloquent la majorité des UVB, même les tissus fins. À l'ombre — sous un arbre ou un auvent — les UVB diffus sont minimaux et insuffisants pour une synthèse significative. La crème solaire SPF 30+ réduit la synthèse d'environ 95 % ; la recommandation pratique est de s'exposer les 10 à 20 premières minutes sans protection (selon votre type de peau) puis d'appliquer la crème ensuite. Important : pour d'autres bienfaits comme la libération d'oxyde nitrique, la régulation du rythme circadien et la production de sérotonine, le soleil direct N'EST PAS nécessaire — être à l'extérieur par temps clair suffit. Mais pour la vitamine D, la peau nue exposée au soleil direct est indispensable."
+        "a": "Oui. La synthèse de vitamine D nécessite une exposition directe aux UVB sur la peau nue. Les vêtements bloquent la majorité des UVB, même les tissus fins. À l'ombre — sous un arbre ou un auvent — les UVB diffus sont minimaux et insuffisants pour une synthèse significative. La crème solaire SPF 30+ réduit la synthèse d'environ 95 % ; la recommandation pratique est de s'exposer les 10 à 20 premières minutes sans protection (selon votre type de peau) puis d'appliquer la crème ensuite. Important : pour d'autres bienfaits comme la libération d'oxyde nitrique, la régulation du rythme circadien et la production de sérotonine, le soleil direct N'EST PAS nécessaire — être à l'extérieur par temps clair suffit. Mais pour la vitamine D, la peau nue exposée au soleil direct est indispensable.",
+        "sources": [
+          { "label": "Matsuoka LY, Ide L, Wortsman J, MacLaughlin JA, Holick MF (1987) — Sunscreens suppress cutaneous vitamin D3 synthesis. JCEM 64(6):1165-1168", "url": "https://pubmed.ncbi.nlm.nih.gov/3033008/" },
+          { "label": "Matsuoka LY, Wortsman J, Hanifan N, Holick MF (1988) — Chronic sunscreen use decreases circulating concentrations of 25-OH-D. Arch Dermatol 124(12):1802-1804", "url": "https://pubmed.ncbi.nlm.nih.gov/3190255/" },
+          { "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/" }
+        ]
       },
       "q7": {
         "q": "La pilosité corporelle bloque-t-elle les UVB et réduit-elle la synthèse de vitamine D ?",

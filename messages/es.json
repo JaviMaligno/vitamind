@@ -308,7 +308,12 @@
       },
       "q6": {
         "q": "¿Necesito que el sol me dé directamente en la piel?",
-        "a": "Sí. Para sintetizar vitamina D necesitas exposición directa de UVB sobre la piel descubierta. La ropa bloquea la mayor parte del UVB, incluso las telas finas. En la sombra — bajo un árbol o toldo — el UVB difuso es mínimo e insuficiente para una síntesis significativa. El protector solar SPF 30+ reduce la síntesis aproximadamente un 95%; la recomendación práctica es exponerse los primeros 10–20 minutos sin protector (según tu tipo de piel) y aplicarlo después si sigues al sol. Importante: para otros beneficios como la liberación de óxido nítrico, el ritmo circadiano o la serotonina, no necesitas sol directo — estar al aire libre en un día claro ya aporta. Pero para vitamina D, sí hace falta piel expuesta al sol directo."
+        "a": "Sí. Para sintetizar vitamina D necesitas exposición directa de UVB sobre la piel descubierta. La ropa bloquea la mayor parte del UVB, incluso las telas finas. En la sombra — bajo un árbol o toldo — el UVB difuso es mínimo e insuficiente para una síntesis significativa. El protector solar SPF 30+ reduce la síntesis aproximadamente un 95%; la recomendación práctica es exponerse los primeros 10–20 minutos sin protector (según tu tipo de piel) y aplicarlo después si sigues al sol. Importante: para otros beneficios como la liberación de óxido nítrico, el ritmo circadiano o la serotonina, no necesitas sol directo — estar al aire libre en un día claro ya aporta. Pero para vitamina D, sí hace falta piel expuesta al sol directo.",
+        "sources": [
+          { "label": "Matsuoka LY, Ide L, Wortsman J, MacLaughlin JA, Holick MF (1987) — Sunscreens suppress cutaneous vitamin D3 synthesis. JCEM 64(6):1165-1168", "url": "https://pubmed.ncbi.nlm.nih.gov/3033008/" },
+          { "label": "Matsuoka LY, Wortsman J, Hanifan N, Holick MF (1988) — Chronic sunscreen use decreases circulating concentrations of 25-OH-D. Arch Dermatol 124(12):1802-1804", "url": "https://pubmed.ncbi.nlm.nih.gov/3190255/" },
+          { "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/" }
+        ]
       },
       "q7": {
         "q": "¿El vello corporal bloquea el UVB y reduce la síntesis de vitamina D?",

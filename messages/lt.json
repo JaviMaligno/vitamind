@@ -308,7 +308,12 @@
       },
       "q6": {
         "q": "Ar man reikia tiesioginės saulės šviesos ant odos?",
-        "a": "Taip. Vitamino D sintezei reikalingas tiesioginis UVB poveikis ant nuogos odos. Drabužiai blokuoja didžiąją dalį UVB, net ploni audiniai. Šešėlyje — po medžiu ar markize — difuzinė UVB spinduliuotė yra minimali ir nepakankama reikšmingai sintezei. Kremas nuo saulės su SPF 30+ sumažina sintezę maždaug 95%; praktinis patarimas — pirmąsias 10–20 minučių būti be apsaugos (priklausomai nuo odos tipo), o tada tepti kremą. Svarbu: kitiems naudingams poveikiams, tokiems kaip azoto oksido išskyrimas, cirkadinio ritmo reguliavimas ir serotonino gamyba, tiesioginė saulė NĖRA būtina — buvimas lauke aiškią dieną jau padeda. Tačiau vitaminui D reikalinga nuoga oda tiesioginėje saulės šviesoje."
+        "a": "Taip. Vitamino D sintezei reikalingas tiesioginis UVB poveikis ant nuogos odos. Drabužiai blokuoja didžiąją dalį UVB, net ploni audiniai. Šešėlyje — po medžiu ar markize — difuzinė UVB spinduliuotė yra minimali ir nepakankama reikšmingai sintezei. Kremas nuo saulės su SPF 30+ sumažina sintezę maždaug 95%; praktinis patarimas — pirmąsias 10–20 minučių būti be apsaugos (priklausomai nuo odos tipo), o tada tepti kremą. Svarbu: kitiems naudingams poveikiams, tokiems kaip azoto oksido išskyrimas, cirkadinio ritmo reguliavimas ir serotonino gamyba, tiesioginė saulė NĖRA būtina — buvimas lauke aiškią dieną jau padeda. Tačiau vitaminui D reikalinga nuoga oda tiesioginėje saulės šviesoje.",
+        "sources": [
+          { "label": "Matsuoka LY, Ide L, Wortsman J, MacLaughlin JA, Holick MF (1987) — Sunscreens suppress cutaneous vitamin D3 synthesis. JCEM 64(6):1165-1168", "url": "https://pubmed.ncbi.nlm.nih.gov/3033008/" },
+          { "label": "Matsuoka LY, Wortsman J, Hanifan N, Holick MF (1988) — Chronic sunscreen use decreases circulating concentrations of 25-OH-D. Arch Dermatol 124(12):1802-1804", "url": "https://pubmed.ncbi.nlm.nih.gov/3190255/" },
+          { "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/" }
+        ]
       },
       "q7": {
         "q": "Ar kūno plaukai blokuoja UVB ir mažina vitamino D sintezę?",

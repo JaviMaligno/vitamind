@@ -308,7 +308,12 @@
       },
       "q6": {
         "q": "Brauche ich direktes Sonnenlicht auf der Haut?",
-        "a": "Ja. Für die Vitamin-D-Synthese ist eine direkte UVB-Exposition auf nackter Haut erforderlich. Kleidung blockiert den Großteil der UVB-Strahlung, selbst dünne Stoffe. Im Schatten — unter einem Baum oder einer Markise — ist die diffuse UVB-Strahlung minimal und für eine nennenswerte Synthese unzureichend. Sonnencreme mit LSF 30+ reduziert die Synthese um ca. 95 %; die praktische Empfehlung ist, die ersten 10–20 Minuten ohne Schutz in die Sonne zu gehen (je nach Hauttyp) und danach einzucremen. Wichtig: Für andere Vorteile wie Stickstoffmonoxid-Freisetzung, zirkadianen Rhythmus und Serotoninproduktion ist direktes Sonnenlicht NICHT erforderlich — allein der Aufenthalt im Freien an einem hellen Tag hilft bereits. Für Vitamin D ist jedoch nackte Haut im direkten Sonnenlicht nötig."
+        "a": "Ja. Für die Vitamin-D-Synthese ist eine direkte UVB-Exposition auf nackter Haut erforderlich. Kleidung blockiert den Großteil der UVB-Strahlung, selbst dünne Stoffe. Im Schatten — unter einem Baum oder einer Markise — ist die diffuse UVB-Strahlung minimal und für eine nennenswerte Synthese unzureichend. Sonnencreme mit LSF 30+ reduziert die Synthese um ca. 95 %; die praktische Empfehlung ist, die ersten 10–20 Minuten ohne Schutz in die Sonne zu gehen (je nach Hauttyp) und danach einzucremen. Wichtig: Für andere Vorteile wie Stickstoffmonoxid-Freisetzung, zirkadianen Rhythmus und Serotoninproduktion ist direktes Sonnenlicht NICHT erforderlich — allein der Aufenthalt im Freien an einem hellen Tag hilft bereits. Für Vitamin D ist jedoch nackte Haut im direkten Sonnenlicht nötig.",
+        "sources": [
+          { "label": "Matsuoka LY, Ide L, Wortsman J, MacLaughlin JA, Holick MF (1987) — Sunscreens suppress cutaneous vitamin D3 synthesis. JCEM 64(6):1165-1168", "url": "https://pubmed.ncbi.nlm.nih.gov/3033008/" },
+          { "label": "Matsuoka LY, Wortsman J, Hanifan N, Holick MF (1988) — Chronic sunscreen use decreases circulating concentrations of 25-OH-D. Arch Dermatol 124(12):1802-1804", "url": "https://pubmed.ncbi.nlm.nih.gov/3190255/" },
+          { "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/" }
+        ]
       },
       "q7": {
         "q": "Blockiert Körperbehaarung UVB und reduziert sie die Vitamin-D-Synthese?",
