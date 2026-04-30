@@ -447,7 +447,12 @@
       "subtitle": "Nitric oxide, circadian rhythms, mood, and immunity",
       "q1": {
         "q": "What is nitric oxide and what does it have to do with the sun?",
-        "a": "Nitric oxide (NO) is a signalling molecule that dilates blood vessels, lowers blood pressure, and improves circulation. The skin stores large quantities of nitrite and nitrosothiol compounds that release NO into the bloodstream within minutes of UVA exposure. This is entirely independent of vitamin D synthesis — it happens through glass, in partial shade, and even in winter when UVB is absent. Research by Richard Weller's group at the University of Edinburgh suggests that UVA-driven NO release may explain the well-documented association between sun exposure and reduced cardiovascular mortality, beyond what vitamin D alone can account for."
+        "a": "Nitric oxide (NO) is a signalling molecule that dilates blood vessels, lowers blood pressure, and improves circulation. The skin stores large quantities of nitrite and nitrosothiol compounds that release NO into the bloodstream within minutes of UVA exposure. This is entirely independent of vitamin D synthesis — it happens through glass, in partial shade, and even in winter when UVB is absent. Research by Richard Weller's group at the University of Edinburgh suggests that UVA-driven NO release may explain the well-documented association between sun exposure and reduced cardiovascular mortality, beyond what vitamin D alone can account for.",
+        "sources": [
+          { "label": "Liu D, Fernandez BO, Hamilton A, Lang NN, Gallagher JMC, Newby DE, Feelisch M, Weller RB (2014) — UVA Irradiation of Human Skin Vasodilates Arterial Vasculature and Lowers Blood Pressure Independently of Nitric Oxide Synthase. J Invest Dermatol 134(7):1839-1846", "url": "https://pubmed.ncbi.nlm.nih.gov/24445737/" },
+          { "label": "Lindqvist PG et al. (2016) — Avoidance of sun exposure as a risk factor for major causes of death: a competing risk analysis of the Melanoma in Southern Sweden cohort. J Intern Med 280(4):375-387", "url": "https://pubmed.ncbi.nlm.nih.gov/26992108/" },
+          { "label": "Weller RB (2016) — Sunlight Has Cardiovascular Benefits Independently of Vitamin D. Blood Purif 41(1-3):130-134", "url": "https://karger.com/bpu/article/41/1-3/130/328295/" }
+        ]
       },
       "q2": {
         "q": "How does sunlight affect circadian rhythms?",

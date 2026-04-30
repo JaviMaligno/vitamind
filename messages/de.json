@@ -447,7 +447,12 @@
       "subtitle": "Stickstoffmonoxid, zirkadiane Rhythmen, Stimmung und Immunsystem",
       "q1": {
         "q": "Was ist Stickstoffmonoxid und was hat es mit der Sonne zu tun?",
-        "a": "Stickstoffmonoxid (NO) ist ein Signalmolekül, das Blutgefäße erweitert, den Blutdruck senkt und die Durchblutung verbessert. Die Haut speichert große Mengen an Nitrit- und Nitrosothiolverbindungen, die innerhalb weniger Minuten nach UVA-Exposition NO in den Blutkreislauf freisetzen. Dies ist völlig unabhängig von der Vitamin-D-Synthese — es geschieht durch Glas, im Halbschatten und sogar im Winter, wenn kein UVB vorhanden ist. Forschungen der Gruppe von Richard Weller an der Universität Edinburgh legen nahe, dass die UVA-bedingte NO-Freisetzung die gut dokumentierte Assoziation zwischen Sonnenexposition und reduzierter kardiovaskulärer Sterblichkeit erklären könnte — über das hinaus, was Vitamin D allein erklären kann."
+        "a": "Stickstoffmonoxid (NO) ist ein Signalmolekül, das Blutgefäße erweitert, den Blutdruck senkt und die Durchblutung verbessert. Die Haut speichert große Mengen an Nitrit- und Nitrosothiolverbindungen, die innerhalb weniger Minuten nach UVA-Exposition NO in den Blutkreislauf freisetzen. Dies ist völlig unabhängig von der Vitamin-D-Synthese — es geschieht durch Glas, im Halbschatten und sogar im Winter, wenn kein UVB vorhanden ist. Forschungen der Gruppe von Richard Weller an der Universität Edinburgh legen nahe, dass die UVA-bedingte NO-Freisetzung die gut dokumentierte Assoziation zwischen Sonnenexposition und reduzierter kardiovaskulärer Sterblichkeit erklären könnte — über das hinaus, was Vitamin D allein erklären kann.",
+        "sources": [
+          { "label": "Liu D, Fernandez BO, Hamilton A, Lang NN, Gallagher JMC, Newby DE, Feelisch M, Weller RB (2014) — UVA Irradiation of Human Skin Vasodilates Arterial Vasculature and Lowers Blood Pressure Independently of Nitric Oxide Synthase. J Invest Dermatol 134(7):1839-1846", "url": "https://pubmed.ncbi.nlm.nih.gov/24445737/" },
+          { "label": "Lindqvist PG et al. (2016) — Avoidance of sun exposure as a risk factor for major causes of death: a competing risk analysis of the Melanoma in Southern Sweden cohort. J Intern Med 280(4):375-387", "url": "https://pubmed.ncbi.nlm.nih.gov/26992108/" },
+          { "label": "Weller RB (2016) — Sunlight Has Cardiovascular Benefits Independently of Vitamin D. Blood Purif 41(1-3):130-134", "url": "https://karger.com/bpu/article/41/1-3/130/328295/" }
+        ]
       },
       "q2": {
         "q": "Wie beeinflusst Sonnenlicht den zirkadianen Rhythmus?",

@@ -447,7 +447,12 @@
       "subtitle": "Azoto oksidas, cirkadiniai ritmai, nuotaika ir imunitetas",
       "q1": {
         "q": "Kas yra azoto oksidas ir ką jis turi bendro su saule?",
-        "a": "Azoto oksidas (NO) yra signalinis molekulas, plečiantis kraujagysles, mažinantis kraujospūdį ir gerinantis kraujotaką. Oda kaupia didelius kiekius nitrito ir nitrozotiolio junginių, kurie išleidžia NO į kraują per kelias minutes po UVA poveikio. Tai yra visiškai nepriklausoma nuo vitamino D sintezės — tai vyksta pro stiklą, dalinėje pavėsyje ir net žiemą, kai UVB nėra. Richardo Wellerio grupės Edinburgo universitete tyrimas rodo, kad UVA valdomam NO išskyrimui gali būti paaiškinamas gerai dokumentuotas ryšys tarp saulės poveikio ir sumažėjusio širdies ir kraujagyslių mirštamumo, išeinančio už tai, ką pats vitaminas D gali paaiškinti."
+        "a": "Azoto oksidas (NO) yra signalinis molekulas, plečiantis kraujagysles, mažinantis kraujospūdį ir gerinantis kraujotaką. Oda kaupia didelius kiekius nitrito ir nitrozotiolio junginių, kurie išleidžia NO į kraują per kelias minutes po UVA poveikio. Tai yra visiškai nepriklausoma nuo vitamino D sintezės — tai vyksta pro stiklą, dalinėje pavėsyje ir net žiemą, kai UVB nėra. Richardo Wellerio grupės Edinburgo universitete tyrimas rodo, kad UVA valdomam NO išskyrimui gali būti paaiškinamas gerai dokumentuotas ryšys tarp saulės poveikio ir sumažėjusio širdies ir kraujagyslių mirštamumo, išeinančio už tai, ką pats vitaminas D gali paaiškinti.",
+        "sources": [
+          { "label": "Liu D, Fernandez BO, Hamilton A, Lang NN, Gallagher JMC, Newby DE, Feelisch M, Weller RB (2014) — UVA Irradiation of Human Skin Vasodilates Arterial Vasculature and Lowers Blood Pressure Independently of Nitric Oxide Synthase. J Invest Dermatol 134(7):1839-1846", "url": "https://pubmed.ncbi.nlm.nih.gov/24445737/" },
+          { "label": "Lindqvist PG et al. (2016) — Avoidance of sun exposure as a risk factor for major causes of death: a competing risk analysis of the Melanoma in Southern Sweden cohort. J Intern Med 280(4):375-387", "url": "https://pubmed.ncbi.nlm.nih.gov/26992108/" },
+          { "label": "Weller RB (2016) — Sunlight Has Cardiovascular Benefits Independently of Vitamin D. Blood Purif 41(1-3):130-134", "url": "https://karger.com/bpu/article/41/1-3/130/328295/" }
+        ]
       },
       "q2": {
         "q": "Kaip saulės šviesa veikia cirkadinius ritmus?",

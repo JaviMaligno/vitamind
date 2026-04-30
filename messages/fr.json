@@ -447,7 +447,12 @@
       "subtitle": "Oxyde nitrique, rythmes circadiens, humeur et immunité",
       "q1": {
         "q": "Qu'est-ce que l'oxyde nitrique et quel rapport avec le soleil ?",
-        "a": "L'oxyde nitrique (NO) est une molécule de signalisation qui dilate les vaisseaux sanguins, abaisse la pression artérielle et améliore la circulation. La peau stocke de grandes quantités de composés nitrite et nitrosothiol qui libèrent du NO dans la circulation sanguine en quelques minutes d'exposition aux UVA. Cela est entièrement indépendant de la synthèse de vitamine D — cela se produit à travers le verre, à l'ombre partielle, et même en hiver lorsque les UVB sont absents. Les recherches du groupe de Richard Weller à l'Université d'Édimbourg suggèrent que la libération de NO induite par les UVA pourrait expliquer l'association bien documentée entre l'exposition solaire et la réduction de la mortalité cardiovasculaire, au-delà de ce que la vitamine D seule peut expliquer."
+        "a": "L'oxyde nitrique (NO) est une molécule de signalisation qui dilate les vaisseaux sanguins, abaisse la pression artérielle et améliore la circulation. La peau stocke de grandes quantités de composés nitrite et nitrosothiol qui libèrent du NO dans la circulation sanguine en quelques minutes d'exposition aux UVA. Cela est entièrement indépendant de la synthèse de vitamine D — cela se produit à travers le verre, à l'ombre partielle, et même en hiver lorsque les UVB sont absents. Les recherches du groupe de Richard Weller à l'Université d'Édimbourg suggèrent que la libération de NO induite par les UVA pourrait expliquer l'association bien documentée entre l'exposition solaire et la réduction de la mortalité cardiovasculaire, au-delà de ce que la vitamine D seule peut expliquer.",
+        "sources": [
+          { "label": "Liu D, Fernandez BO, Hamilton A, Lang NN, Gallagher JMC, Newby DE, Feelisch M, Weller RB (2014) — UVA Irradiation of Human Skin Vasodilates Arterial Vasculature and Lowers Blood Pressure Independently of Nitric Oxide Synthase. J Invest Dermatol 134(7):1839-1846", "url": "https://pubmed.ncbi.nlm.nih.gov/24445737/" },
+          { "label": "Lindqvist PG et al. (2016) — Avoidance of sun exposure as a risk factor for major causes of death: a competing risk analysis of the Melanoma in Southern Sweden cohort. J Intern Med 280(4):375-387", "url": "https://pubmed.ncbi.nlm.nih.gov/26992108/" },
+          { "label": "Weller RB (2016) — Sunlight Has Cardiovascular Benefits Independently of Vitamin D. Blood Purif 41(1-3):130-134", "url": "https://karger.com/bpu/article/41/1-3/130/328295/" }
+        ]
       },
       "q2": {
         "q": "Comment la lumière solaire affecte-t-elle les rythmes circadiens ?",

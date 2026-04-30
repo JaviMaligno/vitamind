@@ -447,7 +447,12 @@
       "subtitle": "Óxido nítrico, ritmos circadianos, estado de ánimo e inmunidad",
       "q1": {
         "q": "¿Qué es el óxido nítrico y qué tiene que ver con el sol?",
-        "a": "El óxido nítrico (NO) es una molécula de señalización que dilata los vasos sanguíneos, reduce la presión arterial y mejora la circulación. La piel almacena grandes cantidades de compuestos de nitrito y nitrosotiol que liberan NO al torrente sanguíneo en cuestión de minutos tras la exposición al UVA. Esto es completamente independiente de la síntesis de vitamina D — ocurre a través del cristal, en semisombra e incluso en invierno cuando el UVB está ausente. La investigación del grupo de Richard Weller en la Universidad de Edimburgo sugiere que la liberación de NO mediada por UVA puede explicar la bien documentada asociación entre la exposición solar y la reducción de la mortalidad cardiovascular, más allá de lo que puede explicar la vitamina D por sí sola."
+        "a": "El óxido nítrico (NO) es una molécula de señalización que dilata los vasos sanguíneos, reduce la presión arterial y mejora la circulación. La piel almacena grandes cantidades de compuestos de nitrito y nitrosotiol que liberan NO al torrente sanguíneo en cuestión de minutos tras la exposición al UVA. Esto es completamente independiente de la síntesis de vitamina D — ocurre a través del cristal, en semisombra e incluso en invierno cuando el UVB está ausente. La investigación del grupo de Richard Weller en la Universidad de Edimburgo sugiere que la liberación de NO mediada por UVA puede explicar la bien documentada asociación entre la exposición solar y la reducción de la mortalidad cardiovascular, más allá de lo que puede explicar la vitamina D por sí sola.",
+        "sources": [
+          { "label": "Liu D, Fernandez BO, Hamilton A, Lang NN, Gallagher JMC, Newby DE, Feelisch M, Weller RB (2014) — UVA Irradiation of Human Skin Vasodilates Arterial Vasculature and Lowers Blood Pressure Independently of Nitric Oxide Synthase. J Invest Dermatol 134(7):1839-1846", "url": "https://pubmed.ncbi.nlm.nih.gov/24445737/" },
+          { "label": "Lindqvist PG et al. (2016) — Avoidance of sun exposure as a risk factor for major causes of death: a competing risk analysis of the Melanoma in Southern Sweden cohort. J Intern Med 280(4):375-387", "url": "https://pubmed.ncbi.nlm.nih.gov/26992108/" },
+          { "label": "Weller RB (2016) — Sunlight Has Cardiovascular Benefits Independently of Vitamin D. Blood Purif 41(1-3):130-134", "url": "https://karger.com/bpu/article/41/1-3/130/328295/" }
+        ]
       },
       "q2": {
         "q": "¿Cómo afecta la luz solar a los ritmos circadianos?",
