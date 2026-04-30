@@ -376,7 +376,12 @@
       },
       "q5": {
         "q": "What blood levels of 25-OH-D are considered optimal?",
-        "a": "Standard reference ranges for serum 25-hydroxyvitamin D: below 20 ng/mL (50 nmol/L) is deficient; 20–30 ng/mL is insufficient; 30–50 ng/mL is sufficient. The Endocrine Society considers 40–60 ng/mL optimal for non-skeletal benefits. Above 100 ng/mL (250 nmol/L) carries toxicity risk from supplementation. Most people in northern latitudes test below 20 ng/mL in winter without supplementation — a widespread but easily correctable deficiency."
+        "a": "Standard reference ranges for serum 25-hydroxyvitamin D: below 20 ng/mL (50 nmol/L) is deficient; 20–30 ng/mL is insufficient; 30–50 ng/mL is sufficient. The Endocrine Society considers 40–60 ng/mL optimal for non-skeletal benefits. Above 100 ng/mL (250 nmol/L) carries toxicity risk from supplementation. Most people in northern latitudes test below 20 ng/mL in winter without supplementation — a widespread but easily correctable deficiency.",
+        "sources": [
+          { "label": "Holick MF et al. (2011) — Evaluation, Treatment, and Prevention of Vitamin D Deficiency: an Endocrine Society Clinical Practice Guideline. JCEM 96(7):1911-1930", "url": "https://pubmed.ncbi.nlm.nih.gov/21646368/" },
+          { "label": "Institute of Medicine (2011) — Dietary Reference Intakes for Calcium and Vitamin D. National Academies Press", "url": "https://www.ncbi.nlm.nih.gov/books/NBK56070/" },
+          { "label": "Holick MF (2007) — Vitamin D Deficiency. NEJM 357:266-281", "url": "https://www.nejm.org/doi/full/10.1056/NEJMra070553" }
+        ]
       }
     },
     "block3": {

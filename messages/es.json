@@ -376,7 +376,12 @@
       },
       "q5": {
         "q": "¿Qué niveles de 25-OH-D en sangre se consideran óptimos?",
-        "a": "Rangos de referencia estándar para la 25-hidroxivitamina D sérica: por debajo de 20 ng/mL (50 nmol/L) es deficiencia; 20–30 ng/mL es insuficiencia; 30–50 ng/mL es suficiente. La Sociedad de Endocrinología considera 40–60 ng/mL óptimo para beneficios no esqueléticos. Por encima de 100 ng/mL (250 nmol/L) existe riesgo de toxicidad por suplementación. La mayoría de las personas en latitudes altas tienen niveles por debajo de 20 ng/mL en invierno sin suplementación — una deficiencia generalizada pero fácilmente corregible."
+        "a": "Rangos de referencia estándar para la 25-hidroxivitamina D sérica: por debajo de 20 ng/mL (50 nmol/L) es deficiencia; 20–30 ng/mL es insuficiencia; 30–50 ng/mL es suficiente. La Sociedad de Endocrinología considera 40–60 ng/mL óptimo para beneficios no esqueléticos. Por encima de 100 ng/mL (250 nmol/L) existe riesgo de toxicidad por suplementación. La mayoría de las personas en latitudes altas tienen niveles por debajo de 20 ng/mL en invierno sin suplementación — una deficiencia generalizada pero fácilmente corregible.",
+        "sources": [
+          { "label": "Holick MF et al. (2011) — Evaluation, Treatment, and Prevention of Vitamin D Deficiency: an Endocrine Society Clinical Practice Guideline. JCEM 96(7):1911-1930", "url": "https://pubmed.ncbi.nlm.nih.gov/21646368/" },
+          { "label": "Institute of Medicine (2011) — Dietary Reference Intakes for Calcium and Vitamin D. National Academies Press", "url": "https://www.ncbi.nlm.nih.gov/books/NBK56070/" },
+          { "label": "Holick MF (2007) — Vitamin D Deficiency. NEJM 357:266-281", "url": "https://www.nejm.org/doi/full/10.1056/NEJMra070553" }
+        ]
       }
     },
     "block3": {

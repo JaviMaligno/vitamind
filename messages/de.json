@@ -376,7 +376,12 @@
       },
       "q5": {
         "q": "Welche Blutspiegel von 25-OH-D gelten als optimal?",
-        "a": "Standardreferenzbereiche für den Serumspiegel von 25-Hydroxyvitamin D: Unter 20 ng/ml (50 nmol/l) gilt als Mangel; 20–30 ng/ml als unzureichend; 30–50 ng/ml als ausreichend. Die Endocrine Society hält 40–60 ng/ml für optimal im Hinblick auf nicht-skelettale Vorteile. Über 100 ng/ml (250 nmol/l) besteht durch Supplementierung ein Toxizitätsrisiko. Die meisten Menschen in nördlichen Breiten haben im Winter ohne Supplementierung Werte unter 20 ng/ml — ein weit verbreiteter, aber leicht behebbarer Mangel."
+        "a": "Standardreferenzbereiche für den Serumspiegel von 25-Hydroxyvitamin D: Unter 20 ng/ml (50 nmol/l) gilt als Mangel; 20–30 ng/ml als unzureichend; 30–50 ng/ml als ausreichend. Die Endocrine Society hält 40–60 ng/ml für optimal im Hinblick auf nicht-skelettale Vorteile. Über 100 ng/ml (250 nmol/l) besteht durch Supplementierung ein Toxizitätsrisiko. Die meisten Menschen in nördlichen Breiten haben im Winter ohne Supplementierung Werte unter 20 ng/ml — ein weit verbreiteter, aber leicht behebbarer Mangel.",
+        "sources": [
+          { "label": "Holick MF et al. (2011) — Evaluation, Treatment, and Prevention of Vitamin D Deficiency: an Endocrine Society Clinical Practice Guideline. JCEM 96(7):1911-1930", "url": "https://pubmed.ncbi.nlm.nih.gov/21646368/" },
+          { "label": "Institute of Medicine (2011) — Dietary Reference Intakes for Calcium and Vitamin D. National Academies Press", "url": "https://www.ncbi.nlm.nih.gov/books/NBK56070/" },
+          { "label": "Holick MF (2007) — Vitamin D Deficiency. NEJM 357:266-281", "url": "https://www.nejm.org/doi/full/10.1056/NEJMra070553" }
+        ]
       }
     },
     "block3": {

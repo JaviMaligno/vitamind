@@ -376,7 +376,12 @@
       },
       "q5": {
         "q": "Kokie 25-OH-D kraujo lygiai laikomi optimaliais?",
-        "a": "Standartiniai serumo 25-hidroksi vitamino D atskaitos diapazonai: žemiau 20 ng/mL (50 nmol/L) — trūkumas; 20–30 ng/mL — nepakankamas; 30–50 ng/mL — pakankamas. Endokrininė draugija laiko 40–60 ng/mL optimaliu neskeleto naudai. Virš 100 ng/mL (250 nmol/L) kyla toksikumo rizika nuo papildinimo. Dauguma šiaurės platumų gyventojų žiemą be papildinimo turi žemiau 20 ng/mL — plačiai paplitęs, bet lengvai ištaisomas trūkumas."
+        "a": "Standartiniai serumo 25-hidroksi vitamino D atskaitos diapazonai: žemiau 20 ng/mL (50 nmol/L) — trūkumas; 20–30 ng/mL — nepakankamas; 30–50 ng/mL — pakankamas. Endokrininė draugija laiko 40–60 ng/mL optimaliu neskeleto naudai. Virš 100 ng/mL (250 nmol/L) kyla toksikumo rizika nuo papildinimo. Dauguma šiaurės platumų gyventojų žiemą be papildinimo turi žemiau 20 ng/mL — plačiai paplitęs, bet lengvai ištaisomas trūkumas.",
+        "sources": [
+          { "label": "Holick MF et al. (2011) — Evaluation, Treatment, and Prevention of Vitamin D Deficiency: an Endocrine Society Clinical Practice Guideline. JCEM 96(7):1911-1930", "url": "https://pubmed.ncbi.nlm.nih.gov/21646368/" },
+          { "label": "Institute of Medicine (2011) — Dietary Reference Intakes for Calcium and Vitamin D. National Academies Press", "url": "https://www.ncbi.nlm.nih.gov/books/NBK56070/" },
+          { "label": "Holick MF (2007) — Vitamin D Deficiency. NEJM 357:266-281", "url": "https://www.nejm.org/doi/full/10.1056/NEJMra070553" }
+        ]
       }
     },
     "block3": {
