@@ -281,7 +281,12 @@
       },
       "q3": {
         "q": "Kodėl pro stiklą tai neveikia?",
-        "a": "Standartinis lango stiklas ir automobilio priekinis stiklas blokuoja beveik visą UVB, tuo pačiu praleidžiant didžiąją dalį UVA ir matomą šviesą. Tai reiškia, kad sėdint prie saulėto lango galite įgyti įdegį — UVA praeina pro stiklą — tačiau negalite sintezuoti vitamino D. Tik specialus kvarco stiklas, naudojamas kai kuriuose medicininiuose UV prietaisuose, praleidžia UVB. Praktinė išvada: ta šilta žiemos saulė pro biuro langą jaučiasi maloniai, tačiau jūsų vitamino D lygiui nieko neprideda."
+        "a": "Standartinis lango stiklas ir automobilio priekinis stiklas blokuoja beveik visą UVB, tuo pačiu praleidžiant didžiąją dalį UVA ir matomą šviesą. Tai reiškia, kad sėdint prie saulėto lango galite įgyti įdegį — UVA praeina pro stiklą — tačiau negalite sintezuoti vitamino D. Tik specialus kvarco stiklas, naudojamas kai kuriuose medicininiuose UV prietaisuose, praleidžia UVB. Praktinė išvada: ta šilta žiemos saulė pro biuro langą jaučiasi maloniai, tačiau jūsų vitamino D lygiui nieko neprideda.",
+        "sources": [
+          { "label": "Tuchinda C, Srivannaboon S, Lim HW (2006) — Photoprotection by window glass, automobile glass, and sunglasses. J Am Acad Dermatol 54(5):845-854", "url": "https://pubmed.ncbi.nlm.nih.gov/16635665/" },
+          { "label": "Almutawa F et al. (2013) — Current status of photoprotection by window glass, automobile glass, window films, and sunglasses. Photodermatol Photoimmunol Photomed 29(2):65-72", "url": "https://onlinelibrary.wiley.com/doi/10.1111/phpp.12022" },
+          { "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/" }
+        ]
       },
       "q4": {
         "q": "Ką reiškia UV indeksas ir kodėl programėlė naudoja 3 kaip minimumą?",

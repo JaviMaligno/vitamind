@@ -281,7 +281,12 @@
       },
       "q3": {
         "q": "Pourquoi cela ne fonctionne-t-il pas à travers le verre ?",
-        "a": "Le verre de fenêtre standard et les pare-brise de voiture bloquent presque tous les UVB tout en laissant passer la majorité des UVA et de la lumière visible. Cela signifie que vous pouvez bronzer assis près d'une fenêtre ensoleillée — les UVA passent — mais vous ne pouvez pas synthétiser de vitamine D. Seul le verre de quartz spécial, utilisé dans certains dispositifs médicaux UV, transmet les UVB. L'implication pratique : ce soleil d'hiver chaud à travers votre fenêtre de bureau est agréable mais ne contribue en rien à vos taux de vitamine D."
+        "a": "Le verre de fenêtre standard et les pare-brise de voiture bloquent presque tous les UVB tout en laissant passer la majorité des UVA et de la lumière visible. Cela signifie que vous pouvez bronzer assis près d'une fenêtre ensoleillée — les UVA passent — mais vous ne pouvez pas synthétiser de vitamine D. Seul le verre de quartz spécial, utilisé dans certains dispositifs médicaux UV, transmet les UVB. L'implication pratique : ce soleil d'hiver chaud à travers votre fenêtre de bureau est agréable mais ne contribue en rien à vos taux de vitamine D.",
+        "sources": [
+          { "label": "Tuchinda C, Srivannaboon S, Lim HW (2006) — Photoprotection by window glass, automobile glass, and sunglasses. J Am Acad Dermatol 54(5):845-854", "url": "https://pubmed.ncbi.nlm.nih.gov/16635665/" },
+          { "label": "Almutawa F et al. (2013) — Current status of photoprotection by window glass, automobile glass, window films, and sunglasses. Photodermatol Photoimmunol Photomed 29(2):65-72", "url": "https://onlinelibrary.wiley.com/doi/10.1111/phpp.12022" },
+          { "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/" }
+        ]
       },
       "q4": {
         "q": "Que signifie l'indice UV, et pourquoi l'application utilise-t-elle 3 comme minimum ?",

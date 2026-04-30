@@ -281,7 +281,12 @@
       },
       "q3": {
         "q": "¿Por qué no funciona a través del cristal?",
-        "a": "El vidrio estándar de ventanas y parabrisas bloquea casi todo el UVB mientras deja pasar la mayor parte del UVA y la luz visible. Eso significa que puedes broncearte junto a una ventana soleada — el UVA sí pasa — pero no puedes sintetizar vitamina D. Solo el vidrio de cuarzo especial, usado en algunos equipos médicos de UV, transmite UVB. La conclusión práctica: ese sol cálido de invierno a través de la ventana de la oficina sienta bien, pero no contribuye en nada a tus niveles de vitamina D."
+        "a": "El vidrio estándar de ventanas y parabrisas bloquea casi todo el UVB mientras deja pasar la mayor parte del UVA y la luz visible. Eso significa que puedes broncearte junto a una ventana soleada — el UVA sí pasa — pero no puedes sintetizar vitamina D. Solo el vidrio de cuarzo especial, usado en algunos equipos médicos de UV, transmite UVB. La conclusión práctica: ese sol cálido de invierno a través de la ventana de la oficina sienta bien, pero no contribuye en nada a tus niveles de vitamina D.",
+        "sources": [
+          { "label": "Tuchinda C, Srivannaboon S, Lim HW (2006) — Photoprotection by window glass, automobile glass, and sunglasses. J Am Acad Dermatol 54(5):845-854", "url": "https://pubmed.ncbi.nlm.nih.gov/16635665/" },
+          { "label": "Almutawa F et al. (2013) — Current status of photoprotection by window glass, automobile glass, window films, and sunglasses. Photodermatol Photoimmunol Photomed 29(2):65-72", "url": "https://onlinelibrary.wiley.com/doi/10.1111/phpp.12022" },
+          { "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/" }
+        ]
       },
       "q4": {
         "q": "¿Qué significa el índice UV y por qué la app usa 3 como mínimo?",

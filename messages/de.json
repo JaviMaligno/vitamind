@@ -281,7 +281,12 @@
       },
       "q3": {
         "q": "Warum funktioniert es nicht durch Glas?",
-        "a": "Normales Fensterglas und Windschutzscheiben blockieren fast das gesamte UVB, lassen jedoch den Großteil des UVA und des sichtbaren Lichts durch. Das bedeutet: Du kannst an einem sonnigen Fenster sitzen und bräunen — UVA gelangt hindurch —, aber du kannst kein Vitamin D synthetisieren. Nur spezielles Quarzglas, das in manchen medizinischen UV-Geräten verwendet wird, lässt UVB durch. Die praktische Konsequenz: Die wohlige Wintersonne durch dein Bürofenster tut gut, trägt aber nichts zu deinem Vitamin-D-Spiegel bei."
+        "a": "Normales Fensterglas und Windschutzscheiben blockieren fast das gesamte UVB, lassen jedoch den Großteil des UVA und des sichtbaren Lichts durch. Das bedeutet: Du kannst an einem sonnigen Fenster sitzen und bräunen — UVA gelangt hindurch —, aber du kannst kein Vitamin D synthetisieren. Nur spezielles Quarzglas, das in manchen medizinischen UV-Geräten verwendet wird, lässt UVB durch. Die praktische Konsequenz: Die wohlige Wintersonne durch dein Bürofenster tut gut, trägt aber nichts zu deinem Vitamin-D-Spiegel bei.",
+        "sources": [
+          { "label": "Tuchinda C, Srivannaboon S, Lim HW (2006) — Photoprotection by window glass, automobile glass, and sunglasses. J Am Acad Dermatol 54(5):845-854", "url": "https://pubmed.ncbi.nlm.nih.gov/16635665/" },
+          { "label": "Almutawa F et al. (2013) — Current status of photoprotection by window glass, automobile glass, window films, and sunglasses. Photodermatol Photoimmunol Photomed 29(2):65-72", "url": "https://onlinelibrary.wiley.com/doi/10.1111/phpp.12022" },
+          { "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/" }
+        ]
       },
       "q4": {
         "q": "Was bedeutet der UV-Index, und warum verwendet die App 3 als Mindestwert?",

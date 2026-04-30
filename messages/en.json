@@ -281,7 +281,12 @@
       },
       "q3": {
         "q": "Why doesn't it work through glass?",
-        "a": "Standard window glass and car windshields block nearly all UVB while transmitting most UVA and visible light. This means you can get a tan sitting by a sunny window — UVA passes through — but you cannot synthesise vitamin D. Only special quartz glass, used in some medical UV devices, transmits UVB. The practical implication: that warm winter sun through your office window feels good but contributes nothing to your vitamin D levels."
+        "a": "Standard window glass and car windshields block nearly all UVB while transmitting most UVA and visible light. This means you can get a tan sitting by a sunny window — UVA passes through — but you cannot synthesise vitamin D. Only special quartz glass, used in some medical UV devices, transmits UVB. The practical implication: that warm winter sun through your office window feels good but contributes nothing to your vitamin D levels.",
+        "sources": [
+          { "label": "Tuchinda C, Srivannaboon S, Lim HW (2006) — Photoprotection by window glass, automobile glass, and sunglasses. J Am Acad Dermatol 54(5):845-854", "url": "https://pubmed.ncbi.nlm.nih.gov/16635665/" },
+          { "label": "Almutawa F et al. (2013) — Current status of photoprotection by window glass, automobile glass, window films, and sunglasses. Photodermatol Photoimmunol Photomed 29(2):65-72", "url": "https://onlinelibrary.wiley.com/doi/10.1111/phpp.12022" },
+          { "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/" }
+        ]
       },
       "q4": {
         "q": "What does the UV index mean, and why does the app use 3 as the minimum?",
