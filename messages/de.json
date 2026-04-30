@@ -389,7 +389,12 @@
       "subtitle": "Kofaktoren, Einnahmezeit, Nahrungsquellen und Dosis",
       "q1": {
         "q": "D3 oder D2? Wie viel nehmen?",
-        "a": "Wähle D3 (Cholecalciferol), es sei denn, du lebst vegan — in diesem Fall ist veganes D3 aus Flechten erhältlich. Für die meisten Erwachsenen: 1.000–2.000 IE/Tag bei regelmäßiger Sonnenexposition; 2.000–4.000 IE/Tag bei eingeschränkter Sonnenexposition. Die Obergrenze der Endocrine Society liegt bei 4.000 IE/Tag für Erwachsene aus Nahrungsergänzungsmitteln. Höhere Dosen zur Behebung eines Mangels sind möglich, sollten aber durch Bluttests gesteuert werden. Das Testen von 25-OH-D vor und nach 3 Monaten Supplementierung ist der beste Weg, deine persönlich wirksame Dosis zu finden."
+        "a": "Wähle D3 (Cholecalciferol), es sei denn, du lebst vegan — in diesem Fall ist veganes D3 aus Flechten erhältlich. Für die meisten Erwachsenen: 1.000–2.000 IE/Tag bei regelmäßiger Sonnenexposition; 2.000–4.000 IE/Tag bei eingeschränkter Sonnenexposition. Die Obergrenze der Endocrine Society liegt bei 4.000 IE/Tag für Erwachsene aus Nahrungsergänzungsmitteln. Höhere Dosen zur Behebung eines Mangels sind möglich, sollten aber durch Bluttests gesteuert werden. Das Testen von 25-OH-D vor und nach 3 Monaten Supplementierung ist der beste Weg, deine persönlich wirksame Dosis zu finden.",
+        "sources": [
+          { "label": "Holick MF et al. (2011) — Evaluation, Treatment, and Prevention of Vitamin D Deficiency: an Endocrine Society Clinical Practice Guideline. JCEM 96(7):1911-1930", "url": "https://pubmed.ncbi.nlm.nih.gov/21646368/" },
+          { "label": "Institute of Medicine (2011) — Dietary Reference Intakes for Calcium and Vitamin D. National Academies Press", "url": "https://www.ncbi.nlm.nih.gov/books/NBK56070/" },
+          { "label": "Holick MF (2007) — Vitamin D Deficiency. NEJM 357:266-281", "url": "https://www.nejm.org/doi/full/10.1056/NEJMra070553" }
+        ]
       },
       "q2": {
         "q": "Warum wird K2 zusammen mit D3 empfohlen?",

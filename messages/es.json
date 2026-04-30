@@ -389,7 +389,12 @@
       "subtitle": "Cofactores, momento, fuentes alimentarias y dosis",
       "q1": {
         "q": "¿D3 o D2? ¿Cuánto tomar?",
-        "a": "Elige D3 (colecalciferol) salvo que seas vegano, en cuyo caso está disponible D3 vegana derivada de liquen. Para la mayoría de adultos: 1.000–2.000 UI/día si recibes sol regular; 2.000–4.000 UI/día si tienes exposición solar limitada. El límite máximo tolerable de la Sociedad de Endocrinología es de 4.000 UI/día para adultos en suplementación. Existen dosis más altas para corregir deficiencia, pero deben guiarse por análisis de sangre. Medir la 25-OH-D antes y después de 3 meses de suplementación es la mejor forma de encontrar tu dosis efectiva personal."
+        "a": "Elige D3 (colecalciferol) salvo que seas vegano, en cuyo caso está disponible D3 vegana derivada de liquen. Para la mayoría de adultos: 1.000–2.000 UI/día si recibes sol regular; 2.000–4.000 UI/día si tienes exposición solar limitada. El límite máximo tolerable de la Sociedad de Endocrinología es de 4.000 UI/día para adultos en suplementación. Existen dosis más altas para corregir deficiencia, pero deben guiarse por análisis de sangre. Medir la 25-OH-D antes y después de 3 meses de suplementación es la mejor forma de encontrar tu dosis efectiva personal.",
+        "sources": [
+          { "label": "Holick MF et al. (2011) — Evaluation, Treatment, and Prevention of Vitamin D Deficiency: an Endocrine Society Clinical Practice Guideline. JCEM 96(7):1911-1930", "url": "https://pubmed.ncbi.nlm.nih.gov/21646368/" },
+          { "label": "Institute of Medicine (2011) — Dietary Reference Intakes for Calcium and Vitamin D. National Academies Press", "url": "https://www.ncbi.nlm.nih.gov/books/NBK56070/" },
+          { "label": "Holick MF (2007) — Vitamin D Deficiency. NEJM 357:266-281", "url": "https://www.nejm.org/doi/full/10.1056/NEJMra070553" }
+        ]
       },
       "q2": {
         "q": "¿Por qué se recomienda tomar K2 junto con D3?",

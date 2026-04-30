@@ -389,7 +389,12 @@
       "subtitle": "Cofacteurs, moment de prise, sources alimentaires et posologie",
       "q1": {
         "q": "D3 ou D2 ? Quelle dose prendre ?",
-        "a": "Choisissez le D3 (cholécalciférol), sauf si vous êtes végétalien, auquel cas le D3 végétalien dérivé du lichen est disponible. Pour la plupart des adultes : 1 000–2 000 UI/jour si vous bénéficiez d'une exposition solaire régulière ; 2 000–4 000 UI/jour si votre exposition au soleil est limitée. La limite d'apport supérieure de la Société d'Endocrinologie est de 4 000 UI/jour pour les adultes par voie de supplémentation. Des doses plus élevées pour corriger une carence existent mais doivent être guidées par des analyses sanguines. Tester le 25-OH-D avant et après 3 mois de supplémentation est le meilleur moyen de trouver votre dose efficace personnelle."
+        "a": "Choisissez le D3 (cholécalciférol), sauf si vous êtes végétalien, auquel cas le D3 végétalien dérivé du lichen est disponible. Pour la plupart des adultes : 1 000–2 000 UI/jour si vous bénéficiez d'une exposition solaire régulière ; 2 000–4 000 UI/jour si votre exposition au soleil est limitée. La limite d'apport supérieure de la Société d'Endocrinologie est de 4 000 UI/jour pour les adultes par voie de supplémentation. Des doses plus élevées pour corriger une carence existent mais doivent être guidées par des analyses sanguines. Tester le 25-OH-D avant et après 3 mois de supplémentation est le meilleur moyen de trouver votre dose efficace personnelle.",
+        "sources": [
+          { "label": "Holick MF et al. (2011) — Evaluation, Treatment, and Prevention of Vitamin D Deficiency: an Endocrine Society Clinical Practice Guideline. JCEM 96(7):1911-1930", "url": "https://pubmed.ncbi.nlm.nih.gov/21646368/" },
+          { "label": "Institute of Medicine (2011) — Dietary Reference Intakes for Calcium and Vitamin D. National Academies Press", "url": "https://www.ncbi.nlm.nih.gov/books/NBK56070/" },
+          { "label": "Holick MF (2007) — Vitamin D Deficiency. NEJM 357:266-281", "url": "https://www.nejm.org/doi/full/10.1056/NEJMra070553" }
+        ]
       },
       "q2": {
         "q": "Pourquoi le K2 est-il recommandé avec le D3 ?",

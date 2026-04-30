@@ -389,7 +389,12 @@
       "subtitle": "Cofactors, timing, food sources, and dose",
       "q1": {
         "q": "D3 or D2? How much to take?",
-        "a": "Choose D3 (cholecalciferol) unless you're vegan, in which case lichen-derived vegan D3 is available. For most adults: 1,000–2,000 IU/day if you get regular sun; 2,000–4,000 IU/day if you have limited sun exposure. The Endocrine Society's upper intake limit is 4,000 IU/day for adults from supplements. Higher doses for correcting deficiency exist but should be guided by blood tests. Testing 25-OH-D before and after 3 months of supplementation is the best way to find your personal effective dose."
+        "a": "Choose D3 (cholecalciferol) unless you're vegan, in which case lichen-derived vegan D3 is available. For most adults: 1,000–2,000 IU/day if you get regular sun; 2,000–4,000 IU/day if you have limited sun exposure. The Endocrine Society's upper intake limit is 4,000 IU/day for adults from supplements. Higher doses for correcting deficiency exist but should be guided by blood tests. Testing 25-OH-D before and after 3 months of supplementation is the best way to find your personal effective dose.",
+        "sources": [
+          { "label": "Holick MF et al. (2011) — Evaluation, Treatment, and Prevention of Vitamin D Deficiency: an Endocrine Society Clinical Practice Guideline. JCEM 96(7):1911-1930", "url": "https://pubmed.ncbi.nlm.nih.gov/21646368/" },
+          { "label": "Institute of Medicine (2011) — Dietary Reference Intakes for Calcium and Vitamin D. National Academies Press", "url": "https://www.ncbi.nlm.nih.gov/books/NBK56070/" },
+          { "label": "Holick MF (2007) — Vitamin D Deficiency. NEJM 357:266-281", "url": "https://www.nejm.org/doi/full/10.1056/NEJMra070553" }
+        ]
       },
       "q2": {
         "q": "Why is K2 recommended alongside D3?",
