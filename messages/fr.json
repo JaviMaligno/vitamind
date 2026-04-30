@@ -349,7 +349,12 @@
       },
       "q2": {
         "q": "Peut-on faire une overdose de soleil ?",
-        "a": "Non. La synthèse solaire est autorégulée. Une fois que la pré-vitamine D3 s'accumule dans la peau, les UVB continus la convertissent en composés inertes — le lumistérol et le tachystérol — plutôt que de permettre une accumulation supplémentaire. Ce plafond de photodégradation signifie que votre corps ne produit jamais de niveaux toxiques par l'exposition solaire, quelle que soit la durée passée à l'extérieur. C'est pourquoi la limite supérieure d'apport tolérable de l'IOM de 4 000 UI/jour s'applique spécifiquement à la supplémentation orale, et non à l'exposition solaire."
+        "a": "Non. La synthèse solaire est autorégulée. Une fois que la pré-vitamine D3 s'accumule dans la peau, les UVB continus la convertissent en composés inertes — le lumistérol et le tachystérol — plutôt que de permettre une accumulation supplémentaire. Ce plafond de photodégradation signifie que votre corps ne produit jamais de niveaux toxiques par l'exposition solaire, quelle que soit la durée passée à l'extérieur. C'est pourquoi la limite supérieure d'apport tolérable de l'IOM de 4 000 UI/jour s'applique spécifiquement à la supplémentation orale, et non à l'exposition solaire.",
+        "sources": [
+          { "label": "Holick MF, MacLaughlin JA, Doppelt SH (1981) — Regulation of Cutaneous Previtamin D3 Photosynthesis in Man. Science 211(4482):590-593", "url": "https://pubmed.ncbi.nlm.nih.gov/6256855/" },
+          { "label": "Institute of Medicine (2011) — Dietary Reference Intakes for Calcium and Vitamin D. National Academies Press", "url": "https://www.ncbi.nlm.nih.gov/books/NBK56070/" },
+          { "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/" }
+        ]
       },
       "q3": {
         "q": "Le soleil est-il meilleur que la supplémentation ?",

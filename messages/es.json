@@ -349,7 +349,12 @@
       },
       "q2": {
         "q": "¿Puedo intoxicarme con el sol?",
-        "a": "No. La síntesis solar es autolimitante. Una vez que la pre-vitamina D3 se acumula en la piel, el UVB continuo la convierte en compuestos inertes — lumisterol y taquisterol — en lugar de permitir más acumulación. Este techo de fotodegradación significa que tu cuerpo nunca produce niveles tóxicos por exposición solar, sin importar cuánto tiempo pases al aire libre. Por eso el Nivel Máximo Tolerable de Ingesta de la IOM de 4.000 UI/día se aplica específicamente a la suplementación oral, no a la luz solar."
+        "a": "No. La síntesis solar es autolimitante. Una vez que la pre-vitamina D3 se acumula en la piel, el UVB continuo la convierte en compuestos inertes — lumisterol y taquisterol — en lugar de permitir más acumulación. Este techo de fotodegradación significa que tu cuerpo nunca produce niveles tóxicos por exposición solar, sin importar cuánto tiempo pases al aire libre. Por eso el Nivel Máximo Tolerable de Ingesta de la IOM de 4.000 UI/día se aplica específicamente a la suplementación oral, no a la luz solar.",
+        "sources": [
+          { "label": "Holick MF, MacLaughlin JA, Doppelt SH (1981) — Regulation of Cutaneous Previtamin D3 Photosynthesis in Man. Science 211(4482):590-593", "url": "https://pubmed.ncbi.nlm.nih.gov/6256855/" },
+          { "label": "Institute of Medicine (2011) — Dietary Reference Intakes for Calcium and Vitamin D. National Academies Press", "url": "https://www.ncbi.nlm.nih.gov/books/NBK56070/" },
+          { "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/" }
+        ]
       },
       "q3": {
         "q": "¿Es mejor el sol que suplementar?",

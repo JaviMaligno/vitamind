@@ -349,7 +349,12 @@
       },
       "q2": {
         "q": "Can I overdose from the sun?",
-        "a": "No. Solar synthesis is self-limiting. Once pre-vitamin D3 accumulates in the skin, continued UVB converts it into inert compounds — lumisterol and tachysterol — rather than allowing further build-up. This photodegradation ceiling means your body never produces toxic levels from sun exposure, no matter how long you stay outside. This is why the IOM Tolerable Upper Intake Level of 4,000 IU/day applies specifically to oral supplementation, not to sunlight."
+        "a": "No. Solar synthesis is self-limiting. Once pre-vitamin D3 accumulates in the skin, continued UVB converts it into inert compounds — lumisterol and tachysterol — rather than allowing further build-up. This photodegradation ceiling means your body never produces toxic levels from sun exposure, no matter how long you stay outside. This is why the IOM Tolerable Upper Intake Level of 4,000 IU/day applies specifically to oral supplementation, not to sunlight.",
+        "sources": [
+          { "label": "Holick MF, MacLaughlin JA, Doppelt SH (1981) — Regulation of Cutaneous Previtamin D3 Photosynthesis in Man. Science 211(4482):590-593", "url": "https://pubmed.ncbi.nlm.nih.gov/6256855/" },
+          { "label": "Institute of Medicine (2011) — Dietary Reference Intakes for Calcium and Vitamin D. National Academies Press", "url": "https://www.ncbi.nlm.nih.gov/books/NBK56070/" },
+          { "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/" }
+        ]
       },
       "q3": {
         "q": "Is the sun better than supplementing?",

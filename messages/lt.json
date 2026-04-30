@@ -349,7 +349,12 @@
       },
       "q2": {
         "q": "Ar galiu persidozuoti vitamino D nuo saulės?",
-        "a": "Ne. Saulės sintezė yra savaime ribojama. Kai pre-vitaminas D3 kaupiasi odoje, tęsiamas UVB jį paverčia inertiniais junginiais — lumisterolio ir tachysterolio — vietoj tolesnio kaupimosi. Šis natūralus irimo procesas reiškia, kad jūsų kūnas niekada nepagamina toksinių kiekių nuo saulės poveikio, nesvarbu, kiek laiko praleidžiate lauke. Štai kodėl IOM toleruojamas viršutinis suvartojimo lygis 4 000 TV per dieną taikomas konkrečiai geriamajam papildinimui, o ne saulės šviesai."
+        "a": "Ne. Saulės sintezė yra savaime ribojama. Kai pre-vitaminas D3 kaupiasi odoje, tęsiamas UVB jį paverčia inertiniais junginiais — lumisterolio ir tachysterolio — vietoj tolesnio kaupimosi. Šis natūralus irimo procesas reiškia, kad jūsų kūnas niekada nepagamina toksinių kiekių nuo saulės poveikio, nesvarbu, kiek laiko praleidžiate lauke. Štai kodėl IOM toleruojamas viršutinis suvartojimo lygis 4 000 TV per dieną taikomas konkrečiai geriamajam papildinimui, o ne saulės šviesai.",
+        "sources": [
+          { "label": "Holick MF, MacLaughlin JA, Doppelt SH (1981) — Regulation of Cutaneous Previtamin D3 Photosynthesis in Man. Science 211(4482):590-593", "url": "https://pubmed.ncbi.nlm.nih.gov/6256855/" },
+          { "label": "Institute of Medicine (2011) — Dietary Reference Intakes for Calcium and Vitamin D. National Academies Press", "url": "https://www.ncbi.nlm.nih.gov/books/NBK56070/" },
+          { "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/" }
+        ]
       },
       "q3": {
         "q": "Ar saulė geriau nei papildai?",
