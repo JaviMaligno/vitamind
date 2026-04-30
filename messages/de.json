@@ -272,7 +272,12 @@
       },
       "q2": {
         "q": "Warum spielt der Sonnenwinkel eine Rolle? Was passiert im Winter?",
-        "a": "Der Winkel der Sonne über dem Horizont bestimmt, wie viel Atmosphäre UVB durchqueren muss, bevor es deine Haut erreicht. Bei flachen Winkeln — früh morgens, spät nachmittags oder zu jeder Tages- und Jahreszeit im Winter oberhalb von ca. 35° Breite — wird UVB fast vollständig von der Ozonschicht absorbiert und erreicht die Erdoberfläche nicht. Die ‚Schattenregel' fasst dies treffend zusammen: Ist dein Schatten länger als deine Körpergröße, ist UVB zu schwach für die Vitamin-D-Synthese. Im Winter ist diese Bedingung in nördlichen Breiten monatelang den ganzen Tag über erfüllt. Unterhalb von UVI 3 ist die produzierte Menge selbst bei langer Exposition vernachlässigbar."
+        "a": "Der Winkel der Sonne über dem Horizont bestimmt, wie viel Atmosphäre UVB durchqueren muss, bevor es deine Haut erreicht. Bei flachen Winkeln — früh morgens, spät nachmittags oder zu jeder Tages- und Jahreszeit im Winter oberhalb von ca. 35° Breite — wird UVB fast vollständig von der Ozonschicht absorbiert und erreicht die Erdoberfläche nicht. Die ‚Schattenregel' fasst dies treffend zusammen: Ist dein Schatten länger als deine Körpergröße, ist UVB zu schwach für die Vitamin-D-Synthese. Im Winter ist diese Bedingung in nördlichen Breiten monatelang den ganzen Tag über erfüllt. Unterhalb von UVI 3 ist die produzierte Menge selbst bei langer Exposition vernachlässigbar.",
+        "sources": [
+          { "label": "Webb AR, Kline L, Holick MF (1988) — Influence of season and latitude on the cutaneous synthesis of vitamin D3: exposure to winter sunlight in Boston and Edmonton will not promote vitamin D3 synthesis in human skin. JCEM 67(2):373-378", "url": "https://pubmed.ncbi.nlm.nih.gov/2839537/" },
+          { "label": "Engelsen O (2010) — The Relationship between Ultraviolet Radiation Exposure and Vitamin D Status. Nutrients 2(5):482-495", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3257661/" },
+          { "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/" }
+        ]
       },
       "q3": {
         "q": "Warum funktioniert es nicht durch Glas?",

@@ -272,7 +272,12 @@
       },
       "q2": {
         "q": "Why does solar angle matter? What happens in winter?",
-        "a": "The angle of the sun above the horizon determines how much atmosphere UVB must travel through before reaching your skin. At low angles — early morning, late afternoon, or any time in winter above roughly 35° latitude — UVB is almost entirely absorbed by the ozone layer and never reaches the surface. The 'shadow rule' captures this well: if your shadow is longer than your height, UVB is too weak for vitamin D synthesis. In winter at northern latitudes, this condition persists all day for months. Below UVI 3, even prolonged exposure produces negligible amounts."
+        "a": "The angle of the sun above the horizon determines how much atmosphere UVB must travel through before reaching your skin. At low angles — early morning, late afternoon, or any time in winter above roughly 35° latitude — UVB is almost entirely absorbed by the ozone layer and never reaches the surface. The 'shadow rule' captures this well: if your shadow is longer than your height, UVB is too weak for vitamin D synthesis. In winter at northern latitudes, this condition persists all day for months. Below UVI 3, even prolonged exposure produces negligible amounts.",
+        "sources": [
+          { "label": "Webb AR, Kline L, Holick MF (1988) — Influence of season and latitude on the cutaneous synthesis of vitamin D3: exposure to winter sunlight in Boston and Edmonton will not promote vitamin D3 synthesis in human skin. JCEM 67(2):373-378", "url": "https://pubmed.ncbi.nlm.nih.gov/2839537/" },
+          { "label": "Engelsen O (2010) — The Relationship between Ultraviolet Radiation Exposure and Vitamin D Status. Nutrients 2(5):482-495", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3257661/" },
+          { "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/" }
+        ]
       },
       "q3": {
         "q": "Why doesn't it work through glass?",

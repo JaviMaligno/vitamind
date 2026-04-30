@@ -272,7 +272,12 @@
       },
       "q2": {
         "q": "Pourquoi l'angle solaire est-il important ? Que se passe-t-il en hiver ?",
-        "a": "L'angle du soleil au-dessus de l'horizon détermine la quantité d'atmosphère que les UVB doivent traverser avant d'atteindre votre peau. À de faibles angles — tôt le matin, en fin d'après-midi, ou à tout moment en hiver au-dessus d'environ 35° de latitude — les UVB sont presque entièrement absorbés par la couche d'ozone et n'atteignent jamais la surface. La « règle de l'ombre » illustre bien cela : si votre ombre est plus longue que votre taille, les UVB sont trop faibles pour la synthèse de la vitamine D. En hiver aux latitudes nordiques, cette condition persiste toute la journée pendant des mois. En dessous d'un IUV de 3, même une exposition prolongée ne produit que des quantités négligeables."
+        "a": "L'angle du soleil au-dessus de l'horizon détermine la quantité d'atmosphère que les UVB doivent traverser avant d'atteindre votre peau. À de faibles angles — tôt le matin, en fin d'après-midi, ou à tout moment en hiver au-dessus d'environ 35° de latitude — les UVB sont presque entièrement absorbés par la couche d'ozone et n'atteignent jamais la surface. La « règle de l'ombre » illustre bien cela : si votre ombre est plus longue que votre taille, les UVB sont trop faibles pour la synthèse de la vitamine D. En hiver aux latitudes nordiques, cette condition persiste toute la journée pendant des mois. En dessous d'un IUV de 3, même une exposition prolongée ne produit que des quantités négligeables.",
+        "sources": [
+          { "label": "Webb AR, Kline L, Holick MF (1988) — Influence of season and latitude on the cutaneous synthesis of vitamin D3: exposure to winter sunlight in Boston and Edmonton will not promote vitamin D3 synthesis in human skin. JCEM 67(2):373-378", "url": "https://pubmed.ncbi.nlm.nih.gov/2839537/" },
+          { "label": "Engelsen O (2010) — The Relationship between Ultraviolet Radiation Exposure and Vitamin D Status. Nutrients 2(5):482-495", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3257661/" },
+          { "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/" }
+        ]
       },
       "q3": {
         "q": "Pourquoi cela ne fonctionne-t-il pas à travers le verre ?",
