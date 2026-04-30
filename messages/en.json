@@ -425,7 +425,12 @@
       },
       "q5": {
         "q": "What foods naturally contain vitamin D?",
-        "a": "Very few foods contain meaningful amounts: fatty fish (wild salmon 600–1,000 IU per 100 g; mackerel, sardines, herring), cod liver oil (~400 IU per teaspoon, also rich in vitamin A), egg yolks (~40 IU each, more if the hen had UV exposure), UV-exposed mushrooms (can provide 400+ IU per 100 g when dried gills-up in sunlight), and beef liver (small amounts). Fortified foods (milk, cereals, plant milks) add modest amounts depending on country. Diet alone realistically cannot reach the 1,000–4,000 IU range without supplementation."
+        "a": "Very few foods contain meaningful amounts: fatty fish (wild salmon 600–1,000 IU per 100 g; mackerel, sardines, herring), cod liver oil (~400 IU per teaspoon, also rich in vitamin A), egg yolks (~40 IU each, more if the hen had UV exposure), UV-exposed mushrooms (can provide 400+ IU per 100 g when dried gills-up in sunlight), and beef liver (small amounts). Fortified foods (milk, cereals, plant milks) add modest amounts depending on country. Diet alone realistically cannot reach the 1,000–4,000 IU range without supplementation.",
+        "sources": [
+          { "label": "Lu Z et al. (2007) — An evaluation of the vitamin D3 content in fish: Is the vitamin D content adequate to satisfy the dietary requirement for vitamin D? J Steroid Biochem Mol Biol 103(3-5):642-644", "url": "https://pubmed.ncbi.nlm.nih.gov/17267210/" },
+          { "label": "Cardwell G et al. (2018) — A Review of Mushrooms as a Potential Source of Dietary Vitamin D. Nutrients 10(10):1498", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6213178/" },
+          { "label": "NIH Office of Dietary Supplements — Vitamin D: Health Professional Fact Sheet", "url": "https://ods.od.nih.gov/factsheets/VitaminD-HealthProfessional/" }
+        ]
       },
       "q6": {
         "q": "What is the best time of day to take vitamin D?",

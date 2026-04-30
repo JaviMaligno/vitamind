@@ -425,7 +425,12 @@
       },
       "q5": {
         "q": "Quels aliments contiennent naturellement de la vitamine D ?",
-        "a": "Très peu d'aliments en contiennent des quantités significatives : les poissons gras (saumon sauvage 600–1 000 UI pour 100 g ; maquereau, sardines, hareng), l'huile de foie de morue (~400 UI par cuillère à café, également riche en vitamine A), les jaunes d'œuf (~40 UI chacun, davantage si la poule a été exposée aux UV), les champignons exposés aux UV (peuvent fournir 400+ UI pour 100 g lorsqu'ils sont séchés lamelles vers le haut au soleil), et le foie de bœuf (petites quantités). Les aliments enrichis (lait, céréales, laits végétaux) apportent des quantités modestes selon les pays. L'alimentation seule ne peut réalistement pas atteindre la plage de 1 000–4 000 UI sans supplémentation."
+        "a": "Très peu d'aliments en contiennent des quantités significatives : les poissons gras (saumon sauvage 600–1 000 UI pour 100 g ; maquereau, sardines, hareng), l'huile de foie de morue (~400 UI par cuillère à café, également riche en vitamine A), les jaunes d'œuf (~40 UI chacun, davantage si la poule a été exposée aux UV), les champignons exposés aux UV (peuvent fournir 400+ UI pour 100 g lorsqu'ils sont séchés lamelles vers le haut au soleil), et le foie de bœuf (petites quantités). Les aliments enrichis (lait, céréales, laits végétaux) apportent des quantités modestes selon les pays. L'alimentation seule ne peut réalistement pas atteindre la plage de 1 000–4 000 UI sans supplémentation.",
+        "sources": [
+          { "label": "Lu Z et al. (2007) — An evaluation of the vitamin D3 content in fish: Is the vitamin D content adequate to satisfy the dietary requirement for vitamin D? J Steroid Biochem Mol Biol 103(3-5):642-644", "url": "https://pubmed.ncbi.nlm.nih.gov/17267210/" },
+          { "label": "Cardwell G et al. (2018) — A Review of Mushrooms as a Potential Source of Dietary Vitamin D. Nutrients 10(10):1498", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6213178/" },
+          { "label": "NIH Office of Dietary Supplements — Vitamin D: Health Professional Fact Sheet", "url": "https://ods.od.nih.gov/factsheets/VitaminD-HealthProfessional/" }
+        ]
       },
       "q6": {
         "q": "Quel est le meilleur moment de la journée pour prendre de la vitamine D ?",

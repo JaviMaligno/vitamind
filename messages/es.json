@@ -425,7 +425,12 @@
       },
       "q5": {
         "q": "¿Qué alimentos contienen vitamina D de forma natural?",
-        "a": "Muy pocos alimentos contienen cantidades significativas: pescado azul (salmón salvaje 600–1.000 UI por 100 g; caballa, sardinas, arenque), aceite de hígado de bacalao (~400 UI por cucharadita, también rico en vitamina A), yemas de huevo (~40 UI cada una, más si la gallina tuvo exposición UV), setas expuestas al sol (pueden aportar 400+ UI por 100 g cuando se secan con las láminas hacia arriba al sol) e hígado de ternera (cantidades pequeñas). Los alimentos fortificados (leche, cereales, bebidas vegetales) añaden cantidades modestas según el país. La dieta sola no puede alcanzar de manera realista el rango de 1.000–4.000 UI sin suplementación."
+        "a": "Muy pocos alimentos contienen cantidades significativas: pescado azul (salmón salvaje 600–1.000 UI por 100 g; caballa, sardinas, arenque), aceite de hígado de bacalao (~400 UI por cucharadita, también rico en vitamina A), yemas de huevo (~40 UI cada una, más si la gallina tuvo exposición UV), setas expuestas al sol (pueden aportar 400+ UI por 100 g cuando se secan con las láminas hacia arriba al sol) e hígado de ternera (cantidades pequeñas). Los alimentos fortificados (leche, cereales, bebidas vegetales) añaden cantidades modestas según el país. La dieta sola no puede alcanzar de manera realista el rango de 1.000–4.000 UI sin suplementación.",
+        "sources": [
+          { "label": "Lu Z et al. (2007) — An evaluation of the vitamin D3 content in fish: Is the vitamin D content adequate to satisfy the dietary requirement for vitamin D? J Steroid Biochem Mol Biol 103(3-5):642-644", "url": "https://pubmed.ncbi.nlm.nih.gov/17267210/" },
+          { "label": "Cardwell G et al. (2018) — A Review of Mushrooms as a Potential Source of Dietary Vitamin D. Nutrients 10(10):1498", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6213178/" },
+          { "label": "NIH Office of Dietary Supplements — Vitamin D: Health Professional Fact Sheet", "url": "https://ods.od.nih.gov/factsheets/VitaminD-HealthProfessional/" }
+        ]
       },
       "q6": {
         "q": "¿Cuál es el mejor momento del día para tomar la vitamina D?",

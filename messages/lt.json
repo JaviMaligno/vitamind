@@ -425,7 +425,12 @@
       },
       "q5": {
         "q": "Kokiuose maisto produktuose natūraliai yra vitamino D?",
-        "a": "Labai nedaugelyje maisto produktų yra reikšmingų kiekių: riebioji žuvis (laukinė lašiša 600–1 000 TV 100 g; skumbrė, sardinės, silkė), menkių kepenų aliejus (~400 TV vienam šaukšteliui, taip pat turtingas vitamino A), kiaušinių tryniai (~40 TV kiekvienas, daugiau jei višta gavo UV poveikį), UV veikiami grybai (gali suteikti 400+ TV 100 g, kai džiovinami žiaunomis į viršų saulės šviesoje) ir jautienos kepenys (nedideli kiekiai). Praturtinti maisto produktai (pienas, grūdai, augaliniai pieno produktai) prideda kuklių kiekių priklausomai nuo šalies. Vien mityba realistiškai negali pasiekti 1 000–4 000 TV diapazono be papildinimo."
+        "a": "Labai nedaugelyje maisto produktų yra reikšmingų kiekių: riebioji žuvis (laukinė lašiša 600–1 000 TV 100 g; skumbrė, sardinės, silkė), menkių kepenų aliejus (~400 TV vienam šaukšteliui, taip pat turtingas vitamino A), kiaušinių tryniai (~40 TV kiekvienas, daugiau jei višta gavo UV poveikį), UV veikiami grybai (gali suteikti 400+ TV 100 g, kai džiovinami žiaunomis į viršų saulės šviesoje) ir jautienos kepenys (nedideli kiekiai). Praturtinti maisto produktai (pienas, grūdai, augaliniai pieno produktai) prideda kuklių kiekių priklausomai nuo šalies. Vien mityba realistiškai negali pasiekti 1 000–4 000 TV diapazono be papildinimo.",
+        "sources": [
+          { "label": "Lu Z et al. (2007) — An evaluation of the vitamin D3 content in fish: Is the vitamin D content adequate to satisfy the dietary requirement for vitamin D? J Steroid Biochem Mol Biol 103(3-5):642-644", "url": "https://pubmed.ncbi.nlm.nih.gov/17267210/" },
+          { "label": "Cardwell G et al. (2018) — A Review of Mushrooms as a Potential Source of Dietary Vitamin D. Nutrients 10(10):1498", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6213178/" },
+          { "label": "NIH Office of Dietary Supplements — Vitamin D: Health Professional Fact Sheet", "url": "https://ods.od.nih.gov/factsheets/VitaminD-HealthProfessional/" }
+        ]
       },
       "q6": {
         "q": "Koks yra geriausias paros metas vartoti vitaminą D?",

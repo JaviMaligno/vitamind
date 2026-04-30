@@ -425,7 +425,12 @@
       },
       "q5": {
         "q": "Welche Lebensmittel enthalten natürlich Vitamin D?",
-        "a": "Nur sehr wenige Lebensmittel enthalten nennenswerte Mengen: Fettfische (Wildlachs 600–1.000 IE pro 100 g; Makrele, Sardinen, Hering), Lebertran (~400 IE pro Teelöffel, zudem reich an Vitamin A), Eigelb (~40 IE pro Stück, mehr wenn das Huhn UV-Exposition hatte), UV-exponierte Pilze (können 400+ IE pro 100 g liefern, wenn sie mit den Lamellen nach oben in der Sonne getrocknet werden) und Rinderleber (kleine Mengen). Angereicherte Lebensmittel (Milch, Cerealien, Pflanzenmilch) fügen je nach Land moderate Mengen hinzu. Die Ernährung allein kann den Bereich von 1.000–4.000 IE ohne Supplementierung realistisch nicht erreichen."
+        "a": "Nur sehr wenige Lebensmittel enthalten nennenswerte Mengen: Fettfische (Wildlachs 600–1.000 IE pro 100 g; Makrele, Sardinen, Hering), Lebertran (~400 IE pro Teelöffel, zudem reich an Vitamin A), Eigelb (~40 IE pro Stück, mehr wenn das Huhn UV-Exposition hatte), UV-exponierte Pilze (können 400+ IE pro 100 g liefern, wenn sie mit den Lamellen nach oben in der Sonne getrocknet werden) und Rinderleber (kleine Mengen). Angereicherte Lebensmittel (Milch, Cerealien, Pflanzenmilch) fügen je nach Land moderate Mengen hinzu. Die Ernährung allein kann den Bereich von 1.000–4.000 IE ohne Supplementierung realistisch nicht erreichen.",
+        "sources": [
+          { "label": "Lu Z et al. (2007) — An evaluation of the vitamin D3 content in fish: Is the vitamin D content adequate to satisfy the dietary requirement for vitamin D? J Steroid Biochem Mol Biol 103(3-5):642-644", "url": "https://pubmed.ncbi.nlm.nih.gov/17267210/" },
+          { "label": "Cardwell G et al. (2018) — A Review of Mushrooms as a Potential Source of Dietary Vitamin D. Nutrients 10(10):1498", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6213178/" },
+          { "label": "NIH Office of Dietary Supplements — Vitamin D: Health Professional Fact Sheet", "url": "https://ods.od.nih.gov/factsheets/VitaminD-HealthProfessional/" }
+        ]
       },
       "q6": {
         "q": "Was ist die beste Tageszeit zur Einnahme von Vitamin D?",
