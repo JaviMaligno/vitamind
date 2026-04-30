@@ -416,7 +416,12 @@
       },
       "q4": {
         "q": "¿Por qué hay que tomar la vitamina D con grasa?",
-        "a": "La vitamina D es liposoluble. Necesita grasa en el intestino para formar micelas — pequeños paquetes de grasa y proteínas que transportan la vitamina a través de la pared intestinal al torrente sanguíneo. Los estudios muestran que tomar D3 con una comida que contenga grasa aumenta la absorción entre un 30 y un 50% en comparación con tomarla en ayunas. La regla práctica: tómala con la comida más rica en grasas del día. Una cucharada de aceite de oliva, un puñado de frutos secos o una comida con salmón proporcionan grasa suficiente. Esto se aplica igualmente a las vitaminas A, E y K2."
+        "a": "La vitamina D es liposoluble. Necesita grasa en el intestino para formar micelas — pequeños paquetes de grasa y proteínas que transportan la vitamina a través de la pared intestinal al torrente sanguíneo. Los estudios muestran que tomar D3 con una comida que contenga grasa aumenta la absorción entre un 30 y un 50% en comparación con tomarla en ayunas. La regla práctica: tómala con la comida más rica en grasas del día. Una cucharada de aceite de oliva, un puñado de frutos secos o una comida con salmón proporcionan grasa suficiente. Esto se aplica igualmente a las vitaminas A, E y K2.",
+        "sources": [
+          { "label": "Mulligan GB, Licata A (2010) — Taking vitamin D with the largest meal improves absorption and results in higher serum levels of 25-hydroxyvitamin D. J Bone Miner Res 25(4):928-930", "url": "https://onlinelibrary.wiley.com/doi/10.1002/jbmr.67" },
+          { "label": "Dawson-Hughes B et al. (2015) — Dietary Fat Increases Vitamin D-3 Absorption. J Acad Nutr Diet 115(2):225-230", "url": "https://pubmed.ncbi.nlm.nih.gov/25441954/" },
+          { "label": "Holick MF (2007) — Vitamin D Deficiency. NEJM 357:266-281", "url": "https://www.nejm.org/doi/full/10.1056/NEJMra070553" }
+        ]
       },
       "q5": {
         "q": "¿Qué alimentos contienen vitamina D de forma natural?",

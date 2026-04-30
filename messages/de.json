@@ -416,7 +416,12 @@
       },
       "q4": {
         "q": "Warum muss Vitamin D mit Fett eingenommen werden?",
-        "a": "Vitamin D ist fettlöslich. Es benötigt Nahrungsfett im Darm, um Mizellen zu bilden — winzige Fett-Protein-Pakete, die das Vitamin durch die Darmwand in den Blutkreislauf transportieren. Studien zeigen, dass die Einnahme von D3 mit einer fetthaltigen Mahlzeit die Absorption im Vergleich zur Einnahme auf nüchternen Magen um 30–50 % steigert. Die praktische Regel: Nimm es zur fettreichsten Mahlzeit des Tages ein. Ein Esslöffel Olivenöl, eine Handvoll Nüsse oder eine Mahlzeit mit Lachs liefern ausreichend Fett. Dies gilt gleichermaßen für die Vitamine A, E und K2."
+        "a": "Vitamin D ist fettlöslich. Es benötigt Nahrungsfett im Darm, um Mizellen zu bilden — winzige Fett-Protein-Pakete, die das Vitamin durch die Darmwand in den Blutkreislauf transportieren. Studien zeigen, dass die Einnahme von D3 mit einer fetthaltigen Mahlzeit die Absorption im Vergleich zur Einnahme auf nüchternen Magen um 30–50 % steigert. Die praktische Regel: Nimm es zur fettreichsten Mahlzeit des Tages ein. Ein Esslöffel Olivenöl, eine Handvoll Nüsse oder eine Mahlzeit mit Lachs liefern ausreichend Fett. Dies gilt gleichermaßen für die Vitamine A, E und K2.",
+        "sources": [
+          { "label": "Mulligan GB, Licata A (2010) — Taking vitamin D with the largest meal improves absorption and results in higher serum levels of 25-hydroxyvitamin D. J Bone Miner Res 25(4):928-930", "url": "https://onlinelibrary.wiley.com/doi/10.1002/jbmr.67" },
+          { "label": "Dawson-Hughes B et al. (2015) — Dietary Fat Increases Vitamin D-3 Absorption. J Acad Nutr Diet 115(2):225-230", "url": "https://pubmed.ncbi.nlm.nih.gov/25441954/" },
+          { "label": "Holick MF (2007) — Vitamin D Deficiency. NEJM 357:266-281", "url": "https://www.nejm.org/doi/full/10.1056/NEJMra070553" }
+        ]
       },
       "q5": {
         "q": "Welche Lebensmittel enthalten natürlich Vitamin D?",

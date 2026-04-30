@@ -416,7 +416,12 @@
       },
       "q4": {
         "q": "Pourquoi la vitamine D doit-elle être prise avec des graisses ?",
-        "a": "La vitamine D est liposoluble. Elle nécessite des graisses alimentaires dans l'intestin pour former des micelles — de minuscules paquets lipido-protéiques qui transportent la vitamine à travers la paroi intestinale dans la circulation sanguine. Des études montrent que prendre du D3 avec un repas contenant des graisses augmente l'absorption de 30–50 % par rapport à une prise à jeun. La règle pratique : prenez-le avec votre repas le plus riche en graisses de la journée. Une cuillère à soupe d'huile d'olive, une poignée de noix ou un repas au saumon fournissent tous suffisamment de graisses. Cela s'applique également aux vitamines A, E et K2."
+        "a": "La vitamine D est liposoluble. Elle nécessite des graisses alimentaires dans l'intestin pour former des micelles — de minuscules paquets lipido-protéiques qui transportent la vitamine à travers la paroi intestinale dans la circulation sanguine. Des études montrent que prendre du D3 avec un repas contenant des graisses augmente l'absorption de 30–50 % par rapport à une prise à jeun. La règle pratique : prenez-le avec votre repas le plus riche en graisses de la journée. Une cuillère à soupe d'huile d'olive, une poignée de noix ou un repas au saumon fournissent tous suffisamment de graisses. Cela s'applique également aux vitamines A, E et K2.",
+        "sources": [
+          { "label": "Mulligan GB, Licata A (2010) — Taking vitamin D with the largest meal improves absorption and results in higher serum levels of 25-hydroxyvitamin D. J Bone Miner Res 25(4):928-930", "url": "https://onlinelibrary.wiley.com/doi/10.1002/jbmr.67" },
+          { "label": "Dawson-Hughes B et al. (2015) — Dietary Fat Increases Vitamin D-3 Absorption. J Acad Nutr Diet 115(2):225-230", "url": "https://pubmed.ncbi.nlm.nih.gov/25441954/" },
+          { "label": "Holick MF (2007) — Vitamin D Deficiency. NEJM 357:266-281", "url": "https://www.nejm.org/doi/full/10.1056/NEJMra070553" }
+        ]
       },
       "q5": {
         "q": "Quels aliments contiennent naturellement de la vitamine D ?",

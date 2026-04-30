@@ -416,7 +416,12 @@
       },
       "q4": {
         "q": "Kodėl vitaminas D turi būti vartojamas su riebalais?",
-        "a": "Vitaminas D yra riebaluose tirpus. Jam reikia maistinių riebalų žarnyne, kad susidarytų miceliai — maži riebalų-baltymų paketai, pernešantys vitaminą per žarnyno sienelę į kraują. Tyrimai rodo, kad D3 vartojimas su riebalus turinčiu patiekalu padidina įsisavinimą 30–50%, palyginti su vartojamu tuščiu skrandžiu. Praktinė taisyklė: vartokite su sočiausiu dienos patiekalu. Šaukštas alyvuogių aliejaus, sauja riešutų arba lašišos patiekalas suteikia pakankamai riebalų. Tai vienodai taikoma vitaminams A, E ir K2."
+        "a": "Vitaminas D yra riebaluose tirpus. Jam reikia maistinių riebalų žarnyne, kad susidarytų miceliai — maži riebalų-baltymų paketai, pernešantys vitaminą per žarnyno sienelę į kraują. Tyrimai rodo, kad D3 vartojimas su riebalus turinčiu patiekalu padidina įsisavinimą 30–50%, palyginti su vartojamu tuščiu skrandžiu. Praktinė taisyklė: vartokite su sočiausiu dienos patiekalu. Šaukštas alyvuogių aliejaus, sauja riešutų arba lašišos patiekalas suteikia pakankamai riebalų. Tai vienodai taikoma vitaminams A, E ir K2.",
+        "sources": [
+          { "label": "Mulligan GB, Licata A (2010) — Taking vitamin D with the largest meal improves absorption and results in higher serum levels of 25-hydroxyvitamin D. J Bone Miner Res 25(4):928-930", "url": "https://onlinelibrary.wiley.com/doi/10.1002/jbmr.67" },
+          { "label": "Dawson-Hughes B et al. (2015) — Dietary Fat Increases Vitamin D-3 Absorption. J Acad Nutr Diet 115(2):225-230", "url": "https://pubmed.ncbi.nlm.nih.gov/25441954/" },
+          { "label": "Holick MF (2007) — Vitamin D Deficiency. NEJM 357:266-281", "url": "https://www.nejm.org/doi/full/10.1056/NEJMra070553" }
+        ]
       },
       "q5": {
         "q": "Kokiuose maisto produktuose natūraliai yra vitamino D?",
