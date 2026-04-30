@@ -456,7 +456,12 @@
       },
       "q2": {
         "q": "Kaip saulės šviesa veikia cirkadinius ritmus?",
-        "a": "Šviesa yra pagrindinis zeitgeberis — „laiko davėjas” — žmogaus cirkadiniam laikrodžiui. Ryto saulės šviesa, turtinga trumpo bangos ilgio mėlynos šviesos (460–480 nm), signalizuoja tinklainės ganglinėms ląstelėms, kurios savo ruožtu liepia supra chiazminiam branduoliui (SCN) smegenyse slopinti melatoniną ir sukelti kortizolio pabudimo atsaką. Tai fiksuoja 24 valandų kūno laikrodį. Nepakankamas ryto šviesos poveikis vėlina miego pradžią, sutrikdo hormonų laiką ir yra susijusi su nuotaikos sutrikimais ir medžiagų apykaitos disfunkcija. Idealus langas — pirmosios 30–60 minučių po pabudimo, lauke — net apsiniaukusiomis dienomis lauko šviesa paprastai yra 10–50× ryškesnė nei patalpų apšvietimas."
+        "a": "Šviesa yra pagrindinis zeitgeberis — „laiko davėjas” — žmogaus cirkadiniam laikrodžiui. Ryto saulės šviesa, turtinga trumpo bangos ilgio mėlynos šviesos (460–480 nm), signalizuoja tinklainės ganglinėms ląstelėms, kurios savo ruožtu liepia supra chiazminiam branduoliui (SCN) smegenyse slopinti melatoniną ir sukelti kortizolio pabudimo atsaką. Tai fiksuoja 24 valandų kūno laikrodį. Nepakankamas ryto šviesos poveikis vėlina miego pradžią, sutrikdo hormonų laiką ir yra susijusi su nuotaikos sutrikimais ir medžiagų apykaitos disfunkcija. Idealus langas — pirmosios 30–60 minučių po pabudimo, lauke — net apsiniaukusiomis dienomis lauko šviesa paprastai yra 10–50× ryškesnė nei patalpų apšvietimas.",
+        "sources": [
+          { "label": "Berson DM, Dunn FA, Takao M (2002) — Phototransduction by retinal ganglion cells that set the circadian clock. Science 295(5557):1070-1073", "url": "https://pubmed.ncbi.nlm.nih.gov/11834835/" },
+          { "label": "Hattar S, Liao HW, Takao M, Berson DM, Yau KW (2002) — Melanopsin-containing retinal ganglion cells: architecture, projections, and intrinsic photosensitivity. Science 295(5557):1065-1070", "url": "https://pubmed.ncbi.nlm.nih.gov/11834834/" },
+          { "label": "Wright KP Jr et al. (2013) — Entrainment of the human circadian clock to the natural light-dark cycle. Curr Biol 23(16):1554-1558", "url": "https://pubmed.ncbi.nlm.nih.gov/23910656/" }
+        ]
       },
       "q3": {
         "q": "Kam naudinga aušros šviesa, jei ji negamina vitamino D?",

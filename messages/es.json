@@ -456,7 +456,12 @@
       },
       "q2": {
         "q": "¿Cómo afecta la luz solar a los ritmos circadianos?",
-        "a": "La luz es el principal zeitgeber — 'dador de tiempo' — del reloj circadiano humano. La luz solar de la mañana, rica en luz azul de longitud de onda corta (460–480 nm), activa las células ganglionares de la retina, que a su vez indican al núcleo supraquiasmático (NSQ) del cerebro que suprima la melatonina y active la respuesta de despertar del cortisol. Esto ancla el reloj corporal de 24 horas. Una exposición insuficiente a la luz matutina retrasa la conciliación del sueño, altera el timing hormonal y se asocia con trastornos del estado de ánimo y disfunción metabólica. La ventana ideal es los primeros 30–60 minutos tras despertar, en el exterior — incluso en días nublados, la luz exterior es típicamente 10–50 veces más brillante que la iluminación interior."
+        "a": "La luz es el principal zeitgeber — 'dador de tiempo' — del reloj circadiano humano. La luz solar de la mañana, rica en luz azul de longitud de onda corta (460–480 nm), activa las células ganglionares de la retina, que a su vez indican al núcleo supraquiasmático (NSQ) del cerebro que suprima la melatonina y active la respuesta de despertar del cortisol. Esto ancla el reloj corporal de 24 horas. Una exposición insuficiente a la luz matutina retrasa la conciliación del sueño, altera el timing hormonal y se asocia con trastornos del estado de ánimo y disfunción metabólica. La ventana ideal es los primeros 30–60 minutos tras despertar, en el exterior — incluso en días nublados, la luz exterior es típicamente 10–50 veces más brillante que la iluminación interior.",
+        "sources": [
+          { "label": "Berson DM, Dunn FA, Takao M (2002) — Phototransduction by retinal ganglion cells that set the circadian clock. Science 295(5557):1070-1073", "url": "https://pubmed.ncbi.nlm.nih.gov/11834835/" },
+          { "label": "Hattar S, Liao HW, Takao M, Berson DM, Yau KW (2002) — Melanopsin-containing retinal ganglion cells: architecture, projections, and intrinsic photosensitivity. Science 295(5557):1065-1070", "url": "https://pubmed.ncbi.nlm.nih.gov/11834834/" },
+          { "label": "Wright KP Jr et al. (2013) — Entrainment of the human circadian clock to the natural light-dark cycle. Curr Biol 23(16):1554-1558", "url": "https://pubmed.ncbi.nlm.nih.gov/23910656/" }
+        ]
       },
       "q3": {
         "q": "¿Para qué sirve la luz del amanecer si no produce vitamina D?",

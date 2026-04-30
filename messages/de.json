@@ -456,7 +456,12 @@
       },
       "q2": {
         "q": "Wie beeinflusst Sonnenlicht den zirkadianen Rhythmus?",
-        "a": "Licht ist der primäre Zeitgeber für die zirkadiane Uhr des Menschen. Morgensonnenlicht, reich an kurzwelligem blauem Licht (460–480 nm), signalisiert den retinalen Ganglienzellen, die wiederum dem suprachiasmatischen Nucleus (SCN) im Gehirn mitteilen, Melatonin zu unterdrücken und die Cortisol-Aufwachreaktion auszulösen. Dies verankert die 24-Stunden-Körperuhr. Unzureichende Morgenlichtexposition verzögert den Schlafbeginn, stört das Hormon-Timing und ist mit Stimmungsstörungen und metabolischen Funktionsstörungen assoziiert. Das ideale Zeitfenster sind die ersten 30–60 Minuten nach dem Aufwachen, im Freien — selbst an bewölkten Tagen ist das Tageslicht draußen typischerweise 10–50-mal heller als Innenbeleuchtung."
+        "a": "Licht ist der primäre Zeitgeber für die zirkadiane Uhr des Menschen. Morgensonnenlicht, reich an kurzwelligem blauem Licht (460–480 nm), signalisiert den retinalen Ganglienzellen, die wiederum dem suprachiasmatischen Nucleus (SCN) im Gehirn mitteilen, Melatonin zu unterdrücken und die Cortisol-Aufwachreaktion auszulösen. Dies verankert die 24-Stunden-Körperuhr. Unzureichende Morgenlichtexposition verzögert den Schlafbeginn, stört das Hormon-Timing und ist mit Stimmungsstörungen und metabolischen Funktionsstörungen assoziiert. Das ideale Zeitfenster sind die ersten 30–60 Minuten nach dem Aufwachen, im Freien — selbst an bewölkten Tagen ist das Tageslicht draußen typischerweise 10–50-mal heller als Innenbeleuchtung.",
+        "sources": [
+          { "label": "Berson DM, Dunn FA, Takao M (2002) — Phototransduction by retinal ganglion cells that set the circadian clock. Science 295(5557):1070-1073", "url": "https://pubmed.ncbi.nlm.nih.gov/11834835/" },
+          { "label": "Hattar S, Liao HW, Takao M, Berson DM, Yau KW (2002) — Melanopsin-containing retinal ganglion cells: architecture, projections, and intrinsic photosensitivity. Science 295(5557):1065-1070", "url": "https://pubmed.ncbi.nlm.nih.gov/11834834/" },
+          { "label": "Wright KP Jr et al. (2013) — Entrainment of the human circadian clock to the natural light-dark cycle. Curr Biol 23(16):1554-1558", "url": "https://pubmed.ncbi.nlm.nih.gov/23910656/" }
+        ]
       },
       "q3": {
         "q": "Wozu ist Morgendämmerungslicht nützlich, wenn es kein Vitamin D produziert?",

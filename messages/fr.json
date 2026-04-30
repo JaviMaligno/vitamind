@@ -456,7 +456,12 @@
       },
       "q2": {
         "q": "Comment la lumière solaire affecte-t-elle les rythmes circadiens ?",
-        "a": "La lumière est le principal zeitgeber — « donneur de temps » — pour l'horloge circadienne humaine. La lumière matinale riche en lumière bleue à courte longueur d'onde (460–480 nm) stimule les cellules ganglionnaires rétiniennes, qui à leur tour indiquent au noyau suprachiasmatique (SCN) du cerveau de supprimer la mélatonine et de déclencher la réponse d'éveil au cortisol. Cela ancre l'horloge biologique de 24 heures. Une exposition insuffisante à la lumière matinale retarde l'endormissement, perturbe la régulation hormonale, et est associée aux troubles de l'humeur et au dysfonctionnement métabolique. La fenêtre idéale est les 30–60 premières minutes après le réveil, en plein air — même par temps couvert, la lumière extérieure est typiquement 10–50× plus lumineuse que l'éclairage intérieur."
+        "a": "La lumière est le principal zeitgeber — « donneur de temps » — pour l'horloge circadienne humaine. La lumière matinale riche en lumière bleue à courte longueur d'onde (460–480 nm) stimule les cellules ganglionnaires rétiniennes, qui à leur tour indiquent au noyau suprachiasmatique (SCN) du cerveau de supprimer la mélatonine et de déclencher la réponse d'éveil au cortisol. Cela ancre l'horloge biologique de 24 heures. Une exposition insuffisante à la lumière matinale retarde l'endormissement, perturbe la régulation hormonale, et est associée aux troubles de l'humeur et au dysfonctionnement métabolique. La fenêtre idéale est les 30–60 premières minutes après le réveil, en plein air — même par temps couvert, la lumière extérieure est typiquement 10–50× plus lumineuse que l'éclairage intérieur.",
+        "sources": [
+          { "label": "Berson DM, Dunn FA, Takao M (2002) — Phototransduction by retinal ganglion cells that set the circadian clock. Science 295(5557):1070-1073", "url": "https://pubmed.ncbi.nlm.nih.gov/11834835/" },
+          { "label": "Hattar S, Liao HW, Takao M, Berson DM, Yau KW (2002) — Melanopsin-containing retinal ganglion cells: architecture, projections, and intrinsic photosensitivity. Science 295(5557):1065-1070", "url": "https://pubmed.ncbi.nlm.nih.gov/11834834/" },
+          { "label": "Wright KP Jr et al. (2013) — Entrainment of the human circadian clock to the natural light-dark cycle. Curr Biol 23(16):1554-1558", "url": "https://pubmed.ncbi.nlm.nih.gov/23910656/" }
+        ]
       },
       "q3": {
         "q": "À quoi sert la lumière de l'aube si elle ne produit pas de vitamine D ?",
