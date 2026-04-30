@@ -358,7 +358,12 @@
       },
       "q3": {
         "q": "Is the sun better than supplementing?",
-        "a": "Both have real advantages. Sun-produced D3 is bound to skin proteins and released slowly into the bloodstream, giving it a longer half-life than oral D3. Sun exposure also provides UVA-driven nitric oxide release, circadian light cues, and other benefits no pill can replicate. Oral D3, on the other hand, is controllable, dose-precise, and available year-round. The practical answer: use the sun when conditions allow, supplement when they don't — they complement each other."
+        "a": "Both have real advantages. Sun-produced D3 is bound to skin proteins and released slowly into the bloodstream, giving it a longer half-life than oral D3. Sun exposure also provides UVA-driven nitric oxide release, circadian light cues, and other benefits no pill can replicate. Oral D3, on the other hand, is controllable, dose-precise, and available year-round. The practical answer: use the sun when conditions allow, supplement when they don't — they complement each other.",
+        "sources": [
+          { "label": "Haddad JG, Matsuoka LY, Hollis BW, Hu YZ, Wortsman J (1993) — Human plasma transport of vitamin D after its endogenous synthesis. J Clin Invest 91(6):2552-2555", "url": "https://pubmed.ncbi.nlm.nih.gov/8390483/" },
+          { "label": "Liu D, Fernandez BO, Hamilton A, Lang NN, Gallagher JMC, Newby DE, Feelisch M, Weller RB (2014) — UVA Irradiation of Human Skin Vasodilates Arterial Vasculature and Lowers Blood Pressure Independently of Nitric Oxide Synthase. J Invest Dermatol 134(7):1839-1846", "url": "https://pubmed.ncbi.nlm.nih.gov/24445737/" },
+          { "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/" }
+        ]
       },
       "q4": {
         "q": "D3 or D2 in supplements?",

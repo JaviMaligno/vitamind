@@ -358,7 +358,12 @@
       },
       "q3": {
         "q": "Ist die Sonne besser als Supplementierung?",
-        "a": "Beides hat echte Vorteile. Sonnenproduziiertes D3 ist an Hautproteine gebunden und wird langsam in den Blutkreislauf abgegeben, was ihm eine längere Halbwertszeit verleiht als oralem D3. Sonnenexposition liefert außerdem UVA-bedingte Stickstoffmonoxid-Freisetzung, zirkadiane Lichtsignale und andere Vorteile, die keine Kapsel ersetzen kann. Orales D3 hingegen ist kontrollierbar, dosisgenau und das ganze Jahr über verfügbar. Die praktische Antwort: Nutze die Sonne, wenn die Bedingungen es erlauben, und supplementiere, wenn nicht — beides ergänzt sich."
+        "a": "Beides hat echte Vorteile. Sonnenproduziiertes D3 ist an Hautproteine gebunden und wird langsam in den Blutkreislauf abgegeben, was ihm eine längere Halbwertszeit verleiht als oralem D3. Sonnenexposition liefert außerdem UVA-bedingte Stickstoffmonoxid-Freisetzung, zirkadiane Lichtsignale und andere Vorteile, die keine Kapsel ersetzen kann. Orales D3 hingegen ist kontrollierbar, dosisgenau und das ganze Jahr über verfügbar. Die praktische Antwort: Nutze die Sonne, wenn die Bedingungen es erlauben, und supplementiere, wenn nicht — beides ergänzt sich.",
+        "sources": [
+          { "label": "Haddad JG, Matsuoka LY, Hollis BW, Hu YZ, Wortsman J (1993) — Human plasma transport of vitamin D after its endogenous synthesis. J Clin Invest 91(6):2552-2555", "url": "https://pubmed.ncbi.nlm.nih.gov/8390483/" },
+          { "label": "Liu D, Fernandez BO, Hamilton A, Lang NN, Gallagher JMC, Newby DE, Feelisch M, Weller RB (2014) — UVA Irradiation of Human Skin Vasodilates Arterial Vasculature and Lowers Blood Pressure Independently of Nitric Oxide Synthase. J Invest Dermatol 134(7):1839-1846", "url": "https://pubmed.ncbi.nlm.nih.gov/24445737/" },
+          { "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/" }
+        ]
       },
       "q4": {
         "q": "D3 oder D2 als Nahrungsergänzung?",

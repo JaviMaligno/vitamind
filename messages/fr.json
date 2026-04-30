@@ -358,7 +358,12 @@
       },
       "q3": {
         "q": "Le soleil est-il meilleur que la supplémentation ?",
-        "a": "Les deux ont de véritables avantages. Le D3 produit par le soleil est lié aux protéines cutanées et libéré lentement dans la circulation sanguine, lui conférant une demi-vie plus longue que le D3 oral. L'exposition solaire procure également une libération d'oxyde nitrique induite par les UVA, des signaux lumineux circadiens, et d'autres bénéfices qu'aucun comprimé ne peut reproduire. Le D3 oral, en revanche, est contrôlable, à dose précise, et disponible toute l'année. La réponse pratique : profitez du soleil quand les conditions le permettent, supplémentez quand ce n'est pas le cas — ils se complètent."
+        "a": "Les deux ont de véritables avantages. Le D3 produit par le soleil est lié aux protéines cutanées et libéré lentement dans la circulation sanguine, lui conférant une demi-vie plus longue que le D3 oral. L'exposition solaire procure également une libération d'oxyde nitrique induite par les UVA, des signaux lumineux circadiens, et d'autres bénéfices qu'aucun comprimé ne peut reproduire. Le D3 oral, en revanche, est contrôlable, à dose précise, et disponible toute l'année. La réponse pratique : profitez du soleil quand les conditions le permettent, supplémentez quand ce n'est pas le cas — ils se complètent.",
+        "sources": [
+          { "label": "Haddad JG, Matsuoka LY, Hollis BW, Hu YZ, Wortsman J (1993) — Human plasma transport of vitamin D after its endogenous synthesis. J Clin Invest 91(6):2552-2555", "url": "https://pubmed.ncbi.nlm.nih.gov/8390483/" },
+          { "label": "Liu D, Fernandez BO, Hamilton A, Lang NN, Gallagher JMC, Newby DE, Feelisch M, Weller RB (2014) — UVA Irradiation of Human Skin Vasodilates Arterial Vasculature and Lowers Blood Pressure Independently of Nitric Oxide Synthase. J Invest Dermatol 134(7):1839-1846", "url": "https://pubmed.ncbi.nlm.nih.gov/24445737/" },
+          { "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/" }
+        ]
       },
       "q4": {
         "q": "D3 ou D2 dans les suppléments ?",

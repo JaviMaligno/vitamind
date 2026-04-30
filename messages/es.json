@@ -358,7 +358,12 @@
       },
       "q3": {
         "q": "¿Es mejor el sol que suplementar?",
-        "a": "Ambos tienen ventajas reales. La D3 producida por el sol está unida a proteínas cutáneas y se libera lentamente al torrente sanguíneo, lo que le da una vida media más larga que la D3 oral. La exposición solar también proporciona liberación de óxido nítrico mediada por UVA, señales de luz circadiana y otros beneficios que ninguna pastilla puede replicar. La D3 oral, por otro lado, es controlable, precisa en dosis y disponible durante todo el año. La respuesta práctica: usa el sol cuando las condiciones lo permitan, suplementa cuando no — se complementan."
+        "a": "Ambos tienen ventajas reales. La D3 producida por el sol está unida a proteínas cutáneas y se libera lentamente al torrente sanguíneo, lo que le da una vida media más larga que la D3 oral. La exposición solar también proporciona liberación de óxido nítrico mediada por UVA, señales de luz circadiana y otros beneficios que ninguna pastilla puede replicar. La D3 oral, por otro lado, es controlable, precisa en dosis y disponible durante todo el año. La respuesta práctica: usa el sol cuando las condiciones lo permitan, suplementa cuando no — se complementan.",
+        "sources": [
+          { "label": "Haddad JG, Matsuoka LY, Hollis BW, Hu YZ, Wortsman J (1993) — Human plasma transport of vitamin D after its endogenous synthesis. J Clin Invest 91(6):2552-2555", "url": "https://pubmed.ncbi.nlm.nih.gov/8390483/" },
+          { "label": "Liu D, Fernandez BO, Hamilton A, Lang NN, Gallagher JMC, Newby DE, Feelisch M, Weller RB (2014) — UVA Irradiation of Human Skin Vasodilates Arterial Vasculature and Lowers Blood Pressure Independently of Nitric Oxide Synthase. J Invest Dermatol 134(7):1839-1846", "url": "https://pubmed.ncbi.nlm.nih.gov/24445737/" },
+          { "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/" }
+        ]
       },
       "q4": {
         "q": "¿D3 o D2 en los suplementos?",

@@ -358,7 +358,12 @@
       },
       "q3": {
         "q": "Ar saulė geriau nei papildai?",
-        "a": "Abu turi realių privalumų. Saulės pagamintas D3 yra susijęs su odos baltymais ir lėtai išleidžiamas į kraują, suteikdamas jam ilgesnį pusperiodį nei geriamasis D3. Buvimas saulėje taip pat suteikia UVA valdomą azoto oksido išsiskyrimą, paros šviesos signalus ir kitus privalumus, kurių jokia tabletė negali pakartoti. Kita vertus, geriamasis D3 yra kontroliuojamas, tikslios dozės ir pasiekiamas ištisus metus. Praktinis atsakymas: naudokite saulę, kai sąlygos leidžia, papildykite, kai neleidžia — jie papildo vienas kitą."
+        "a": "Abu turi realių privalumų. Saulės pagamintas D3 yra susijęs su odos baltymais ir lėtai išleidžiamas į kraują, suteikdamas jam ilgesnį pusperiodį nei geriamasis D3. Buvimas saulėje taip pat suteikia UVA valdomą azoto oksido išsiskyrimą, paros šviesos signalus ir kitus privalumus, kurių jokia tabletė negali pakartoti. Kita vertus, geriamasis D3 yra kontroliuojamas, tikslios dozės ir pasiekiamas ištisus metus. Praktinis atsakymas: naudokite saulę, kai sąlygos leidžia, papildykite, kai neleidžia — jie papildo vienas kitą.",
+        "sources": [
+          { "label": "Haddad JG, Matsuoka LY, Hollis BW, Hu YZ, Wortsman J (1993) — Human plasma transport of vitamin D after its endogenous synthesis. J Clin Invest 91(6):2552-2555", "url": "https://pubmed.ncbi.nlm.nih.gov/8390483/" },
+          { "label": "Liu D, Fernandez BO, Hamilton A, Lang NN, Gallagher JMC, Newby DE, Feelisch M, Weller RB (2014) — UVA Irradiation of Human Skin Vasodilates Arterial Vasculature and Lowers Blood Pressure Independently of Nitric Oxide Synthase. J Invest Dermatol 134(7):1839-1846", "url": "https://pubmed.ncbi.nlm.nih.gov/24445737/" },
+          { "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/" }
+        ]
       },
       "q4": {
         "q": "D3 ar D2 papilduose?",
