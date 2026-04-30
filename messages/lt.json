@@ -263,7 +263,12 @@
       "subtitle": "Kodėl saulės kampas, UV indeksas ir stiklas yra svarbūs",
       "q1": {
         "q": "Kodėl tik UVB gamina vitaminą D, o ne UVA?",
-        "a": "Ultravioletinė spinduliuotė skirstoma į UVA (315–400 nm) ir UVB (280–315 nm). Tik UVB siaurame 290–315 nm diapazone turi pakankamai energijos, kad izomerizuotų 7-dehidrocholesterolį odoje į pre-vitamino D3 formą. UVA spinduliai yra ilgesnio bangos ilgio ir mažesnės energijos — jie prasiskverbia giliau (sukeldami įdegį ir odos senėjimą), tačiau negali sukelti fotocheminės reakcijos, pradedančios vitamino D sintezę. Dėl šios priežasties soliariumai, daugiausia skleidžiantys UVA, taip pat negamina vitamino D."
+        "a": "Ultravioletinė spinduliuotė skirstoma į UVA (315–400 nm) ir UVB (280–315 nm). Tik UVB siaurame 290–315 nm diapazone turi pakankamai energijos, kad izomerizuotų 7-dehidrocholesterolį odoje į pre-vitamino D3 formą. UVA spinduliai yra ilgesnio bangos ilgio ir mažesnės energijos — jie prasiskverbia giliau (sukeldami įdegį ir odos senėjimą), tačiau negali sukelti fotocheminės reakcijos, pradedančios vitamino D sintezę. Dėl šios priežasties soliariumai, daugiausia skleidžiantys UVA, taip pat negamina vitamino D.",
+        "sources": [
+          { "label": "MacLaughlin JA, Anderson RR, Holick MF (1982) — Spectral character of sunlight modulates photosynthesis of previtamin D3 and its photoisomers in human skin. Science 216(4549):1001-1003", "url": "https://pubmed.ncbi.nlm.nih.gov/6281884/" },
+          { "label": "Young AR et al. (2021) — A revised action spectrum for vitamin D synthesis by suberythemal UV. PNAS 118(40):e2015867118", "url": "https://www.pnas.org/doi/10.1073/pnas.2015867118" },
+          { "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/" }
+        ]
       },
       "q2": {
         "q": "Kodėl svarbus saulės kampas? Kas vyksta žiemą?",

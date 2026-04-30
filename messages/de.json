@@ -263,7 +263,12 @@
       "subtitle": "Warum Sonnenwinkel, UV-Index und Glas eine Rolle spielen",
       "q1": {
         "q": "Warum erzeugt nur UVB Vitamin D, nicht UVA?",
-        "a": "Ultraviolette Strahlung unterteilt sich in UVA (315–400 nm) und UVB (280–315 nm). Nur UVB im engen Band von 290–315 nm trägt genug Energie, um 7-Dehydrocholesterin in der Haut zu Prä-Vitamin D3 zu isomerisieren. UVA-Strahlen haben eine längere Wellenlänge und niedrigere Energie — sie dringen tiefer ein (verursachen Bräunung und Hautalterung), können aber nicht die photochemische Reaktion auslösen, die die Vitamin-D-Synthese startet. Deshalb erzeugen Solarien, die hauptsächlich UVA emittieren, auch kein Vitamin D."
+        "a": "Ultraviolette Strahlung unterteilt sich in UVA (315–400 nm) und UVB (280–315 nm). Nur UVB im engen Band von 290–315 nm trägt genug Energie, um 7-Dehydrocholesterin in der Haut zu Prä-Vitamin D3 zu isomerisieren. UVA-Strahlen haben eine längere Wellenlänge und niedrigere Energie — sie dringen tiefer ein (verursachen Bräunung und Hautalterung), können aber nicht die photochemische Reaktion auslösen, die die Vitamin-D-Synthese startet. Deshalb erzeugen Solarien, die hauptsächlich UVA emittieren, auch kein Vitamin D.",
+        "sources": [
+          { "label": "MacLaughlin JA, Anderson RR, Holick MF (1982) — Spectral character of sunlight modulates photosynthesis of previtamin D3 and its photoisomers in human skin. Science 216(4549):1001-1003", "url": "https://pubmed.ncbi.nlm.nih.gov/6281884/" },
+          { "label": "Young AR et al. (2021) — A revised action spectrum for vitamin D synthesis by suberythemal UV. PNAS 118(40):e2015867118", "url": "https://www.pnas.org/doi/10.1073/pnas.2015867118" },
+          { "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/" }
+        ]
       },
       "q2": {
         "q": "Warum spielt der Sonnenwinkel eine Rolle? Was passiert im Winter?",

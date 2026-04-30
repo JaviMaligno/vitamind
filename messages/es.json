@@ -263,7 +263,12 @@
       "subtitle": "Por qué importan el ángulo solar, el índice UV y el cristal",
       "q1": {
         "q": "¿Por qué solo el UVB produce vitamina D y no el UVA?",
-        "a": "La radiación ultravioleta se divide en UVA (315–400 nm) y UVB (280–315 nm). Solo el UVB en la banda estrecha de 290–315 nm tiene suficiente energía para isomerizar el 7-dehidrocolesterol de la piel en pre-vitamina D3. Los rayos UVA tienen mayor longitud de onda y menor energía — penetran más profundo (causando bronceado y envejecimiento cutáneo) pero no pueden desencadenar la reacción fotoquímica que inicia la síntesis de vitamina D. Por eso los soláriums que emiten principalmente UVA tampoco producen vitamina D."
+        "a": "La radiación ultravioleta se divide en UVA (315–400 nm) y UVB (280–315 nm). Solo el UVB en la banda estrecha de 290–315 nm tiene suficiente energía para isomerizar el 7-dehidrocolesterol de la piel en pre-vitamina D3. Los rayos UVA tienen mayor longitud de onda y menor energía — penetran más profundo (causando bronceado y envejecimiento cutáneo) pero no pueden desencadenar la reacción fotoquímica que inicia la síntesis de vitamina D. Por eso los soláriums que emiten principalmente UVA tampoco producen vitamina D.",
+        "sources": [
+          { "label": "MacLaughlin JA, Anderson RR, Holick MF (1982) — Spectral character of sunlight modulates photosynthesis of previtamin D3 and its photoisomers in human skin. Science 216(4549):1001-1003", "url": "https://pubmed.ncbi.nlm.nih.gov/6281884/" },
+          { "label": "Young AR et al. (2021) — A revised action spectrum for vitamin D synthesis by suberythemal UV. PNAS 118(40):e2015867118", "url": "https://www.pnas.org/doi/10.1073/pnas.2015867118" },
+          { "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/" }
+        ]
       },
       "q2": {
         "q": "¿Por qué importa el ángulo solar? ¿Qué pasa en invierno?",
