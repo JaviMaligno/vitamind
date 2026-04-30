@@ -398,7 +398,12 @@
       },
       "q2": {
         "q": "Warum wird K2 zusammen mit D3 empfohlen?",
-        "a": "Vitamin D3 erhöht die Kalziumaufnahme aus dem Darm. Vitamin K2 — insbesondere die MK-7-Form — aktiviert zwei Schlüsselproteine: Osteocalcin (leitet Kalzium in die Knochen) und Matrix-Gla-Protein (verhindert die Ablagerung von Kalzium in Arterien und Weichgewebe). Ohne ausreichend K2 kann das durch hochdosierte D3-Supplementierung mobilisierte zusätzliche Kalzium zur arteriellen Verkalkung beitragen. Natürliche K2-Quellen sind Natto, gereifter Hartkäse und Eigelb. Wenn du mehr als 1.000 IE/Tag D3 supplementierst, werden 100–200 mcg MK-7 weitgehend empfohlen."
+        "a": "Vitamin D3 erhöht die Kalziumaufnahme aus dem Darm. Vitamin K2 — insbesondere die MK-7-Form — aktiviert zwei Schlüsselproteine: Osteocalcin (leitet Kalzium in die Knochen) und Matrix-Gla-Protein (verhindert die Ablagerung von Kalzium in Arterien und Weichgewebe). Ohne ausreichend K2 kann das durch hochdosierte D3-Supplementierung mobilisierte zusätzliche Kalzium zur arteriellen Verkalkung beitragen. Natürliche K2-Quellen sind Natto, gereifter Hartkäse und Eigelb. Wenn du mehr als 1.000 IE/Tag D3 supplementierst, werden 100–200 mcg MK-7 weitgehend empfohlen.",
+        "sources": [
+          { "label": "Geleijnse JM et al. (2004) — Dietary intake of menaquinone is associated with a reduced risk of coronary heart disease: the Rotterdam Study. J Nutr 134(11):3100-3105", "url": "https://pubmed.ncbi.nlm.nih.gov/15514282/" },
+          { "label": "Knapen MH et al. (2013) — Three-year low-dose menaquinone-7 supplementation helps decrease bone loss in healthy postmenopausal women. Osteoporos Int 24(9):2499-2507", "url": "https://pubmed.ncbi.nlm.nih.gov/23525894/" },
+          { "label": "van Ballegooijen AJ et al. (2017) — The Synergistic Interplay between Vitamins D and K for Bone and Cardiovascular Health: A Narrative Review. Int J Endocrinol 2017:7454376", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5613455/" }
+        ]
       },
       "q3": {
         "q": "Welche Rolle spielt Magnesium?",

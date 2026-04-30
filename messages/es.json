@@ -398,7 +398,12 @@
       },
       "q2": {
         "q": "¿Por qué se recomienda tomar K2 junto con D3?",
-        "a": "La vitamina D3 aumenta la absorción de calcio en el intestino. La vitamina K2 — en particular la forma MK-7 — activa dos proteínas clave: la osteocalcina (dirige el calcio hacia los huesos) y la proteína Gla de la matriz (impide que el calcio se deposite en arterias y tejidos blandos). Sin K2 suficiente, el calcio extra movilizado por dosis altas de D3 puede contribuir a la calcificación arterial. Fuentes naturales de K2: natto, quesos curados duros y yemas de huevo. Si suplementas más de 1.000 UI/día de D3, se recomienda ampliamente añadir 100–200 mcg de MK-7."
+        "a": "La vitamina D3 aumenta la absorción de calcio en el intestino. La vitamina K2 — en particular la forma MK-7 — activa dos proteínas clave: la osteocalcina (dirige el calcio hacia los huesos) y la proteína Gla de la matriz (impide que el calcio se deposite en arterias y tejidos blandos). Sin K2 suficiente, el calcio extra movilizado por dosis altas de D3 puede contribuir a la calcificación arterial. Fuentes naturales de K2: natto, quesos curados duros y yemas de huevo. Si suplementas más de 1.000 UI/día de D3, se recomienda ampliamente añadir 100–200 mcg de MK-7.",
+        "sources": [
+          { "label": "Geleijnse JM et al. (2004) — Dietary intake of menaquinone is associated with a reduced risk of coronary heart disease: the Rotterdam Study. J Nutr 134(11):3100-3105", "url": "https://pubmed.ncbi.nlm.nih.gov/15514282/" },
+          { "label": "Knapen MH et al. (2013) — Three-year low-dose menaquinone-7 supplementation helps decrease bone loss in healthy postmenopausal women. Osteoporos Int 24(9):2499-2507", "url": "https://pubmed.ncbi.nlm.nih.gov/23525894/" },
+          { "label": "van Ballegooijen AJ et al. (2017) — The Synergistic Interplay between Vitamins D and K for Bone and Cardiovascular Health: A Narrative Review. Int J Endocrinol 2017:7454376", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5613455/" }
+        ]
       },
       "q3": {
         "q": "¿Qué papel tiene el magnesio?",
