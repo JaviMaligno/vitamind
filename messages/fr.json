@@ -434,7 +434,12 @@
       },
       "q6": {
         "q": "Quel est le meilleur moment de la journée pour prendre de la vitamine D ?",
-        "a": "Avec votre repas le plus copieux de la journée — principalement pour le bénéfice d'absorption avec les graisses. Le matin ou à midi (avec le petit-déjeuner ou le déjeuner) est généralement préféré au soir, car la vitamine D peut légèrement augmenter la vigilance et certaines données suggèrent qu'une supplémentation en soirée pourrait légèrement interférer avec la production de mélatonine. Cela dit, la régularité importe bien plus que l'horaire : prenez-la au moment de la journée où vous vous en souviendrez de manière fiable."
+        "a": "Avec votre repas le plus copieux de la journée — principalement pour le bénéfice d'absorption avec les graisses. Le matin ou à midi (avec le petit-déjeuner ou le déjeuner) est généralement préféré au soir, car la vitamine D peut légèrement augmenter la vigilance et certaines données suggèrent qu'une supplémentation en soirée pourrait légèrement interférer avec la production de mélatonine. Cela dit, la régularité importe bien plus que l'horaire : prenez-la au moment de la journée où vous vous en souviendrez de manière fiable.",
+        "sources": [
+          { "label": "Mulligan GB, Licata A (2010) — Taking vitamin D with the largest meal improves absorption and results in higher serum levels of 25-hydroxyvitamin D. J Bone Miner Res 25(4):928-930", "url": "https://onlinelibrary.wiley.com/doi/10.1002/jbmr.67" },
+          { "label": "Abboud M (2022) — Vitamin D Supplementation and Sleep: A Systematic Review and Meta-Analysis of Intervention Studies. Nutrients 14(5):1076", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8912284/" },
+          { "label": "Holick MF (2007) — Vitamin D Deficiency. NEJM 357:266-281", "url": "https://www.nejm.org/doi/full/10.1056/NEJMra070553" }
+        ]
       }
     },
     "block4": {

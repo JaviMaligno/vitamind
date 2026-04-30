@@ -434,7 +434,12 @@
       },
       "q6": {
         "q": "What is the best time of day to take vitamin D?",
-        "a": "With your largest meal of the day — primarily for the fat absorption benefit. Morning or midday (with breakfast or lunch) is generally preferred over evening because vitamin D may mildly increase alertness and some evidence suggests evening supplementation could slightly interfere with melatonin production. That said, consistency matters far more than timing: take it at whatever point in your day you will reliably remember."
+        "a": "With your largest meal of the day — primarily for the fat absorption benefit. Morning or midday (with breakfast or lunch) is generally preferred over evening because vitamin D may mildly increase alertness and some evidence suggests evening supplementation could slightly interfere with melatonin production. That said, consistency matters far more than timing: take it at whatever point in your day you will reliably remember.",
+        "sources": [
+          { "label": "Mulligan GB, Licata A (2010) — Taking vitamin D with the largest meal improves absorption and results in higher serum levels of 25-hydroxyvitamin D. J Bone Miner Res 25(4):928-930", "url": "https://onlinelibrary.wiley.com/doi/10.1002/jbmr.67" },
+          { "label": "Abboud M (2022) — Vitamin D Supplementation and Sleep: A Systematic Review and Meta-Analysis of Intervention Studies. Nutrients 14(5):1076", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8912284/" },
+          { "label": "Holick MF (2007) — Vitamin D Deficiency. NEJM 357:266-281", "url": "https://www.nejm.org/doi/full/10.1056/NEJMra070553" }
+        ]
       }
     },
     "block4": {
