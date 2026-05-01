@@ -2,18 +2,12 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { loadPreferences } from "@/lib/storage";
 
 export default function RootRedirect() {
   const router = useRouter();
 
   useEffect(() => {
-    const prefs = loadPreferences();
-    if (prefs.lastCityId && prefs.skinType) {
-      router.replace("/dashboard");
-    } else {
-      router.replace("/explore");
-    }
+    router.replace("/dashboard");
   }, [router]);
 
   return (

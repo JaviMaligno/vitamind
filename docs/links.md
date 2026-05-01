@@ -2,4 +2,4 @@
 [06/03/2026 14:48] Javi: https://claude.ai/public/artifacts/e1377c30-3b83-47bd-938f-6e107c21231a
   - GitHub: https://github.com/JaviMaligno/vitamind
   - Vercel (preview): https://vitamind-bzytt4rn0-javieraguilar-6355s-projects.vercel.app
-  - Vercel (producción): https://vitamind-six.vercel.app
+  - Vercel (producción): https://getvitamind.app

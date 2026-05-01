@@ -53,11 +53,7 @@ export const BUILTIN_CITIES: City[] = BUILTIN_RAW
   }))
   .sort((a, b) => a.name.localeCompare(b.name));
 
-export const DEFAULT_FAVORITE_IDS = [
-  "builtin:londres", "builtin:madrid", "builtin:estocolmo", "builtin:nueva-york",
-  "builtin:tokio", "builtin:nairobi", "builtin:sidney", "builtin:bogota",
-  "builtin:reikiavik", "builtin:ciudad-del-cabo",
-];
+export const DEFAULT_FAVORITE_IDS: string[] = [];
 
 export function cityToId(name: string): string {
   return `builtin:${name.toLowerCase().replace(/\s+/g, "-")}`;

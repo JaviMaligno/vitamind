@@ -9,6 +9,7 @@ export function useWeather(lat: number, lon: number, date: Date) {
   const dateStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
 
   useEffect(() => {
+    if (lat === 0 && lon === 0) { setWeather(null); return; }
     const cached = getCachedWeather(lat, lon, dateStr);
     if (cached) { setWeather(cached); return; }
 

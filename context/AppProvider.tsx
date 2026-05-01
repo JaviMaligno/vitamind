@@ -106,8 +106,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gps.lat, gps.lon, locale]);
 
-  // Persist preferences when they change
+  // Persist preferences when they change. Skip while no city is chosen so we don't
+  // pin a fake default into localStorage on first visit.
   useEffect(() => {
+    if (!loc.cityId) return;
     prefs.persistPreferences(loc.cityId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loc.cityId, prefs.skinType, prefs.areaFraction, prefs.age, prefs.targetIU, prefs.authUser]);
@@ -131,7 +133,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     [loc.handleSaveLocation],
   );
 
-  const hasLocation = (gps.lat !== null && gps.lon !== null) || loc.cityId !== "builtin:londres";
+  const hasLocation = (gps.lat !== null && gps.lon !== null) || loc.cityId !== "";
   const isCurrentFav = loc.favorites.includes(loc.cityId);
 
   const gpsValue = useMemo(() => ({

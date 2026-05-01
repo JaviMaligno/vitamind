@@ -31,6 +31,7 @@ export function useNowStatus(
   const lastFetchTime = useRef(0);
 
   const fetchWeather = useCallback(() => {
+    if (lat === 0 && lon === 0) return; // no city chosen yet
     const dateStr = toDateStr(new Date());
     fetch(`/api/weather?lat=${lat.toFixed(2)}&lon=${lon.toFixed(2)}&date=${dateStr}`)
       .then((r) => (r.ok ? r.json() : null))

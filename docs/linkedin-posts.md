@@ -22,7 +22,7 @@ Stack: Next.js 15 + App Router, D3.js, Tailwind CSS v4, Supabase, Web Push API, 
 
 De artefacto de Claude a producto desplegado. A veces los side projects más interesantes nacen de una curiosidad.
 
-Pruébala: https://vitamind-six.vercel.app
+Pruébala: https://getvitamind.app
 
 #NextJS #PWA #WebDev #SideProject #Claude #AI #VitaminD #OpenSource
 
@@ -49,7 +49,7 @@ También tiene una sección de preguntas frecuentes donde puedes aprender sobre 
 
 Es gratis, sin registro, y se puede instalar como app en el móvil.
 
-Pruébala: https://vitamind-six.vercel.app
+Pruébala: https://getvitamind.app
 
 #VitaminaD #Salud #Sol #Bienestar #App
 
@@ -77,7 +77,7 @@ Stack: Next.js 15 + App Router, D3.js, Tailwind CSS v4, Supabase, Web Push API, 
 
 From a Claude artifact to a deployed product. Sometimes the most interesting side projects are born from simple curiosity.
 
-Try it: https://vitamind-six.vercel.app
+Try it: https://getvitamind.app
 
 #NextJS #PWA #WebDev #SideProject #Claude #AI #VitaminD #OpenSource
 
@@ -104,7 +104,7 @@ It also has a FAQ section where you can learn about the relationship between sun
 
 Free, no sign-up required, and installable as a mobile app.
 
-Try it: https://vitamind-six.vercel.app
+Try it: https://getvitamind.app
 
 #VitaminD #Health #Sunshine #Wellness #App
 
