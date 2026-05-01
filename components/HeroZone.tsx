@@ -8,8 +8,6 @@ import PartnerBadge from "@/components/PartnerBadge";
 import type { City, NowStatus } from "@/lib/types";
 
 interface Props {
-  lat: number;
-  lon: number;
   tz: number;
   timezone?: string;
   doy: number;
@@ -44,8 +42,6 @@ function formatCountdown(totalMinutes: number): string {
 }
 
 export default function HeroZone({
-  lat,
-  lon,
   canSynthesize,
   nowStatus,
   cityName,

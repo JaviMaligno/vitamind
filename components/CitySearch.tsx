@@ -79,7 +79,7 @@ export default function CitySearch({ onSelect, onAddFav, favorites, allCities }:
         setSearching(false);
       })
       .catch(() => { setNominatimResults([]); setSearching(false); });
-  }, []);
+  }, [locale]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const v = e.target.value;

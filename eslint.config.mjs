@@ -13,6 +13,7 @@ const eslintConfig = [
       "scripts/.probe-out/**",
       ".worktrees/**",
       "public/**",
+      "docs/original_claude_ouput/**",
       "next-env.d.ts",
     ],
   },

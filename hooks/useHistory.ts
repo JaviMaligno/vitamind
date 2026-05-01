@@ -75,16 +75,12 @@ export function useHistory(
   targetIU: number = 1000,
   authUser?: User | null,
 ) {
-  const [records, setRecords] = useState<DayRecord[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [records, setRecords] = useState<DayRecord[]>(() => loadHistory());
+  const [loading, setLoading] = useState(!!cityId);
   const activeRequests = useRef(new Set<string>());
 
   useEffect(() => {
-    const stored = loadHistory();
-    setRecords(stored);
-
     if (!cityId) {
-      setLoading(false);
       return;
     }
 
@@ -95,9 +91,10 @@ export function useHistory(
 
     // Only fills missing dates — existing records are intentional snapshots
     // and are not recalculated when targetIU changes.
+    const stored = loadHistory();
     const missing = datesToFill(mondayStr, todayStr, stored, cityId);
     if (missing.length === 0) {
-      setLoading(false);
+      queueMicrotask(() => setLoading(false));
       return;
     }
 
@@ -120,7 +117,7 @@ export function useHistory(
       .finally(() => setLoading(false));
 
     return () => controller.abort();
-  }, [lat, lon, cityId, skinType, areaFraction, age, targetIU]);
+  }, [lat, lon, cityId, skinType, areaFraction, age, targetIU, authUser]);
 
   const requestBackfill = useCallback((startStr: string, endStr: string) => {
     if (!cityId) return;
@@ -146,7 +143,7 @@ export function useHistory(
       })
       .catch(() => {})
       .finally(() => activeRequests.current.delete(key));
-  }, [lat, lon, cityId, skinType, areaFraction, age, targetIU]);
+  }, [lat, lon, cityId, skinType, areaFraction, age, targetIU, authUser]);
 
   const getRecordsForWeek = useCallback((mondayDate: Date): DayRecord[] => {
     const week: DayRecord[] = [];

@@ -80,9 +80,6 @@ export default function DashboardPage() {
         nowStatus={nowStatus}
         cityName={cityName}
         cityFlag={app.cityFlag}
-        skinType={app.skinType}
-        areaFraction={effectiveArea}
-        age={app.age}
         targetIU={app.targetIU}
         loading={loading}
       />

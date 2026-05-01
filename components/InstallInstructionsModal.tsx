@@ -21,7 +21,7 @@ export default function InstallInstructionsModal({ open, mode, platform, isInApp
 
   useEffect(() => {
     if (!open) {
-      setCopied(false);
+      queueMicrotask(() => setCopied(false));
       if (copyTimeoutRef.current) {
         clearTimeout(copyTimeoutRef.current);
         copyTimeoutRef.current = null;

@@ -35,16 +35,14 @@ export function useInstallContext(): InstallContextValue {
 export default function InstallProvider({ children }: { children: ReactNode }) {
   const t = useTranslations("install");
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
-  const [isInstalled, setIsInstalled] = useState(false);
-  const [inApp, setInApp] = useState(false);
+  const [isInstalled, setIsInstalled] = useState<boolean>(() =>
+    typeof window === "undefined" ? false : detectStandalone(),
+  );
+  const [inApp] = useState<boolean>(() =>
+    typeof window === "undefined" ? false : detectInAppBrowser(),
+  );
   const [modalMode, setModalMode] = useState<InstallModalMode | null>(null);
   const installedToastShown = useRef(false);
-
-  // Detect static state on mount
-  useEffect(() => {
-    setIsInstalled(detectStandalone());
-    setInApp(detectInAppBrowser());
-  }, []);
 
   // beforeinstallprompt listener
   useEffect(() => {

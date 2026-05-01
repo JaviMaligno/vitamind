@@ -61,6 +61,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <head>
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        {/* Custom fonts loaded inline via Google Fonts. Many components reference
+            these family names directly (e.g. fontFamily: "'JetBrains Mono'..."),
+            so we don't migrate to next/font/google here — the cost of rewiring
+            every inline style outweighs the LCP gain on a single layout. */}
+        {/* eslint-disable-next-line @next/next/no-page-custom-font */}
         <link
           href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Playfair+Display:wght@700;800&display=swap"
           rel="stylesheet"

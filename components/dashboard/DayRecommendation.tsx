@@ -1,16 +1,12 @@
 "use client";
 
 import { useTranslations, useLocale } from "next-intl";
-import type { SkinType } from "@/lib/vitd";
 import type { NowStatus } from "@/lib/types";
 
 interface Props {
   nowStatus: NowStatus;
   cityName: string;
   cityFlag: string;
-  skinType: SkinType;
-  areaFraction: number;
-  age: number | null;
   targetIU: number;
   loading: boolean;
 }
@@ -48,7 +44,7 @@ const COLOR_MAP: Record<StatusKey, { border: string; bg: string; dot: string; te
   insufficient: { border: "border-red-400/10", bg: "from-red-500/[0.06] to-red-900/[0.03]", dot: "bg-red-400", text: "text-red-400/70" },
 };
 
-export default function DayRecommendation({ nowStatus, cityName, cityFlag, skinType, areaFraction, age, targetIU, loading }: Props) {
+export default function DayRecommendation({ nowStatus, cityName, cityFlag, targetIU, loading }: Props) {
   const t = useTranslations("dashboard");
   const locale = useLocale();
   const ns = nowStatus;

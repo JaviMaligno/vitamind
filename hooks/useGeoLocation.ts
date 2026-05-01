@@ -120,15 +120,17 @@ export function useGeoLocation() {
     setPermissionDenied(false);
   }, [cleanup]);
 
-  // On mount: auto-request if previously enabled
+  // On mount: auto-request if previously enabled.
+  // Defer via queueMicrotask so the setState calls inside requestLocation
+  // run outside the synchronous effect body (avoids cascading-render warning).
   useEffect(() => {
+    let shouldRun = false;
     try {
-      if (localStorage.getItem(LS_KEY) === "true") {
-        requestLocation();
-      }
+      shouldRun = localStorage.getItem(LS_KEY) === "true";
     } catch {
       // localStorage unavailable
     }
+    if (shouldRun) queueMicrotask(() => requestLocation());
     return cleanup;
   }, [requestLocation, cleanup]);
 

@@ -16,6 +16,7 @@ import { createWriteStream, createReadStream, existsSync, unlinkSync } from "fs"
 import { tmpdir } from "os";
 import { join } from "path";
 import { pipeline } from "stream/promises";
+import type { ReadableStream as WebReadableStream } from "stream/web";
 import { createInterface } from "readline";
 import { Open } from "unzipper";
 
@@ -74,7 +75,7 @@ async function downloadZip(destPath: string): Promise<void> {
   const fileStream = createWriteStream(destPath);
   // Convert web ReadableStream to Node stream for pipeline
   const { Readable } = await import("stream");
-  const nodeStream = Readable.fromWeb(res.body as any);
+  const nodeStream = Readable.fromWeb(res.body as WebReadableStream<Uint8Array>);
   await pipeline(nodeStream, fileStream);
 
   console.log("Download complete.");

@@ -124,36 +124,42 @@ export default function HistoryCalendar({ records, onToggleOverride, onNavigate 
     ? weekOffset < 0
     : viewYear < today.getFullYear() || viewMonth < today.getMonth();
 
-  const goBack = useCallback(() => {
+  const goBack = () => {
     if (!canGoBack) return;
     if (viewMode === "week") {
       setWeekOffset((o) => o - 1);
-    } else {
-      setViewMonth((m) => {
-        if (m === 0) { setViewYear((y) => y - 1); return 11; }
-        return m - 1;
-      });
+      return;
     }
-  }, [canGoBack, viewMode]);
+    if (viewMonth === 0) {
+      setViewMonth(11);
+      setViewYear(viewYear - 1);
+    } else {
+      setViewMonth(viewMonth - 1);
+    }
+  };
 
-  const goForward = useCallback(() => {
+  const goForward = () => {
     if (!canGoForward) return;
     if (viewMode === "week") {
       setWeekOffset((o) => o + 1);
-    } else {
-      setViewMonth((m) => {
-        if (m === 11) { setViewYear((y) => y + 1); return 0; }
-        return m + 1;
-      });
+      return;
     }
-  }, [canGoForward, viewMode]);
+    if (viewMonth === 11) {
+      setViewMonth(0);
+      setViewYear(viewYear + 1);
+    } else {
+      setViewMonth(viewMonth + 1);
+    }
+  };
 
   const swipeHandlers = useSwipe(goForward, goBack);
 
   useEffect(() => {
     if (viewMode === "week") {
-      const start = toDateStr(viewMonday);
-      const endDate = new Date(viewMonday);
+      const monday = getMonday(new Date());
+      monday.setDate(monday.getDate() + weekOffset * 7);
+      const start = toDateStr(monday);
+      const endDate = new Date(monday);
       endDate.setDate(endDate.getDate() + 6);
       onNavigate(start, toDateStr(endDate));
     } else {

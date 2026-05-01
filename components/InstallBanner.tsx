@@ -16,7 +16,7 @@ export default function InstallBanner() {
 
   useEffect(() => {
     if (isInstalled || isStandalone()) {
-      setShouldRender(false);
+      queueMicrotask(() => setShouldRender(false));
       return;
     }
     if (getInstallBannerSeen()) {
@@ -35,7 +35,7 @@ export default function InstallBanner() {
     if (!eligible) return;
 
     setInstallBannerSeen();
-    setShouldRender(true);
+    queueMicrotask(() => setShouldRender(true));
 
     const showTimer = setTimeout(() => setVisible(true), 3000);
     return () => clearTimeout(showTimer);

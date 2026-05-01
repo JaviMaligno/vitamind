@@ -1,6 +1,6 @@
 import { getSupabase } from "./supabase";
-import { loadFavorites, saveFavorites, loadCustomLocations, saveCustomLocation, deleteCustomLocation, loadPreferences, savePreferences, loadHistory, saveHistory } from "./storage";
-import type { City, DayRecord, Preferences, UserProfile } from "./types";
+import { loadFavorites, saveFavorites, loadCustomLocations, saveCustomLocation, loadPreferences, savePreferences, loadHistory, saveHistory } from "./storage";
+import type { DayRecord, UserProfile } from "./types";
 
 // Load full profile: from Supabase if logged in, localStorage otherwise
 export async function loadProfile(): Promise<{ profile: UserProfile | null; isLoggedIn: boolean }> {

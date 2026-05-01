@@ -252,12 +252,20 @@ export default function WorldMap({ lat, lon, doy, onSelect, favorites, allCities
       el.removeEventListener("touchstart", onTS); el.removeEventListener("touchmove", onTM);
       el.removeEventListener("touchend", onTE); el.removeEventListener("touchcancel", onTE);
     };
+    // clientToGeo/clientToSnap/doSelect close over viewRef (mutated on pan/zoom)
+    // and props; the listeners read them via closure on each event, so we don't
+    // want to re-attach on every render. Stable identity via viewRef is intentional.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [geoData, scrubMode, allCities]);
 
   const zoomIn = () => { viewRef.current = { ...viewRef.current, scale: Math.min(1200, viewRef.current.scale * 1.35) }; kick(); };
   const zoomOut = () => { viewRef.current = { ...viewRef.current, scale: Math.max(80, viewRef.current.scale * 0.74) }; kick(); };
   const resetV = () => { viewRef.current = { cx: 0, cy: 15, scale: 150 }; kick(); };
 
+  // viewRef.current is intentionally read during render: pan/zoom is tracked as
+  // a ref (not state) to avoid re-rendering on every drag, and we manually trigger
+  // repaints via kick(). Compiler can't reason about this, so we suppress the rule.
+  // eslint-disable-next-line react-hooks/refs
   const proj = getProj();
   const hoverPt = hover ? proj([hover.lon, hover.lat]) : null;
 
@@ -282,13 +290,9 @@ export default function WorldMap({ lat, lon, doy, onSelect, favorites, allCities
         </div>
       )}
       <div style={{ position: "absolute", top: 10, right: 10, display: "flex", flexDirection: "column", gap: 3, zIndex: 5 }}>
-        {([
-          [zoomIn, "+"],
-          [zoomOut, "\u2212"],
-          [resetV, "\u27F2"],
-        ] as [() => void, string][]).map(([fn, lbl], i) => (
-          <button key={i} onClick={fn} style={{ width: 32, height: 32, borderRadius: 6, border: "1px solid rgba(255,255,255,0.1)", background: "rgba(10,14,42,0.9)", color: "#e0e0e0", cursor: "pointer", fontSize: 16, display: "flex", alignItems: "center", justifyContent: "center" }}>{lbl}</button>
-        ))}
+        <button onClick={zoomIn} style={{ width: 32, height: 32, borderRadius: 6, border: "1px solid rgba(255,255,255,0.1)", background: "rgba(10,14,42,0.9)", color: "#e0e0e0", cursor: "pointer", fontSize: 16, display: "flex", alignItems: "center", justifyContent: "center" }}>+</button>
+        <button onClick={zoomOut} style={{ width: 32, height: 32, borderRadius: 6, border: "1px solid rgba(255,255,255,0.1)", background: "rgba(10,14,42,0.9)", color: "#e0e0e0", cursor: "pointer", fontSize: 16, display: "flex", alignItems: "center", justifyContent: "center" }}>{"\u2212"}</button>
+        <button onClick={resetV} style={{ width: 32, height: 32, borderRadius: 6, border: "1px solid rgba(255,255,255,0.1)", background: "rgba(10,14,42,0.9)", color: "#e0e0e0", cursor: "pointer", fontSize: 16, display: "flex", alignItems: "center", justifyContent: "center" }}>{"\u27F2"}</button>
       </div>
       <div style={{ position: "absolute", bottom: 8, left: 12, fontSize: 9, color: "rgba(255,255,255,0.25)", pointerEvents: "none", zIndex: 2, background: "rgba(0,0,0,0.4)", padding: "3px 8px", borderRadius: 4 }}>
         {scrubMode ? "Arrastrar: explorar \u00B7 Scroll/Pinch: zoom" : "Arrastrar: mover \u00B7 Scroll/Pinch: zoom \u00B7 Clic/Tap: seleccionar"}
