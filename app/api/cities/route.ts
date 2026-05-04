@@ -111,9 +111,10 @@ export async function GET(request: NextRequest) {
       { error: "Provide ?q= or ?lat=&lon= parameters" },
       { status: 400 }
     );
-  } catch {
+  } catch (err: unknown) {
+    const detail = err instanceof Error ? err.message : String(err);
     return NextResponse.json(
-      { error: "Internal server error" },
+      { error: "Internal server error", detail },
       { status: 500 }
     );
   }
