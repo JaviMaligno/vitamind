@@ -7,9 +7,7 @@ import GpsErrorHint from "@/components/GpsErrorHint";
 export default function GpsButton() {
   const t = useTranslations("hero");
   const app = useApp();
-  const { gps, cityId, hasLocation } = app;
-
-  if (!hasLocation) return null;
+  const { gps, cityId } = app;
 
   const isActive = cityId.startsWith("gps:");
   const isDenied = gps.error === "gpsDenied";
