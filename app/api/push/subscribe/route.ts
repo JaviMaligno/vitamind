@@ -23,8 +23,12 @@ export async function POST(request: NextRequest) {
     });
 
     return NextResponse.json({ ok: true });
-  } catch {
-    return NextResponse.json({ error: "Failed to save subscription" }, { status: 500 });
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : String(err);
+    return NextResponse.json(
+      { error: "Failed to save subscription", detail: message },
+      { status: 500 },
+    );
   }
 }
 
@@ -36,7 +40,11 @@ export async function DELETE(request: NextRequest) {
     }
     await removeSubscription(endpoint);
     return NextResponse.json({ ok: true });
-  } catch {
-    return NextResponse.json({ error: "Failed to remove subscription" }, { status: 500 });
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : String(err);
+    return NextResponse.json(
+      { error: "Failed to remove subscription", detail: message },
+      { status: 500 },
+    );
   }
 }

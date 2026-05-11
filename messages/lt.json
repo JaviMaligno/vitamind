@@ -257,36 +257,82 @@
   "learn": {
     "pageTitle": "Vitaminas D ir Saulė",
     "pageSubtitle": "Mokslu pagrįsti atsakymai į dažnus klausimus",
+    "sourcesLabel": "Šaltiniai",
     "block1": {
       "title": "Saulė ir vitaminas D",
       "subtitle": "Kodėl saulės kampas, UV indeksas ir stiklas yra svarbūs",
       "q1": {
         "q": "Kodėl tik UVB gamina vitaminą D, o ne UVA?",
-        "a": "Ultravioletinė spinduliuotė skirstoma į UVA (315–400 nm) ir UVB (280–315 nm). Tik UVB siaurame 290–315 nm diapazone turi pakankamai energijos, kad izomerizuotų 7-dehidrocholesterolį odoje į pre-vitamino D3 formą. UVA spinduliai yra ilgesnio bangos ilgio ir mažesnės energijos — jie prasiskverbia giliau (sukeldami įdegį ir odos senėjimą), tačiau negali sukelti fotocheminės reakcijos, pradedančios vitamino D sintezę. Dėl šios priežasties soliariumai, daugiausia skleidžiantys UVA, taip pat negamina vitamino D."
+        "a": "Ultravioletinė spinduliuotė skirstoma į UVA (315–400 nm) ir UVB (280–315 nm). Tik UVB siaurame 290–315 nm diapazone turi pakankamai energijos, kad izomerizuotų 7-dehidrocholesterolį odoje į pre-vitamino D3 formą. UVA spinduliai yra ilgesnio bangos ilgio ir mažesnės energijos — jie prasiskverbia giliau (sukeldami įdegį ir odos senėjimą), tačiau negali sukelti fotocheminės reakcijos, pradedančios vitamino D sintezę. Dėl šios priežasties soliariumai, daugiausia skleidžiantys UVA, taip pat negamina vitamino D.",
+        "sources": [
+          { "label": "MacLaughlin JA, Anderson RR, Holick MF (1982) — Spectral character of sunlight modulates photosynthesis of previtamin D3 and its photoisomers in human skin. Science 216(4549):1001-1003", "url": "https://pubmed.ncbi.nlm.nih.gov/6281884/" },
+          { "label": "Young AR et al. (2021) — A revised action spectrum for vitamin D synthesis by suberythemal UV. PNAS 118(40):e2015867118", "url": "https://www.pnas.org/doi/10.1073/pnas.2015867118" },
+          { "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/" }
+        ]
       },
       "q2": {
         "q": "Kodėl svarbus saulės kampas? Kas vyksta žiemą?",
-        "a": "Saulės aukštis virš horizonto lemia, kiek atmosferos UVB turi įveikti prieš pasiekdamas jūsų odą. Esant žemiems kampams — anksti ryte, vėlai popiet arba bet kuriuo žiemos metu virš maždaug 35° platumos — UVB beveik visiškai sugeriamas ozono sluoksnio ir niekada nepasiekia žemės paviršiaus. „Šešėlio taisyklė” tai puikiai apibendrina: jei jūsų šešėlis ilgesnis nei jūsų ūgis, UVB yra per silpnas vitamino D sintezei. Šiaurės platumose žiemą ši sąlyga išlieka visą dieną kelis mėnesius. Kai UVI žemiau 3, net ilgas buvimas lauke duoda nereikšmingą kiekį vitamino D."
+        "a": "Saulės aukštis virš horizonto lemia, kiek atmosferos UVB turi įveikti prieš pasiekdamas jūsų odą. Esant žemiems kampams — anksti ryte, vėlai popiet arba bet kuriuo žiemos metu virš maždaug 35° platumos — UVB beveik visiškai sugeriamas ozono sluoksnio ir niekada nepasiekia žemės paviršiaus. „Šešėlio taisyklė” tai puikiai apibendrina: jei jūsų šešėlis ilgesnis nei jūsų ūgis, UVB yra per silpnas vitamino D sintezei. Šiaurės platumose žiemą ši sąlyga išlieka visą dieną kelis mėnesius. Kai UVI žemiau 3, net ilgas buvimas lauke duoda nereikšmingą kiekį vitamino D.",
+        "sources": [
+          { "label": "Webb AR, Kline L, Holick MF (1988) — Influence of season and latitude on the cutaneous synthesis of vitamin D3: exposure to winter sunlight in Boston and Edmonton will not promote vitamin D3 synthesis in human skin. JCEM 67(2):373-378", "url": "https://pubmed.ncbi.nlm.nih.gov/2839537/" },
+          { "label": "Engelsen O (2010) — The Relationship between Ultraviolet Radiation Exposure and Vitamin D Status. Nutrients 2(5):482-495", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3257661/" },
+          { "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/" }
+        ]
       },
       "q3": {
         "q": "Kodėl pro stiklą tai neveikia?",
-        "a": "Standartinis lango stiklas ir automobilio priekinis stiklas blokuoja beveik visą UVB, tuo pačiu praleidžiant didžiąją dalį UVA ir matomą šviesą. Tai reiškia, kad sėdint prie saulėto lango galite įgyti įdegį — UVA praeina pro stiklą — tačiau negalite sintezuoti vitamino D. Tik specialus kvarco stiklas, naudojamas kai kuriuose medicininiuose UV prietaisuose, praleidžia UVB. Praktinė išvada: ta šilta žiemos saulė pro biuro langą jaučiasi maloniai, tačiau jūsų vitamino D lygiui nieko neprideda."
+        "a": "Standartinis lango stiklas ir automobilio priekinis stiklas blokuoja beveik visą UVB, tuo pačiu praleidžiant didžiąją dalį UVA ir matomą šviesą. Tai reiškia, kad sėdint prie saulėto lango galite įgyti įdegį — UVA praeina pro stiklą — tačiau negalite sintezuoti vitamino D. Tik specialus kvarco stiklas, naudojamas kai kuriuose medicininiuose UV prietaisuose, praleidžia UVB. Praktinė išvada: ta šilta žiemos saulė pro biuro langą jaučiasi maloniai, tačiau jūsų vitamino D lygiui nieko neprideda.",
+        "sources": [
+          { "label": "Tuchinda C, Srivannaboon S, Lim HW (2006) — Photoprotection by window glass, automobile glass, and sunglasses. J Am Acad Dermatol 54(5):845-854", "url": "https://pubmed.ncbi.nlm.nih.gov/16635665/" },
+          { "label": "Almutawa F et al. (2013) — Current status of photoprotection by window glass, automobile glass, window films, and sunglasses. Photodermatol Photoimmunol Photomed 29(2):65-72", "url": "https://onlinelibrary.wiley.com/doi/10.1111/phpp.12022" },
+          { "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/" }
+        ]
       },
       "q4": {
         "q": "Ką reiškia UV indeksas ir kodėl programėlė naudoja 3 kaip minimumą?",
-        "a": "UV indeksas (UVI) yra tarptautinis standartas, matuojantis eriotemaliai svertinamą UV intensyvumą žemės paviršiuje. Jis svyruoja nuo 0 (nėra) iki 11+ (ekstremalus). Programėlė naudoja UVI ≥ 3 kaip sintezės slenkstį, nes žemiau šio lygio UVB intensyvumas yra per mažas reikšmingai vitamino D gamybai, nepriklausomai nuo to, kiek laiko praleidžiate lauke. Šis slenkstis atitinka Holick'o ir kolegų tyrimus ir maždaug atitinka saulę, esančią daugiau nei 30–35° virš horizonto."
+        "a": "UV indeksas (UVI) yra tarptautinis standartas, matuojantis eriotemaliai svertinamą UV intensyvumą žemės paviršiuje. Jis svyruoja nuo 0 (nėra) iki 11+ (ekstremalus). Programėlė naudoja UVI ≥ 3 kaip sintezės slenkstį, nes žemiau šio lygio UVB intensyvumas yra per mažas reikšmingai vitamino D gamybai, nepriklausomai nuo to, kiek laiko praleidžiate lauke. Šis slenkstis atitinka Holick'o ir kolegų tyrimus ir maždaug atitinka saulę, esančią daugiau nei 30–35° virš horizonto.",
+        "sources": [
+          { "label": "WHO/WMO/UNEP/ICNIRP (2002) — Global Solar UV Index: A Practical Guide. World Health Organization", "url": "https://www.who.int/publications/i/item/9241590076" },
+          { "label": "Engelsen O (2010) — The Relationship between Ultraviolet Radiation Exposure and Vitamin D Status. Nutrients 2(5):482-495", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3257661/" },
+          { "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/" }
+        ]
       },
       "q5": {
         "q": "Ar debesys panaikina UVB?",
-        "a": "Ne visiškai. Tankus debesuotumas sumažina UVB 70–90%; plonas arba pertraukiamas debesuotumas — apie 20–50%. Paradoksalu, kad tam tikros pertraukiamo debesuotumo formacijos išsklaido UV ir trumpam gali padidinti UV lygį žemės paviršiuje aukščiau aiškaus dangaus reikšmių. Programėlė naudoja realiuosius UV duomenis iš Open-Meteo, kai jie pasiekiami, todėl parodytos minutės jau atspindi dabartines debesuotumo sąlygas — rankinis koregavimas nereikalingas."
+        "a": "Ne visiškai. Tankus debesuotumas sumažina UVB 70–90%; plonas arba pertraukiamas debesuotumas — apie 20–50%. Paradoksalu, kad tam tikros pertraukiamo debesuotumo formacijos išsklaido UV ir trumpam gali padidinti UV lygį žemės paviršiuje aukščiau aiškaus dangaus reikšmių. Programėlė naudoja realiuosius UV duomenis iš Open-Meteo, kai jie pasiekiami, todėl parodytos minutės jau atspindi dabartines debesuotumo sąlygas — rankinis koregavimas nereikalingas.",
+        "sources": [
+          { "label": "Calbó J, Pagès D, González J-A (2005) — Empirical studies of cloud effects on UV radiation: A review. Reviews of Geophysics 43:RG2002", "url": "https://agupubs.onlinelibrary.wiley.com/doi/full/10.1029/2004RG000155" },
+          { "label": "Mims FM III, Frederick JE (1994) — Cumulus clouds and UV-B. Nature 371:291", "url": "https://www.nature.com/articles/371291a0" },
+          { "label": "WHO/WMO/UNEP/ICNIRP (2002) — Global Solar UV Index: A Practical Guide. World Health Organization", "url": "https://www.who.int/publications/i/item/9241590076" }
+        ]
       },
       "q6": {
         "q": "Ar man reikia tiesioginės saulės šviesos ant odos?",
-        "a": "Taip. Vitamino D sintezei reikalingas tiesioginis UVB poveikis ant nuogos odos. Drabužiai blokuoja didžiąją dalį UVB, net ploni audiniai. Šešėlyje — po medžiu ar markize — difuzinė UVB spinduliuotė yra minimali ir nepakankama reikšmingai sintezei. Kremas nuo saulės su SPF 30+ sumažina sintezę maždaug 95%; praktinis patarimas — pirmąsias 10–20 minučių būti be apsaugos (priklausomai nuo odos tipo), o tada tepti kremą. Svarbu: kitiems naudingams poveikiams, tokiems kaip azoto oksido išskyrimas, cirkadinio ritmo reguliavimas ir serotonino gamyba, tiesioginė saulė NĖRA būtina — buvimas lauke aiškią dieną jau padeda. Tačiau vitaminui D reikalinga nuoga oda tiesioginėje saulės šviesoje."
+        "a": "Taip. Vitamino D sintezei reikalingas tiesioginis UVB poveikis ant nuogos odos. Drabužiai blokuoja didžiąją dalį UVB, net ploni audiniai. Šešėlyje — po medžiu ar markize — difuzinė UVB spinduliuotė yra minimali ir nepakankama reikšmingai sintezei. Kremas nuo saulės su SPF 30+ sumažina sintezę maždaug 95%; praktinis patarimas — pirmąsias 10–20 minučių būti be apsaugos (priklausomai nuo odos tipo), o tada tepti kremą. Svarbu: kitiems naudingams poveikiams, tokiems kaip azoto oksido išskyrimas, cirkadinio ritmo reguliavimas ir serotonino gamyba, tiesioginė saulė NĖRA būtina — buvimas lauke aiškią dieną jau padeda. Tačiau vitaminui D reikalinga nuoga oda tiesioginėje saulės šviesoje.",
+        "sources": [
+          { "label": "Matsuoka LY, Ide L, Wortsman J, MacLaughlin JA, Holick MF (1987) — Sunscreens suppress cutaneous vitamin D3 synthesis. JCEM 64(6):1165-1168", "url": "https://pubmed.ncbi.nlm.nih.gov/3033008/" },
+          { "label": "Matsuoka LY, Wortsman J, Hanifan N, Holick MF (1988) — Chronic sunscreen use decreases circulating concentrations of 25-OH-D. Arch Dermatol 124(12):1802-1804", "url": "https://pubmed.ncbi.nlm.nih.gov/3190255/" },
+          { "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/" }
+        ]
       },
       "q7": {
         "q": "Ar kūno plaukai blokuoja UVB ir mažina vitamino D sintezę?",
-        "a": "Taip, bet nedaug. Kūno plaukai veikia kaip fizinė barjeras nuo UVB spinduliuotės. Galvez ir kt. (2015) tyrimas kiekybiškai įvertino „plaukų UV apsaugos faktorių”: reti, ploni kūno plaukai atitinka maždaug SPF 1–3, o labai tankūs, tamsūs terminaliniai plaukai gali siekti SPF 2–4+. Kompiuteriniai modeliai (Goyal ir Raichur, 2020) rodo, kad tipiniai galūnių plaukai gali sumažinti UVB, pasiekiančius odą, 15–30 %. Tačiau joks klinikinis tyrimas tiesiogiai neišmatavo kūno plaukų poveikio 25(OH)D lygiui serume. Pagrindinės mokslinės apžvalgos apie vitamino D fotosintezės veiksnius — įskaitant Neville ir kt. (2021) — kūno plaukų kaip reikšmingo faktoriaus neįtraukia. Praktiškai labiausiai apaugusios sritys (krūtinė, nugara) paprastai būna uždengtos drabužiais, o poveikis dažniausiai atviroms sritims, tokioms kaip dilbiai ir blauzdos, yra mažas (SPF 1–2). Programėlė neįtraukia kūno plaukų koregavimo, nes poveikis yra nereikšmingas palyginti su odos tipu, UV indeksu, eksponuojamu kūno plotu ir amžiumi — ir jau iš dalies atsispindi kūno ploto parametre."
+        "a": "Taip, bet nedaug. Kūno plaukai veikia kaip fizinė barjeras nuo UVB spinduliuotės. Galvez ir kt. (2015) tyrimas kiekybiškai įvertino „plaukų UV apsaugos faktorių”: reti, ploni kūno plaukai atitinka maždaug SPF 1–3, o labai tankūs, tamsūs terminaliniai plaukai gali siekti SPF 2–4+. Huang ir kt. (2020) Monte Carlo modeliavimas parodė, kad galūnių skutimas padidina UV pralaidumą iki folikulų kamieninių ląstelių maždaug nuo 5 % iki 20 %, o tai rodo reikšmingą plaukų sukeliamą sušvelninimą — nors šis rezultatas matuojamas gylyje ir tiesiogiai neprilygsta UVB sumažėjimui odos paviršiuje. Tačiau joks klinikinis tyrimas tiesiogiai neišmatavo kūno plaukų poveikio 25(OH)D lygiui serume. Pagrindinės mokslinės apžvalgos apie vitamino D fotosintezės veiksnius — įskaitant Neville ir kt. (2021) — kūno plaukų kaip reikšmingo faktoriaus neįtraukia. Praktiškai labiausiai apaugusios sritys (krūtinė, nugara) paprastai būna uždengtos drabužiais, o poveikis dažniausiai atviroms sritims, tokioms kaip dilbiai ir blauzdos, yra mažas (SPF 1–2). Programėlė neįtraukia kūno plaukų koregavimo, nes poveikis yra nereikšmingas palyginti su odos tipu, UV indeksu, eksponuojamu kūno plotu ir amžiumi — ir jau iš dalies atsispindi kūno ploto parametre.",
+        "sources": [
+          { "label": "Gálvez ÓD et al. (2015) — Human Hair as a Natural Sun Protection Agent: A Quantitative Study. Photochem Photobiol 91(4):966-970", "url": "https://pubmed.ncbi.nlm.nih.gov/25682789/" },
+          { "label": "Huang X, Protheroe MD, Al-Jumaily AM, Paul SP, Chalmers AN (2020) — Effect of hair removal on solar UV transmission into skin and implications for melanoma skin cancer development. J Opt Soc Am A 37(5):807-812", "url": "https://pubmed.ncbi.nlm.nih.gov/32400714/" },
+          { "label": "Neville JJ et al. (2021) — Physical Determinants of Vitamin D Photosynthesis: A Review. JBMR Plus 5(1):e10460", "url": "https://academic.oup.com/jbmrplus/article/5/1/e10460/7486276" }
+        ]
+      },
+      "q8": {
+        "q": "Ar 10 minučių saulės iš eilės yra tas pats, kas 10 × 1 minutė?",
+        "a": "Vitamino D sintezei iš esmės taip — su sąlyga, kad UV indeksas kiekviename atkarpoje yra panašus. Oda integruoja bendrą UVB dozę pagal Bunzeno–Roscoe abipusiškumo dėsnį: fotoreakcija priklauso nuo intensyvumo × laiko sandaugos, o ne nuo to, kaip laikas paskirstytas. In vivo tyrimai patvirtina, kad ekvivalentiškas vitamino D3 padidėjimas pasiekiamas tiek esant didelei spinduliuotei trumpą laiką, tiek mažai — ilgą. Trys svarbūs niuansai. Pirma, sesijos riba: previtaminas D3 pasiekia odos maksimumą maždaug ties trečdaliu minimalios eriteminės dozės (MED), o ties 1 MED sintezė sustoja, nes UVB paverčia previtaminą D3 inertiniais junginiais (liumisteroliu ir tachisteroliu). Jeigu viena ilga sesija peržengia šią ribą, papildomos minutės nebepriduria vitamino D — tik nudegimo rizikos; o dešimt vienos minutės sesijų niekada nepasiekia įsotinimo. Antra, minimalus UVI slenkstis: pastebimas serumo 25-OH-D padidėjimas reikalauja maždaug 18–20 mJ/cm² UVB, t. y. apytiksliai UVI ≥ 3, tad žemiau šios ribos jokia minučių sankaupa nesusintetina reikšmingo vitamino D kiekio. Trečia, terminė kinetika lėta: previtamino D3 virtimo vitaminu D3 pusinis amžius odos temperatūroje yra apie 2,5 val., o procesas baigiasi per ~8 val., todėl per dieną pagamintas vitaminas D toliau formuojasi pasibaigus saulės poveikiui. Praktinė išvada: pakartotinės sub-eriteminės ekspozicijos duoda tą patį vitamino D kiekį su mažesne DNR žala nei viena ilga sesija — būtent tokią schemą rekomenduoja medicininės gairės (Holick 2007; Neville ir kt. apžvalga, JBMR Plus 2021).",
+        "sources": [
+          { "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/" },
+          { "label": "Neville JJ et al. (2021) — Physical Determinants of Vitamin D Photosynthesis: A Review. JBMR Plus 5(1):e10460", "url": "https://academic.oup.com/jbmrplus/article/5/1/e10460/7486276" },
+          { "label": "Young AR et al. (2021) — A revised action spectrum for vitamin D synthesis by suberythemal UV. PNAS 118(40):e2015867118", "url": "https://www.pnas.org/doi/10.1073/pnas.2015867118" },
+          { "label": "Schindl A et al. (2022) — Bunsen-Roscoe reciprocity: Is it still valid? Indian J Ophthalmol", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9672781/" }
+        ]
       }
     },
     "block2": {
@@ -294,23 +340,48 @@
       "subtitle": "Palyginimas tarp natūralios sintezės ir kapsulių",
       "q1": {
         "q": "Kiek vitamino D galiu pagaminti saulėje, palyginti su tableto?",
-        "a": "Viso kūno poveikis 1 MED dozei (minimali eriteminė dozė — prieš bet kokį paraudimą) gamina apie 10 000–25 000 TV vitamino D. Standartinė papildo kapsulė turi 400–2 000 TV. 15–20 minučių vidurdienio sesija vasarą su atidengtosiomis rankomis ir kojomis gali lengvai viršyti savaitinę tipinio papildinimo normą. Tačiau saulė turi įgimtą saugumo mechanizmą (natūralų irimą), kuris neleidžia persidozuoti — apsaugą, kurios neturi geriamieji papildai."
+        "a": "Viso kūno poveikis 1 MED dozei (minimali eriteminė dozė — prieš bet kokį paraudimą) gamina apie 10 000–25 000 TV vitamino D. Standartinė papildo kapsulė turi 400–2 000 TV. 15–20 minučių vidurdienio sesija vasarą su atidengtosiomis rankomis ir kojomis gali lengvai viršyti savaitinę tipinio papildinimo normą. Tačiau saulė turi įgimtą saugumo mechanizmą (natūralų irimą), kuris neleidžia persidozuoti — apsaugą, kurios neturi geriamieji papildai.",
+        "sources": [
+          { "label": "Holick MF (1995) — Environmental factors that influence the cutaneous production of vitamin D. Am J Clin Nutr 61(3 Suppl):638S-645S", "url": "https://pubmed.ncbi.nlm.nih.gov/7879731/" },
+          { "label": "Holick MF (2007) — Vitamin D Deficiency. NEJM 357:266-281", "url": "https://www.nejm.org/doi/full/10.1056/NEJMra070553" },
+          { "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/" }
+        ]
       },
       "q2": {
         "q": "Ar galiu persidozuoti vitamino D nuo saulės?",
-        "a": "Ne. Saulės sintezė yra savaime ribojama. Kai pre-vitaminas D3 kaupiasi odoje, tęsiamas UVB jį paverčia inertiniais junginiais — lumisterolio ir tachysterolio — vietoj tolesnio kaupimosi. Šis natūralus irimo procesas reiškia, kad jūsų kūnas niekada nepagamina toksinių kiekių nuo saulės poveikio, nesvarbu, kiek laiko praleidžiate lauke. Štai kodėl IOM toleruojamas viršutinis suvartojimo lygis 4 000 TV per dieną taikomas konkrečiai geriamajam papildinimui, o ne saulės šviesai."
+        "a": "Ne. Saulės sintezė yra savaime ribojama. Kai pre-vitaminas D3 kaupiasi odoje, tęsiamas UVB jį paverčia inertiniais junginiais — lumisterolio ir tachysterolio — vietoj tolesnio kaupimosi. Šis natūralus irimo procesas reiškia, kad jūsų kūnas niekada nepagamina toksinių kiekių nuo saulės poveikio, nesvarbu, kiek laiko praleidžiate lauke. Štai kodėl IOM toleruojamas viršutinis suvartojimo lygis 4 000 TV per dieną taikomas konkrečiai geriamajam papildinimui, o ne saulės šviesai.",
+        "sources": [
+          { "label": "Holick MF, MacLaughlin JA, Doppelt SH (1981) — Regulation of Cutaneous Previtamin D3 Photosynthesis in Man. Science 211(4482):590-593", "url": "https://pubmed.ncbi.nlm.nih.gov/6256855/" },
+          { "label": "Institute of Medicine (2011) — Dietary Reference Intakes for Calcium and Vitamin D. National Academies Press", "url": "https://www.ncbi.nlm.nih.gov/books/NBK56070/" },
+          { "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/" }
+        ]
       },
       "q3": {
         "q": "Ar saulė geriau nei papildai?",
-        "a": "Abu turi realių privalumų. Saulės pagamintas D3 yra susijęs su odos baltymais ir lėtai išleidžiamas į kraują, suteikdamas jam ilgesnį pusperiodį nei geriamasis D3. Buvimas saulėje taip pat suteikia UVA valdomą azoto oksido išsiskyrimą, paros šviesos signalus ir kitus privalumus, kurių jokia tabletė negali pakartoti. Kita vertus, geriamasis D3 yra kontroliuojamas, tikslios dozės ir pasiekiamas ištisus metus. Praktinis atsakymas: naudokite saulę, kai sąlygos leidžia, papildykite, kai neleidžia — jie papildo vienas kitą."
+        "a": "Abu turi realių privalumų. Saulės pagamintas D3 yra susijęs su odos baltymais ir lėtai išleidžiamas į kraują, suteikdamas jam ilgesnį pusperiodį nei geriamasis D3. Buvimas saulėje taip pat suteikia UVA valdomą azoto oksido išsiskyrimą, paros šviesos signalus ir kitus privalumus, kurių jokia tabletė negali pakartoti. Kita vertus, geriamasis D3 yra kontroliuojamas, tikslios dozės ir pasiekiamas ištisus metus. Praktinis atsakymas: naudokite saulę, kai sąlygos leidžia, papildykite, kai neleidžia — jie papildo vienas kitą.",
+        "sources": [
+          { "label": "Haddad JG, Matsuoka LY, Hollis BW, Hu YZ, Wortsman J (1993) — Human plasma transport of vitamin D after its endogenous synthesis. J Clin Invest 91(6):2552-2555", "url": "https://pubmed.ncbi.nlm.nih.gov/8390483/" },
+          { "label": "Liu D, Fernandez BO, Hamilton A, Lang NN, Gallagher JMC, Newby DE, Feelisch M, Weller RB (2014) — UVA Irradiation of Human Skin Vasodilates Arterial Vasculature and Lowers Blood Pressure Independently of Nitric Oxide Synthase. J Invest Dermatol 134(7):1839-1846", "url": "https://pubmed.ncbi.nlm.nih.gov/24445737/" },
+          { "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/" }
+        ]
       },
       "q4": {
         "q": "D3 ar D2 papilduose?",
-        "a": "D3 (cholekalciferolis) yra žymiai efektyvesnis nei D2 (ergokalciferolis) didinant ir palaikant 25-OH-D kraujyje — tyrimai rodo, kad D3 yra maždaug 2–3× stipresnis TV vienetui. D3 taip pat yra forma, kurią gamina jūsų oda. D2, gautas iš augalinių ir grybinių šaltinių, naudojamas veganiškuose papilduose, tačiau lyginamomis dozėmis atsilieka nuo D3. Ieškokite etiketėje „cholekalciferol”; taip pat pasiekiamas veganiškasis D3 iš kerpių."
+        "a": "D3 (cholekalciferolis) yra žymiai efektyvesnis nei D2 (ergokalciferolis) didinant ir palaikant 25-OH-D kraujyje — tyrimai rodo, kad D3 yra maždaug 2–3× stipresnis TV vienetui. D3 taip pat yra forma, kurią gamina jūsų oda. D2, gautas iš augalinių ir grybinių šaltinių, naudojamas veganiškuose papilduose, tačiau lyginamomis dozėmis atsilieka nuo D3. Ieškokite etiketėje „cholekalciferol”; taip pat pasiekiamas veganiškasis D3 iš kerpių.",
+        "sources": [
+          { "label": "Tripkovic L et al. (2012) — Comparison of vitamin D2 and vitamin D3 supplementation in raising serum 25-hydroxyvitamin D status: a systematic review and meta-analysis. Am J Clin Nutr 95(6):1357-1364", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3349454/" },
+          { "label": "Heaney RP, Recker RR, Grote J, Horst RL, Armas LAG (2011) — Vitamin D3 Is More Potent Than Vitamin D2 in Humans. JCEM 96(3):E447-E452", "url": "https://pubmed.ncbi.nlm.nih.gov/21177785/" },
+          { "label": "Holick MF (2007) — Vitamin D Deficiency. NEJM 357:266-281", "url": "https://www.nejm.org/doi/full/10.1056/NEJMra070553" }
+        ]
       },
       "q5": {
         "q": "Kokie 25-OH-D kraujo lygiai laikomi optimaliais?",
-        "a": "Standartiniai serumo 25-hidroksi vitamino D atskaitos diapazonai: žemiau 20 ng/mL (50 nmol/L) — trūkumas; 20–30 ng/mL — nepakankamas; 30–50 ng/mL — pakankamas. Endokrininė draugija laiko 40–60 ng/mL optimaliu neskeleto naudai. Virš 100 ng/mL (250 nmol/L) kyla toksikumo rizika nuo papildinimo. Dauguma šiaurės platumų gyventojų žiemą be papildinimo turi žemiau 20 ng/mL — plačiai paplitęs, bet lengvai ištaisomas trūkumas."
+        "a": "Standartiniai serumo 25-hidroksi vitamino D atskaitos diapazonai: žemiau 20 ng/mL (50 nmol/L) — trūkumas; 20–30 ng/mL — nepakankamas; 30–50 ng/mL — pakankamas. Endokrininė draugija laiko 40–60 ng/mL optimaliu neskeleto naudai. Virš 100 ng/mL (250 nmol/L) kyla toksikumo rizika nuo papildinimo. Dauguma šiaurės platumų gyventojų žiemą be papildinimo turi žemiau 20 ng/mL — plačiai paplitęs, bet lengvai ištaisomas trūkumas.",
+        "sources": [
+          { "label": "Holick MF et al. (2011) — Evaluation, Treatment, and Prevention of Vitamin D Deficiency: an Endocrine Society Clinical Practice Guideline. JCEM 96(7):1911-1930", "url": "https://pubmed.ncbi.nlm.nih.gov/21646368/" },
+          { "label": "Institute of Medicine (2011) — Dietary Reference Intakes for Calcium and Vitamin D. National Academies Press", "url": "https://www.ncbi.nlm.nih.gov/books/NBK56070/" },
+          { "label": "Holick MF (2007) — Vitamin D Deficiency. NEJM 357:266-281", "url": "https://www.nejm.org/doi/full/10.1056/NEJMra070553" }
+        ]
       }
     },
     "block3": {
@@ -318,27 +389,57 @@
       "subtitle": "D3, K2, magnis ir teisingas vartojimas",
       "q1": {
         "q": "D3 ar D2? Kiek vartoti?",
-        "a": "Pasirinkite D3 (cholekalciferolį), nebent esate veganas — tokiu atveju pasiekiamas kerpių kilmės veganiškasis D3. Daugumai suaugusiųjų: 1 000–2 000 TV per dieną, jei reguliariai gaunate saulės; 2 000–4 000 TV per dieną, jei saulės poveikis ribotas. Endokrininės draugijos viršutinė suvartojimo riba suaugusiesiems iš papildų yra 4 000 TV per dieną. Didesnės dozės trūkumui koreguoti egzistuoja, tačiau jas turėtų lemti kraujo tyrimai. Geriausias būdas rasti asmeninę veiksmingą dozę — ištirti 25-OH-D prieš papildinimą ir po 3 mėnesių."
+        "a": "Pasirinkite D3 (cholekalciferolį), nebent esate veganas — tokiu atveju pasiekiamas kerpių kilmės veganiškasis D3. Daugumai suaugusiųjų: 1 000–2 000 TV per dieną, jei reguliariai gaunate saulės; 2 000–4 000 TV per dieną, jei saulės poveikis ribotas. Endokrininės draugijos viršutinė suvartojimo riba suaugusiesiems iš papildų yra 4 000 TV per dieną. Didesnės dozės trūkumui koreguoti egzistuoja, tačiau jas turėtų lemti kraujo tyrimai. Geriausias būdas rasti asmeninę veiksmingą dozę — ištirti 25-OH-D prieš papildinimą ir po 3 mėnesių.",
+        "sources": [
+          { "label": "Holick MF et al. (2011) — Evaluation, Treatment, and Prevention of Vitamin D Deficiency: an Endocrine Society Clinical Practice Guideline. JCEM 96(7):1911-1930", "url": "https://pubmed.ncbi.nlm.nih.gov/21646368/" },
+          { "label": "Institute of Medicine (2011) — Dietary Reference Intakes for Calcium and Vitamin D. National Academies Press", "url": "https://www.ncbi.nlm.nih.gov/books/NBK56070/" },
+          { "label": "Holick MF (2007) — Vitamin D Deficiency. NEJM 357:266-281", "url": "https://www.nejm.org/doi/full/10.1056/NEJMra070553" }
+        ]
       },
       "q2": {
         "q": "Kodėl rekomenduojama kartu vartoti K2 su D3?",
-        "a": "Vitaminas D3 padidina kalcio įsisavinimą žarnyne. Vitaminas K2 — ypač MK-7 forma — aktyvuoja du svarbius baltymus: osteokalciną (nukreipia kalcį į kaulus) ir matricos Gla baltymą (neleidžia kalciui nusėsti arterijose ir minkštuosiuose audiniuose). Be pakankamai K2, didelių dozių D3 papildinimo sukeltas papildomas kalcis gali prisidėti prie arterijų kalcifikacijos. Natūralūs K2 šaltiniai: natto, brandinti kieti sūriai ir kiaušinių tryniai. Jei vartojate daugiau nei 1 000 TV D3 per dieną, plačiai rekomenduojama 100–200 mcg MK-7."
+        "a": "Vitaminas D3 padidina kalcio įsisavinimą žarnyne. Vitaminas K2 — ypač MK-7 forma — aktyvuoja du svarbius baltymus: osteokalciną (nukreipia kalcį į kaulus) ir matricos Gla baltymą (neleidžia kalciui nusėsti arterijose ir minkštuosiuose audiniuose). Be pakankamai K2, didelių dozių D3 papildinimo sukeltas papildomas kalcis gali prisidėti prie arterijų kalcifikacijos. Natūralūs K2 šaltiniai: natto, brandinti kieti sūriai ir kiaušinių tryniai. Jei vartojate daugiau nei 1 000 TV D3 per dieną, plačiai rekomenduojama 100–200 mcg MK-7.",
+        "sources": [
+          { "label": "Geleijnse JM et al. (2004) — Dietary intake of menaquinone is associated with a reduced risk of coronary heart disease: the Rotterdam Study. J Nutr 134(11):3100-3105", "url": "https://pubmed.ncbi.nlm.nih.gov/15514282/" },
+          { "label": "Knapen MH et al. (2013) — Three-year low-dose menaquinone-7 supplementation helps decrease bone loss in healthy postmenopausal women. Osteoporos Int 24(9):2499-2507", "url": "https://pubmed.ncbi.nlm.nih.gov/23525894/" },
+          { "label": "van Ballegooijen AJ et al. (2017) — The Synergistic Interplay between Vitamins D and K for Bone and Cardiovascular Health: A Narrative Review. Int J Endocrinol 2017:7454376", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5613455/" }
+        ]
       },
       "q3": {
         "q": "Kokį vaidmenį atlieka magnis?",
-        "a": "Magnis yra kofaktorius abiem fermentams, paverčiantiems vitaminą D jo aktyviomis formomis (25-OH-D ir vėliau 1,25-OH-D). Be pakankamai magnio, papildomas D3 gali netinkamai konvertuotis, o papildinimas gali sumažinti magnio lygius, pablogindamas esamą trūkumą. Apytikriai 50% Vakarų gyventojų turi nepakankamą magnio kiekį. Geri maisto šaltiniai: moliūgų sėklos, juodasis šokoladas, špinatai, migdolai, avokadas. Magnio glicinatas arba malatas gerai toleruojami, jei maistinis suvartojimas yra mažas."
+        "a": "Magnis yra kofaktorius abiem fermentams, paverčiantiems vitaminą D jo aktyviomis formomis (25-OH-D ir vėliau 1,25-OH-D). Be pakankamai magnio, papildomas D3 gali netinkamai konvertuotis, o papildinimas gali sumažinti magnio lygius, pablogindamas esamą trūkumą. Apytikriai 50% Vakarų gyventojų turi nepakankamą magnio kiekį. Geri maisto šaltiniai: moliūgų sėklos, juodasis šokoladas, špinatai, migdolai, avokadas. Magnio glicinatas arba malatas gerai toleruojami, jei maistinis suvartojimas yra mažas.",
+        "sources": [
+          { "label": "Uwitonze AM, Razzaque MS (2018) — Role of Magnesium in Vitamin D Activation and Function. J Am Osteopath Assoc 118(3):181-189", "url": "https://pubmed.ncbi.nlm.nih.gov/29480918/" },
+          { "label": "Rosanoff A, Weaver CM, Rude RK (2012) — Suboptimal magnesium status in the United States: are the health consequences underestimated? Nutr Rev 70(3):153-164", "url": "https://pubmed.ncbi.nlm.nih.gov/22364157/" },
+          { "label": "NIH Office of Dietary Supplements — Magnesium: Health Professional Fact Sheet", "url": "https://ods.od.nih.gov/factsheets/Magnesium-HealthProfessional/" }
+        ]
       },
       "q4": {
         "q": "Kodėl vitaminas D turi būti vartojamas su riebalais?",
-        "a": "Vitaminas D yra riebaluose tirpus. Jam reikia maistinių riebalų žarnyne, kad susidarytų miceliai — maži riebalų-baltymų paketai, pernešantys vitaminą per žarnyno sienelę į kraują. Tyrimai rodo, kad D3 vartojimas su riebalus turinčiu patiekalu padidina įsisavinimą 30–50%, palyginti su vartojamu tuščiu skrandžiu. Praktinė taisyklė: vartokite su sočiausiu dienos patiekalu. Šaukštas alyvuogių aliejaus, sauja riešutų arba lašišos patiekalas suteikia pakankamai riebalų. Tai vienodai taikoma vitaminams A, E ir K2."
+        "a": "Vitaminas D yra riebaluose tirpus. Jam reikia maistinių riebalų žarnyne, kad susidarytų miceliai — maži riebalų-baltymų paketai, pernešantys vitaminą per žarnyno sienelę į kraują. Tyrimai rodo, kad D3 vartojimas su riebalus turinčiu patiekalu padidina įsisavinimą 30–50%, palyginti su vartojamu tuščiu skrandžiu. Praktinė taisyklė: vartokite su sočiausiu dienos patiekalu. Šaukštas alyvuogių aliejaus, sauja riešutų arba lašišos patiekalas suteikia pakankamai riebalų. Tai vienodai taikoma vitaminams A, E ir K2.",
+        "sources": [
+          { "label": "Mulligan GB, Licata A (2010) — Taking vitamin D with the largest meal improves absorption and results in higher serum levels of 25-hydroxyvitamin D. J Bone Miner Res 25(4):928-930", "url": "https://onlinelibrary.wiley.com/doi/10.1002/jbmr.67" },
+          { "label": "Dawson-Hughes B et al. (2015) — Dietary Fat Increases Vitamin D-3 Absorption. J Acad Nutr Diet 115(2):225-230", "url": "https://pubmed.ncbi.nlm.nih.gov/25441954/" },
+          { "label": "Holick MF (2007) — Vitamin D Deficiency. NEJM 357:266-281", "url": "https://www.nejm.org/doi/full/10.1056/NEJMra070553" }
+        ]
       },
       "q5": {
         "q": "Kokiuose maisto produktuose natūraliai yra vitamino D?",
-        "a": "Labai nedaugelyje maisto produktų yra reikšmingų kiekių: riebioji žuvis (laukinė lašiša 600–1 000 TV 100 g; skumbrė, sardinės, silkė), menkių kepenų aliejus (~400 TV vienam šaukšteliui, taip pat turtingas vitamino A), kiaušinių tryniai (~40 TV kiekvienas, daugiau jei višta gavo UV poveikį), UV veikiami grybai (gali suteikti 400+ TV 100 g, kai džiovinami žiaunomis į viršų saulės šviesoje) ir jautienos kepenys (nedideli kiekiai). Praturtinti maisto produktai (pienas, grūdai, augaliniai pieno produktai) prideda kuklių kiekių priklausomai nuo šalies. Vien mityba realistiškai negali pasiekti 1 000–4 000 TV diapazono be papildinimo."
+        "a": "Labai nedaugelyje maisto produktų yra reikšmingų kiekių: riebioji žuvis (laukinė lašiša 600–1 000 TV 100 g; skumbrė, sardinės, silkė), menkių kepenų aliejus (~400 TV vienam šaukšteliui, taip pat turtingas vitamino A), kiaušinių tryniai (~40 TV kiekvienas, daugiau jei višta gavo UV poveikį), UV veikiami grybai (gali suteikti 400+ TV 100 g, kai džiovinami žiaunomis į viršų saulės šviesoje) ir jautienos kepenys (nedideli kiekiai). Praturtinti maisto produktai (pienas, grūdai, augaliniai pieno produktai) prideda kuklių kiekių priklausomai nuo šalies. Vien mityba realistiškai negali pasiekti 1 000–4 000 TV diapazono be papildinimo.",
+        "sources": [
+          { "label": "Lu Z et al. (2007) — An evaluation of the vitamin D3 content in fish: Is the vitamin D content adequate to satisfy the dietary requirement for vitamin D? J Steroid Biochem Mol Biol 103(3-5):642-644", "url": "https://pubmed.ncbi.nlm.nih.gov/17267210/" },
+          { "label": "Cardwell G et al. (2018) — A Review of Mushrooms as a Potential Source of Dietary Vitamin D. Nutrients 10(10):1498", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6213178/" },
+          { "label": "NIH Office of Dietary Supplements — Vitamin D: Health Professional Fact Sheet", "url": "https://ods.od.nih.gov/factsheets/VitaminD-HealthProfessional/" }
+        ]
       },
       "q6": {
         "q": "Koks yra geriausias paros metas vartoti vitaminą D?",
-        "a": "Su didžiausiu dienos patiekalu — pirmiausia dėl riebalų įsisavinimo naudos. Rytas arba vidurdienis (su pusryčiais ar pietumis) paprastai pirmenybė prieš vakarą, nes vitaminas D gali švelniai didinti budrumą ir kai kurie įrodymai rodo, kad vakarinis papildinimas gali šiek tiek trikdyti melatonino gamybą. Vis dėlto nuoseklumas yra daug svarbiau nei laikas: vartokite tuo metu, kurį patikimai atsiminate."
+        "a": "Su didžiausiu dienos patiekalu — pirmiausia dėl riebalų įsisavinimo naudos. Rytas arba vidurdienis (su pusryčiais ar pietumis) paprastai pirmenybė prieš vakarą, nes vitaminas D gali švelniai didinti budrumą ir kai kurie įrodymai rodo, kad vakarinis papildinimas gali šiek tiek trikdyti melatonino gamybą. Vis dėlto nuoseklumas yra daug svarbiau nei laikas: vartokite tuo metu, kurį patikimai atsiminate.",
+        "sources": [
+          { "label": "Mulligan GB, Licata A (2010) — Taking vitamin D with the largest meal improves absorption and results in higher serum levels of 25-hydroxyvitamin D. J Bone Miner Res 25(4):928-930", "url": "https://onlinelibrary.wiley.com/doi/10.1002/jbmr.67" },
+          { "label": "Abboud M (2022) — Vitamin D Supplementation and Sleep: A Systematic Review and Meta-Analysis of Intervention Studies. Nutrients 14(5):1076", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8912284/" },
+          { "label": "Holick MF (2007) — Vitamin D Deficiency. NEJM 357:266-281", "url": "https://www.nejm.org/doi/full/10.1056/NEJMra070553" }
+        ]
       }
     },
     "block4": {
@@ -346,23 +447,48 @@
       "subtitle": "Azoto oksidas, cirkadiniai ritmai, nuotaika ir imunitetas",
       "q1": {
         "q": "Kas yra azoto oksidas ir ką jis turi bendro su saule?",
-        "a": "Azoto oksidas (NO) yra signalinis molekulas, plečiantis kraujagysles, mažinantis kraujospūdį ir gerinantis kraujotaką. Oda kaupia didelius kiekius nitrito ir nitrozotiolio junginių, kurie išleidžia NO į kraują per kelias minutes po UVA poveikio. Tai yra visiškai nepriklausoma nuo vitamino D sintezės — tai vyksta pro stiklą, dalinėje pavėsyje ir net žiemą, kai UVB nėra. Richardo Wellerio grupės Edinburgo universitete tyrimas rodo, kad UVA valdomam NO išskyrimui gali būti paaiškinamas gerai dokumentuotas ryšys tarp saulės poveikio ir sumažėjusio širdies ir kraujagyslių mirštamumo, išeinančio už tai, ką pats vitaminas D gali paaiškinti."
+        "a": "Azoto oksidas (NO) yra signalinis molekulas, plečiantis kraujagysles, mažinantis kraujospūdį ir gerinantis kraujotaką. Oda kaupia didelius kiekius nitrito ir nitrozotiolio junginių, kurie išleidžia NO į kraują per kelias minutes po UVA poveikio. Tai yra visiškai nepriklausoma nuo vitamino D sintezės — tai vyksta pro stiklą, dalinėje pavėsyje ir net žiemą, kai UVB nėra. Richardo Wellerio grupės Edinburgo universitete tyrimas rodo, kad UVA valdomam NO išskyrimui gali būti paaiškinamas gerai dokumentuotas ryšys tarp saulės poveikio ir sumažėjusio širdies ir kraujagyslių mirštamumo, išeinančio už tai, ką pats vitaminas D gali paaiškinti.",
+        "sources": [
+          { "label": "Liu D, Fernandez BO, Hamilton A, Lang NN, Gallagher JMC, Newby DE, Feelisch M, Weller RB (2014) — UVA Irradiation of Human Skin Vasodilates Arterial Vasculature and Lowers Blood Pressure Independently of Nitric Oxide Synthase. J Invest Dermatol 134(7):1839-1846", "url": "https://pubmed.ncbi.nlm.nih.gov/24445737/" },
+          { "label": "Lindqvist PG et al. (2016) — Avoidance of sun exposure as a risk factor for major causes of death: a competing risk analysis of the Melanoma in Southern Sweden cohort. J Intern Med 280(4):375-387", "url": "https://pubmed.ncbi.nlm.nih.gov/26992108/" },
+          { "label": "Weller RB (2016) — Sunlight Has Cardiovascular Benefits Independently of Vitamin D. Blood Purif 41(1-3):130-134", "url": "https://karger.com/bpu/article/41/1-3/130/328295/" }
+        ]
       },
       "q2": {
         "q": "Kaip saulės šviesa veikia cirkadinius ritmus?",
-        "a": "Šviesa yra pagrindinis zeitgeberis — „laiko davėjas” — žmogaus cirkadiniam laikrodžiui. Ryto saulės šviesa, turtinga trumpo bangos ilgio mėlynos šviesos (460–480 nm), signalizuoja tinklainės ganglinėms ląstelėms, kurios savo ruožtu liepia supra chiazminiam branduoliui (SCN) smegenyse slopinti melatoniną ir sukelti kortizolio pabudimo atsaką. Tai fiksuoja 24 valandų kūno laikrodį. Nepakankamas ryto šviesos poveikis vėlina miego pradžią, sutrikdo hormonų laiką ir yra susijusi su nuotaikos sutrikimais ir medžiagų apykaitos disfunkcija. Idealus langas — pirmosios 30–60 minučių po pabudimo, lauke — net apsiniaukusiomis dienomis lauko šviesa paprastai yra 10–50× ryškesnė nei patalpų apšvietimas."
+        "a": "Šviesa yra pagrindinis zeitgeberis — „laiko davėjas” — žmogaus cirkadiniam laikrodžiui. Ryto saulės šviesa, turtinga trumpo bangos ilgio mėlynos šviesos (460–480 nm), signalizuoja tinklainės ganglinėms ląstelėms, kurios savo ruožtu liepia supra chiazminiam branduoliui (SCN) smegenyse slopinti melatoniną ir sukelti kortizolio pabudimo atsaką. Tai fiksuoja 24 valandų kūno laikrodį. Nepakankamas ryto šviesos poveikis vėlina miego pradžią, sutrikdo hormonų laiką ir yra susijusi su nuotaikos sutrikimais ir medžiagų apykaitos disfunkcija. Idealus langas — pirmosios 30–60 minučių po pabudimo, lauke — net apsiniaukusiomis dienomis lauko šviesa paprastai yra 10–50× ryškesnė nei patalpų apšvietimas.",
+        "sources": [
+          { "label": "Berson DM, Dunn FA, Takao M (2002) — Phototransduction by retinal ganglion cells that set the circadian clock. Science 295(5557):1070-1073", "url": "https://pubmed.ncbi.nlm.nih.gov/11834835/" },
+          { "label": "Hattar S, Liao HW, Takao M, Berson DM, Yau KW (2002) — Melanopsin-containing retinal ganglion cells: architecture, projections, and intrinsic photosensitivity. Science 295(5557):1065-1070", "url": "https://pubmed.ncbi.nlm.nih.gov/11834834/" },
+          { "label": "Wright KP Jr et al. (2013) — Entrainment of the human circadian clock to the natural light-dark cycle. Curr Biol 23(16):1554-1558", "url": "https://pubmed.ncbi.nlm.nih.gov/23910656/" }
+        ]
       },
       "q3": {
         "q": "Kam naudinga aušros šviesa, jei ji negamina vitamino D?",
-        "a": "Aušros šviesa turi visiškai kitokį spektrinį profilį nei vidurdienio saulė: ji turtinga raudonų ir artimų infraraudonųjų bangų ilgių (600–1 000 nm), su mažai UVB ir vidutiniškai mėlynos šviesos. Ši infraraudonoji šviesa prasiskverbia kelis centimetrus į audinį ir aktyvuoja citochromą c oksidazę mitochondrijose, gerinant ATP gamybą ir ląstelių energiją. Ji taip pat švelniau išvalo nakties melatoniną nei didelio intensyvumo mėlyna šviesa, palengvindama perėjimą į budrumą. Raudonos šviesos ir artimų infraraudonųjų spindulių terapijos prietaisai (bangų ilgiai 630–850 nm) iš dalies atkartoja šį spektrą terapiniam naudojimui."
+        "a": "Aušros šviesa turi visiškai kitokį spektrinį profilį nei vidurdienio saulė: ji turtinga raudonų ir artimų infraraudonųjų bangų ilgių (600–1 000 nm), su mažai UVB ir vidutiniškai mėlynos šviesos. Ši infraraudonoji šviesa prasiskverbia kelis centimetrus į audinį ir aktyvuoja citochromą c oksidazę mitochondrijose, gerinant ATP gamybą ir ląstelių energiją. Ji taip pat švelniau išvalo nakties melatoniną nei didelio intensyvumo mėlyna šviesa, palengvindama perėjimą į budrumą. Raudonos šviesos ir artimų infraraudonųjų spindulių terapijos prietaisai (bangų ilgiai 630–850 nm) iš dalies atkartoja šį spektrą terapiniam naudojimui.",
+        "sources": [
+          { "label": "Karu TI (2010) — Multiple roles of cytochrome c oxidase in mammalian cells under action of red and IR-A radiation. IUBMB Life 62(8):607-610", "url": "https://pubmed.ncbi.nlm.nih.gov/20681024/" },
+          { "label": "Hamblin MR (2017) — Mechanisms and Mitochondrial Redox Signaling in Photobiomodulation. Photochem Photobiol 94(2):199-212", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5844808/" },
+          { "label": "de Freitas LF, Hamblin MR (2016) — Proposed Mechanisms of Photobiomodulation or Low-Level Light Therapy. IEEE J Sel Top Quantum Electron 22(3):7000417", "url": "https://pubmed.ncbi.nlm.nih.gov/28070154/" }
+        ]
       },
       "q4": {
         "q": "Ar yra ryšys tarp saulės ir imuniteto, nepriklausomai nuo vitamino D?",
-        "a": "Taip. UV poveikis nepriklausomai moduliuoja imuninę funkciją per mechanizmus, atskirtus nuo vitamino D: ji sukelia reguliuojamuosius T ląsteles ir keičia antigeno pristatančias ląsteles taip, kad slopina uždegiminį atsaką. Tai yra UV fototerapijos, kliniškai naudojamos gydant psoriazę, egzemą ir vitiligo, pagrindas. Kai kurie tyrėjai sieja šį platesnį UV imunomoduliavimą su autoimmuninio ligų paplitimo platumos gradientu — išsėtinė sklerozė, 1 tipo cukrinis diabetas ir uždegiminė žarnyno liga yra žymiai dažnesnės aukštesnėse platumose, o tai tik iš dalies paaiškinama vitamino D lygiais."
+        "a": "Taip. UV poveikis nepriklausomai moduliuoja imuninę funkciją per mechanizmus, atskirtus nuo vitamino D: ji sukelia reguliuojamuosius T ląsteles ir keičia antigeno pristatančias ląsteles taip, kad slopina uždegiminį atsaką. Tai yra UV fototerapijos, kliniškai naudojamos gydant psoriazę, egzemą ir vitiligo, pagrindas. Kai kurie tyrėjai sieja šį platesnį UV imunomoduliavimą su autoimmuninio ligų paplitimo platumos gradientu — išsėtinė sklerozė, 1 tipo cukrinis diabetas ir uždegiminė žarnyno liga yra žymiai dažnesnės aukštesnėse platumose, o tai tik iš dalies paaiškinama vitamino D lygiais.",
+        "sources": [
+          { "label": "Hart PH, Gorman S, Finlay-Jones JJ (2011) — Modulation of the immune system by UV radiation: more than just the effects of vitamin D? Nat Rev Immunol 11(9):584-596", "url": "https://www.nature.com/articles/nri3045" },
+          { "label": "Munger KL et al. (2006) — Serum 25-hydroxyvitamin D levels and risk of multiple sclerosis. JAMA 296(23):2832-2838", "url": "https://pubmed.ncbi.nlm.nih.gov/17179460/" },
+          { "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/" }
+        ]
       },
       "q5": {
         "q": "Ar saulės šviesa veikia nuotaiką? (serotoninas ir melatoninas)",
-        "a": "Stipriai. Ryški šviesa stimuliuoja serotonino sintezę per rafe branduolius smegenų kamiene — šis mechanizmas yra šviesos terapijos, kaip pirmosios eilės gydymo sezoniniu afektiniu sutrikimu (SAD), pagrindas. Serotoninas taip pat yra melatonino pirmtakas: pakankamas dieninis serotoninas palaiko geresnę melatonino gamybą naktį, gerinant miego kokybę. Atskirai didelio apšvietimo lauko šviesa sukelia dopamino išsiskyrimą tinklainėje, kuris, atrodo, sulėtina miopisjos progresavimą vaikams. Populiacijos tyrimai nuosekliai rodo ryšius tarp laiko lauke, nuotaikos ir miego kokybės, gerokai viršijančius vitamino D būklę."
+        "a": "Stipriai. Ryški šviesa stimuliuoja serotonino sintezę per rafe branduolius smegenų kamiene — šis mechanizmas yra šviesos terapijos, kaip pirmosios eilės gydymo sezoniniu afektiniu sutrikimu (SAD), pagrindas. Serotoninas taip pat yra melatonino pirmtakas: pakankamas dieninis serotoninas palaiko geresnę melatonino gamybą naktį, gerinant miego kokybę. Atskirai didelio apšvietimo lauko šviesa sukelia dopamino išsiskyrimą tinklainėje, kuris, atrodo, sulėtina miopisjos progresavimą vaikams. Populiacijos tyrimai nuosekliai rodo ryšius tarp laiko lauke, nuotaikos ir miego kokybės, gerokai viršijančius vitamino D būklę.",
+        "sources": [
+          { "label": "Lambert GW, Reid C, Kaye DM, Jennings GL, Esler MD (2002) — Effect of sunlight and season on serotonin turnover in the brain. Lancet 360(9348):1840-1842", "url": "https://pubmed.ncbi.nlm.nih.gov/12480364/" },
+          { "label": "Golden RN et al. (2005) — The efficacy of light therapy in the treatment of mood disorders: a review and meta-analysis. Am J Psychiatry 162(4):656-662", "url": "https://pubmed.ncbi.nlm.nih.gov/15800134/" },
+          { "label": "Wu PC, Tsai CL, Wu HL, Yang YH, Kuo HK (2013) — Outdoor activity during class recess reduces myopia onset and progression in school children. Ophthalmology 120(5):1080-1085", "url": "https://pubmed.ncbi.nlm.nih.gov/23462271/" }
+        ]
       }
     },
     "backToApp": "Grįžti į programėlę",

@@ -24,6 +24,7 @@ const BLOCKS: Block[] = [
       { qKey: "block1.q5.q", aKey: "block1.q5.a" },
       { qKey: "block1.q6.q", aKey: "block1.q6.a" },
       { qKey: "block1.q7.q", aKey: "block1.q7.a" },
+      { qKey: "block1.q8.q", aKey: "block1.q8.a" },
     ],
   },
   {
@@ -93,7 +94,20 @@ export default function LearnPage() {
             </div>
           </div>
           <LearnAccordion
-            items={block.questions.map((q) => ({ q: t(q.qKey), a: t(q.aKey) }))}
+            items={block.questions.map((q) => {
+              const baseKey = q.qKey.replace(/\.q$/, "");
+              let sources: { label: string; url: string }[] | undefined;
+              try {
+                const raw = t.raw(`${baseKey}.sources`);
+                if (Array.isArray(raw)) {
+                  sources = raw as { label: string; url: string }[];
+                }
+              } catch {
+                // No sources for this question — leave undefined.
+              }
+              return { q: t(q.qKey), a: t(q.aKey), sources };
+            })}
+            sourcesLabel={t("sourcesLabel")}
           />
         </section>
       ))}

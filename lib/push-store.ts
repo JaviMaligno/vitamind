@@ -22,12 +22,21 @@ function getServiceClient() {
 }
 
 
+function requireServiceClient() {
+  const sb = getServiceClient();
+  if (!sb) {
+    throw new Error(
+      "Supabase service client unavailable: NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY is missing",
+    );
+  }
+  return sb;
+}
+
 export async function saveSubscription(sub: StoredSubscription): Promise<void> {
   // Use service role key to bypass RLS for server-side subscription management
-  const sb = getServiceClient();
-  if (!sb) return;
+  const sb = requireServiceClient();
 
-  await sb.from("push_subscriptions").upsert({
+  const { error } = await sb.from("push_subscriptions").upsert({
     endpoint: sub.subscription.endpoint,
     subscription: sub.subscription,
     lat: sub.lat,
@@ -40,19 +49,19 @@ export async function saveSubscription(sub: StoredSubscription): Promise<void> {
     vapid_public_key: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY ?? null,
     updated_at: new Date().toISOString(),
   }, { onConflict: "endpoint" });
+
+  if (error) throw new Error(`Failed to upsert push subscription: ${error.message}`);
 }
 
 export async function removeSubscription(endpoint: string): Promise<void> {
   // Use service role key to bypass RLS for server-side subscription management
-  const sb = getServiceClient();
-  if (!sb) return;
-
-  await sb.from("push_subscriptions").delete().eq("endpoint", endpoint);
+  const sb = requireServiceClient();
+  const { error } = await sb.from("push_subscriptions").delete().eq("endpoint", endpoint);
+  if (error) throw new Error(`Failed to delete push subscription: ${error.message}`);
 }
 
 export async function getAllSubscriptions(): Promise<StoredSubscription[]> {
-  const sb = getServiceClient();
-  if (!sb) return [];
+  const sb = requireServiceClient();
 
   // Filter by current project's VAPID public key so prod and dev (vitamind-dev)
   // don't try to push to each other's subscriptions on the shared table.
@@ -61,7 +70,8 @@ export async function getAllSubscriptions(): Promise<StoredSubscription[]> {
   const { data, error } = publicKey
     ? await query.eq("vapid_public_key", publicKey)
     : await query;
-  if (error || !data) return [];
+  if (error) throw new Error(`Failed to read push subscriptions: ${error.message}`);
+  if (!data) return [];
 
   return data.map((row) => ({
     subscription: row.subscription as WebPushSubscription,

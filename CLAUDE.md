@@ -115,16 +115,31 @@ npx vercel link --project vitamind --yes       # relink back to prod (so future 
 
 `vercel.json` defines a daily cron `0 8 * * *` UTC hitting `/api/push/notify`. Because `vercel.json` is committed, **both projects** schedule it. To silence the dev cron without touching `vercel.json`, disable the schedule from the `vitamind-dev` project's dashboard.
 
-The endpoint authorizes via `Authorization: Bearer $CRON_SECRET` header (set automatically by Vercel cron) or a `?secret=$CRON_SECRET` query param for manual testing.
+The endpoint authorizes via `Authorization: Bearer $CRON_SECRET` header only (set automatically by Vercel cron). The `?secret=` query-string variant was removed because it leaks the secret to logs/history; pass the secret in the header.
 
 ### Manual push test
 
 ```bash
-# Prod
+# Prod (cron behaviour: only sends if UV ≥ 3 and a synthesis window exists)
 curl -H "Authorization: Bearer $CRON_SECRET_PROD" https://getvitamind.app/api/push/notify
-# Dev
-curl "https://vitamind-dev.vercel.app/api/push/notify?secret=$CRON_SECRET_DEV"
+
+# Dev — same as above, runs against the dev project
+curl -H "Authorization: Bearer $CRON_SECRET_DEV" https://vitamind-dev.vercel.app/api/push/notify
 ```
+
+### Force-test mode (`?force=true`)
+
+For verifying push delivery end-to-end (without waiting for UV ≥ 3 or a synthesis window), `/api/push/notify` accepts `?force=true`. To prevent broadcasting test pushes to all real subscribers, the flag is gated by an env var:
+
+- `PUSH_TEST_ALLOWED_ENDPOINT` — set in **vitamind-dev only** (and **never in prod**) to a single subscription endpoint. When `force=true`, only that endpoint receives the push. Without the env var, the request returns 400.
+
+```bash
+# After subscribing on https://vitamind-dev.vercel.app and setting PUSH_TEST_ALLOWED_ENDPOINT
+curl -H "Authorization: Bearer $CRON_SECRET_DEV" \
+  "https://vitamind-dev.vercel.app/api/push/notify?force=true"
+```
+
+The push payload uses a fixed test body (`[Test HH:MM:SS] Push activo para <city>`); no attacker-controlled fields, even if `CRON_SECRET` leaks.
 
 ### Environment variables (Vercel dashboard, per project)
 
@@ -132,8 +147,14 @@ curl "https://vitamind-dev.vercel.app/api/push/notify?secret=$CRON_SECRET_DEV"
 - `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY` — Supabase client credentials (same values in both projects)
 - `SUPABASE_SERVICE_ROLE_KEY` — Server-side Supabase operations, keep secret (same value in both projects)
 - `CRON_SECRET` — Shared secret to authorize the Vercel cron endpoint. **Each project must have its own** so dev's secret can't be used to trigger prod.
+- `PUSH_TEST_ALLOWED_ENDPOINT` — **vitamind-dev only.** Single subscription endpoint allowed to receive `?force=true` test pushes. Must NOT be set in prod (its absence is what keeps prod safe from `force=true`).
 
-**Gotcha:** when adding env vars via CLI, always pipe with `printf '%s'` — never `echo`. `echo` appends a literal `\n` that Vercel stores inside the value, silently corrupting VAPID keys (this happened to prod and broke push for ~53 days before being detected on 2026-04-28).
+**Gotcha:** when adding env vars via CLI, always pipe with `printf '%s'` — never `echo`. `echo` appends a literal `\n` (bytes `5c 6e`) that Vercel stores inside the value, silently corrupting any secret that's pasted that way. Two known incidents on prod (`vitamind`):
+
+1. VAPID keys corrupted at setup, broke push notifications for ~53 days before being detected on 2026-04-28.
+2. The Supabase trio (`NEXT_PUBLIC_SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`) was *also* corrupted at setup but the symptom was different: `getAllSubscriptions` and `saveSubscription` in `lib/push-store.ts` were swallowing the supabase-js `{ error }` payloads and returning empty/void, so the cron sent 0 pushes and the subscribe POST returned 200 without persisting anything. Detected and fixed on 2026-05-04 (~58 days corrupted) together with `lib/push-store.ts` raising on errors instead of swallowing them. `vitamind-dev` had the same corruption pattern and was fixed in the same session.
+
+To detect future corruption: `npx vercel env pull --environment=production /tmp/x.env --yes && grep -cF '\n"' /tmp/x.env` should print `0`.
 
 ```bash
 # Correct
