@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useInstallPrompt } from "@/hooks/useInstallPrompt";
 import { getInstallBannerSeen, isStandalone, setInstallBannerSeen } from "@/lib/install";
-import { loadPreferences } from "@/lib/storage";
 
 export default function InstallBanner() {
   const t = useTranslations("install");
@@ -24,9 +23,6 @@ export default function InstallBanner() {
       return;
     }
 
-    const prefs = loadPreferences();
-    if (!prefs.lastCityId || !prefs.skinType) return;
-
     const eligible =
       isInAppBrowser ||
       platform === "native" ||
@@ -34,10 +30,12 @@ export default function InstallBanner() {
       platform === "manual";
     if (!eligible) return;
 
-    setInstallBannerSeen();
     queueMicrotask(() => setShouldRender(true));
 
-    const showTimer = setTimeout(() => setVisible(true), 3000);
+    const showTimer = setTimeout(() => {
+      setInstallBannerSeen();
+      setVisible(true);
+    }, 10000);
     return () => clearTimeout(showTimer);
   }, [platform, isInAppBrowser, isInstalled]);
 

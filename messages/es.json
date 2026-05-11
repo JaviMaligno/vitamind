@@ -628,6 +628,9 @@
     },
     "tip": {
       "android": "Tip: instala VitaminD para notificaciones más fiables"
+    },
+    "help": {
+      "button": "Cómo instalar la app"
     }
   },
   "explore": {

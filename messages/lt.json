@@ -628,6 +628,9 @@
     },
     "tip": {
       "android": "Patarimas: įdiekite VitaminD patikimesniems pranešimams"
+    },
+    "help": {
+      "button": "Kaip įdiegti programą"
     }
   },
   "explore": {

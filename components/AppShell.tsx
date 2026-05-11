@@ -7,6 +7,8 @@ import BottomTabBar from "@/components/BottomTabBar";
 import LanguageSelector from "@/components/LanguageSelector";
 import AuthButton from "@/components/AuthButton";
 import ThemeToggle from "@/components/ThemeToggle";
+import InstallBanner from "@/components/InstallBanner";
+import InstallHelpButton from "@/components/InstallHelpButton";
 import { useTranslations } from "next-intl";
 
 function TopBar() {
@@ -25,6 +27,7 @@ function TopBar() {
           </span>
         </div>
         <div className="flex items-center gap-3">
+          <InstallHelpButton />
           <ThemeToggle />
           <LanguageSelector />
           <AuthButton onAuthChange={onAuthChange} />
@@ -49,6 +52,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
               </a>
             </div>
             <BottomTabBar />
+            <InstallBanner />
           </div>
         </InstallProvider>
       </AppProvider>
