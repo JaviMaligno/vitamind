@@ -59,7 +59,7 @@ D3.js-based visualizations: `WorldMap.tsx` (interactive map with UV overlay), `G
 
 - Service worker at `public/sw.js` (cache-first for static assets, network-only for API)
 - Manifest at `public/manifest.json` for standalone mobile install
-- Icons generated via `scripts/generate-icons.js` (SVG → PNG via Sharp)
+- Icons generated via `scripts/generate-icons.mjs` (SVG → PNG via Sharp)
 
 ## Key Technical Details
 
@@ -143,7 +143,7 @@ The push payload uses a fixed test body (`[Test HH:MM:SS] Push activo para <city
 
 ### Environment variables (Vercel dashboard, per project)
 
-- `NEXT_PUBLIC_VAPID_PUBLIC_KEY` / `VAPID_PRIVATE_KEY` — Web Push VAPID keys (generate with `node scripts/generate-vapid.js`). **Each project must have its own pair** — pushes are isolated by public key.
+- `NEXT_PUBLIC_VAPID_PUBLIC_KEY` / `VAPID_PRIVATE_KEY` — Web Push VAPID keys (generate with `node scripts/generate-vapid.mjs`). **Each project must have its own pair** — pushes are isolated by public key.
 - `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY` — Supabase client credentials (same values in both projects)
 - `SUPABASE_SERVICE_ROLE_KEY` — Server-side Supabase operations, keep secret (same value in both projects)
 - `CRON_SECRET` — Shared secret to authorize the Vercel cron endpoint. **Each project must have its own** so dev's secret can't be used to trigger prod.

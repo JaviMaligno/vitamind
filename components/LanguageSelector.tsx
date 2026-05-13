@@ -2,6 +2,7 @@
 
 import { useLocale } from "next-intl";
 import { useRouter } from "next/navigation";
+import { setLocaleCookie } from "@/lib/locale";
 
 const LANGUAGES = [
   { code: "es", label: "ES" },
@@ -17,7 +18,7 @@ export default function LanguageSelector() {
   const router = useRouter();
 
   const handleChange = (lang: string) => {
-    document.cookie = `locale=${lang};path=/;max-age=${365 * 24 * 60 * 60}`;
+    setLocaleCookie(lang);
     router.refresh();
   };
 

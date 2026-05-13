@@ -5,41 +5,56 @@ import { BUILTIN_CITIES, findNearestCity } from "@/lib/cities";
 import { loadFavorites, saveFavorites, loadCustomLocations, saveCustomLocation, deleteCustomLocation, loadPreferences } from "@/lib/storage";
 import type { City } from "@/lib/types";
 
+interface InitialLocation {
+  lat: number;
+  lon: number;
+  tz: number;
+  timezone: string | undefined;
+  cityName: string;
+  cityFlag: string;
+  cityId: string;
+}
+
+const EMPTY_LOCATION: InitialLocation = {
+  lat: 0,
+  lon: 0,
+  tz: 0,
+  timezone: undefined,
+  cityName: "",
+  cityFlag: "",
+  cityId: "",
+};
+
+function resolveInitialLocation(custom: City[]): InitialLocation {
+  const prefs = loadPreferences();
+  if (!prefs.lastCityId) return EMPTY_LOCATION;
+  const builtinIds = new Set(BUILTIN_CITIES.map((c) => c.id));
+  const saved = [...BUILTIN_CITIES, ...custom.filter((c) => !builtinIds.has(c.id))]
+    .find((c) => c.id === prefs.lastCityId);
+  if (!saved) return EMPTY_LOCATION;
+  return {
+    lat: saved.lat,
+    lon: saved.lon,
+    tz: saved.tz,
+    timezone: saved.timezone,
+    cityName: saved.name,
+    cityFlag: saved.flag || "\u{1F4CD}",
+    cityId: saved.id,
+  };
+}
+
 export function useLocation() {
-  const [lat, setLat] = useState(0);
-  const [lon, setLon] = useState(0);
-  const [tz, setTz] = useState(0);
-  const [timezone, setTimezone] = useState<string | undefined>(undefined);
-  const [cityName, setCityName] = useState("");
-  const [cityFlag, setCityFlag] = useState("");
-  const [cityId, setCityId] = useState("");
-  const [favorites, setFavorites] = useState<string[]>([]);
-  const [customLocations, setCustomLocations] = useState<City[]>([]);
+  const [customLocations, setCustomLocations] = useState<City[]>(() => loadCustomLocations());
+  const [favorites, setFavorites] = useState<string[]>(() => loadFavorites());
+  const [initial] = useState<InitialLocation>(() => resolveInitialLocation(loadCustomLocations()));
+  const [lat, setLat] = useState(initial.lat);
+  const [lon, setLon] = useState(initial.lon);
+  const [tz, setTz] = useState(initial.tz);
+  const [timezone, setTimezone] = useState<string | undefined>(initial.timezone);
+  const [cityName, setCityName] = useState(initial.cityName);
+  const [cityFlag, setCityFlag] = useState(initial.cityFlag);
+  const [cityId, setCityId] = useState(initial.cityId);
   const [editingFavs, setEditingFavs] = useState(false);
-
-  // Load persisted state on mount
-  useEffect(() => {
-    setFavorites(loadFavorites());
-    const custom = loadCustomLocations();
-    setCustomLocations(custom);
-
-    // Restore last selected city from preferences (real saved choice, not the legacy Londres default)
-    const prefs = loadPreferences();
-    if (prefs.lastCityId) {
-      const builtinIds = new Set(BUILTIN_CITIES.map((c) => c.id));
-      const saved = [...BUILTIN_CITIES, ...custom.filter((c) => !builtinIds.has(c.id))]
-        .find((c) => c.id === prefs.lastCityId);
-      if (saved) {
-        setLat(saved.lat);
-        setLon(saved.lon);
-        setTz(saved.tz);
-        setTimezone(saved.timezone);
-        setCityName(saved.name);
-        setCityFlag(saved.flag || "\u{1F4CD}");
-        setCityId(saved.id);
-      }
-    }
-  }, []);
 
   // Persist favorites
   useEffect(() => {

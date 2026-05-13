@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback } from "react";
 import { loadPreferences, savePreferences, loadHistory, saveHistory, mergeHistory, loadFavorites, loadCustomLocations, saveCustomLocation } from "@/lib/storage";
 import { loadProfile, updateProfile } from "@/lib/profile";
 import type { SkinType } from "@/lib/vitd";
@@ -8,22 +8,12 @@ import type { City } from "@/lib/types";
 import type { User } from "@supabase/supabase-js";
 
 export function usePreferences() {
-  const [skinType, setSkinType] = useState<SkinType>(3);
-  const [areaFraction, setAreaFraction] = useState(0.25);
-  const [age, setAge] = useState<number | null>(null);
-  const [threshold, setThreshold] = useState(45);
-  const [targetIU, setTargetIU] = useState(1000);
+  const [skinType, setSkinType] = useState<SkinType>(() => loadPreferences().skinType ?? 3);
+  const [areaFraction, setAreaFraction] = useState(() => loadPreferences().areaFraction ?? 0.25);
+  const [age, setAge] = useState<number | null>(() => loadPreferences().age ?? null);
+  const [threshold, setThreshold] = useState(() => loadPreferences().threshold ?? 45);
+  const [targetIU, setTargetIU] = useState(() => loadPreferences().targetIU ?? 1000);
   const [authUser, setAuthUser] = useState<User | null>(null);
-
-  // Load persisted preferences on mount
-  useEffect(() => {
-    const prefs = loadPreferences();
-    setThreshold(prefs.threshold);
-    if (prefs.skinType) setSkinType(prefs.skinType);
-    if (prefs.areaFraction) setAreaFraction(prefs.areaFraction);
-    if (prefs.age) setAge(prefs.age);
-    if (prefs.targetIU !== undefined) setTargetIU(prefs.targetIU);
-  }, []);
 
   // Persist preferences callback (called by page when cityId changes)
   const persistPreferences = useCallback(
@@ -33,7 +23,7 @@ export function usePreferences() {
         updateProfile(authUser.id, { lastCityId: cityId, skinType, areaFraction, age, targetIU });
       }
     },
-    [skinType, areaFraction, age, targetIU, authUser],
+    [skinType, areaFraction, age, targetIU, authUser, threshold],
   );
 
   // Sync profile from Supabase on auth change

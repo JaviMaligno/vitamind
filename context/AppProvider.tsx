@@ -115,9 +115,11 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   }, [loc.cityId, prefs.skinType, prefs.areaFraction, prefs.age, prefs.targetIU, prefs.authUser]);
 
   // Bridge: handleAuthChange needs setFavorites, setCityId, and setCustomLocations from useLocation
+  const { handleAuthChange } = prefs;
+  const { setFavorites, restoreCity, setCustomLocations } = loc;
   const onAuthChange = useCallback(
-    (user: User | null) => prefs.handleAuthChange(user, loc.setFavorites, loc.restoreCity, loc.setCustomLocations),
-    [prefs.handleAuthChange, loc.setFavorites, loc.restoreCity, loc.setCustomLocations],
+    (user: User | null) => handleAuthChange(user, setFavorites, restoreCity, setCustomLocations),
+    [handleAuthChange, setFavorites, restoreCity, setCustomLocations],
   );
 
   // Sync favorites and custom locations to Supabase when they change
@@ -125,12 +127,12 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     if (prefs.authUser) {
       updateProfile(prefs.authUser.id, { favorites: loc.favorites, customLocations: loc.customLocations });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loc.favorites, loc.customLocations, prefs.authUser]);
 
+  const { handleSaveLocation: locHandleSaveLocation } = loc;
   const handleSaveLocation = useCallback(
-    (city: City) => loc.handleSaveLocation(city),
-    [loc.handleSaveLocation],
+    (city: City) => locHandleSaveLocation(city),
+    [locHandleSaveLocation],
   );
 
   const hasLocation = (gps.lat !== null && gps.lon !== null) || loc.cityId !== "";

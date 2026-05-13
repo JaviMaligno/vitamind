@@ -604,6 +604,39 @@
     "ctaEmail": "Susisiekite su mumis",
     "ctaNote": "Atsakome per 48 valandas. Partnerystės pasiūlymai laukiami visų dydžių prekės ženklams."
   },
+  "install": {
+    "banner": {
+      "title": "Pridėkite prie pradžios ekrano greitam priėjimui",
+      "cta": "Įdiegti"
+    },
+    "modal": {
+      "title": "Pridėti VitaminD prie pradžios ekrano",
+      "subtitle": "Du paspaudimai ir baigta.",
+      "step1": "Bakstelėkite Bendrinti Safari apatinėje juostoje",
+      "step2": "Slinkite žemyn ir bakstelėkite Pridėti prie pradžios ekrano",
+      "foot": "VitaminD atsiras pradžios ekrane be App Store.",
+      "iosBlock": "Pirmiausia įdiekite VitaminD, kad įjungtumėte pranešimus.",
+      "iosBlockSub": "iOS siunčia kasdienius pranešimus tik kai programa yra pradžios ekrane.",
+      "fallback": "Naudokite naršyklės meniu, kad pridėtumėte VitaminD prie pradžios ekrano.",
+      "inAppBrowser": "Pirmiausia atidarykite Safari",
+      "copyUrl": "Kopijuoti nuorodą",
+      "linkCopied": "Nuoroda nukopijuota",
+      "close": "Uždaryti"
+    },
+    "installed": {
+      "toast": "Įdiegta! Atidarykite VitaminD iš pradžios ekrano ☀️"
+    },
+    "tip": {
+      "android": "Patarimas: įdiekite VitaminD patikimesniems pranešimams"
+    },
+    "help": {
+      "button": "Įdiegti programą"
+    }
+  },
+  "update": {
+    "available": "Yra nauja versija",
+    "reload": "Įkelti iš naujo"
+  },
   "explore": {
     "faqHeading": "Dažnai užduodami klausimai",
     "faqSubheading": "Įsigilinkite į mokslą, slypintį už programos",

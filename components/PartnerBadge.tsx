@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useLocale } from "next-intl";
 import { activePartner, getPartnerUrl } from "@/lib/partners";
 

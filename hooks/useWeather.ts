@@ -5,13 +5,15 @@ import { getCachedWeather, setCachedWeather } from "@/lib/storage";
 import type { WeatherData } from "@/lib/types";
 
 export function useWeather(lat: number, lon: number, date: Date) {
-  const [weather, setWeather] = useState<WeatherData | null>(null);
   const dateStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+  const isEmpty = lat === 0 && lon === 0;
+  const requestKey = `${lat.toFixed(2)},${lon.toFixed(2)},${dateStr}`;
+  const cached = isEmpty ? null : getCachedWeather(lat, lon, dateStr);
+
+  const [fetched, setFetched] = useState<{ key: string; data: WeatherData | null } | null>(null);
 
   useEffect(() => {
-    if (lat === 0 && lon === 0) { setWeather(null); return; }
-    const cached = getCachedWeather(lat, lon, dateStr);
-    if (cached) { setWeather(cached); return; }
+    if (isEmpty || cached) return;
 
     const controller = new AbortController();
     fetch(`/api/weather?lat=${lat.toFixed(2)}&lon=${lon.toFixed(2)}&date=${dateStr}`, { signal: controller.signal })
@@ -20,14 +22,16 @@ export function useWeather(lat: number, lon: number, date: Date) {
         if (data?.hours) {
           const wd: WeatherData = { hours: data.hours, fetchedAt: Date.now() };
           setCachedWeather(lat, lon, dateStr, wd);
-          setWeather(wd);
+          setFetched({ key: requestKey, data: wd });
         } else {
-          setWeather(null);
+          setFetched({ key: requestKey, data: null });
         }
       })
-      .catch(() => setWeather(null));
+      .catch(() => setFetched({ key: requestKey, data: null }));
     return () => controller.abort();
-  }, [lat, lon, dateStr]);
+  }, [lat, lon, dateStr, isEmpty, cached, requestKey]);
 
-  return weather;
+  if (isEmpty) return null;
+  if (cached) return cached;
+  return fetched?.key === requestKey ? fetched.data : null;
 }

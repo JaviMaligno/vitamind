@@ -5,7 +5,7 @@ async function main() {
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY!;
   const supabase = createClient(url, key);
 
-  const { data, error } = await supabase.from("cities").select("geoname_id").limit(1);
+  const { error } = await supabase.from("cities").select("geoname_id").limit(1);
 
   if (error) {
     console.log("Table status:", error.message);

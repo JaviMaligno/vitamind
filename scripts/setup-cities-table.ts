@@ -46,12 +46,6 @@ $$ LANGUAGE sql STABLE;
 `;
 
 async function main() {
-  // Use Supabase Management API to execute SQL
-  const url = `https://${PROJECT_REF}.supabase.co/rest/v1/rpc/`;
-
-  // Try using the pg_net or direct SQL approach via PostgREST
-  // Actually, we need to use the Supabase SQL API
-  // The Management API endpoint for SQL is:
   const mgmtUrl = `https://api.supabase.com/v1/projects/${PROJECT_REF}/database/query`;
 
   console.log("Executing SQL against Supabase...");

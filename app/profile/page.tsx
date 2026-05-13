@@ -11,6 +11,26 @@ import NotificationToggle from "@/components/NotificationToggle";
 import SaveLocationModal from "@/components/SaveLocationModal";
 import GpsButton from "@/components/GpsButton";
 
+interface TipPanelProps {
+  open: boolean;
+  text: string;
+  href: string;
+  learnMoreLabel: string;
+  onClose: () => void;
+}
+
+function TipPanel({ open, text, href, learnMoreLabel, onClose }: TipPanelProps) {
+  if (!open) return null;
+  return (
+    <div className="mt-2 mb-1 rounded-lg border border-border-subtle bg-surface-elevated px-3 py-2.5 text-[11px] text-text-muted leading-relaxed">
+      <p>{text}</p>
+      <Link href={href} className="block mt-1.5 text-amber-400/70 hover:text-amber-400 text-[10px]" onClick={onClose}>
+        {learnMoreLabel} →
+      </Link>
+    </div>
+  );
+}
+
 export default function ProfilePage() {
   const t = useTranslations("config");
   const tc = useTranslations("common");
@@ -19,18 +39,7 @@ export default function ProfilePage() {
 
   const [savingLocation, setSavingLocation] = useState(false);
   const [openTip, setOpenTip] = useState<string | null>(null);
-
-  function TipPanel({ id, text, href }: { id: string; text: string; href: string }) {
-    if (openTip !== id) return null;
-    return (
-      <div className="mt-2 mb-1 rounded-lg border border-border-subtle bg-surface-elevated px-3 py-2.5 text-[11px] text-text-muted leading-relaxed">
-        <p>{text}</p>
-        <Link href={href} className="block mt-1.5 text-amber-400/70 hover:text-amber-400 text-[10px]" onClick={() => setOpenTip(null)}>
-          {tc("learnMore")} →
-        </Link>
-      </div>
-    );
-  }
+  const closeTip = () => setOpenTip(null);
 
   return (
     <div className="mx-auto max-w-[960px] px-4 space-y-6">
@@ -181,7 +190,7 @@ export default function ProfilePage() {
             className="w-5 h-5 rounded-full bg-surface-elevated text-text-faint hover:text-text-muted text-[9px] font-bold inline-flex items-center justify-center transition-colors cursor-pointer"
           >ℹ</button>
         </div>
-        <TipPanel id="skin" text={ts("tipSolarProfile")} href="/learn" />
+        <TipPanel open={openTip === "skin"} text={ts("tipSolarProfile")} href="/learn" learnMoreLabel={tc("learnMore")} onClose={closeTip} />
         <SkinSelector
           skinType={app.skinType}
           areaFraction={app.areaFraction}
@@ -206,7 +215,7 @@ export default function ProfilePage() {
             className="w-5 h-5 rounded-full bg-surface-elevated text-text-faint hover:text-text-muted text-[9px] font-bold inline-flex items-center justify-center transition-colors cursor-pointer"
           >ℹ</button>
         </div>
-        <TipPanel id="iu" text={ts("tipTargetIU")} href="/learn#supplement" />
+        <TipPanel open={openTip === "iu"} text={ts("tipTargetIU")} href="/learn#supplement" learnMoreLabel={tc("learnMore")} onClose={closeTip} />
         <div className="flex flex-wrap gap-1.5 items-center">
           {TARGET_IU_PRESETS.map(({ value, labelKey }) => (
             <button

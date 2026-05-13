@@ -72,7 +72,7 @@ export default function PartnersPage() {
           {t("modelsTitle")}
         </h2>
         <div className="space-y-3">
-          {MODELS.map((model, i) => (
+          {MODELS.map((model) => (
             <div
               key={model.titleKey}
               className="rounded-xl border border-border-default bg-surface-card p-5 space-y-2"

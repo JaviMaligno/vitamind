@@ -4,7 +4,7 @@ import { useState, useMemo, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { useApp } from "@/context/AppProvider";
 import { useCityDisplayName } from "@/hooks/useCityDisplayName";
-import { getCurve, dayOfYear, dateFromDoy, fmtTime, fmtDate } from "@/lib/solar";
+import { getCurve, dayOfYear, dateFromDoy, fmtDate } from "@/lib/solar";
 import { computeExposure, computeExposureFromCurve } from "@/lib/vitd";
 import HeroZone from "@/components/HeroZone";
 import VisualizationZone from "@/components/VisualizationZone";
@@ -66,9 +66,6 @@ export default function ExplorePage() {
   const isToday = doy === dayOfYear(new Date());
   const todayNowStatus = useNowStatus(lat, lon, tz, timezone, app.skinType, app.areaFraction, app.age, app.targetIU);
 
-  const windowLabel = exposure
-    ? `${fmtTime(exposure.windowStart)} \u2013 ${fmtTime(exposure.windowEnd)}`
-    : null;
   const dateLabel = fmtDate(date);
 
   // Bridge: selectFromHeatmap needs setDoy
@@ -80,15 +77,13 @@ export default function ExplorePage() {
       }));
       setDoy(newDoy);
     },
-    [app.lat, app.lon, app.tz, app.cityName, app.cityFlag],
+    [app.lat, app.lon, app.tz, app.timezone, app.cityName, app.cityFlag],
   );
 
   return (
     <>
       {/* Zone 1 -- Hero */}
       <HeroZone
-        lat={lat}
-        lon={lon}
         tz={tz}
         timezone={timezone}
         doy={doy}
