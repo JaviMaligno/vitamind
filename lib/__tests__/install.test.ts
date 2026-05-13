@@ -107,9 +107,19 @@ describe("detectPlatform", () => {
     expect(detectPlatform(null)).toBe("unsupported");
   });
 
-  it("returns 'unsupported' for unknown UAs without deferredPrompt", () => {
-    setUA("Mozilla/5.0 SomeRandomBrowser/1.0");
+  it("returns 'manual' for Android Chrome without deferredPrompt (yet)", () => {
+    setUA("Mozilla/5.0 (Linux; Android 13; SM-G991B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36");
+    expect(detectPlatform(null)).toBe("manual");
+  });
+
+  it("returns 'unsupported' for iOS Chrome (PWA install requires Safari)", () => {
+    setUA("Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/120.0.0.0 Mobile/15E148 Safari/604.1");
     expect(detectPlatform(null)).toBe("unsupported");
+  });
+
+  it("falls back to 'manual' for unknown desktop UAs", () => {
+    setUA("Mozilla/5.0 SomeRandomBrowser/1.0");
+    expect(detectPlatform(null)).toBe("manual");
   });
 });
 

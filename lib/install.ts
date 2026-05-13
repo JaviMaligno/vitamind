@@ -26,17 +26,18 @@ export function detectPlatform(deferredPrompt: Event | null): InstallPlatform {
 
   if (isInAppBrowser()) return "unsupported";
 
-  const isIOS = /iPad|iPhone|iPod/.test(ua) && !/CriOS|FxiOS|EdgiOS/.test(ua);
-  const isSafari = /Safari/.test(ua) && !/Chrome|CriOS/.test(ua);
+  const isIOSDevice = /iPad|iPhone|iPod/.test(ua);
+  const isSafari = /Safari/.test(ua) && !/Chrome|CriOS|FxiOS|EdgiOS/.test(ua);
 
-  if (isIOS && isSafari) return "ios-manual";
+  if (isIOSDevice && isSafari) return "ios-manual";
 
-  const isFirefox = /Firefox/.test(ua) && !/Seamonkey/.test(ua);
-  const isMacSafari = /Macintosh/.test(ua) && isSafari;
+  // iOS Chrome/Firefox/Edge cannot install PWAs (iOS restricts install to Safari).
+  if (isIOSDevice) return "unsupported";
 
-  if (isFirefox || isMacSafari) return "manual";
-
-  return "unsupported";
+  // Default: Android Chrome/Edge/Samsung/Opera, desktop Chrome/Edge before
+  // beforeinstallprompt fires, Firefox desktop/Android, Safari macOS, etc.
+  // All of these support installing via the browser menu.
+  return "manual";
 }
 
 const SEEN_KEY = "vitamind:installBannerSeen";
