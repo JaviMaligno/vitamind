@@ -19,6 +19,7 @@ interface BeforeInstallPromptEvent extends Event {
 interface InstallContextValue {
   platform: InstallPlatform;
   isInstalled: boolean;
+  detectionReady: boolean;
   isInAppBrowser: boolean;
   trigger: () => Promise<"accepted" | "dismissed" | "manual">;
   openModal: (mode: InstallModalMode) => void;
@@ -42,6 +43,7 @@ export default function InstallProvider({ children }: { children: ReactNode }) {
     typeof window === "undefined" ? false : detectInAppBrowser(),
   );
   const [modalMode, setModalMode] = useState<InstallModalMode | null>(null);
+  const [detectionReady, setDetectionReady] = useState(false);
   const installedToastShown = useRef(false);
 
   // beforeinstallprompt listener
@@ -64,12 +66,16 @@ export default function InstallProvider({ children }: { children: ReactNode }) {
     const nav = navigator as Navigator & {
       getInstalledRelatedApps?: () => Promise<RelatedApp[]>;
     };
-    if (typeof nav.getInstalledRelatedApps !== "function") return;
+    if (typeof nav.getInstalledRelatedApps !== "function") {
+      setDetectionReady(true);
+      return;
+    }
     nav.getInstalledRelatedApps()
       .then((apps) => {
         if (apps.length > 0) setIsInstalled(true);
       })
-      .catch(() => { /* API present but call failed — silently ignore */ });
+      .catch(() => { /* API present but call failed — silently ignore */ })
+      .finally(() => setDetectionReady(true));
   }, []);
 
   // appinstalled listener
@@ -131,8 +137,8 @@ export default function InstallProvider({ children }: { children: ReactNode }) {
   }, [inApp, platform, deferredPrompt, openModal]);
 
   const value: InstallContextValue = useMemo(
-    () => ({ platform, isInstalled, isInAppBrowser: inApp, trigger, openModal }),
-    [platform, isInstalled, inApp, trigger, openModal],
+    () => ({ platform, isInstalled, detectionReady, isInAppBrowser: inApp, trigger, openModal }),
+    [platform, isInstalled, detectionReady, inApp, trigger, openModal],
   );
 
   return (
