@@ -633,6 +633,10 @@
       "button": "Instalar la app"
     }
   },
+  "update": {
+    "available": "Nueva versión disponible",
+    "reload": "Recargar"
+  },
   "explore": {
     "faqHeading": "Preguntas frecuentes",
     "faqSubheading": "Profundiza en la ciencia detrás de la app",

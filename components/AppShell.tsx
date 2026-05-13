@@ -9,6 +9,7 @@ import AuthButton from "@/components/AuthButton";
 import ThemeToggle from "@/components/ThemeToggle";
 import InstallBanner from "@/components/InstallBanner";
 import InstallHelpButton from "@/components/InstallHelpButton";
+import UpdateNotice from "@/components/UpdateNotice";
 import { useTranslations } from "next-intl";
 
 function TopBar() {
@@ -53,6 +54,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             </div>
             <BottomTabBar />
             <InstallBanner />
+            <UpdateNotice />
           </div>
         </InstallProvider>
       </AppProvider>

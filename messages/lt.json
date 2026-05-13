@@ -633,6 +633,10 @@
       "button": "Įdiegti programą"
     }
   },
+  "update": {
+    "available": "Yra nauja versija",
+    "reload": "Įkelti iš naujo"
+  },
   "explore": {
     "faqHeading": "Dažnai užduodami klausimai",
     "faqSubheading": "Įsigilinkite į mokslą, slypintį už programos",

@@ -16,7 +16,14 @@ self.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => cache.addAll(PRECACHE_URLS))
   );
-  self.skipWaiting();
+  // No auto-skipWaiting: the new SW stays in 'waiting' until the user taps
+  // "Reload" in UpdateNotice, which posts {type:'SKIP_WAITING'} below.
+});
+
+self.addEventListener("message", (event) => {
+  if (event.data && event.data.type === "SKIP_WAITING") {
+    self.skipWaiting();
+  }
 });
 
 self.addEventListener("activate", (event) => {
