@@ -62,14 +62,14 @@ export default function UpdateNotice() {
     <div
       role="status"
       aria-live="polite"
-      className="fixed left-2 right-2 top-2 z-50 mx-auto max-w-[480px] rounded-xl bg-amber-400 text-text-primary shadow-2xl flex items-center gap-3 px-3 py-2.5"
+      className="fixed left-2 right-2 top-2 z-50 mx-auto max-w-[480px] rounded-xl bg-amber-400 text-neutral-900 shadow-2xl flex items-center gap-3 px-3 py-2.5"
     >
       <span className="text-lg" aria-hidden>⬆️</span>
       <span className="flex-1 text-xs font-semibold leading-tight">{t("available")}</span>
       <button
         type="button"
         onClick={reload}
-        className="px-3 py-1.5 rounded-md bg-text-primary text-amber-400 font-bold text-xs hover:opacity-90 transition-opacity"
+        className="px-3 py-1.5 rounded-md bg-neutral-900 text-amber-300 font-bold text-xs hover:bg-neutral-800 transition-colors"
       >
         {t("reload")}
       </button>

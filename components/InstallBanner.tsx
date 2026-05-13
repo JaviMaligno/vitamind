@@ -72,19 +72,19 @@ export default function InstallBanner() {
           : "bottom-[40px] opacity-0 translate-y-2 pointer-events-none"
       }`}
     >
-      <div className="mx-auto max-w-[960px] rounded-xl bg-text-primary text-bg-page-from shadow-2xl flex items-center gap-3 px-3 py-2.5">
+      <div className="mx-auto max-w-[960px] rounded-xl bg-neutral-900 text-white shadow-2xl flex items-center gap-3 px-3 py-2.5">
         <span className="text-lg" aria-hidden>📲</span>
         <span className="flex-1 text-xs leading-tight">{t("banner.title")}</span>
         <button
           onClick={handleInstall}
-          className="px-3 py-1.5 rounded-md bg-amber-400 text-text-primary font-bold text-xs hover:bg-amber-300 transition-colors"
+          className="px-3 py-1.5 rounded-md bg-amber-400 text-neutral-900 font-bold text-xs hover:bg-amber-300 transition-colors"
         >
           {t("banner.cta")}
         </button>
         <button
           onClick={dismiss}
           aria-label={t("modal.close")}
-          className="text-text-muted hover:text-text-primary px-1"
+          className="text-neutral-400 hover:text-white px-1"
         >
           ✕
         </button>
