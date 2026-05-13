@@ -28,5 +28,10 @@
       "type": "image/png",
       "purpose": "maskable"
     }
-  ]
+  ],
+  "related_applications": [
+    { "platform": "webapp", "url": "https://getvitamind.app/manifest.json" },
+    { "platform": "webapp", "url": "https://vitamind-dev.vercel.app/manifest.json" }
+  ],
+  "prefer_related_applications": false
 }

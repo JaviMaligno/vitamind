@@ -54,6 +54,24 @@ export default function InstallProvider({ children }: { children: ReactNode }) {
     return () => window.removeEventListener("beforeinstallprompt", onBeforeInstall);
   }, []);
 
+  // getInstalledRelatedApps: deterministic install detection on Chrome/Edge
+  // (Android + desktop). Resolves the "user has the PWA installed but opened
+  // the URL in a regular tab" case where matchMedia/navigator.standalone are
+  // both false. Unsupported on iOS, Firefox, and Safari macOS — those keep
+  // relying on the matchMedia/navigator.standalone fallback.
+  useEffect(() => {
+    type RelatedApp = { platform: string; url?: string; id?: string };
+    const nav = navigator as Navigator & {
+      getInstalledRelatedApps?: () => Promise<RelatedApp[]>;
+    };
+    if (typeof nav.getInstalledRelatedApps !== "function") return;
+    nav.getInstalledRelatedApps()
+      .then((apps) => {
+        if (apps.length > 0) setIsInstalled(true);
+      })
+      .catch(() => { /* API present but call failed — silently ignore */ });
+  }, []);
+
   // appinstalled listener
   useEffect(() => {
     const onInstalled = () => {
