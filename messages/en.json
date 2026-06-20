@@ -127,7 +127,15 @@
     "unsupported": "Notifications not available in this browser",
     "deniedHint": "Notifications blocked. In Chrome: click the lock icon in the address bar > Permissions > Notifications > Allow. Then reload the page.",
     "disableHint": "Disable daily notifications",
-    "enableHint": "Enable daily sun notifications"
+    "enableHint": "Enable daily sun notifications",
+    "push": {
+      "title": "Perfect sun for Vitamin D",
+      "testTitle": "VitaminD test",
+      "body": "{city}: {mins} min in the sun for 1000 IU. Window: {start} – {end}. Peak UV: {uv}",
+      "bodyNoMins": "{city}: Sun window {start} – {end}",
+      "test": "[Test {stamp}] Push active for {city}.",
+      "fallbackCity": "your location"
+    }
   },
   "legend": {
     "vitDHours": "Vit D Hours:",

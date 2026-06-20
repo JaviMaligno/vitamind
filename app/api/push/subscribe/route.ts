@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { saveSubscription, removeSubscription } from "@/lib/push-store";
 
+const SUPPORTED_LOCALES = ["es", "en", "fr", "de", "ru", "lt"];
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { subscription, lat, lon, tz, timezone, skinType, areaFraction, cityName } = body;
+    const { subscription, lat, lon, tz, timezone, skinType, areaFraction, cityName, locale } = body;
 
     if (!subscription?.endpoint) {
       return NextResponse.json({ error: "Invalid subscription" }, { status: 400 });
@@ -19,6 +21,7 @@ export async function POST(request: NextRequest) {
       skinType: skinType ?? 3,
       areaFraction: areaFraction ?? 0.25,
       cityName: cityName ?? "",
+      locale: SUPPORTED_LOCALES.includes(locale) ? locale : "es",
       createdAt: Date.now(),
     });
 

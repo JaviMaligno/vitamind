@@ -127,7 +127,15 @@
     "unsupported": "Benachrichtigungen sind in diesem Browser nicht verfügbar",
     "deniedHint": "Benachrichtigungen blockiert. In Chrome: Klicke auf das Schloss in der Adressleiste > Berechtigungen > Benachrichtigungen > Zulassen. Dann Seite neu laden.",
     "disableHint": "Tägliche Benachrichtigungen deaktivieren",
-    "enableHint": "Tägliche Sonnenbenachrichtigungen aktivieren"
+    "enableHint": "Tägliche Sonnenbenachrichtigungen aktivieren",
+    "push": {
+      "title": "Ideale Sonne für Vitamin D",
+      "testTitle": "VitaminD test",
+      "body": "{city}: {mins} Min in der Sonne für 1000 IE. Zeitfenster: {start} – {end}. UV-Spitze: {uv}",
+      "bodyNoMins": "{city}: Sonnenfenster {start} – {end}",
+      "test": "[Test {stamp}] Push aktiv für {city}.",
+      "fallbackCity": "deinen Standort"
+    }
   },
   "legend": {
     "vitDHours": "Vit-D-Stunden:",

@@ -3,6 +3,33 @@ import { getAllSubscriptions, removeSubscription, type StoredSubscription } from
 import { getCurve, dayOfYear, fmtTime } from "@/lib/solar";
 import { minutesForVitD, computeExposureFromCurve, type SkinType } from "@/lib/vitd";
 
+const SUPPORTED_LOCALES = ["es", "en", "fr", "de", "ru", "lt"];
+
+interface PushMessages {
+  title: string;
+  testTitle: string;
+  body: string;
+  bodyNoMins: string;
+  test: string;
+  fallbackCity: string;
+}
+
+const messagesCache = new Map<string, PushMessages>();
+
+async function getPushMessages(locale: string): Promise<PushMessages> {
+  const lang = SUPPORTED_LOCALES.includes(locale) ? locale : "es";
+  const cached = messagesCache.get(lang);
+  if (cached) return cached;
+  const all = (await import(`../../../../messages/${lang}.json`)).default;
+  const push = all.notifications.push as PushMessages;
+  messagesCache.set(lang, push);
+  return push;
+}
+
+function interpolate(template: string, vars: Record<string, string>): string {
+  return template.replace(/\{(\w+)\}/g, (_, key) => vars[key] ?? `{${key}}`);
+}
+
 // Dynamic import to avoid build-time issues with web-push native modules
 async function getWebPush() {
   const webpush = (await import("web-push")).default;
@@ -42,11 +69,12 @@ async function sendForSubscription(
   webpush: Awaited<ReturnType<typeof getWebPush>>,
   force: boolean,
 ): Promise<SendResult> {
+  const m = await getPushMessages(sub.locale);
   let body: string;
 
   if (force) {
     const stamp = new Date().toISOString().slice(11, 19);
-    body = `[Test ${stamp}] Push activo para ${sub.cityName || "tu ubicación"}.`;
+    body = interpolate(m.test, { stamp, city: sub.cityName || m.fallbackCity });
   } else {
     const curve = getCurve(sub.lat, sub.lon, doy, sub.tz, sub.timezone);
     const exposure = computeExposureFromCurve(curve, sub.skinType as SkinType, sub.areaFraction);
@@ -57,16 +85,19 @@ async function sendForSubscription(
     if (peakUV < 3) return { sent: false, skipped: true, failed: false };
 
     const mins = minutesForVitD(peakUV, sub.skinType as SkinType, sub.areaFraction);
+    const city = sub.cityName || m.fallbackCity;
+    const start = fmtTime(exposure.windowStart);
+    const end = fmtTime(exposure.windowEnd);
     body = mins !== null
-      ? `${sub.cityName}: ${Math.round(mins)} min al sol para 1000 IU. Ventana: ${fmtTime(exposure.windowStart)} – ${fmtTime(exposure.windowEnd)}. UV pico: ${peakUV.toFixed(1)}`
-      : `${sub.cityName}: Ventana de sol ${fmtTime(exposure.windowStart)} – ${fmtTime(exposure.windowEnd)}`;
+      ? interpolate(m.body, { city, mins: String(Math.round(mins)), start, end, uv: peakUV.toFixed(1) })
+      : interpolate(m.bodyNoMins, { city, start, end });
   }
 
   try {
     await webpush.sendNotification(
       sub.subscription,
       JSON.stringify({
-        title: force ? "VitaminD test" : "Sol ideal para Vitamina D",
+        title: force ? m.testTitle : m.title,
         body,
         icon: "/icons/icon-192.png",
         badge: "/icons/icon-192.png",

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { useInstallPrompt } from "@/hooks/useInstallPrompt";
 import { isStandalone, setInstallBannerSeen } from "@/lib/install";
 
@@ -30,6 +30,7 @@ export default function NotificationToggle({ lat, lon, tz, timezone, skinType, a
   const [status, setStatus] = useState<Status>("loading");
   const t = useTranslations("notifications");
   const tInstall = useTranslations("install");
+  const locale = useLocale();
   const { platform, isInAppBrowser, openModal, trigger } = useInstallPrompt();
 
   const showAndroidTipToast = useCallback(() => {
@@ -142,7 +143,7 @@ export default function NotificationToggle({ lat, lon, tz, timezone, skinType, a
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         subscription: sub.toJSON(),
-        lat, lon, tz, timezone, skinType, areaFraction, cityName,
+        lat, lon, tz, timezone, skinType, areaFraction, cityName, locale,
       }),
     });
     setStatus("on");
@@ -151,7 +152,7 @@ export default function NotificationToggle({ lat, lon, tz, timezone, skinType, a
     if (platform === "native" && !isStandalone()) {
       showAndroidTipToast();
     }
-  }, [status, lat, lon, tz, timezone, skinType, areaFraction, cityName, platform, isInAppBrowser, openModal, showAndroidTipToast]);
+  }, [status, lat, lon, tz, timezone, skinType, areaFraction, cityName, locale, platform, isInAppBrowser, openModal, showAndroidTipToast]);
 
   // Update subscription when preferences change
   useEffect(() => {
@@ -164,12 +165,12 @@ export default function NotificationToggle({ lat, lon, tz, timezone, skinType, a
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             subscription: sub.toJSON(),
-            lat, lon, tz, timezone, skinType, areaFraction, cityName,
+            lat, lon, tz, timezone, skinType, areaFraction, cityName, locale,
           }),
         });
       });
     });
-  }, [status, lat, lon, tz, timezone, skinType, areaFraction, cityName]);
+  }, [status, lat, lon, tz, timezone, skinType, areaFraction, cityName, locale]);
 
   if (status === "loading") {
     return (
