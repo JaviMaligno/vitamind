@@ -10,6 +10,7 @@ export interface StoredSubscription {
   skinType: number;
   areaFraction: number;
   cityName: string;
+  locale: string;
   createdAt: number;
 }
 
@@ -46,6 +47,7 @@ export async function saveSubscription(sub: StoredSubscription): Promise<void> {
     skin_type: sub.skinType,
     area_fraction: sub.areaFraction,
     city_name: sub.cityName,
+    locale: sub.locale,
     vapid_public_key: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY ?? null,
     updated_at: new Date().toISOString(),
   }, { onConflict: "endpoint" });
@@ -82,6 +84,7 @@ export async function getAllSubscriptions(): Promise<StoredSubscription[]> {
     skinType: row.skin_type,
     areaFraction: row.area_fraction,
     cityName: row.city_name,
+    locale: row.locale ?? "es",
     createdAt: new Date(row.created_at).getTime(),
   }));
 }

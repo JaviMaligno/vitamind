@@ -127,7 +127,15 @@
     "unsupported": "Les notifications ne sont pas disponibles dans ce navigateur",
     "deniedHint": "Notifications bloquées. Dans Chrome : cliquez sur le cadenas dans la barre d'adresse > Autorisations > Notifications > Autoriser. Puis rechargez la page.",
     "disableHint": "Désactiver les notifications quotidiennes",
-    "enableHint": "Activer les notifications solaires quotidiennes"
+    "enableHint": "Activer les notifications solaires quotidiennes",
+    "push": {
+      "title": "Soleil idéal pour la vitamine D",
+      "testTitle": "VitaminD test",
+      "body": "{city} : {mins} min au soleil pour 1000 UI. Fenêtre : {start} – {end}. UV max : {uv}",
+      "bodyNoMins": "{city} : Fenêtre de soleil {start} – {end}",
+      "test": "[Test {stamp}] Push actif pour {city}.",
+      "fallbackCity": "votre position"
+    }
   },
   "legend": {
     "vitDHours": "Heures Vit D :",

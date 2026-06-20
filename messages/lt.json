@@ -127,7 +127,15 @@
     "unsupported": "Pranešimai šioje naršyklėje nepasiekiami",
     "deniedHint": "Pranešimai užblokuoti. Chrome: spustelėkite spyną adreso juostoje > Leidimai > Pranešimai > Leisti. Tada perkraukite puslapį.",
     "disableHint": "Išjungti kasdienius pranešimus",
-    "enableHint": "Įjungti kasdienius saulės pranešimus"
+    "enableHint": "Įjungti kasdienius saulės pranešimus",
+    "push": {
+      "title": "Ideali saulė vitaminui D",
+      "testTitle": "VitaminD test",
+      "body": "{city}: {mins} min saulėje 1000 TV. Langas: {start} – {end}. UV pikas: {uv}",
+      "bodyNoMins": "{city}: Saulės langas {start} – {end}",
+      "test": "[Testas {stamp}] Push aktyvus {city}.",
+      "fallbackCity": "jūsų vietą"
+    }
   },
   "legend": {
     "vitDHours": "Vit D valandos:",
