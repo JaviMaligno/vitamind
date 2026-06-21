@@ -12,6 +12,8 @@ const UA_IOS_SAFARI =
   "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1";
 const UA_INSTAGRAM =
   "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 Instagram 320.0.0.0.0";
+const UA_INSTAGRAM_ANDROID =
+  "Mozilla/5.0 (Linux; Android 13; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/120.0.0.0 Mobile Safari/537.36 Instagram 320.0.0.0.0 Android";
 const UA_ANDROID_CHROME =
   "Mozilla/5.0 (Linux; Android 13; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36";
 
@@ -299,24 +301,50 @@ async function scenario8() {
   );
 }
 
-// SCENARIO 9: Instagram in-app browser → banner + Open in Safari modal
+// SCENARIO 9: Instagram in-app on iOS → banner + "Open in Safari" modal
 async function scenario9() {
   await withContext({ userAgent: UA_INSTAGRAM }, async (page) => {
     await gotoDashboardAndHydrate(page);
     await page.waitForTimeout(3500);
     if ((await page.locator(BANNER_SELECTOR).count()) === 0) {
-      record("S9: Instagram in-app — banner + Safari modal", "fail", "banner did not appear");
+      record("S9: Instagram in-app iOS — banner + Safari modal", "fail", "banner did not appear");
       return;
     }
     // Click the first button inside the banner inner card (Install CTA, not the ✕ close).
     await page.locator(`${BANNER_SELECTOR} button`).first().click();
     await page.waitForTimeout(500);
     const modalText = (await page.locator(MODAL_SELECTOR).first().textContent().catch(() => "")) || "";
-    if (/safari|abre|abrir|open/i.test(modalText)) {
-      record("S9: Instagram in-app — banner + Safari modal", "pass", `modal: "${modalText.slice(0, 60)}"`);
+    // iOS in-app browser must steer users to Safari, never Chrome.
+    if (/safari/i.test(modalText) && !/chrome/i.test(modalText)) {
+      record("S9: Instagram in-app iOS — banner + Safari modal", "pass", `modal: "${modalText.slice(0, 60)}"`);
     } else {
       record(
-        "S9: Instagram in-app — banner + Safari modal",
+        "S9: Instagram in-app iOS — banner + Safari modal",
+        "fail",
+        `unexpected: "${modalText.slice(0, 60)}"`,
+      );
+    }
+  });
+}
+
+// SCENARIO 12: Instagram in-app on Android → banner + "Open in Chrome" modal
+async function scenario12() {
+  await withContext({ userAgent: UA_INSTAGRAM_ANDROID }, async (page) => {
+    await gotoDashboardAndHydrate(page);
+    await page.waitForTimeout(3500);
+    if ((await page.locator(BANNER_SELECTOR).count()) === 0) {
+      record("S12: Instagram in-app Android — banner + Chrome modal", "fail", "banner did not appear");
+      return;
+    }
+    await page.locator(`${BANNER_SELECTOR} button`).first().click();
+    await page.waitForTimeout(500);
+    const modalText = (await page.locator(MODAL_SELECTOR).first().textContent().catch(() => "")) || "";
+    // Android in-app browser must steer users to Chrome, never Safari.
+    if (/chrome/i.test(modalText) && !/safari/i.test(modalText)) {
+      record("S12: Instagram in-app Android — banner + Chrome modal", "pass", `modal: "${modalText.slice(0, 60)}"`);
+    } else {
+      record(
+        "S12: Instagram in-app Android — banner + Chrome modal",
         "fail",
         `unexpected: "${modalText.slice(0, 60)}"`,
       );
@@ -381,7 +409,7 @@ async function scenario11() {
 
 (async () => {
   console.log(`\nRunning install-awareness E2E against ${BASE_URL}\n`);
-  for (const fn of [scenario1, scenario2, scenario3, scenario4, scenario6, scenario7, scenario8, scenario9, scenario10, scenario11]) {
+  for (const fn of [scenario1, scenario2, scenario3, scenario4, scenario6, scenario7, scenario8, scenario9, scenario10, scenario11, scenario12]) {
     try {
       await fn();
     } catch (e) {

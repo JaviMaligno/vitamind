@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
-import type { InstallPlatform } from "@/lib/install";
+import { detectMobileOS, type InstallPlatform } from "@/lib/install";
 
 export type InstallModalMode = "banner" | "gating";
 
@@ -46,6 +46,14 @@ export default function InstallInstructionsModal({ open, mode, platform, isInApp
     : platform === "ios-manual" ? "ios"
     : "fallback";
 
+  // In-app webviews (Instagram, Facebook, TikTok…) can't install PWAs. The
+  // browser to escape to depends on the OS, not on Safari being everywhere.
+  const os = detectMobileOS();
+  const inAppHeading =
+    os === "ios" ? t("inAppBrowserIos")
+    : os === "android" ? t("inAppBrowserAndroid")
+    : t("inAppBrowser");
+
   const handleCopyUrl = async () => {
     try {
       await navigator.clipboard.writeText(window.location.href);
@@ -64,7 +72,7 @@ export default function InstallInstructionsModal({ open, mode, platform, isInApp
       onClick={onClose}
     >
       <div
-        className="w-full max-w-[340px] rounded-2xl bg-surface-elevated text-text-primary shadow-2xl overflow-hidden"
+        className="w-full max-w-[340px] rounded-2xl bg-surface text-text-primary border border-border-default shadow-2xl overflow-hidden"
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
@@ -73,7 +81,7 @@ export default function InstallInstructionsModal({ open, mode, platform, isInApp
           <button
             onClick={onClose}
             aria-label={t("close")}
-            className="absolute top-3 right-3 w-8 h-8 rounded-full bg-surface-card hover:bg-surface-input flex items-center justify-center text-text-muted"
+            className="absolute top-3 right-3 w-8 h-8 rounded-full bg-surface-card hover:bg-surface-input flex items-center justify-center text-text-secondary"
           >
             ✕
           </button>
@@ -82,8 +90,8 @@ export default function InstallInstructionsModal({ open, mode, platform, isInApp
           </div>
           {variant === "in-app" && (
             <>
-              <h3 className="text-lg font-bold mb-1">{t("inAppBrowser")}</h3>
-              <p className="text-sm text-text-muted">{t("fallback")}</p>
+              <h3 className="text-lg font-bold mb-1">{inAppHeading}</h3>
+              <p className="text-sm text-text-secondary">{t("fallback")}</p>
             </>
           )}
           {variant === "ios" && (
@@ -91,7 +99,7 @@ export default function InstallInstructionsModal({ open, mode, platform, isInApp
               <h3 className="text-lg font-bold mb-1">
                 {mode === "gating" ? t("iosBlock") : t("title")}
               </h3>
-              <p className="text-sm text-text-muted">
+              <p className="text-sm text-text-secondary">
                 {mode === "gating" ? t("iosBlockSub") : t("subtitle")}
               </p>
             </>
@@ -99,7 +107,7 @@ export default function InstallInstructionsModal({ open, mode, platform, isInApp
           {variant === "fallback" && (
             <>
               <h3 className="text-lg font-bold mb-1">{t("title")}</h3>
-              <p className="text-sm text-text-muted">{t("fallback")}</p>
+              <p className="text-sm text-text-secondary">{t("fallback")}</p>
             </>
           )}
         </div>
@@ -123,7 +131,7 @@ export default function InstallInstructionsModal({ open, mode, platform, isInApp
           <div className="px-6 pb-4">
             <button
               onClick={handleCopyUrl}
-              className="w-full py-2.5 rounded-lg bg-amber-400 hover:bg-amber-300 text-text-primary font-semibold text-sm transition-colors"
+              className="w-full py-2.5 rounded-lg bg-amber-400 hover:bg-amber-300 text-neutral-900 font-semibold text-sm transition-colors"
             >
               {copied ? t("linkCopied") : t("copyUrl")}
             </button>
@@ -131,7 +139,7 @@ export default function InstallInstructionsModal({ open, mode, platform, isInApp
         )}
 
         {variant === "ios" && (
-          <div className="bg-surface-card px-6 py-3 text-center text-xs text-text-faint border-t border-border-subtle">
+          <div className="bg-surface-card px-6 py-3 text-center text-xs text-text-muted border-t border-border-subtle">
             {t("foot")}
           </div>
         )}

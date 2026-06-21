@@ -66,11 +66,13 @@ export default function InstallProvider({ children }: { children: ReactNode }) {
     const nav = navigator as Navigator & {
       getInstalledRelatedApps?: () => Promise<RelatedApp[]>;
     };
-    if (typeof nav.getInstalledRelatedApps !== "function") {
-      setDetectionReady(true);
-      return;
-    }
-    nav.getInstalledRelatedApps()
+    // Resolve to an empty list when the API is unsupported (iOS, Firefox, Safari
+    // macOS) so detectionReady is always flipped from the .finally() callback —
+    // never synchronously in the effect body.
+    const detection = typeof nav.getInstalledRelatedApps === "function"
+      ? nav.getInstalledRelatedApps()
+      : Promise.resolve<RelatedApp[]>([]);
+    detection
       .then((apps) => {
         if (apps.length > 0) setIsInstalled(true);
       })
@@ -89,7 +91,7 @@ export default function InstallProvider({ children }: { children: ReactNode }) {
         // Lightweight toast: fixed bottom, auto-dismiss after 4s
         const toast = document.createElement("div");
         toast.textContent = t("installed.toast");
-        toast.className = "fixed left-1/2 -translate-x-1/2 bottom-24 z-[110] px-4 py-2.5 rounded-xl bg-amber-400 text-text-primary font-semibold text-sm shadow-2xl";
+        toast.className = "fixed left-1/2 -translate-x-1/2 bottom-24 z-[110] px-4 py-2.5 rounded-xl bg-amber-400 text-neutral-900 font-semibold text-sm shadow-2xl";
         toast.setAttribute("role", "status");
         toast.setAttribute("aria-live", "polite");
         toast.setAttribute("aria-atomic", "true");

@@ -38,7 +38,7 @@ describe("isStandalone", () => {
   });
 });
 
-import { isInAppBrowser, detectPlatform } from "../install";
+import { isInAppBrowser, detectPlatform, detectMobileOS } from "../install";
 
 describe("isInAppBrowser", () => {
   function setUA(ua: string) {
@@ -120,6 +120,40 @@ describe("detectPlatform", () => {
   it("falls back to 'manual' for unknown desktop UAs", () => {
     setUA("Mozilla/5.0 SomeRandomBrowser/1.0");
     expect(detectPlatform(null)).toBe("manual");
+  });
+});
+
+describe("detectMobileOS", () => {
+  function setUA(ua: string) {
+    Object.defineProperty(globalThis.navigator, "userAgent", {
+      value: ua,
+      configurable: true,
+    });
+  }
+
+  it("returns 'ios' for an iPhone UA", () => {
+    setUA("Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 Version/17.0 Mobile/15E148 Safari/604.1");
+    expect(detectMobileOS()).toBe("ios");
+  });
+
+  it("returns 'ios' for an iPhone inside the Instagram in-app browser", () => {
+    setUA("Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 Mobile/15E148 Instagram 320.0.0.0.0");
+    expect(detectMobileOS()).toBe("ios");
+  });
+
+  it("returns 'android' for an Android UA", () => {
+    setUA("Mozilla/5.0 (Linux; Android 13; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36");
+    expect(detectMobileOS()).toBe("android");
+  });
+
+  it("returns 'android' for an Android device inside the Instagram in-app browser", () => {
+    setUA("Mozilla/5.0 (Linux; Android 13; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Mobile Safari/537.36 Instagram 320.0.0.0.0");
+    expect(detectMobileOS()).toBe("android");
+  });
+
+  it("returns 'other' for a desktop UA", () => {
+    setUA("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36");
+    expect(detectMobileOS()).toBe("other");
   });
 });
 

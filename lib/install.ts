@@ -18,6 +18,21 @@ export function isInAppBrowser(): boolean {
   );
 }
 
+export type MobileOS = "ios" | "android" | "other";
+
+/**
+ * Detects the underlying mobile OS regardless of which browser (or in-app
+ * webview) is running. Used to tailor "open in your real browser" guidance:
+ * iOS users need Safari, Android users need Chrome.
+ */
+export function detectMobileOS(): MobileOS {
+  if (typeof navigator === "undefined") return "other";
+  const ua = navigator.userAgent || "";
+  if (/iPad|iPhone|iPod/.test(ua)) return "ios";
+  if (/Android/.test(ua)) return "android";
+  return "other";
+}
+
 export function detectPlatform(deferredPrompt: Event | null): InstallPlatform {
   if (deferredPrompt) return "native";
   if (typeof navigator === "undefined") return "unsupported";
