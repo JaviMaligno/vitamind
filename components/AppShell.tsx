@@ -10,6 +10,7 @@ import ThemeToggle from "@/components/ThemeToggle";
 import InstallBanner from "@/components/InstallBanner";
 import InstallHelpButton from "@/components/InstallHelpButton";
 import UpdateNotice from "@/components/UpdateNotice";
+import PushLocaleSync from "@/components/PushLocaleSync";
 import { useTranslations } from "next-intl";
 
 function TopBar() {
@@ -55,6 +56,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             <BottomTabBar />
             <InstallBanner />
             <UpdateNotice />
+            <PushLocaleSync />
           </div>
         </InstallProvider>
       </AppProvider>

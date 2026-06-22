@@ -55,6 +55,22 @@ export async function saveSubscription(sub: StoredSubscription): Promise<void> {
   if (error) throw new Error(`Failed to upsert push subscription: ${error.message}`);
 }
 
+/**
+ * Updates only the `locale` of an existing subscription, without touching the
+ * stored lat/lon/skinType/etc. Used by the app-wide PushLocaleSync so a stale
+ * subscription (e.g. created before push localization, defaulting to "es") gets
+ * corrected to the user's chosen language on any page load — not just /profile.
+ * No-ops silently if the endpoint isn't found.
+ */
+export async function updateSubscriptionLocale(endpoint: string, locale: string): Promise<void> {
+  const sb = requireServiceClient();
+  const { error } = await sb
+    .from("push_subscriptions")
+    .update({ locale, updated_at: new Date().toISOString() })
+    .eq("endpoint", endpoint);
+  if (error) throw new Error(`Failed to update subscription locale: ${error.message}`);
+}
+
 export async function removeSubscription(endpoint: string): Promise<void> {
   // Use service role key to bypass RLS for server-side subscription management
   const sb = requireServiceClient();
