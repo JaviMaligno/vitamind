@@ -10,7 +10,10 @@ export async function loadProfile(): Promise<{ profile: UserProfile | null; isLo
   const { data: { user } } = await sb.auth.getUser();
   if (!user) return { profile: null, isLoggedIn: false };
 
-  const { data } = await sb.from("profiles").select("*").eq("id", user.id).single();
+  // maybeSingle: a missing row (new user, no profile yet) returns data=null with
+  // no error, so we can distinguish "not created yet" from a real failure below.
+  const { data, error } = await sb.from("profiles").select("*").eq("id", user.id).maybeSingle();
+  if (error) throw new Error(`Failed to load profile: ${error.message}`);
 
   if (data) {
     return {
@@ -72,7 +75,7 @@ export async function saveProfile(profile: UserProfile): Promise<void> {
   const sb = getSupabase();
   if (!sb) return;
 
-  await sb.from("profiles").upsert({
+  const { error } = await sb.from("profiles").upsert({
     id: profile.id,
     skin_type: profile.skinType,
     area_fraction: profile.areaFraction,
@@ -84,6 +87,7 @@ export async function saveProfile(profile: UserProfile): Promise<void> {
     history: profile.history,
     updated_at: new Date().toISOString(),
   });
+  if (error) throw new Error(`Failed to save profile: ${error.message}`);
 
   saveHistory(profile.history);
 }
@@ -118,5 +122,6 @@ export async function updateProfile(id: string, updates: Partial<Omit<UserProfil
   if (updates.lastCityId !== undefined) dbUpdates.last_city_id = updates.lastCityId;
   if (updates.history !== undefined) dbUpdates.history = updates.history;
 
-  await sb.from("profiles").update(dbUpdates).eq("id", id);
+  const { error } = await sb.from("profiles").update(dbUpdates).eq("id", id);
+  if (error) throw new Error(`Failed to update profile: ${error.message}`);
 }
