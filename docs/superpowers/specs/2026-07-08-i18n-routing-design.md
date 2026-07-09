@@ -47,7 +47,7 @@ This PR delivers routing + hreflang/sitemap/canonical only.
 | Prefix strategy | `as-needed` | Default `es` stays prefix-free (`/`, `/learn` unchanged); other locales get `/xx`. Preserves current URLs, keeps home clean, fewer redirects. |
 | Default locale | `es` | Occupies the prefix-free URLs; matches current default. |
 | First-visit detection | On, via redirect | New visitor with FR browser → 302 `/fr`. Keeps current UX but through a real URL instead of header-variant content. |
-| `x-default` target | `/` (prefix-free root) | The autodetecting entry point. |
+| `x-default` target | Default-locale (es) version of the same path | hreflang reciprocity — validators flag `x-default` → `/` on non-home pages. |
 
 ## Architecture — file structure
 
@@ -127,9 +127,11 @@ reading `useLocale()` (no functional change; locale now comes from the URL segme
   the 6 locales → Next builds all 6 variants per page (SSG).
 - **Self-referencing canonical:** replace the fixed `canonical: "/"` with
   `generateMetadata()` per page; each page+locale canonicalizes to its own URL.
-- **hreflang:** each page declares its 6 language alternates + `x-default` → `/`.
-  Example for `/learn`: canonical `/learn`; hreflang es `/learn`, en `/en/learn`,
-  fr `/fr/learn`, de `/de/learn`, ru `/ru/learn`, lt `/lt/learn`; x-default `/`.
+- **hreflang:** each page declares its 6 language alternates + `x-default` → the
+  default-locale (es, prefix-free) version of the SAME path, so hreflang
+  reciprocity holds. Example for `/learn`: canonical `/learn`; hreflang es
+  `/learn`, en `/en/learn`, fr `/fr/learn`, de `/de/learn`, ru `/ru/learn`, lt
+  `/lt/learn`; x-default `/learn`. (For the home page, x-default is `/`.)
 - **Sitemap 6 → 36 URLs:** rewrite `sitemap.ts` to emit each of the 6 pages × 6
   locales with the prefix rule (es prefix-free, rest `/xx`), each entry carrying
   its full `alternates.languages` block. Drop the current `?locale=` URLs.
