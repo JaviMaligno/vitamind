@@ -81,6 +81,45 @@ export function contiguousMonthRange(months: number[]): { start: number; end: nu
   return { start, end };
 }
 
+/**
+ * A day only counts towards the exact-date window if it offers a meaningful
+ * amount of viable sun. `vitDHrs` behaves like `acos` near the crossing, so the
+ * hours on a boundary day can be arbitrarily small: without this floor the
+ * reported date would be an artefact of where the continuous crossing instant
+ * happens to fall inside a calendar day, not a day you could actually use.
+ */
+export const MIN_VIABLE_HOURS = 0.5;
+
+/**
+ * First and last day of the year (1-365) with at least `minHours` of viable sun,
+ * wrapping across January for southern-hemisphere cities. Returns null when every
+ * day qualifies or none does — there is no boundary to name.
+ *
+ * Safe to treat the viable set as a single contiguous band: solar declination is a
+ * single-cycle sinusoid, so outside the tropics the noon elevation curve is
+ * unimodal. Inside the tropics the curve is bimodal, but its dip stays above 43°,
+ * far over any threshold this model produces.
+ */
+export function viableDateBoundaries(
+  hoursByDay: number[],
+  minHours: number = MIN_VIABLE_HOURS,
+): { startDoy: number; endDoy: number } | null {
+  const viable = hoursByDay.map((h) => h >= minHours);
+  const n = viable.length;
+  const count = viable.filter(Boolean).length;
+  if (count === 0 || count === n) return null;
+
+  // The band starts on the first viable day whose predecessor is not viable.
+  const prev = (i: number) => (i === 0 ? n - 1 : i - 1);
+  const next = (i: number) => (i === n - 1 ? 0 : i + 1);
+
+  const start = viable.findIndex((v, i) => v && !viable[prev(i)]);
+  let end = start;
+  while (viable[next(end)] && next(end) !== start) end = next(end);
+
+  return { startDoy: start + 1, endDoy: end + 1 };
+}
+
 export interface SeasonWindow {
   doy: number;
   /** 0-11, for Intl month formatting by the caller. */

@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import {
-  cityYearProfile, citySeasonalWindows, contiguousMonthRange, REPRESENTATIVE_DOYS,
+  cityYearProfile, citySeasonalWindows, contiguousMonthRange, viableDateBoundaries,
+  REPRESENTATIVE_DOYS,
 } from "@/lib/city-content";
 
 // The threshold is not a constant: ozone varies with latitude, longitude and
@@ -76,6 +77,45 @@ describe("contiguousMonthRange", () => {
   it("returns null for all-year and for empty", () => {
     expect(contiguousMonthRange([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12])).toBeNull();
     expect(contiguousMonthRange([])).toBeNull();
+  });
+});
+
+describe("viableDateBoundaries", () => {
+  // A "viable day" needs a meaningful amount of sun above the threshold, not a
+  // grazing minute. Without the floor the boundary date is an artefact of where
+  // the continuous crossing instant happens to fall inside a calendar day.
+  it("returns null when every day is viable and when none is", () => {
+    expect(viableDateBoundaries(Array(365).fill(8))).toBeNull();
+    expect(viableDateBoundaries(Array(365).fill(0))).toBeNull();
+  });
+
+  it("finds the first and last viable day of a northern band", () => {
+    const hours = Array.from({ length: 365 }, (_, i) => (i >= 79 && i <= 273 ? 4 : 0));
+    expect(viableDateBoundaries(hours)).toEqual({ startDoy: 80, endDoy: 274 });
+  });
+
+  it("wraps across the year boundary for a southern band", () => {
+    // Viable Aug (doy 213) through Apr (doy 105).
+    const hours = Array.from({ length: 365 }, (_, i) => {
+      const doy = i + 1;
+      return doy >= 213 || doy <= 105 ? 4 : 0;
+    });
+    expect(viableDateBoundaries(hours)).toEqual({ startDoy: 213, endDoy: 105 });
+  });
+
+  it("ignores days below the minimum viable duration", () => {
+    const hours = Array(365).fill(0);
+    hours[99] = 0.2;  // grazing: 12 minutes, must not count
+    hours[100] = 3;   // real
+    hours[101] = 3;
+    expect(viableDateBoundaries(hours)).toEqual({ startDoy: 101, endDoy: 102 });
+  });
+
+  it("honours a custom floor", () => {
+    const hours = Array(365).fill(0);
+    hours[100] = 0.2;
+    expect(viableDateBoundaries(hours, 0.1)).toEqual({ startDoy: 101, endDoy: 101 });
+    expect(viableDateBoundaries(hours, 0.5)).toBeNull();
   });
 });
 
