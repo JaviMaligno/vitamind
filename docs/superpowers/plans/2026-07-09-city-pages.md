@@ -998,6 +998,7 @@ Insert this top-level key into `messages/es.json` (alongside `cities`, `learn`, 
   "verdictAllYear": "En {city} puedes sintetizar vitamina D durante todo el año.",
   "verdictNever": "En {city} el sol nunca alcanza la altura necesaria para sintetizar vitamina D.",
   "impossibleRange": "De {startMonth} a {endMonth} no es posible: necesitas suplementar.",
+  "exactWindow": "Más exactamente: {dateRange}.",
   "yearHeading": "Perfil anual en {city}",
   "yearCaption": "Horas diarias con sol suficiente para sintetizar vitamina D a lo largo del año.",
   "seasonHeading": "Ventanas por estación",
@@ -1024,6 +1025,7 @@ Insert this top-level key into `messages/es.json` (alongside `cities`, `learn`, 
   "verdictAllYear": "In {city} you can synthesize vitamin D all year round.",
   "verdictNever": "In {city} the sun never gets high enough to synthesize vitamin D.",
   "impossibleRange": "From {startMonth} to {endMonth} synthesis isn't possible — this is when a supplement can help.",
+  "exactWindow": "More precisely: {dateRange}.",
   "yearHeading": "Year-round profile in {city}",
   "yearCaption": "Daily hours with enough sun to synthesize vitamin D across the year.",
   "seasonHeading": "Seasonal windows",
@@ -1053,6 +1055,7 @@ Write them as JSON `\u202f` escapes, not literal characters.
   "verdictAllYear": "{atCityCap}, vous pouvez synthétiser la vitamine D toute l'année.",
   "verdictNever": "{atCityCap}, le soleil n'atteint jamais la hauteur nécessaire pour synthétiser la vitamine D.",
   "impossibleRange": "{fromMonthCap} à {endMonth}, ce n'est pas possible\u202f: la supplémentation prend le relais.",
+  "exactWindow": "Plus précisément\u202f: {dateRange}.",
   "yearHeading": "Profil annuel {atCity}",
   "yearCaption": "Nombre d'heures par jour où le soleil est assez haut pour synthétiser la vitamine D, au fil de l'année.",
   "seasonHeading": "Fenêtres saisonnières",
@@ -1083,6 +1086,7 @@ These pages are consumer-facing and link to `/learn`, so they use `du`.
   "verdictAllYear": "In {city} kannst du das ganze Jahr über Vitamin D bilden.",
   "verdictNever": "In {city} erreicht die Sonne nie die nötige Höhe, um Vitamin D zu bilden.",
   "impossibleRange": "Von {startMonth} bis {endMonth} ist keine Bildung möglich – in diesen Monaten solltest du supplementieren.",
+  "exactWindow": "Genauer: {dateRange}.",
   "yearHeading": "Jahresprofil in {city}",
   "yearCaption": "Tägliche Stunden mit ausreichender Sonne zur Vitamin-D-Bildung im Jahresverlauf.",
   "seasonHeading": "Saisonale Zeitfenster",
@@ -1114,6 +1118,7 @@ and render «около 22 минуты», which is wrong. Do not "fix" this.
   "verdictAllYear": "{city}: витамин D можно синтезировать круглый год.",
   "verdictNever": "{city}: солнце никогда не поднимается достаточно высоко для синтеза витамина D.",
   "impossibleRange": "С {startMonth} по {endMonth} синтез невозможен — нужны добавки.",
+  "exactWindow": "Точнее: {dateRange}.",
   "yearHeading": "Годовой профиль — {city}",
   "yearCaption": "Сколько часов в день солнце стоит достаточно высоко для синтеза витамина D — по месяцам года.",
   "seasonHeading": "Солнечные окна по сезонам",
@@ -1145,6 +1150,7 @@ integers never select `many`, but it is included for completeness.
   "verdictAllYear": "{city}: vitamino D iš saulės galite pasigaminti ištisus metus.",
   "verdictNever": "{city}: saulė niekada nepakyla pakankamai aukštai, kad odoje susidarytų vitaminas D.",
   "impossibleRange": "Nuo {startMonth} iki {endMonth} sintezė neįmanoma – reikia papildų.",
+  "exactWindow": "Tiksliau: {dateRange}.",
   "yearHeading": "Metinis profilis: {city}",
   "yearCaption": "Valandos per dieną, kai saulės pakanka vitaminui D gaminti — ištisus metus.",
   "seasonHeading": "Sezoniniai saulės langai",
@@ -1269,13 +1275,15 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import CityYearStrip from "@/components/CityYearStrip";
 import { BUILTIN_CITIES } from "@/lib/cities";
-import { cityYearProfile, citySeasonalWindows, contiguousMonthRange } from "@/lib/city-content";
+import {
+  cityYearProfile, citySeasonalWindows, contiguousMonthRange, viableDateBoundaries,
+} from "@/lib/city-content";
 import {
   CITY_PREFIX, baseSlug, cityIdFromSlug, localizedCityName,
   buildCityAlternates, cityStaticParams,
 } from "@/lib/city-routes";
 import { capFirst, cityLabels, monthLabels, monthName, verdictMonths } from "@/lib/city-copy";
-import { fmtTime } from "@/lib/solar";
+import { fmtTime, dateFromDoy } from "@/lib/solar";
 
 export function generateStaticParams() {
   return cityStaticParams();
@@ -1325,9 +1333,25 @@ export default async function CityPage({ params }: { params: Promise<Params> }) 
   // needs — ICU ignores extras but throws on a missing one, so pass the superset.
   const labels = cityLabels(p.locale, localizedCityName(p.locale, base));
 
-  const profile = cityYearProfile(city.lat);
-  const windows = citySeasonalWindows(city.lat, city.lon, city.tz);
+  // The synthesis threshold depends on ozone (latitude, longitude, season) and on
+  // altitude, so the city's real position and elevation must both be passed.
+  const elevationM = city.elevation ?? 0;
+  const profile = cityYearProfile(city.lat, city.lon, elevationM);
+  const windows = citySeasonalWindows(city.lat, city.lon, city.tz, elevationM);
   const labelsForChart = monthLabels(p.locale);
+
+  // The month band hides the shoulder; this names the first and last day with at
+  // least 30 minutes of viable sun. Rendered only when there is a real winter --
+  // Sydney is allYear by the month rule yet still has a boundary.
+  const bounds =
+    profile.allYear || profile.neverPossible ? null : viableDateBoundaries(profile.hoursByDay);
+  const dateRange = bounds
+    ? new Intl.DateTimeFormat(p.locale, { day: "numeric", month: "long" })
+        // Both endpoints are pinned to the same reference year. A southern band
+        // wraps past January, and real cross-year dates would make formatRange
+        // print a fabricated "2026 – 2027" on a pattern that repeats every year.
+        .formatRange(dateFromDoy(bounds.startDoy), dateFromDoy(bounds.endDoy))
+    : null;
 
   // Circular band: southern-hemisphere cities wrap around January.
   const possibleBand = contiguousMonthRange(profile.possibleMonths);
@@ -1381,6 +1405,9 @@ export default async function CityPage({ params }: { params: Promise<Params> }) 
             ...verdictMonths(p.locale, impossibleBand.start - 1, impossibleBand.end - 1),
           })}
         </p>
+      )}
+      {dateRange && (
+        <p className="mt-1 text-xs opacity-60">{t("exactWindow", { dateRange })}</p>
       )}
 
       <section className="mt-8">
