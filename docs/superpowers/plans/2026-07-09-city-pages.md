@@ -187,7 +187,17 @@ describe("city-routes", () => {
   it("localizes the city slug per locale", () => {
     expect(localizedCitySlug("es", "londres")).toBe("londres");
     expect(localizedCitySlug("en", "londres")).toBe("london");
-    expect(localizedCitySlug("ru", "moscu")).toBe("moskva");
+    expect(localizedCitySlug("lt", "londres")).toBe("londonas");
+  });
+
+  // ru names are Cyrillic renderings of names that are usually Latin already.
+  // Transliterating them back would yield khelsinki / tsyurikh / parizh.
+  it("uses the real Latin (en) name for ru slugs, never a back-transliteration", () => {
+    expect(localizedCitySlug("ru", "helsinki")).toBe("helsinki");
+    expect(localizedCitySlug("ru", "zurich")).toBe("zurich");
+    expect(localizedCitySlug("ru", "paris")).toBe("paris");
+    expect(localizedCitySlug("ru", "ciudad-de-mexico")).toBe("mexico-city");
+    expect(localizedCitySlug("ru", "moscu")).toBe("moscow");
   });
 
   it("round-trips slug → cityId for every city in every locale", () => {
@@ -219,7 +229,17 @@ describe("city-routes", () => {
     expect(alt.canonical).toBe(`${SITE_URL}/en/vitamin-d/london`);
     expect(alt.languages.es).toBe(`${SITE_URL}/vitamina-d/londres`);
     expect(alt.languages.fr).toBe(`${SITE_URL}/fr/vitamine-d/londres`);
+    expect(alt.languages.ru).toBe(`${SITE_URL}/ru/vitamin-d/london`);
+    expect(alt.languages.lt).toBe(`${SITE_URL}/lt/vitaminas-d/londonas`);
     expect(alt.languages["x-default"]).toBe(`${SITE_URL}/vitamina-d/londres`);
+  });
+
+  it("keeps every locale's URL for a city distinct", () => {
+    for (const city of BUILTIN_CITIES) {
+      const base = baseSlug(city.id);
+      const urls = routing.locales.map((l) => cityUrl(l, base));
+      expect(new Set(urls).size).toBe(routing.locales.length);
+    }
   });
 
   it("emits 438 static params (73 cities × 6 locales)", () => {
@@ -285,9 +305,28 @@ export function localizedCityName(locale: string, base: string): string {
   return CITY_NAMES[locale]?.[base] ?? base;
 }
 
-/** ASCII slug of the localized name; falls back to the base slug if empty. */
+/**
+ * Locales whose names are written in a non-Latin script borrow another locale's
+ * name for the URL slug. `ru` city names are Cyrillic renderings of names that
+ * are already Latin ("Helsinki" → "Хельсинки"); transliterating them back would
+ * double-transliterate into "khelsinki" / "tsyurikh" / "parizh". Only `Москва`
+ * is Cyrillic-native, and "moscow" is a perfectly good slug for it.
+ */
+const LATIN_SLUG_LOCALE: Record<string, string> = { ru: "en" };
+
+/**
+ * ASCII slug of the city's name in `locale`. For non-Latin-script locales this
+ * is the name borrowed from `LATIN_SLUG_LOCALE`. Falls back to transliterating
+ * the locale's own name (which is what makes `slugify`'s Cyrillic map reachable
+ * for a future city that has no `en` name), and finally to the base slug.
+ */
 export function localizedCitySlug(locale: string, base: string): string {
-  return slugify(localizedCityName(locale, base)) || base;
+  const latinSource = LATIN_SLUG_LOCALE[locale] ?? locale;
+  return (
+    slugify(localizedCityName(latinSource, base)) ||
+    slugify(localizedCityName(locale, base)) ||
+    base
+  );
 }
 
 // Reverse index, built once: locale → localized slug → cityId.
@@ -1227,7 +1266,7 @@ npm test   # verify on the merged result
 
 ## Self-Review
 
-- **Spec coverage:** 73 cities × 6 locales (Task 2 `cityStaticParams`, asserted at 438); localized URLs + prefixes (Task 2 `CITY_PREFIX`, `localizedCitySlug`); Cyrillic transliteration + fallback (Task 1, Task 2 `|| base`); build-time computed content (Task 3); year SVG (Task 5); the 6 content blocks — verdict, year profile, seasonal windows, supplement, CTA, FAQ (Task 6); `cityPage` namespace ×6 (Task 4); `Intl` month names, not the hardcoded Spanish arrays (Task 6 `monthName`/`monthLabels`); canonical + hreflang + x-default (Task 2 `buildCityAlternates`, used in Task 6 metadata and Task 7 sitemap); sitemap +438 (Task 7); prefix validation → `notFound()` (Task 6 `resolveCity`); slug uniqueness test (Task 2); smoke + dev→prod + content review (Tasks 8–9). All spec sections mapped.
+- **Spec coverage:** 73 cities × 6 locales (Task 2 `cityStaticParams`, asserted at 438); localized URLs + prefixes (Task 2 `CITY_PREFIX`, `localizedCitySlug`); non-Latin-locale slugs use the real Latin name, with transliteration and base slug as fallbacks (Task 1, Task 2 `LATIN_SLUG_LOCALE` + `||` chain); build-time computed content (Task 3); year SVG (Task 5); the 6 content blocks — verdict, year profile, seasonal windows, supplement, CTA, FAQ (Task 6); `cityPage` namespace ×6 (Task 4); `Intl` month names, not the hardcoded Spanish arrays (Task 6 `monthName`/`monthLabels`); canonical + hreflang + x-default (Task 2 `buildCityAlternates`, used in Task 6 metadata and Task 7 sitemap); sitemap +438 (Task 7); prefix validation → `notFound()` (Task 6 `resolveCity`); slug uniqueness test (Task 2); smoke + dev→prod + content review (Tasks 8–9). All spec sections mapped.
 - **Placeholder scan:** every code step ships full file contents or an exact, unambiguous edit. No "TBD"/"handle edge cases".
 - **Type consistency:** `baseSlug(cityId)`, `localizedCitySlug(locale, base)`, `cityIdFromSlug(locale, slug)`, `cityUrl(locale, base)`, `buildCityAlternates(locale, base)`, `cityStaticParams()`, `cityYearProfile(lat)`, `citySeasonalWindows(lat, lon, tz)`, `contiguousMonthRange(months)`, `slugify(name)` are used identically across tasks and tests. `SeasonWindow.monthIndex` is 0-11 and consumed by `monthName(locale, monthIndex)`; `CityYearProfile.possibleMonths`/`impossibleMonths` are 1-12 and converted with `- 1` at the call site.
 - **Bug caught in review:** naming the month band with `possibleMonths[0]`/`[last]` breaks for southern-hemisphere cities, whose possible months wrap around January (`[1,2,3,4,10,11,12]` would render "January–December"). Fixed by `contiguousMonthRange`, which walks the band circularly; the wrap case is pinned by a test.

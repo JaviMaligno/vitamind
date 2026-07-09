@@ -41,7 +41,7 @@ self-referencing canonical, hreflang across the 6 variants, and `FAQPage` schema
 | City set | 73 builtin | Translated names already exist; latitudes well-dispersed → no near-duplicates; zero thin-content risk. |
 | URL slug | Localized (per-locale) | Users search the city name in their own language; the slug in the URL is a strong ranking signal. |
 | Path prefix | Localized, ASCII | `vitamina-d`/`vitamin-d`/`vitamine-d`/`vitamin-d`/`vitamin-d`/`vitaminas-d`. Keyword in the path; ASCII for clean URLs. |
-| Slug for non-Latin locales (ru) | ASCII transliteration, fallback to base slug | Cyrillic percent-encoded URLs are ugly; transliterate `Лондон` → `london`/`moskva`. If slugify yields empty/collision, fall back to the Spanish base slug. |
+| Slug for non-Latin locales (ru) | The city's real Latin name (i.e. the `en` name), NOT a back-transliteration | Cyrillic percent-encoded URLs are ugly, so the slug must be ASCII. But transliterating the Cyrillic *back* to Latin double-transliterates any city whose name was Latin to begin with: `Helsinki` → `Хельсинки` → `khelsinki`, `Zurich` → `Цюрих` → `tsyurikh`. Of the 73 cities only `Москва` is Cyrillic-native. So `ru` slugs reuse the `en` name (`helsinki`, `zurich`, `moscow`). Transliteration survives only as a fallback for a future city with no `en` name; final fallback is the Spanish base slug. |
 | Rendering | Static server component (SSG) | Content must be in the initial HTML for SEO; pure functions make it deterministic at build. |
 | Year profile viz | Static SVG (server-rendered) | Indexable, no JS cost. |
 | #3 content | Absorbed | The supplement block + per-city FAQ cover most of it; residual = expand `/learn` later. |
@@ -56,14 +56,14 @@ es:  getvitamind.app/vitamina-d/madrid
 en:  getvitamind.app/en/vitamin-d/london
 fr:  getvitamind.app/fr/vitamine-d/londres
 de:  getvitamind.app/de/vitamin-d/london
-ru:  getvitamind.app/ru/vitamin-d/moskva
+ru:  getvitamind.app/ru/vitamin-d/moscow
 lt:  getvitamind.app/lt/vitaminas-d/londonas
 ```
 
-The city slug is derived deterministically by slugifying (with ASCII
-transliteration) the localized name from `cities.<baseSlug>`. Slugs are stable
-across builds (pure function of the name) and MUST be unique per locale (verified
-by a test). hreflang links the 6 variants of the same city; canonical
+The city slug is derived deterministically by slugifying the localized name from
+`cities.<baseSlug>` — except for `ru`, which slugifies the `en` name instead (see
+the non-Latin-locale row above). Slugs are stable across builds (pure function of
+the name) and MUST be unique per locale (verified by a test). hreflang links the 6 variants of the same city; canonical
 self-references.
 
 ## Page content (per city, all computed in build)
