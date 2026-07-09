@@ -117,6 +117,19 @@ NOT the hardcoded Spanish arrays in `solar.ts`/`GlobalHeatmap`. The city name co
 from the existing `cities.<baseSlug>` keys. **The user reviews the copy** (tone,
 correctness) — this is where content quality lives.
 
+**Grammar is not ICU's job.** A native-level review of all six locales showed that
+interpolating a raw city name and a raw `Intl` month breaks four of them:
+`à Le Caire` (must contract to `au Caire`), `de avril` (must elide to `d'avril`),
+`с январь по июнь` (needs the genitive `января`), `nuo sausis iki birželis` (needs
+the genitive on both), and a lowercase line-initial month in es/fr/ru/lt. ICU can
+neither elide, contract, nor change case, so `lib/city-copy.ts` pre-inflects every
+value before it reaches a template. Each locale's messages then use only the
+placeholders it needs; passing a superset is safe. Two locale-specific rules that
+look like bugs but are not: `ru` declines only `startMonth` (`по` governs the
+accusative, which for masculine inanimate months equals the nominative), and `ru`
+`{minutes}` must NOT take an ICU plural (it sits under «около», which already
+governs the genitive plural). `lt` `{minutes}` does need one.
+
 ## SEO plumbing
 
 - **Sitemap:** +438 entries (on top of the existing 36), each with

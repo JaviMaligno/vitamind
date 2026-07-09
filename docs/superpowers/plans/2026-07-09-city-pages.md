@@ -53,6 +53,7 @@ export const BUILTIN_CITIES: City[]  // 73 entries; City = {id:"builtin:<slug>",
 | `lib/city-slug.ts` | `slugify(name)` — lowercase, Cyrillic transliteration, diacritic strip, ASCII slug | Create |
 | `lib/city-routes.ts` | per-locale path prefix, localized slug, reverse lookup, static params, `buildCityAlternates` | Create |
 | `lib/city-content.ts` | `cityYearProfile(lat)`, `citySeasonalWindows(lat,lon,tz)` — pure build-time content | Create |
+| `lib/city-copy.ts` | Per-locale grammar: article contraction, elision, genitive months, capitalization, chart labels | Create |
 | `components/CityYearStrip.tsx` | Static SVG year strip (server component) | Create |
 | `messages/{es,en,fr,de,ru,lt}.json` | New `cityPage` ICU namespace | Modify |
 | `app/[locale]/[cityPrefix]/[city]/page.tsx` | SSG page: params, metadata, content, FAQ schema | Create |
@@ -613,12 +614,357 @@ Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>"
 
 ---
 
-### Task 4: `cityPage` message namespace (6 locales)
+### Task 4: `lib/city-copy.ts` — per-locale grammar helpers
+
+**Why this task exists.** Six native-level copy reviews (one per locale) found that
+interpolating a raw city name and a raw `Intl` month into these templates produces
+broken grammar in four of the six languages:
+
+| Locale | Naive render | Correct |
+|---|---|---|
+| fr | `à Le Caire` | `au Caire` |
+| fr | `de avril` | `d'avril` |
+| ru | `с январь по июнь` | `с января по июнь` |
+| lt | `nuo sausis iki birželis` | `nuo sausio iki birželio` |
+| es/fr/ru/lt | `enero: entre las…` | `Enero: entre las…` |
+
+So the page must pass **already-inflected values** into ICU, not raw ones. ICU
+cannot elide, contract, or change case. This module owns that grammar.
+
+Key facts, all verified by running `Intl`:
+- `Intl.DateTimeFormat(locale, {month:"long"})` → nominative (`"enero"`, `"январь"`, `"sausis"`, `"January"`).
+- Adding `day:"numeric"` exposes the genitive: ru `"15 января"` → `января`; lt `"sausio 15 d."` → `sausio`.
+- ru: `с` governs genitive but `по` governs accusative, and months are masculine
+  inanimate, so accusative == nominative. **Only `startMonth` becomes genitive.**
+- lt: `nuo … iki …` governs genitive on **both** months.
+- fr: only `Le Caire` and `Le Cap` carry a French article. `Las Palmas` and
+  `Los Angeles` carry a *Spanish* article that must NOT be contracted (`à Las Palmas`
+  is correct). Contract on the French article only.
+- fr elision: `avril`, `août`, `octobre` need `d'`; the other nine take `de `.
+- lt `{month:"narrow"}` and `{month:"short"}` both return `"01".."12"`, not letters.
+
+**Files:**
+- Create: `lib/city-copy.ts`
+- Test: `lib/__tests__/city-copy.test.ts`
+
+- [ ] **Step 1: Write the failing test**
+
+Create `lib/__tests__/city-copy.test.ts`:
+
+```ts
+import { describe, it, expect } from "vitest";
+import {
+  capFirst, monthName, monthGenitive, frAtCity, frFromMonth,
+  monthLabels, cityLabels, verdictMonths,
+} from "@/lib/city-copy";
+
+describe("capFirst", () => {
+  it("uppercases only the first character", () => {
+    expect(capFirst("enero")).toBe("Enero");
+    expect(capFirst("январь")).toBe("Январь");
+    expect(capFirst("sausis")).toBe("Sausis");
+    expect(capFirst("")).toBe("");
+  });
+});
+
+describe("monthName", () => {
+  it("returns the nominative long month", () => {
+    expect(monthName("es", 0)).toBe("enero");
+    expect(monthName("en", 0)).toBe("January");
+    expect(monthName("ru", 0)).toBe("январь");
+    expect(monthName("lt", 0)).toBe("sausis");
+  });
+});
+
+describe("monthGenitive", () => {
+  it("returns the genitive for ru (strips the day)", () => {
+    expect(monthGenitive("ru", 0)).toBe("января");
+    expect(monthGenitive("ru", 5)).toBe("июня");
+    expect(monthGenitive("ru", 11)).toBe("декабря");
+  });
+
+  it("returns the genitive for lt (strips the day and the 'd.' marker)", () => {
+    expect(monthGenitive("lt", 0)).toBe("sausio");
+    expect(monthGenitive("lt", 5)).toBe("birželio");
+    expect(monthGenitive("lt", 11)).toBe("gruodžio");
+  });
+
+  it("falls back to the nominative for locales without a genitive form", () => {
+    expect(monthGenitive("es", 0)).toBe("enero");
+    expect(monthGenitive("en", 0)).toBe("January");
+    expect(monthGenitive("de", 0)).toBe("Januar");
+    expect(monthGenitive("fr", 0)).toBe("janvier");
+  });
+
+  it("never leaves digits or stray punctuation behind", () => {
+    for (const locale of ["ru", "lt"]) {
+      for (let m = 0; m < 12; m++) {
+        const g = monthGenitive(locale, m);
+        expect(g).not.toMatch(/[0-9.]/);
+        expect(g).toBe(g.trim());
+        expect(g.length).toBeGreaterThan(2);
+      }
+    }
+  });
+});
+
+describe("frAtCity", () => {
+  it("contracts the French definite article", () => {
+    expect(frAtCity("Le Caire")).toBe("au Caire");
+    expect(frAtCity("Le Cap")).toBe("au Cap");
+  });
+
+  it("leaves Spanish articles alone", () => {
+    expect(frAtCity("Las Palmas")).toBe("à Las Palmas");
+    expect(frAtCity("Los Angeles")).toBe("à Los Angeles");
+  });
+
+  it("handles the plain case and the other French articles", () => {
+    expect(frAtCity("Londres")).toBe("à Londres");
+    expect(frAtCity("Les Sables")).toBe("aux Sables");
+    expect(frAtCity("La Havane")).toBe("à la Havane");
+    expect(frAtCity("L'Aquila")).toBe("à l'Aquila");
+  });
+});
+
+describe("frFromMonth", () => {
+  it("elides before a vowel-initial month", () => {
+    expect(frFromMonth("avril")).toBe("d'avril");
+    expect(frFromMonth("août")).toBe("d'août");
+    expect(frFromMonth("octobre")).toBe("d'octobre");
+  });
+
+  it("does not elide otherwise", () => {
+    expect(frFromMonth("mars")).toBe("de mars");
+    expect(frFromMonth("septembre")).toBe("de septembre");
+  });
+});
+
+describe("monthLabels", () => {
+  it("returns 12 labels", () => {
+    for (const l of ["es", "en", "fr", "de", "ru", "lt"]) {
+      expect(monthLabels(l)).toHaveLength(12);
+    }
+  });
+
+  it("uses letters for lt instead of Intl's numeric labels", () => {
+    const lt = monthLabels("lt");
+    expect(lt[0]).toBe("saus.");
+    expect(lt[5]).toBe("birž.");
+    expect(lt.every((l) => !/^\d+$/.test(l))).toBe(true);
+  });
+
+  it("uses Intl narrow labels elsewhere", () => {
+    expect(monthLabels("en")[0]).toBe("J");
+  });
+});
+
+describe("cityLabels", () => {
+  it("exposes the French contracted forms for fr", () => {
+    expect(cityLabels("fr", "Le Caire")).toEqual({
+      city: "Le Caire", atCity: "au Caire", atCityCap: "Au Caire",
+    });
+    expect(cityLabels("fr", "Londres").atCityCap).toBe("À Londres");
+  });
+
+  it("falls back to the plain name for non-fr locales", () => {
+    expect(cityLabels("es", "Madrid")).toEqual({
+      city: "Madrid", atCity: "Madrid", atCityCap: "Madrid",
+    });
+  });
+});
+
+describe("verdictMonths", () => {
+  it("ru: genitive start, nominative end (по governs the accusative)", () => {
+    expect(verdictMonths("ru", 0, 5)).toMatchObject({
+      startMonth: "января", endMonth: "июнь",
+    });
+  });
+
+  it("lt: genitive on both months", () => {
+    expect(verdictMonths("lt", 0, 5)).toMatchObject({
+      startMonth: "sausio", endMonth: "birželio",
+    });
+  });
+
+  it("fr: supplies the elided de/d' forms", () => {
+    expect(verdictMonths("fr", 3, 8)).toMatchObject({
+      fromMonth: "d'avril", fromMonthCap: "D'avril", endMonth: "septembre",
+    });
+    expect(verdictMonths("fr", 2, 8).fromMonth).toBe("de mars");
+  });
+
+  it("es/en/de: plain nominative on both", () => {
+    expect(verdictMonths("es", 0, 5)).toMatchObject({ startMonth: "enero", endMonth: "junio" });
+    expect(verdictMonths("en", 0, 5)).toMatchObject({ startMonth: "January", endMonth: "June" });
+    expect(verdictMonths("de", 0, 5)).toMatchObject({ startMonth: "Januar", endMonth: "Juni" });
+  });
+});
+```
+
+- [ ] **Step 2: Run test to verify it fails**
+
+Run: `npx vitest run lib/__tests__/city-copy.test.ts`
+Expected: FAIL — cannot resolve `@/lib/city-copy`.
+
+- [ ] **Step 3: Create `lib/city-copy.ts`**
+
+```ts
+/**
+ * Per-locale grammar for the city pages.
+ *
+ * ICU cannot elide, contract or change case, so every value handed to a
+ * `cityPage` message must already be in the form its template needs. Each helper
+ * here owns one such transformation. All are pure and run at build time.
+ */
+
+/** A fixed reference year keeps month formatting deterministic across builds. */
+const REF_YEAR = 2026;
+const REF_DAY = 15;
+
+const refDate = (monthIndex: number) => new Date(REF_YEAR, monthIndex, REF_DAY);
+
+export function capFirst(s: string): string {
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
+/** Nominative long month name, e.g. "enero" / "January" / "январь" / "sausis". */
+export function monthName(locale: string, monthIndex: number): string {
+  return new Intl.DateTimeFormat(locale, { month: "long" }).format(refDate(monthIndex));
+}
+
+/** Locales whose month names must be declined in "from X to Y" constructions. */
+const GENITIVE_LOCALES = new Set(["ru", "lt"]);
+
+/**
+ * Genitive month name for ru/lt, obtained by formatting with a day — which puts
+ * the month into its genitive form ("15 января", "sausio 15 d.") — and stripping
+ * the day back out. Other locales have no genitive, so the nominative is returned.
+ */
+export function monthGenitive(locale: string, monthIndex: number): string {
+  if (!GENITIVE_LOCALES.has(locale)) return monthName(locale, monthIndex);
+  return new Intl.DateTimeFormat(locale, { month: "long", day: "numeric" })
+    .format(refDate(monthIndex))
+    .replace(/[0-9]/g, "")
+    .replace(/\s*d\.\s*$/, "") // lt appends a "d." day marker
+    .replace(/[.,]/g, "")
+    .trim();
+}
+
+/**
+ * French: put the city into "à <city>", contracting the definite article.
+ * Only the FRENCH article contracts — "Las Palmas" and "Los Angeles" carry a
+ * Spanish article and stay literal ("à Las Palmas").
+ */
+export function frAtCity(name: string): string {
+  if (name.startsWith("Le ")) return `au ${name.slice(3)}`;
+  if (name.startsWith("Les ")) return `aux ${name.slice(4)}`;
+  if (name.startsWith("La ")) return `à la ${name.slice(3)}`;
+  if (name.startsWith("L'")) return `à l'${name.slice(2)}`;
+  return `à ${name}`;
+}
+
+/** French elision: "de mars" but "d'avril" / "d'août" / "d'octobre". */
+export function frFromMonth(month: string): string {
+  return /^[aeiouâàéèêîôûh]/i.test(month) ? `d'${month}` : `de ${month}`;
+}
+
+/**
+ * Lithuanian has no alphabetic month abbreviations in CLDR — both `narrow` and
+ * `short` return "01".."12" — so the chart would show numbers where every other
+ * locale shows letters. These are the standard lt abbreviations.
+ */
+const LT_MONTH_LABELS = [
+  "saus.", "vas.", "kov.", "bal.", "geg.", "birž.",
+  "liep.", "rugp.", "rugs.", "spal.", "lapkr.", "gruod.",
+];
+
+/** Twelve short month labels for the year-profile chart. */
+export function monthLabels(locale: string): string[] {
+  if (locale === "lt") return [...LT_MONTH_LABELS];
+  const fmt = new Intl.DateTimeFormat(locale, { month: "narrow" });
+  return Array.from({ length: 12 }, (_, m) => fmt.format(refDate(m)));
+}
+
+export interface CityLabels {
+  city: string;
+  /** French "à <city>" with the article contracted; the plain name elsewhere. */
+  atCity: string;
+  /** Sentence-initial form of `atCity`. */
+  atCityCap: string;
+}
+
+export function cityLabels(locale: string, name: string): CityLabels {
+  if (locale !== "fr") return { city: name, atCity: name, atCityCap: name };
+  const atCity = frAtCity(name);
+  return { city: name, atCity, atCityCap: capFirst(atCity) };
+}
+
+export interface VerdictMonths {
+  /** The month after "from"/"de"/"с"/"nuo", already declined where required. */
+  startMonth: string;
+  /** The month after "to"/"a"/"по"/"iki", already declined where required. */
+  endMonth: string;
+  /** French only: "d'avril" / "de mars" — the preposition is part of the value. */
+  fromMonth: string;
+  /** Sentence-initial form of `fromMonth`. */
+  fromMonthCap: string;
+}
+
+/**
+ * The month values for the verdict sentences.
+ *
+ * - ru: `с` governs the genitive, but `по` governs the accusative — and months
+ *   are masculine inanimate, so accusative == nominative. Only the start declines.
+ * - lt: `nuo … iki …` governs the genitive on both.
+ * - fr: `de` elides to `d'` before a vowel, so the preposition ships with the value.
+ */
+export function verdictMonths(locale: string, startIndex: number, endIndex: number): VerdictMonths {
+  const startMonth =
+    locale === "ru" || locale === "lt" ? monthGenitive(locale, startIndex) : monthName(locale, startIndex);
+  const endMonth = locale === "lt" ? monthGenitive(locale, endIndex) : monthName(locale, endIndex);
+  const fromMonth = frFromMonth(monthName(locale, startIndex));
+  return { startMonth, endMonth, fromMonth, fromMonthCap: capFirst(fromMonth) };
+}
+```
+
+- [ ] **Step 4: Run test to verify it passes**
+
+Run: `npx vitest run lib/__tests__/city-copy.test.ts`
+Expected: PASS.
+
+If a genitive assertion fails, do NOT weaken the test — the ICU/CLDR data is the
+authority here and the strip logic is what must adapt.
+
+- [ ] **Step 5: Commit**
+
+```bash
+git add lib/city-copy.ts "lib/__tests__/city-copy.test.ts"
+git commit -m "feat(city-pages): per-locale grammar helpers for city copy
+
+Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>"
+```
+
+---
+
+### Task 5: `cityPage` message namespace (6 locales)
 
 **Files:**
 - Modify: `messages/es.json`, `messages/en.json`, `messages/fr.json`, `messages/de.json`, `messages/ru.json`, `messages/lt.json`
 
-No test (pure copy). Verification: `npm run build` and the page renders in Task 6.
+No test (pure copy). Verification: `npm run build` and the page renders in Task 7.
+
+**Placeholder contract** (produced by `lib/city-copy.ts`, consumed here):
+- `{city}` — the city's nominative name.
+- `{atCity}` / `{atCityCap}` — fr only: `"au Caire"` / `"Au Caire"`.
+- `{startMonth}` / `{endMonth}` — already declined per locale.
+- `{fromMonth}` / `{fromMonthCap}` — fr only: `"d'avril"` / `"D'avril"`.
+- `{month}` — **capitalized** nominative; used only line-initially.
+- `{start}` / `{end}` — 24-hour times, e.g. `"07:32"`. The whole app is 24h
+  (`lib/vitd.ts` pins `hour12: false`); do not introduce a second time format.
+- `{minutes}` — a **number** (not a pre-formatted string), so ICU plural can select on it.
+
+Each locale uses only the placeholders it needs; passing a superset is safe in ICU.
 
 - [ ] **Step 1: Add the `cityPage` namespace to each locale file**
 
@@ -639,7 +985,7 @@ Insert this top-level key into `messages/es.json` (alongside `cities`, `learn`, 
   "seasonImpossible": "{month}: la síntesis no es posible.",
   "seasonNote": "Estimado para piel tipo III, brazos y cara expuestos, cielo despejado.",
   "supplementHeading": "Cuándo suplementar en {city}",
-  "supplementBody": "En los meses sin síntesis solar, la vía es suplementar con vitamina D3, acompañada de K2 y magnesio para su correcta absorción y uso.",
+  "supplementBody": "En los meses sin síntesis solar, una opción es suplementar con vitamina D3, que suele combinarse con K2 y magnesio.",
   "ctaLabel": "Calcular mi ventana en {city}",
   "faqHeading": "Preguntas frecuentes sobre la vitamina D en {city}",
   "faqWinterQ": "¿Puedo obtener vitamina D del sol en invierno en {city}?",
@@ -657,7 +1003,7 @@ Insert this top-level key into `messages/es.json` (alongside `cities`, `learn`, 
   "verdictRange": "In {city} you can synthesize vitamin D from {startMonth} to {endMonth}.",
   "verdictAllYear": "In {city} you can synthesize vitamin D all year round.",
   "verdictNever": "In {city} the sun never gets high enough to synthesize vitamin D.",
-  "impossibleRange": "From {startMonth} to {endMonth} it isn't possible: you need to supplement.",
+  "impossibleRange": "From {startMonth} to {endMonth} synthesis isn't possible — this is when a supplement can help.",
   "yearHeading": "Year-round profile in {city}",
   "yearCaption": "Daily hours with enough sun to synthesize vitamin D across the year.",
   "seasonHeading": "Seasonal windows",
@@ -665,59 +1011,66 @@ Insert this top-level key into `messages/es.json` (alongside `cities`, `learn`, 
   "seasonImpossible": "{month}: synthesis isn't possible.",
   "seasonNote": "Estimated for Fitzpatrick type III skin, arms and face exposed, clear sky.",
   "supplementHeading": "When to supplement in {city}",
-  "supplementBody": "During the months without solar synthesis, the way forward is supplementing with vitamin D3, alongside K2 and magnesium for proper absorption and use.",
+  "supplementBody": "During the months without solar synthesis, a common approach is a vitamin D3 supplement, often paired with K2 and magnesium, which support its absorption and use.",
   "ctaLabel": "Calculate my window in {city}",
   "faqHeading": "Frequently asked questions about vitamin D in {city}",
   "faqWinterQ": "Can I get vitamin D from the sun in winter in {city}?",
   "faqMinutesQ": "How many minutes of sun do I need in {city}?",
-  "faqMinutesA": "In summer, about {minutes} minutes with arms and face exposed is enough for 1000 IU (type III skin, clear sky)."
+  "faqMinutesA": "In summer, about {minutes} minutes with arms and face exposed is enough for 1000 IU (Fitzpatrick type III skin, clear sky)."
 }
 ```
 
 `messages/fr.json`:
 
+Note the `\u202f` escapes: French requires a narrow no-break space before `:` and `?`.
+Write them as JSON `\u202f` escapes, not literal characters.
+
 ```json
 "cityPage": {
-  "title": "Vitamine D du soleil à {city}",
-  "metaDescription": "Quand pouvez-vous synthétiser la vitamine D au soleil à {city} : mois possibles, fenêtres saisonnières et quand se supplémenter.",
-  "verdictRange": "À {city}, vous pouvez synthétiser la vitamine D de {startMonth} à {endMonth}.",
-  "verdictAllYear": "À {city}, vous pouvez synthétiser la vitamine D toute l'année.",
-  "verdictNever": "À {city}, le soleil n'atteint jamais la hauteur nécessaire pour synthétiser la vitamine D.",
-  "impossibleRange": "De {startMonth} à {endMonth}, ce n'est pas possible : vous devez vous supplémenter.",
-  "yearHeading": "Profil annuel à {city}",
-  "yearCaption": "Heures quotidiennes avec un soleil suffisant pour synthétiser la vitamine D au fil de l'année.",
+  "title": "Vitamine D du soleil {atCity}",
+  "metaDescription": "Quand pouvez-vous synthétiser la vitamine D au soleil {atCity}\u202f: mois possibles, fenêtres saisonnières et quand se supplémenter.",
+  "verdictRange": "{atCityCap}, vous pouvez synthétiser la vitamine D {fromMonth} à {endMonth}.",
+  "verdictAllYear": "{atCityCap}, vous pouvez synthétiser la vitamine D toute l'année.",
+  "verdictNever": "{atCityCap}, le soleil n'atteint jamais la hauteur nécessaire pour synthétiser la vitamine D.",
+  "impossibleRange": "{fromMonthCap} à {endMonth}, ce n'est pas possible\u202f: la supplémentation prend le relais.",
+  "yearHeading": "Profil annuel {atCity}",
+  "yearCaption": "Nombre d'heures par jour où le soleil est assez haut pour synthétiser la vitamine D, au fil de l'année.",
   "seasonHeading": "Fenêtres saisonnières",
-  "seasonWindow": "{month} : entre {start} et {end}, environ {minutes} min pour 1000 UI.",
-  "seasonImpossible": "{month} : la synthèse n'est pas possible.",
-  "seasonNote": "Estimation pour une peau de type III, bras et visage exposés, ciel dégagé.",
-  "supplementHeading": "Quand se supplémenter à {city}",
-  "supplementBody": "Pendant les mois sans synthèse solaire, la solution est la supplémentation en vitamine D3, accompagnée de K2 et de magnésium pour une bonne absorption et utilisation.",
-  "ctaLabel": "Calculer ma fenêtre à {city}",
-  "faqHeading": "Questions fréquentes sur la vitamine D à {city}",
-  "faqWinterQ": "Puis-je obtenir de la vitamine D du soleil en hiver à {city} ?",
-  "faqMinutesQ": "Combien de minutes de soleil me faut-il à {city} ?",
-  "faqMinutesA": "En été, environ {minutes} minutes avec les bras et le visage exposés suffisent pour 1000 UI (peau de type III, ciel dégagé)."
+  "seasonWindow": "{month}\u202f: entre {start} et {end}, environ {minutes} min pour 1 000 UI.",
+  "seasonImpossible": "{month}\u202f: la synthèse n'est pas possible.",
+  "seasonNote": "Estimation pour une peau de type III, visage et bras exposés, ciel dégagé.",
+  "supplementHeading": "Quand se supplémenter {atCity}",
+  "supplementBody": "Pendant les mois sans synthèse solaire, beaucoup se tournent vers la supplémentation en vitamine D3, souvent associée à la vitamine K2 et au magnésium, qui participent à son absorption et à son utilisation.",
+  "ctaLabel": "Calculer ma fenêtre {atCity}",
+  "faqHeading": "Questions fréquentes sur la vitamine D {atCity}",
+  "faqWinterQ": "Puis-je obtenir de la vitamine D du soleil en hiver {atCity}\u202f?",
+  "faqMinutesQ": "Combien de minutes de soleil me faut-il {atCity}\u202f?",
+  "faqMinutesA": "En été, environ {minutes} minutes avec le visage et les bras exposés suffisent pour 1 000 UI (peau de type III, ciel dégagé)."
 }
 ```
 
 `messages/de.json`:
 
+The rest of the German app addresses the user as `du` (`hero`, `skin`, `auth`,
+`notifications`, `dashboard`, `learn`); only the B2B `partners` namespace uses `Sie`.
+These pages are consumer-facing and link to `/learn`, so they use `du`.
+
 ```json
 "cityPage": {
   "title": "Vitamin D durch Sonne in {city}",
-  "metaDescription": "Wann Sie in {city} Vitamin D durch die Sonne bilden können: mögliche Monate, saisonale Zeitfenster und wann supplementiert werden sollte.",
-  "verdictRange": "In {city} können Sie von {startMonth} bis {endMonth} Vitamin D bilden.",
-  "verdictAllYear": "In {city} können Sie das ganze Jahr über Vitamin D bilden.",
+  "metaDescription": "Wann du in {city} Vitamin D durch die Sonne bilden kannst: mögliche Monate, saisonale Zeitfenster und wann du supplementieren solltest.",
+  "verdictRange": "In {city} kannst du von {startMonth} bis {endMonth} Vitamin D bilden.",
+  "verdictAllYear": "In {city} kannst du das ganze Jahr über Vitamin D bilden.",
   "verdictNever": "In {city} erreicht die Sonne nie die nötige Höhe, um Vitamin D zu bilden.",
-  "impossibleRange": "Von {startMonth} bis {endMonth} ist es nicht möglich: Sie müssen supplementieren.",
+  "impossibleRange": "Von {startMonth} bis {endMonth} ist keine Bildung möglich – in diesen Monaten solltest du supplementieren.",
   "yearHeading": "Jahresprofil in {city}",
   "yearCaption": "Tägliche Stunden mit ausreichender Sonne zur Vitamin-D-Bildung im Jahresverlauf.",
   "seasonHeading": "Saisonale Zeitfenster",
   "seasonWindow": "{month}: zwischen {start} und {end}, etwa {minutes} Min. für 1000 IE.",
   "seasonImpossible": "{month}: Die Bildung ist nicht möglich.",
   "seasonNote": "Geschätzt für Hauttyp III, Arme und Gesicht unbedeckt, klarer Himmel.",
-  "supplementHeading": "Wann in {city} supplementieren",
-  "supplementBody": "In den Monaten ohne Sonnensynthese ist die Supplementierung mit Vitamin D3 der Weg, zusammen mit K2 und Magnesium für die richtige Aufnahme und Verwertung.",
+  "supplementHeading": "Wann du in {city} supplementieren solltest",
+  "supplementBody": "In den Monaten ohne ausreichende Sonne kann Vitamin D3 helfen, deinen Spiegel zu halten – zusammen mit K2 und Magnesium für Aufnahme und Verwertung.",
   "ctaLabel": "Mein Zeitfenster in {city} berechnen",
   "faqHeading": "Häufige Fragen zu Vitamin D in {city}",
   "faqWinterQ": "Kann ich im Winter in {city} Vitamin D durch die Sonne bekommen?",
@@ -728,53 +1081,63 @@ Insert this top-level key into `messages/es.json` (alongside `cities`, `learn`, 
 
 `messages/ru.json`:
 
+`{minutes}` deliberately carries **no** ICU plural here: both occurrences sit under
+«около», which governs the genitive plural, so «около 22 минут» is already correct
+for every value. Wrapping it in `{minutes, plural, …}` would select on the number
+and render «около 22 минуты», which is wrong. Do not "fix" this.
+
 ```json
 "cityPage": {
-  "title": "Витамин D от солнца в городе {city}",
-  "metaDescription": "Когда в городе {city} можно получить витамин D от солнца: возможные месяцы, сезонные окна и когда принимать добавки.",
-  "verdictRange": "В городе {city} витамин D можно синтезировать с {startMonth} по {endMonth}.",
-  "verdictAllYear": "В городе {city} витамин D можно синтезировать круглый год.",
-  "verdictNever": "В городе {city} солнце никогда не поднимается достаточно высоко для синтеза витамина D.",
-  "impossibleRange": "С {startMonth} по {endMonth} это невозможно: нужны добавки.",
-  "yearHeading": "Годовой профиль в городе {city}",
-  "yearCaption": "Ежедневные часы с достаточным солнцем для синтеза витамина D в течение года.",
-  "seasonHeading": "Сезонные окна",
+  "title": "Витамин D от солнца — {city}",
+  "metaDescription": "{city}: когда можно получить витамин D от солнца — в какие месяцы это возможно, время синтеза по сезонам и когда принимать добавки.",
+  "verdictRange": "{city}: витамин D можно синтезировать с {startMonth} по {endMonth}.",
+  "verdictAllYear": "{city}: витамин D можно синтезировать круглый год.",
+  "verdictNever": "{city}: солнце никогда не поднимается достаточно высоко для синтеза витамина D.",
+  "impossibleRange": "С {startMonth} по {endMonth} синтез невозможен — нужны добавки.",
+  "yearHeading": "Годовой профиль — {city}",
+  "yearCaption": "Сколько часов в день солнце стоит достаточно высоко для синтеза витамина D — по месяцам года.",
+  "seasonHeading": "Солнечные окна по сезонам",
   "seasonWindow": "{month}: с {start} до {end}, около {minutes} мин для 1000 МЕ.",
   "seasonImpossible": "{month}: синтез невозможен.",
-  "seasonNote": "Оценка для III типа кожи, открытые руки и лицо, ясное небо.",
-  "supplementHeading": "Когда принимать добавки в городе {city}",
-  "supplementBody": "В месяцы без солнечного синтеза выход — приём витамина D3 вместе с K2 и магнием для правильного усвоения.",
-  "ctaLabel": "Рассчитать моё окно в городе {city}",
-  "faqHeading": "Частые вопросы о витамине D в городе {city}",
-  "faqWinterQ": "Можно ли получить витамин D от солнца зимой в городе {city}?",
-  "faqMinutesQ": "Сколько минут солнца нужно в городе {city}?",
+  "seasonNote": "Оценка для III типа кожи по Фицпатрику: открытые руки и лицо, ясное небо.",
+  "supplementHeading": "Когда принимать добавки — {city}",
+  "supplementBody": "В месяцы без солнечного синтеза можно рассмотреть приём витамина D3 вместе с K2 и магнием для лучшего усвоения.",
+  "ctaLabel": "Рассчитать моё окно — {city}",
+  "faqHeading": "Частые вопросы о витамине D — {city}",
+  "faqWinterQ": "{city}: можно ли зимой получить витамин D от солнца?",
+  "faqMinutesQ": "{city}: сколько минут на солнце нужно?",
   "faqMinutesA": "Летом около {minutes} минут с открытыми руками и лицом достаточно для 1000 МЕ (III тип кожи, ясное небо)."
 }
 ```
 
 `messages/lt.json`:
 
+Unlike ru, `{minutes}` here **does** need an ICU plural: «apie» governs the
+accusative, so the noun inflects with the count (1 → `minutę`, 5 → `minutes`,
+18 → `minučių`, 21 → `minutę`). Lithuania's CLDR categories are `one/few/many/other`;
+integers never select `many`, but it is included for completeness.
+
 ```json
 "cityPage": {
-  "title": "Vitaminas D iš saulės mieste {city}",
-  "metaDescription": "Kada mieste {city} galite gaminti vitaminą D saulėje: galimi mėnesiai, sezoniniai langai ir kada vartoti papildus.",
-  "verdictRange": "Mieste {city} vitaminą D galite gaminti nuo {startMonth} iki {endMonth}.",
-  "verdictAllYear": "Mieste {city} vitaminą D galite gaminti ištisus metus.",
-  "verdictNever": "Mieste {city} saulė niekada nepakyla pakankamai aukštai vitaminui D gaminti.",
-  "impossibleRange": "Nuo {startMonth} iki {endMonth} tai neįmanoma: reikia papildų.",
-  "yearHeading": "Metinis profilis mieste {city}",
-  "yearCaption": "Kasdienės valandos su pakankama saule vitaminui D gaminti per metus.",
-  "seasonHeading": "Sezoniniai langai",
-  "seasonWindow": "{month}: nuo {start} iki {end}, apie {minutes} min 1000 TV.",
-  "seasonImpossible": "{month}: sintezė neįmanoma.",
-  "seasonNote": "Įvertinta III tipo odai, atidengtos rankos ir veidas, giedras dangus.",
-  "supplementHeading": "Kada vartoti papildus mieste {city}",
-  "supplementBody": "Mėnesiais be saulės sintezės kelias yra vitamino D3 papildai kartu su K2 ir magniu, kad būtų tinkamai pasisavinta.",
-  "ctaLabel": "Apskaičiuoti mano langą mieste {city}",
-  "faqHeading": "Dažni klausimai apie vitaminą D mieste {city}",
-  "faqWinterQ": "Ar galiu gauti vitamino D iš saulės žiemą mieste {city}?",
-  "faqMinutesQ": "Kiek saulės minučių man reikia mieste {city}?",
-  "faqMinutesA": "Vasarą apie {minutes} minutes su atidengtomis rankomis ir veidu pakanka 1000 TV (III tipo oda, giedras dangus)."
+  "title": "Vitaminas D iš saulės: {city}",
+  "metaDescription": "{city}: kada saulėje galite pasigaminti vitamino D — tinkami mėnesiai, paros saulės langai ir kada verta rinktis papildus (D3, K2, magnis).",
+  "verdictRange": "{city}: vitamino D iš saulės galite pasigaminti nuo {startMonth} iki {endMonth}.",
+  "verdictAllYear": "{city}: vitamino D iš saulės galite pasigaminti ištisus metus.",
+  "verdictNever": "{city}: saulė niekada nepakyla pakankamai aukštai, kad odoje susidarytų vitaminas D.",
+  "impossibleRange": "Nuo {startMonth} iki {endMonth} sintezė neįmanoma – reikia papildų.",
+  "yearHeading": "Metinis profilis: {city}",
+  "yearCaption": "Valandos per dieną, kai saulės pakanka vitaminui D gaminti — ištisus metus.",
+  "seasonHeading": "Sezoniniai saulės langai",
+  "seasonWindow": "{month}: {start}–{end} · ~{minutes} min. 1000 TV.",
+  "seasonImpossible": "{month}: sintezė negalima.",
+  "seasonNote": "Įvertinta III tipo odai (atidengtos rankos ir veidas, giedras dangus).",
+  "supplementHeading": "Kada vartoti papildus: {city}",
+  "supplementBody": "Mėnesiais be saulės sintezės vitamino D galima gauti iš D3 papildų; K2 ir magnis padeda organizmui jį pasisavinti.",
+  "ctaLabel": "Apskaičiuoti savo saulės langą",
+  "faqHeading": "Dažni klausimai apie vitaminą D: {city}",
+  "faqWinterQ": "{city} – ar žiemą galima gauti vitamino D iš saulės?",
+  "faqMinutesQ": "{city} – kiek saulės minučių man reikia per dieną?",
+  "faqMinutesA": "Vasarą apie {minutes, plural, one {# minutę} few {# minutes} many {# minutės} other {# minučių}} su atidengtomis rankomis ir veidu pakanka 1000 TV (III tipo oda, giedras dangus)."
 }
 ```
 
@@ -794,7 +1157,7 @@ Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>"
 
 ---
 
-### Task 5: `components/CityYearStrip.tsx` — static SVG year profile
+### Task 6: `components/CityYearStrip.tsx` — static SVG year profile
 
 **Files:**
 - Create: `components/CityYearStrip.tsx`
@@ -872,7 +1235,7 @@ Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>"
 
 ---
 
-### Task 6: The city page (SSG + metadata + FAQ schema)
+### Task 7: The city page (SSG + metadata + FAQ schema)
 
 **Files:**
 - Create: `app/[locale]/[cityPrefix]/[city]/page.tsx`
@@ -891,6 +1254,7 @@ import {
   CITY_PREFIX, baseSlug, cityIdFromSlug, localizedCityName,
   buildCityAlternates, cityStaticParams,
 } from "@/lib/city-routes";
+import { capFirst, cityLabels, monthLabels, monthName, verdictMonths } from "@/lib/city-copy";
 import { fmtTime } from "@/lib/solar";
 
 export function generateStaticParams() {
@@ -907,11 +1271,6 @@ function resolveCity({ locale, cityPrefix, city }: Params) {
   return BUILTIN_CITIES.find((c) => c.id === cityId) ?? null;
 }
 
-function monthName(locale: string, monthIndex: number): string {
-  // monthIndex is 0-11; day 15 avoids timezone edge cases.
-  return new Intl.DateTimeFormat(locale, { month: "long" }).format(new Date(2026, monthIndex, 15));
-}
-
 export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
   const p = await params;
   const city = resolveCity(p);
@@ -919,18 +1278,17 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
 
   const base = baseSlug(city.id);
   const t = await getTranslations({ locale: p.locale, namespace: "cityPage" });
-  const name = localizedCityName(p.locale, base);
+  const labels = cityLabels(p.locale, localizedCityName(p.locale, base));
+  const alternates = buildCityAlternates(p.locale, base);
+
+  const title = t("title", labels);
+  const description = t("metaDescription", labels);
 
   return {
-    title: t("title", { city: name }),
-    description: t("metaDescription", { city: name }),
-    alternates: buildCityAlternates(p.locale, base),
-    openGraph: {
-      title: t("title", { city: name }),
-      description: t("metaDescription", { city: name }),
-      url: buildCityAlternates(p.locale, base).canonical,
-      type: "article",
-    },
+    title,
+    description,
+    alternates,
+    openGraph: { title, description, url: alternates.canonical, type: "article" },
   };
 }
 
@@ -942,26 +1300,26 @@ export default async function CityPage({ params }: { params: Promise<Params> }) 
 
   const base = baseSlug(city.id);
   const t = await getTranslations({ locale: p.locale, namespace: "cityPage" });
-  const name = localizedCityName(p.locale, base);
+
+  // Every value a cityPage template may reference. Each locale uses the subset it
+  // needs — ICU ignores extras but throws on a missing one, so pass the superset.
+  const labels = cityLabels(p.locale, localizedCityName(p.locale, base));
 
   const profile = cityYearProfile(city.lat);
   const windows = citySeasonalWindows(city.lat, city.lon, city.tz);
-  const monthLabels = Array.from({ length: 12 }, (_, m) =>
-    new Intl.DateTimeFormat(p.locale, { month: "narrow" }).format(new Date(2026, m, 15)),
-  );
+  const labelsForChart = monthLabels(p.locale);
 
   // Circular band: southern-hemisphere cities wrap around January.
   const possibleBand = contiguousMonthRange(profile.possibleMonths);
   const impossibleBand = contiguousMonthRange(profile.impossibleMonths);
 
   const verdict = profile.allYear
-    ? t("verdictAllYear", { city: name })
+    ? t("verdictAllYear", labels)
     : profile.neverPossible
-      ? t("verdictNever", { city: name })
+      ? t("verdictNever", labels)
       : t("verdictRange", {
-          city: name,
-          startMonth: monthName(p.locale, possibleBand!.start - 1),
-          endMonth: monthName(p.locale, possibleBand!.end - 1),
+          ...labels,
+          ...verdictMonths(p.locale, possibleBand!.start - 1, possibleBand!.end - 1),
         });
 
   const summerWindow = windows.find((w) => w.possible && w.minutesNeeded !== null);
@@ -969,16 +1327,17 @@ export default async function CityPage({ params }: { params: Promise<Params> }) 
   const faq = [
     {
       "@type": "Question",
-      name: t("faqWinterQ", { city: name }),
+      name: t("faqWinterQ", labels),
       acceptedAnswer: { "@type": "Answer", text: verdict },
     },
     ...(summerWindow
       ? [{
           "@type": "Question",
-          name: t("faqMinutesQ", { city: name }),
+          name: t("faqMinutesQ", labels),
           acceptedAnswer: {
             "@type": "Answer",
-            text: t("faqMinutesA", { minutes: Math.round(summerWindow.minutesNeeded!) }),
+            // A number, not a string: lt selects an ICU plural form on it.
+            text: t("faqMinutesA", { ...labels, minutes: Math.round(summerWindow.minutesNeeded!) }),
           },
         }]
       : []),
@@ -993,22 +1352,21 @@ export default async function CityPage({ params }: { params: Promise<Params> }) 
         }}
       />
 
-      <h1 className="text-2xl font-bold">{t("title", { city: name })}</h1>
+      <h1 className="text-2xl font-bold">{t("title", labels)}</h1>
       <p className="mt-2 text-base">{verdict}</p>
       {!profile.allYear && !profile.neverPossible && impossibleBand && (
         <p className="mt-1 text-sm opacity-80">
           {t("impossibleRange", {
-            city: name,
-            startMonth: monthName(p.locale, impossibleBand.start - 1),
-            endMonth: monthName(p.locale, impossibleBand.end - 1),
+            ...labels,
+            ...verdictMonths(p.locale, impossibleBand.start - 1, impossibleBand.end - 1),
           })}
         </p>
       )}
 
       <section className="mt-8">
-        <h2 className="text-lg font-semibold">{t("yearHeading", { city: name })}</h2>
+        <h2 className="text-lg font-semibold">{t("yearHeading", labels)}</h2>
         <div className="mt-3">
-          <CityYearStrip hoursByDay={profile.hoursByDay} monthLabels={monthLabels} caption={t("yearCaption")} />
+          <CityYearStrip hoursByDay={profile.hoursByDay} monthLabels={labelsForChart} caption={t("yearCaption")} />
         </div>
       </section>
 
@@ -1016,15 +1374,17 @@ export default async function CityPage({ params }: { params: Promise<Params> }) 
         <h2 className="text-lg font-semibold">{t("seasonHeading")}</h2>
         <ul className="mt-3 space-y-1 text-sm">
           {windows.map((w) => (
+            // These lines start with the month, so it must be capitalized —
+            // es/fr/ru/lt all yield a lowercase nominative from Intl.
             <li key={w.doy}>
               {w.possible
                 ? t("seasonWindow", {
-                    month: monthName(p.locale, w.monthIndex),
+                    month: capFirst(monthName(p.locale, w.monthIndex)),
                     start: fmtTime(w.windowStart!),
                     end: fmtTime(w.windowEnd!),
                     minutes: Math.round(w.minutesNeeded!),
                   })
-                : t("seasonImpossible", { month: monthName(p.locale, w.monthIndex) })}
+                : t("seasonImpossible", { month: capFirst(monthName(p.locale, w.monthIndex)) })}
             </li>
           ))}
         </ul>
@@ -1033,7 +1393,7 @@ export default async function CityPage({ params }: { params: Promise<Params> }) 
 
       {!profile.allYear && (
         <section className="mt-8">
-          <h2 className="text-lg font-semibold">{t("supplementHeading", { city: name })}</h2>
+          <h2 className="text-lg font-semibold">{t("supplementHeading", labels)}</h2>
           <p className="mt-2 text-sm">
             <Link href="/learn#supplement" className="underline decoration-dotted">
               {t("supplementBody")}
@@ -1047,12 +1407,12 @@ export default async function CityPage({ params }: { params: Promise<Params> }) 
           href="/dashboard"
           className="inline-block rounded bg-amber-400/15 px-4 py-2 text-sm font-semibold text-amber-400"
         >
-          {t("ctaLabel", { city: name })}
+          {t("ctaLabel", labels)}
         </Link>
       </section>
 
       <section className="mt-10">
-        <h2 className="text-lg font-semibold">{t("faqHeading", { city: name })}</h2>
+        <h2 className="text-lg font-semibold">{t("faqHeading", labels)}</h2>
         <dl className="mt-3 space-y-3 text-sm">
           {faq.map((q) => (
             <div key={q.name}>
@@ -1088,7 +1448,7 @@ Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>"
 
 ---
 
-### Task 7: Sitemap — add the 438 city URLs
+### Task 8: Sitemap — add the 438 city URLs
 
 **Files:**
 - Modify: `app/sitemap.ts`
@@ -1174,7 +1534,7 @@ Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>"
 
 ---
 
-### Task 8: Smoke checks + deploy to dev
+### Task 9: Smoke checks + deploy to dev
 
 **Files:**
 - Modify: `scripts/smoke-i18n.sh`
@@ -1231,7 +1591,7 @@ Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>"
 
 ---
 
-### Task 9: Content review, deploy to prod, merge
+### Task 10: Content review, deploy to prod, merge
 
 - [ ] **Step 1: User reviews the copy**
 
@@ -1266,7 +1626,8 @@ npm test   # verify on the merged result
 
 ## Self-Review
 
-- **Spec coverage:** 73 cities × 6 locales (Task 2 `cityStaticParams`, asserted at 438); localized URLs + prefixes (Task 2 `CITY_PREFIX`, `localizedCitySlug`); non-Latin-locale slugs use the real Latin name, with transliteration and base slug as fallbacks (Task 1, Task 2 `LATIN_SLUG_LOCALE` + `||` chain); build-time computed content (Task 3); year SVG (Task 5); the 6 content blocks — verdict, year profile, seasonal windows, supplement, CTA, FAQ (Task 6); `cityPage` namespace ×6 (Task 4); `Intl` month names, not the hardcoded Spanish arrays (Task 6 `monthName`/`monthLabels`); canonical + hreflang + x-default (Task 2 `buildCityAlternates`, used in Task 6 metadata and Task 7 sitemap); sitemap +438 (Task 7); prefix validation → `notFound()` (Task 6 `resolveCity`); slug uniqueness test (Task 2); smoke + dev→prod + content review (Tasks 8–9). All spec sections mapped.
+- **Spec coverage:** 73 cities × 6 locales (Task 2 `cityStaticParams`, asserted at 438); localized URLs + prefixes (Task 2 `CITY_PREFIX`, `localizedCitySlug`); non-Latin-locale slugs use the real Latin name, with transliteration and base slug as fallbacks (Task 1, Task 2 `LATIN_SLUG_LOCALE` + `||` chain); build-time computed content (Task 3); per-locale grammar — article contraction, elision, genitive months, capitalization (Task 4); `cityPage` namespace ×6 (Task 5); year SVG (Task 6); the 6 content blocks — verdict, year profile, seasonal windows, supplement, CTA, FAQ (Task 7); `Intl` month names, not the hardcoded Spanish arrays (Task 4 `monthName`/`monthLabels`); canonical + hreflang + x-default (Task 2 `buildCityAlternates`, used in Task 7 metadata and Task 8 sitemap); sitemap +438 (Task 8); prefix validation → `notFound()` (Task 7 `resolveCity`); slug uniqueness test (Task 2); smoke + dev→prod + content review (Tasks 9–10). All spec sections mapped.
+- **Bug class caught by native copy review (six locales, one agent each):** interpolating raw `{city}` / `{month}` into ICU produced `à Le Caire`, `de avril`, `с январь по июнь`, `nuo sausis iki birželis`, and lowercase line-initial months in four locales. ICU cannot elide, contract, or change case, so Task 4 pre-inflects every value. Two reviewer recommendations were rejected: 12-hour clocks for `en` (the app pins `hour12: false` everywhere), and ICU plurals for `ru` `{minutes}` (which sits under «около», already governing the genitive plural — ICU would have *introduced* a bug).
 - **Placeholder scan:** every code step ships full file contents or an exact, unambiguous edit. No "TBD"/"handle edge cases".
 - **Type consistency:** `baseSlug(cityId)`, `localizedCitySlug(locale, base)`, `cityIdFromSlug(locale, slug)`, `cityUrl(locale, base)`, `buildCityAlternates(locale, base)`, `cityStaticParams()`, `cityYearProfile(lat)`, `citySeasonalWindows(lat, lon, tz)`, `contiguousMonthRange(months)`, `slugify(name)` are used identically across tasks and tests. `SeasonWindow.monthIndex` is 0-11 and consumed by `monthName(locale, monthIndex)`; `CityYearProfile.possibleMonths`/`impossibleMonths` are 1-12 and converted with `- 1` at the call site.
 - **Bug caught in review:** naming the month band with `possibleMonths[0]`/`[last]` breaks for southern-hemisphere cities, whose possible months wrap around January (`[1,2,3,4,10,11,12]` would render "January–December"). Fixed by `contiguousMonthRange`, which walks the band circularly; the wrap case is pinned by a test.
