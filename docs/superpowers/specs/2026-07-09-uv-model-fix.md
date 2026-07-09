@@ -61,12 +61,24 @@ albedo, sea level. Accuracy ~10%.
 **This is not Fioletov's formula** — a common misattribution. Fioletov regresses UV on
 global solar radiation, ozone, dew point and snow cover, and uses no power law.
 
-**Validity argument (important):** we only ever use this model *near* UVI = 3, and the
-elevation where UVI = 3 lies between **30.4° (250 DU) and 39.9° (400 DU)** — inside
-Madronich's stated range. The current model places that threshold at 20.14°, outside
-the validity range of any published parameterization. Below 30° elevation, `uvIndex`
-is extrapolation; it is still monotonic and small, and is only used to answer "is this
-below 3?", never as a reported UVI value.
+**Validity argument (important, and stated precisely).** We only ever use this model
+*near* UVI = 3. Where the threshold is actually *binding* — mid and high latitudes,
+where ozone runs 300–445 DU — the UVI = 3 elevation lies between **33.7° and 41.7°**,
+comfortably inside Madronich's stated range.
+
+The threshold does dip below the 30° floor at low ozone: 30.4° at 250 DU, and 29.3° at
+235 DU, which is van Heuklon's global minimum (reached only at the equator). This is a
+real extrapolation, but it is **never exercised as a decision**: at the equator the
+noon sun never falls below **66.6°** elevation, so it clears any threshold in this range
+by more than 35°. The extrapolated region is entered only where the answer is not in
+doubt.
+
+By contrast, the current model places the threshold at 20.14° — outside the validity
+range of any published parameterization, and squarely in the regime that decides whether
+a vitamin-D winter exists.
+
+Below 30° elevation `uvIndex` remains monotonic and small; it is used only to answer "is
+this below 3?", never as a reported UVI value.
 
 **Ozone** — van Heuklon, T. K. (1979), "Estimating atmospheric ozone for solar
 radiation models", *Solar Energy* 22(1):63–68, DOI 10.1016/0038-092X(79)90060-4:
