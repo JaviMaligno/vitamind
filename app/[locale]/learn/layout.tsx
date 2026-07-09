@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { getLocale, getMessages } from "next-intl/server";
+import { getMessages } from "next-intl/server";
+import { buildAlternates } from "@/i18n/metadata";
 
 const FAQ_BLOCKS = [
   { id: "block1", questions: 7 },
@@ -8,8 +9,10 @@ const FAQ_BLOCKS = [
   { id: "block4", questions: 5 },
 ] as const;
 
-export async function generateMetadata(): Promise<Metadata> {
-  const locale = await getLocale();
+export async function generateMetadata(
+  { params }: { params: Promise<{ locale: string }> },
+): Promise<Metadata> {
+  const { locale } = await params;
 
   const titles: Record<string, string> = {
     es: "Aprende sobre Vitamina D — Guía Completa de Síntesis Solar y Suplementación",
@@ -32,6 +35,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: titles[locale] ?? titles.en,
     description: descriptions[locale] ?? descriptions.en,
+    alternates: buildAlternates(locale, "/learn"),
     openGraph: {
       title: titles[locale] ?? titles.en,
       description: descriptions[locale] ?? descriptions.en,

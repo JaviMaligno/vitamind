@@ -14,7 +14,7 @@ import ExposureQuickPicker from "@/components/dashboard/ExposureQuickPicker";
 import CitySearch from "@/components/CitySearch";
 import GpsButton from "@/components/GpsButton";
 import PartnerBadge from "@/components/PartnerBadge";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 
 export default function DashboardPage() {
   const t = useTranslations("dashboard");

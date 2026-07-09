@@ -10,7 +10,7 @@ import HeroZone from "@/components/HeroZone";
 import VisualizationZone from "@/components/VisualizationZone";
 import CitySearch from "@/components/CitySearch";
 import GpsButton from "@/components/GpsButton";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import type { City } from "@/lib/types";
 import { useWeather } from "@/hooks/useWeather";
 import { useAnimation } from "@/hooks/useAnimation";

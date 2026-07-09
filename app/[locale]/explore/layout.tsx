@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
-import { getLocale } from "next-intl/server";
+import { buildAlternates } from "@/i18n/metadata";
 
-export async function generateMetadata(): Promise<Metadata> {
-  const locale = await getLocale();
+export async function generateMetadata(
+  { params }: { params: Promise<{ locale: string }> },
+): Promise<Metadata> {
+  const { locale } = await params;
 
   const titles: Record<string, string> = {
     es: "Explorar Vitamina D — Mapa Global de Síntesis Solar",
@@ -25,6 +27,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: titles[locale] ?? titles.en,
     description: descriptions[locale] ?? descriptions.en,
+    alternates: buildAlternates(locale, "/explore"),
     openGraph: {
       title: titles[locale] ?? titles.en,
       description: descriptions[locale] ?? descriptions.en,

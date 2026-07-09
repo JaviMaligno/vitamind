@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import CitySearch from "@/components/CitySearch";
 import GpsErrorHint from "@/components/GpsErrorHint";
 import PartnerBadge from "@/components/PartnerBadge";
