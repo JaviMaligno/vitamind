@@ -115,7 +115,11 @@ export function uvIndex(elevationDeg: number, ozoneDu: number = OZONE_REFERENCE_
 
   const mu = Math.sin(elevationDeg * (Math.PI / 180));
   const seaLevelUVI = 12.5 * Math.pow(mu, 2.42) * Math.pow(ozoneDu / OZONE_REFERENCE_DU, -1.23);
-  const altitudeGain = 1 + UVI_ALTITUDE_GAIN_PER_KM * (elevationM / 1000);
+  // Clamp at zero: a nonsensical elevation (below -12.5 km) would otherwise flip
+  // the gain factor negative and hand back a negative UV index. Real data never
+  // goes there -- Amsterdam, the lowest city, is -2 m -- but a bad geocode should
+  // yield "no UV", not "anti-UV".
+  const altitudeGain = Math.max(0, 1 + UVI_ALTITUDE_GAIN_PER_KM * (elevationM / 1000));
   return seaLevelUVI * altitudeGain;
 }
 
@@ -161,8 +165,8 @@ export function minElevationForUVI(targetUVI: number, ozoneDu: number, elevation
  * This REPLACES the old `MIN_UVI_ELEVATION` constant. Because total column
  * ozone varies with latitude and season (see `ozoneDU`), the elevation
  * required to reach the synthesis threshold is not a single constant - it
- * ranges roughly from ~30.4 degrees (250 DU, low ozone) to ~39.9 degrees
- * (400 DU, high ozone) across the plausible ozone range. Using a fixed
+ * ranges from ~29.3 degrees (235 DU, van Heuklon's global minimum, at the
+ * equator) to ~41.7 degrees (445 DU, its global maximum). Using a fixed
  * constant here is exactly the kind of simplification that produced the
  * original 3-4x UV overestimate this module replaces.
  *

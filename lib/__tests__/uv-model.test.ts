@@ -68,6 +68,15 @@ describe("uvIndex (Madronich 2007)", () => {
     }
   });
 
+  it("never returns a negative UV index, even for a nonsensical elevation", () => {
+    // Amsterdam (-2 m) is the real lower bound and must still work normally.
+    expect(uvIndex(45, 300, -2)).toBeGreaterThan(0);
+    expect(uvIndex(45, 300, -2)).toBeLessThan(uvIndex(45, 300, 0));
+    // A bad geocode below -12.5 km would flip the gain factor negative.
+    expect(uvIndex(45, 300, -20000)).toBe(0);
+    expect(Number.isNaN(uvIndex(45, 300, -20000))).toBe(false);
+  });
+
   it("applies the altitude gain of 8% per km", () => {
     const sea = uvIndex(45, 300, 0);
     expect(uvIndex(45, 300, 1000)).toBeCloseTo(sea * (1 + UVI_ALTITUDE_GAIN_PER_KM), 5);
