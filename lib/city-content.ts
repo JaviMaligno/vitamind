@@ -1,5 +1,6 @@
 import { vitDHrs, getCurve, dateFromDoy } from "./solar";
-import { MIN_UVI_ELEVATION, computeExposureFromCurve, type SkinType } from "./vitd";
+import { computeExposureFromCurve, type SkinType } from "./vitd";
+import { ozoneDU, synthesisThresholdElevation } from "./uv-model";
 
 // Defaults used for the public page copy (Fitzpatrick III, arms+face, 1000 IU).
 const DEFAULT_SKIN: SkinType = 3;
@@ -21,12 +22,20 @@ export interface CityYearProfile {
 }
 
 /**
- * Year-round synthesis profile for a latitude. A month counts as "possible" when
+ * Year-round synthesis profile for a place. A month counts as "possible" when
  * synthesis is achievable on at least half of its days — that keeps shoulder
  * months (a handful of viable days) out of the headline claim.
+ *
+ * The synthesis threshold is NOT a constant: total column ozone varies with
+ * latitude, longitude and season, and altitude adds ~8% UV per km. So this needs
+ * the city's real coordinates and elevation, not just its latitude. Sydney is the
+ * clearest case — at sea level it loses June; at its real 58 m it keeps it.
  */
-export function cityYearProfile(lat: number): CityYearProfile {
-  const hoursByDay = Array.from({ length: 365 }, (_, i) => vitDHrs(lat, i + 1, MIN_UVI_ELEVATION));
+export function cityYearProfile(lat: number, lon: number, elevationM = 0): CityYearProfile {
+  const hoursByDay = Array.from({ length: 365 }, (_, i) => {
+    const doy = i + 1;
+    return vitDHrs(lat, doy, synthesisThresholdElevation(lat, lon, doy, elevationM));
+  });
 
   const daysPerMonth = Array.from({ length: 12 }, () => 0);
   const possibleDaysPerMonth = Array.from({ length: 12 }, () => 0);
@@ -82,11 +91,23 @@ export interface SeasonWindow {
   minutesNeeded: number | null;
 }
 
-/** Sun windows on the four representative days, using the page's default profile. */
-export function citySeasonalWindows(lat: number, lon: number, tz: number): SeasonWindow[] {
+/**
+ * Sun windows on the four representative days, using the page's default profile.
+ * Ozone (from the city's position and the day) and altitude both feed the UV
+ * estimate, so a high city needs fewer minutes for the same dose.
+ */
+export function citySeasonalWindows(
+  lat: number,
+  lon: number,
+  tz: number,
+  elevationM = 0,
+): SeasonWindow[] {
   return REPRESENTATIVE_DOYS.map((doy) => {
     const curve = getCurve(lat, lon, doy, tz);
-    const exposure = computeExposureFromCurve(curve, DEFAULT_SKIN, DEFAULT_AREA, DEFAULT_TARGET_IU);
+    const exposure = computeExposureFromCurve(curve, DEFAULT_SKIN, DEFAULT_AREA, DEFAULT_TARGET_IU, null, {
+      ozoneDu: ozoneDU(lat, lon, doy),
+      elevationM,
+    });
     const monthIndex = dateFromDoy(doy).getMonth();
 
     if (!exposure || exposure.windowStart < 0 || exposure.windowEnd < 0) {
