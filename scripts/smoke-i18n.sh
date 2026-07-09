@@ -19,10 +19,14 @@ check_redirect() { # path expected_location expected_code
 check_lang "/" es
 check_lang "/en" en
 check_lang "/fr/learn" fr
+# Legacy ?locale= is a permanent (301) consolidation of the old query scheme.
 check_redirect "/?locale=fr" "/fr" 301
-check_redirect "/es/learn" "/learn" 301
+# /es/... → /... is next-intl stripping the default-locale prefix; it emits a
+# temporary (307) redirect, which is fine since /es/* was never a public URL.
+check_redirect "/es/learn" "/learn" 307
 
-# hreflang + canonical present on a localized page
-if curl -s "$BASE/en/learn" | grep -q 'hreflang="fr"'; then echo "OK  hreflang present"; else echo "FAIL hreflang missing on /en/learn"; fail=1; fi
+# hreflang present on a localized page. Next serializes the attribute as
+# `hrefLang` (camelCase); HTML attributes are case-insensitive, so match with -i.
+if curl -s "$BASE/en/learn" | grep -qi 'hreflang="fr"'; then echo "OK  hreflang present"; else echo "FAIL hreflang missing on /en/learn"; fail=1; fi
 
 exit $fail
