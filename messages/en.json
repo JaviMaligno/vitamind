@@ -649,5 +649,27 @@
     "faqHeading": "Frequently asked questions",
     "faqSubheading": "Dive into the science behind the app",
     "faqCta": "See all questions →"
+  },
+  "cityPage": {
+    "title": "Vitamin D from the sun in {city}",
+    "metaDescription": "When you can synthesize vitamin D from the sun in {city}: possible months, seasonal windows, and when to supplement.",
+    "verdictRange": "In {city} you can synthesize vitamin D from {startMonth} to {endMonth}.",
+    "verdictAllYear": "In {city} you can synthesize vitamin D all year round.",
+    "verdictNever": "In {city} the sun never gets high enough to synthesize vitamin D.",
+    "impossibleRange": "From {startMonth} to {endMonth} synthesis isn't possible — this is when a supplement can help.",
+    "exactWindow": "More precisely: {dateRange}.",
+    "yearHeading": "Year-round profile in {city}",
+    "yearCaption": "Daily hours with enough sun to synthesize vitamin D across the year.",
+    "seasonHeading": "Seasonal windows",
+    "seasonWindow": "{month}: between {start} and {end}, about {minutes} min for 1000 IU.",
+    "seasonImpossible": "{month}: synthesis isn't possible.",
+    "seasonNote": "Estimated for Fitzpatrick type III skin, arms and face exposed, clear sky.",
+    "supplementHeading": "When to supplement in {city}",
+    "supplementBody": "During the months without solar synthesis, a common approach is a vitamin D3 supplement, often paired with K2 and magnesium, which support its absorption and use.",
+    "ctaLabel": "Calculate my window in {city}",
+    "faqHeading": "Frequently asked questions about vitamin D in {city}",
+    "faqWinterQ": "Can I get vitamin D from the sun in winter in {city}?",
+    "faqMinutesQ": "How many minutes of sun do I need in {city}?",
+    "faqMinutesA": "In summer, about {minutes} minutes with arms and face exposed is enough for 1000 IU (Fitzpatrick type III skin, clear sky)."
   }
 }

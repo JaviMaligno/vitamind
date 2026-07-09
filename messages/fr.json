@@ -649,5 +649,27 @@
     "faqHeading": "Questions fréquentes",
     "faqSubheading": "Plongez dans la science derrière l'app",
     "faqCta": "Voir toutes les questions →"
+  },
+  "cityPage": {
+    "title": "Vitamine D du soleil {atCity}",
+    "metaDescription": "Quand pouvez-vous synthétiser la vitamine D au soleil {atCity}\u202f: mois possibles, fenêtres saisonnières et quand se supplémenter.",
+    "verdictRange": "{atCityCap}, vous pouvez synthétiser la vitamine D {fromMonth} à {endMonth}.",
+    "verdictAllYear": "{atCityCap}, vous pouvez synthétiser la vitamine D toute l'année.",
+    "verdictNever": "{atCityCap}, le soleil n'atteint jamais la hauteur nécessaire pour synthétiser la vitamine D.",
+    "impossibleRange": "{fromMonthCap} à {endMonth}, ce n'est pas possible\u202f: la supplémentation prend le relais.",
+    "exactWindow": "Plus précisément\u202f: {dateRange}.",
+    "yearHeading": "Profil annuel {atCity}",
+    "yearCaption": "Nombre d'heures par jour où le soleil est assez haut pour synthétiser la vitamine D, au fil de l'année.",
+    "seasonHeading": "Fenêtres saisonnières",
+    "seasonWindow": "{month}\u202f: entre {start} et {end}, environ {minutes} min pour 1 000 UI.",
+    "seasonImpossible": "{month}\u202f: la synthèse n'est pas possible.",
+    "seasonNote": "Estimation pour une peau de type III, visage et bras exposés, ciel dégagé.",
+    "supplementHeading": "Quand se supplémenter {atCity}",
+    "supplementBody": "Pendant les mois sans synthèse solaire, beaucoup se tournent vers la supplémentation en vitamine D3, souvent associée à la vitamine K2 et au magnésium, qui participent à son absorption et à son utilisation.",
+    "ctaLabel": "Calculer ma fenêtre {atCity}",
+    "faqHeading": "Questions fréquentes sur la vitamine D {atCity}",
+    "faqWinterQ": "Puis-je obtenir de la vitamine D du soleil en hiver {atCity}\u202f?",
+    "faqMinutesQ": "Combien de minutes de soleil me faut-il {atCity}\u202f?",
+    "faqMinutesA": "En été, environ {minutes} minutes avec le visage et les bras exposés suffisent pour 1 000 UI (peau de type III, ciel dégagé)."
   }
 }

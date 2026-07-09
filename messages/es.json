@@ -649,5 +649,27 @@
     "faqHeading": "Preguntas frecuentes",
     "faqSubheading": "Profundiza en la ciencia detrás de la app",
     "faqCta": "Ver todas las preguntas →"
+  },
+  "cityPage": {
+    "title": "Vitamina D del sol en {city}",
+    "metaDescription": "Cuándo puedes sintetizar vitamina D con el sol en {city}: meses posibles, ventanas por estación y cuándo suplementar.",
+    "verdictRange": "En {city} puedes sintetizar vitamina D de {startMonth} a {endMonth}.",
+    "verdictAllYear": "En {city} puedes sintetizar vitamina D durante todo el año.",
+    "verdictNever": "En {city} el sol nunca alcanza la altura necesaria para sintetizar vitamina D.",
+    "impossibleRange": "De {startMonth} a {endMonth} no es posible: necesitas suplementar.",
+    "exactWindow": "Más exactamente: {dateRange}.",
+    "yearHeading": "Perfil anual en {city}",
+    "yearCaption": "Horas diarias con sol suficiente para sintetizar vitamina D a lo largo del año.",
+    "seasonHeading": "Ventanas por estación",
+    "seasonWindow": "{month}: entre las {start} y las {end}, unos {minutes} min para 1000 UI.",
+    "seasonImpossible": "{month}: la síntesis no es posible.",
+    "seasonNote": "Estimado para piel tipo III, brazos y cara expuestos, cielo despejado.",
+    "supplementHeading": "Cuándo suplementar en {city}",
+    "supplementBody": "En los meses sin síntesis solar, una opción es suplementar con vitamina D3, que suele combinarse con K2 y magnesio.",
+    "ctaLabel": "Calcular mi ventana en {city}",
+    "faqHeading": "Preguntas frecuentes sobre la vitamina D en {city}",
+    "faqWinterQ": "¿Puedo obtener vitamina D del sol en invierno en {city}?",
+    "faqMinutesQ": "¿Cuántos minutos de sol necesito en {city}?",
+    "faqMinutesA": "En verano, unos {minutes} minutos con brazos y cara al sol bastan para 1000 UI (piel tipo III, cielo despejado)."
   }
 }
