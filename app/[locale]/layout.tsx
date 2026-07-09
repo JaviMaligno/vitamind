@@ -22,6 +22,10 @@ const TITLES: Record<string, string> = {
   lt: "Vitamin D Explorer — Sužinokite, kada galite gaminti vitaminą D saulėje",
 };
 
+const OG_LOCALES: Record<string, string> = {
+  es: "es_ES", en: "en_US", fr: "fr_FR", de: "de_DE", ru: "ru_RU", lt: "lt_LT",
+};
+
 const DESCRIPTIONS: Record<string, string> = {
   es: "Calculadora solar de vitamina D gratuita. Descubre cuándo y cuánto tiempo tomar el sol según tu ubicación, tipo de piel, edad y datos UV en tiempo real.",
   en: "Free solar vitamin D calculator. Find out exactly when and how long to stay in the sun based on your location, skin type, age, and real-time UV data.",
@@ -50,8 +54,9 @@ export async function generateMetadata(
       title,
       description,
       type: "website",
-      locale,
-      url: alternates?.canonical as string,
+      locale: OG_LOCALES[locale] ?? OG_LOCALES.en,
+      alternateLocale: Object.values(OG_LOCALES).filter((l) => l !== (OG_LOCALES[locale] ?? OG_LOCALES.en)),
+      url: alternates.canonical,
       images: [{ url: "/og-image.png", width: 1200, height: 630, alt: title }],
     },
     twitter: {

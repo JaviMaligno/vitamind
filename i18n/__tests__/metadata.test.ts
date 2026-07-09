@@ -8,11 +8,16 @@ describe("buildAlternates", () => {
     expect(buildAlternates("es", "/learn").canonical).toBe(`${SITE_URL}/learn`);
   });
 
-  it("lists all 6 language alternates plus x-default", () => {
+  it("lists all 6 language alternates plus x-default (same path, default locale)", () => {
     const langs = buildAlternates("es", "/learn").languages as Record<string, string>;
     expect(langs.es).toBe(`${SITE_URL}/learn`);
     expect(langs.en).toBe(`${SITE_URL}/en/learn`);
     expect(langs.fr).toBe(`${SITE_URL}/fr/learn`);
-    expect(langs["x-default"]).toBe(`${SITE_URL}/`);
+    expect(langs["x-default"]).toBe(`${SITE_URL}/learn`);
+  });
+
+  it("x-default for the home page is the prefix-free root", () => {
+    expect((buildAlternates("en", "/").languages as Record<string, string>)["x-default"])
+      .toBe(`${SITE_URL}/`);
   });
 });
