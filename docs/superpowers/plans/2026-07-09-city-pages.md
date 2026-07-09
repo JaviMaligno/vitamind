@@ -26,7 +26,8 @@ export function getCurve(lat: number, lon: number, doy: number, tz: number, time
 export function dateFromDoy(doy: number): Date
 
 // lib/vitd.ts
-export const MIN_UVI_ELEVATION: number            // ≈19.1° — elevation where clear-sky UVI hits 3
+export const MIN_UVI_ELEVATION: number            // 20.14° — elevation where clear-sky UVI hits 3
+                                                  // (the "~19.1 degrees" comment in vitd.ts is stale; see follow-ups)
 export type SkinType = 1 | 2 | 3 | 4 | 5 | 6;
 export interface ExposureResult {
   bestHour: number; bestUVI: number; minutesNeeded: number; maxIU: number;
@@ -433,10 +434,24 @@ describe("cityYearProfile", () => {
     expect(p.possibleMonths).toHaveLength(12);
   });
 
-  it("flips the impossible band in the southern hemisphere (Sydney -33.87)", () => {
-    const p = cityYearProfile(-33.87);
-    expect(p.possibleMonths).toContain(1);  // January = southern summer
-    expect(p.impossibleMonths).toContain(6); // June = southern winter
+  // Sydney (-33.87) does NOT have a vitamin-D winter: on the June solstice its
+  // noon sun still reaches ~32.7°, well over the ~20.1° threshold, leaving 5.6
+  // viable hours. This matches reality (UV index >= 3 year-round in Sydney).
+  // The threshold latitude is |lat| > 90 - 23.44 - MIN_UVI_ELEVATION = 46.4°,
+  // and NO builtin city — northern or southern — lies beyond it in the south
+  // (the most southerly is Melbourne at -37.81). So the southern flip must be
+  // asserted at a latitude far enough south, not at a builtin city.
+  it("has no impossible months in Sydney (-33.87)", () => {
+    expect(cityYearProfile(-33.87).allYear).toBe(true);
+  });
+
+  it("flips the impossible band into the southern winter far enough south (-54.8)", () => {
+    const p = cityYearProfile(-54.8);
+    expect(p.allYear).toBe(false);
+    expect(p.possibleMonths).toContain(1);   // January = southern summer
+    expect(p.impossibleMonths).toEqual([5, 6, 7]); // May-July = southern winter
+    // The possible band wraps across January: August → April.
+    expect(contiguousMonthRange(p.possibleMonths)).toEqual({ start: 8, end: 4 });
   });
 
   it("returns 365 daily hour values", () => {
@@ -599,9 +614,14 @@ export function citySeasonalWindows(lat: number, lon: number, tz: number): Seaso
 - [ ] **Step 4: Run test to verify it passes**
 
 Run: `npx vitest run lib/__tests__/city-content.test.ts`
-Expected: PASS (7 tests).
+Expected: PASS (11 tests).
 
-If the Reykjavik/Sydney assertions fail, do NOT weaken the test — investigate `vitDHrs`'s threshold semantics and report findings; the physics assertions are the point of this task.
+If a physics assertion fails, do NOT weaken the test — investigate `vitDHrs`'s
+threshold semantics and report findings. (This already happened once: the original
+plan asserted an impossible June in Sydney. The code was right and the plan was
+wrong — Sydney is above the 46.4° cutoff — so the *test* was corrected, after
+verifying the model against reality. That is the process working, not a licence to
+edit assertions until they pass.)
 
 - [ ] **Step 5: Commit**
 
