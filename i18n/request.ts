@@ -1,25 +1,15 @@
 import { getRequestConfig } from "next-intl/server";
-import { pickLocale } from "@/lib/accept-language";
+import { hasLocale } from "next-intl";
+import { routing } from "./routing";
 
-const SUPPORTED_LOCALES = ["es", "en", "fr", "de", "ru", "lt"] as const;
-const DEFAULT_LOCALE = "es";
-
-export default getRequestConfig(async () => {
-  const { cookies, headers } = await import("next/headers");
-  const cookieStore = await cookies();
-
-  // Explicit user choice (LanguageSelector) always wins. Otherwise fall back to
-  // the browser's Accept-Language, and only then to Spanish — so a first-time
-  // visitor sees the app (and receives push notifications) in their own language
-  // instead of always Spanish.
-  const cookieLocale = cookieStore.get("locale")?.value;
-  let locale: string;
-  if (cookieLocale && SUPPORTED_LOCALES.includes(cookieLocale as (typeof SUPPORTED_LOCALES)[number])) {
-    locale = cookieLocale;
-  } else {
-    const headerStore = await headers();
-    locale = pickLocale(headerStore.get("accept-language"), SUPPORTED_LOCALES, DEFAULT_LOCALE);
-  }
+// The locale now comes from the URL segment (resolved by the middleware).
+// Accept-Language/cookie detection is handled by the middleware's redirect,
+// so this config only validates the requested locale and loads its messages.
+export default getRequestConfig(async ({ requestLocale }) => {
+  const requested = await requestLocale;
+  const locale = hasLocale(routing.locales, requested)
+    ? requested
+    : routing.defaultLocale;
 
   return {
     locale,
