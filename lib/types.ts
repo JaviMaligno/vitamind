@@ -7,6 +7,12 @@ export interface City {
   lon: number;
   tz: number;
   timezone?: string;  // IANA timezone (e.g. "Europe/Madrid")
+  /**
+   * Ground elevation in metres above sea level. Clear-sky UV rises ~8% per km,
+   * so this feeds the UV model. May be negative (Amsterdam is -2 m).
+   * Absent for user-added / geocoded cities, which are treated as sea level.
+   */
+  elevation?: number;
   country?: string;
   flag?: string;
   population?: number;

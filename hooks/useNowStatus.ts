@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { getCurrentStatus, type SkinType } from "@/lib/vitd";
 import { getCurve } from "@/lib/solar";
+import { ozoneDU } from "@/lib/uv-model";
 import type { NowStatus, WeatherHour } from "@/lib/types";
 
 function toDateStr(d: Date): string {
@@ -87,8 +88,12 @@ export function useNowStatus(
     [hours],
   );
 
+  // Clear-sky fallback (no weather data) uses this place/day's ozone column.
+  // Elevation is not available to this hook, so altitude defaults to sea level.
+  const ctx = useMemo(() => ({ ozoneDu: ozoneDU(lat, lon, doy) }), [lat, lon, doy]);
+
   return useMemo(
-    () => getCurrentStatus(weather, curve, skinType, areaFraction, targetIU, age, now, timezone),
-    [weather, curve, skinType, areaFraction, targetIU, age, now, timezone],
+    () => getCurrentStatus(weather, curve, skinType, areaFraction, targetIU, age, now, timezone, ctx),
+    [weather, curve, skinType, areaFraction, targetIU, age, now, timezone, ctx],
   );
 }
