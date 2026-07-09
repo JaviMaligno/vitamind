@@ -17,7 +17,7 @@ export function slugify(name: string): string {
   const translit = Array.from(lower)
     .map((ch) => (ch in CYRILLIC ? CYRILLIC[ch] : ch))
     .join("");
-  const noDiacritics = translit.normalize("NFD").replace(/[̀-ͯ]/g, "");
+  const noDiacritics = translit.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
   return noDiacritics
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
