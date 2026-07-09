@@ -1,7 +1,6 @@
 "use client";
 
-import { usePathname } from "next/navigation";
-import Link from "next/link";
+import { usePathname, Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 
 export default function BottomTabBar() {

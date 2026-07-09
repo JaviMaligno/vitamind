@@ -2,7 +2,7 @@
 
 import { useMemo } from "react";
 import { useTranslations } from "next-intl";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import PartnerBadge from "@/components/PartnerBadge";
 import { computeExposure, computeExposureFromCurve, type SkinType } from "@/lib/vitd";
 import type { WeatherData, SolarPoint } from "@/lib/types";

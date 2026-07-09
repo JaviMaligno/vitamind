@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { useApp } from "@/context/AppProvider";
 import { TARGET_IU_PRESETS, maxSessionIU } from "@/lib/vitd";
 import CitySearch from "@/components/CitySearch";
