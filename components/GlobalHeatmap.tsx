@@ -2,7 +2,7 @@
 
 import { useRef, useState, useEffect, useMemo, useCallback } from "react";
 import { vitDHrs, fmtDate, dateFromDoy } from "@/lib/solar";
-import { MIN_UVI_ELEVATION } from "@/lib/vitd";
+import { synthesisThresholdElevation } from "@/lib/uv-model";
 
 interface Props {
   selectedLat: number;
@@ -24,7 +24,17 @@ export default function GlobalHeatmap({ selectedLat, selectedDoy, onSelect }: Pr
     const d = new Float32Array(latCount * doyCount);
     for (let li = 0; li < latCount; li++) {
       const lat = LAT_MAX - li;
-      for (let di = 0; di < doyCount; di++) d[li * doyCount + di] = vitDHrs(lat, 1 + di * 2, MIN_UVI_ELEVATION);
+      for (let di = 0; di < doyCount; di++) {
+        const doy = 1 + di * 2;
+        // The synthesis threshold is per-place, per-day: ozone (and hence the
+        // solar elevation at which UVI reaches 3) shifts with latitude and
+        // season. This is a global lat×doy chart with no longitude axis, so we
+        // pass lon=0: van Heuklon's longitude term has amplitude ~20 DU, a small
+        // correction next to its latitude/season term (up to ~190 DU), so it
+        // barely moves the threshold — a defensible choice for a global chart.
+        // Sea level (elevationM omitted): the chart is not tied to any altitude.
+        d[li * doyCount + di] = vitDHrs(lat, doy, synthesisThresholdElevation(lat, 0, doy));
+      }
     }
     return d;
   }, []);
@@ -87,7 +97,8 @@ export default function GlobalHeatmap({ selectedLat, selectedDoy, onSelect }: Pr
     function hoverAt(cX: number, cY: number) {
       const { pxToCoord: p } = stableRef.current;
       const c = p(cX, cY);
-      if (c) setHover({ ...c, hrs: vitDHrs(c.lat, c.doy, MIN_UVI_ELEVATION) });
+      // Same per-day threshold as the grid (lon=0, sea level — see heatData).
+      if (c) setHover({ ...c, hrs: vitDHrs(c.lat, c.doy, synthesisThresholdElevation(c.lat, 0, c.doy)) });
       else setHover(null);
     }
 

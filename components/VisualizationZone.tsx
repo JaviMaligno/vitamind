@@ -6,6 +6,7 @@ import WorldMap from "@/components/WorldMap";
 import GlobalHeatmap from "@/components/GlobalHeatmap";
 import DailyCurve from "@/components/DailyCurve";
 import VitDEstimate from "@/components/VitDEstimate";
+import { synthesisThresholdElevation } from "@/lib/uv-model";
 import type { City, SolarPoint, WeatherData } from "@/lib/types";
 import type { SkinType } from "@/lib/vitd";
 
@@ -108,6 +109,10 @@ export default function VisualizationZone({
               hoverTime={hoverTime}
               onHover={setHoverTime}
               weather={weather}
+              // This tab shows one specific place on one specific day, so use the
+              // exact per-day synthesis threshold. lat/lon/doy are in scope here;
+              // elevation is not plumbed this far, so it defaults to sea level.
+              thresholdElevation={synthesisThresholdElevation(lat, lon, doy)}
             />
           </>
         )}

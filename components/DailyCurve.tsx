@@ -12,6 +12,14 @@ interface Props {
   hoverTime: number | null;
   onHover: (h: number | null) => void;
   weather?: WeatherData | null;
+  /**
+   * Solar elevation (degrees) at which UVI reaches the synthesis threshold for
+   * THIS place and day. The threshold is no longer a constant — ozone varies
+   * with latitude and season — so the parent, which knows lat/lon/doy, computes
+   * the exact value via `synthesisThresholdElevation`. Falls back to the sea-level
+   * 300 DU reference (`MIN_UVI_ELEVATION`) when the parent does not supply it.
+   */
+  thresholdElevation?: number;
 }
 
 const W = 860, H = 200;
@@ -70,7 +78,7 @@ function buildVisiblePath(
   return parts.join(" ");
 }
 
-export default function DailyCurve({ curve, threshold, onThresholdChange, hoverTime, onHover, weather }: Props) {
+export default function DailyCurve({ curve, threshold, onThresholdChange, hoverTime, onHover, weather, thresholdElevation = MIN_UVI_ELEVATION }: Props) {
   const ref = useRef<SVGSVGElement>(null);
   const maxE = Math.max(55, ...curve.map((p) => Math.max(p.elevation, 0)));
   const minE = Math.max(-15, Math.min(-5, ...curve.map((p) => p.elevation)));
@@ -80,11 +88,11 @@ export default function DailyCurve({ curve, threshold, onThresholdChange, hoverT
 
   const pathD = buildVisiblePath(curve, minE, x, y);
 
-  const aP = curve.filter((p) => p.elevation >= MIN_UVI_ELEVATION);
+  const aP = curve.filter((p) => p.elevation >= thresholdElevation);
   let aD = "";
   if (aP.length > 1) {
     aD = aP.map((p, i) => `${i === 0 ? "M" : "L"}${x(p.localHours).toFixed(1)},${y(p.elevation).toFixed(1)}`).join(" ");
-    aD += ` L${x(aP[aP.length - 1].localHours).toFixed(1)},${y(MIN_UVI_ELEVATION).toFixed(1)} L${x(aP[0].localHours).toFixed(1)},${y(MIN_UVI_ELEVATION).toFixed(1)} Z`;
+    aD += ` L${x(aP[aP.length - 1].localHours).toFixed(1)},${y(thresholdElevation).toFixed(1)} L${x(aP[0].localHours).toFixed(1)},${y(thresholdElevation).toFixed(1)} Z`;
   }
 
   const handleMove = useCallback((e: React.MouseEvent) => {
@@ -165,7 +173,7 @@ export default function DailyCurve({ curve, threshold, onThresholdChange, hoverT
       {hp && hoverTime !== null && (
         <g>
           <line x1={x(hp.localHours)} y1={PAD.t} x2={x(hp.localHours)} y2={PAD.t + plotH} stroke="rgba(255,255,255,0.2)" strokeDasharray="2,2" />
-          <circle cx={x(hp.localHours)} cy={y(Math.max(hp.elevation, minE))} r="5" fill={hp.elevation >= MIN_UVI_ELEVATION ? "#FFD54F" : "#FF6D00"} stroke="#fff" strokeWidth="1.5" />
+          <circle cx={x(hp.localHours)} cy={y(Math.max(hp.elevation, minE))} r="5" fill={hp.elevation >= thresholdElevation ? "#FFD54F" : "#FF6D00"} stroke="#fff" strokeWidth="1.5" />
           <rect x={x(hp.localHours) - 46} y={PAD.t - 18} width="92" height="16" rx="4" fill="rgba(0,0,0,0.8)" />
           <text x={x(hp.localHours)} y={PAD.t - 7} textAnchor="middle" fill="#FFD54F" fontSize="10" fontWeight="600" fontFamily="'JetBrains Mono',monospace">
             {fmtTime(hp.localHours)} &rarr; {hp.elevation.toFixed(1)}&deg;

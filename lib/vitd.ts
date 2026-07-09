@@ -1,5 +1,16 @@
 import type { WeatherHour, SolarPoint, NowStatus } from "./types";
 import { hourFromTimeString } from "./timezone";
+import { uvIndex, minElevationForUVI, OZONE_REFERENCE_DU } from "@/lib/uv-model";
+
+/**
+ * Where and when the clear-sky estimate applies. Defaults: reference ozone
+ * (300 DU), sea level. Supplying a place's real ozone column (via
+ * `ozoneDU(lat, lon, doy)`) and altitude makes the estimate location-accurate.
+ */
+export interface ClearSkyContext {
+  ozoneDu?: number;
+  elevationM?: number;
+}
 
 export type SkinType = 1 | 2 | 3 | 4 | 5 | 6;
 
@@ -33,14 +44,16 @@ export const AREA_PRESETS: { label: string; value: number }[] = [
 export const MIN_UVI = 3; // Below this, no meaningful vitamin D synthesis
 
 /**
- * Solar elevation (degrees) where clear-sky UVI reaches MIN_UVI.
- * Inverse of the Madronich model used in estimateUVFromElevation().
- * Used by heatmap/worldmap as the UV-based threshold for synthesis hours.
+ * Reference solar elevation (degrees) at which clear-sky UVI reaches MIN_UVI,
+ * evaluated at sea level under the 300 DU reference ozone column (≈33.68°).
+ *
+ * This is a REFERENCE value only. The real threshold is not a single constant:
+ * it varies with latitude, season (ozone) and altitude, ranging from about
+ * 29.3° to 41.7° across the plausible range. Callers that know a place and a
+ * day should call `synthesisThresholdElevation(lat, lon, doy, elevationM)`
+ * from `@/lib/uv-model` instead of using this constant.
  */
-export const MIN_UVI_ELEVATION = (() => {
-  const sinE = Math.pow(MIN_UVI / 12, 1 / 1.3);
-  return Math.asin(sinE) * (180 / Math.PI);
-})(); // ~19.1 degrees
+export const MIN_UVI_ELEVATION = minElevationForUVI(MIN_UVI, OZONE_REFERENCE_DU, 0);
 
 /**
  * Reference values for target IU presets.
@@ -225,13 +238,17 @@ export function computeExposure(
 
 /**
  * Estimate clear-sky UV index from solar elevation angle.
- * Simplified Madronich model: UVI ≈ 12 * sin(elevation)^1.3 at sea level.
- * This ignores clouds, ozone, altitude — gives a "typical clear sky" estimate.
+ *
+ * Delegates entirely to the Madronich (2007) analytic clear-sky UVI formula
+ * (`uvIndex` in `@/lib/uv-model`), which uses UVI = 12.5 * sin(elev)^2.42 *
+ * (Omega/300)^-1.23 with an altitude gain factor. The optional `ctx` supplies
+ * the ozone column (Dobson Units) and observer altitude (metres); it defaults
+ * to the 300 DU reference column at sea level.
+ *
+ * This is a clear-sky estimate: it ignores clouds and aerosols.
  */
-export function estimateUVFromElevation(elevationDeg: number): number {
-  if (elevationDeg <= 0) return 0;
-  const sinElev = Math.sin((elevationDeg * Math.PI) / 180);
-  return 12 * Math.pow(sinElev, 1.3);
+export function estimateUVFromElevation(elevationDeg: number, ctx: ClearSkyContext = {}): number {
+  return uvIndex(elevationDeg, ctx.ozoneDu, ctx.elevationM);
 }
 
 /**
@@ -244,6 +261,7 @@ export function computeExposureFromCurve(
   areaFraction: number,
   targetIU: number = 1000,
   age: number | null = null,
+  ctx: ClearSkyContext = {},
 ): ExposureResult | null {
   const hourlyMinutes: ExposureResult["hourlyMinutes"] = [];
   let bestUVI = 0;
@@ -255,7 +273,7 @@ export function computeExposureFromCurve(
   for (let h = 0; h < 24; h++) {
     const pt = curve.find((p) => Math.floor(p.localHours) === h);
     const elev = pt?.elevation ?? 0;
-    const uvi = estimateUVFromElevation(elev);
+    const uvi = estimateUVFromElevation(elev, ctx);
     const mins = minutesForVitD(uvi, skinType, areaFraction, targetIU, age);
     hourlyMinutes.push({ hour: h, uvi, minutes: mins });
 
@@ -311,6 +329,7 @@ export function getCurrentStatus(
   age: number | null,
   now: Date,
   timezone?: string,
+  ctx: ClearSkyContext = {},
 ): NowStatus {
   let currentHour: number;
   let currentMinutes: number;
@@ -342,7 +361,7 @@ export function getCurrentStatus(
     for (let h = 0; h < 24; h++) {
       const pt = curve.find((p) => Math.floor(p.localHours) === h);
       const elev = pt?.elevation ?? 0;
-      hourlyUVI.push({ hour: h, uvi: estimateUVFromElevation(elev), cloud: 0 });
+      hourlyUVI.push({ hour: h, uvi: estimateUVFromElevation(elev, ctx), cloud: 0 });
     }
   }
 

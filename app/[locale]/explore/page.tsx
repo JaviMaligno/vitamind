@@ -6,6 +6,7 @@ import { useApp } from "@/context/AppProvider";
 import { useCityDisplayName } from "@/hooks/useCityDisplayName";
 import { getCurve, dayOfYear, dateFromDoy, fmtDate } from "@/lib/solar";
 import { computeExposure, computeExposureFromCurve } from "@/lib/vitd";
+import { ozoneDU } from "@/lib/uv-model";
 import HeroZone from "@/components/HeroZone";
 import VisualizationZone from "@/components/VisualizationZone";
 import CitySearch from "@/components/CitySearch";
@@ -57,8 +58,10 @@ export default function ExplorePage() {
     if (weather?.hours) {
       return computeExposure(weather.hours, app.skinType, app.areaFraction, app.targetIU, app.age);
     }
-    return computeExposureFromCurve(curve, app.skinType, app.areaFraction, app.targetIU, app.age);
-  }, [weather, curve, app.skinType, app.areaFraction, app.targetIU, app.age]);
+    // Clear-sky curve estimate: use this place/day's ozone column and altitude.
+    const ctx = { ozoneDu: ozoneDU(lat, lon, doy), elevationM: exploreCity?.elevation ?? 0 };
+    return computeExposureFromCurve(curve, app.skinType, app.areaFraction, app.targetIU, app.age, ctx);
+  }, [weather, curve, lat, lon, doy, exploreCity?.elevation, app.skinType, app.areaFraction, app.targetIU, app.age]);
 
   // For today's date, mirror the dashboard's now-aware status copy in the hero
   // instead of just "Síntesis posible / Sin vitamina D" (day-level). For other

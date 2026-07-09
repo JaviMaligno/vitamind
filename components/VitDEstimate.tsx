@@ -32,6 +32,8 @@ export default function VitDEstimate({ weather, curve, skinType, areaFraction, a
     [weather, skinType, areaFraction, targetIU, age],
   );
   const curveResult = useMemo(
+    // No lat/lon/elevation reach this component (only the derived curve does),
+    // so the clear-sky estimate falls back to reference ozone at sea level.
     () => (!weather && curve.length) ? computeExposureFromCurve(curve, skinType, areaFraction, targetIU, age) : null,
     [weather, curve, skinType, areaFraction, targetIU, age],
   );
