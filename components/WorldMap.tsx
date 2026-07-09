@@ -4,7 +4,7 @@ import { useState, useRef, useEffect, useMemo } from "react";
 import * as d3 from "d3";
 import { decodeTopo } from "@/lib/geo";
 import { vitDHrs } from "@/lib/solar";
-import { MIN_UVI_ELEVATION } from "@/lib/vitd";
+import { synthesisThresholdElevation } from "@/lib/uv-model";
 import type { City, HoverInfo } from "@/lib/types";
 
 interface Props {
@@ -32,9 +32,15 @@ export default function WorldMap({ lat, lon, doy, onSelect, favorites, allCities
 
   const limits = useMemo(() => {
     let n = 0, s = 0;
+    // Per-latitude synthesis threshold: ozone (and hence the UVI=3 elevation)
+    // shifts with latitude and season, so the boundary latitude is not a single
+    // constant. lon=0 because this scans the whole globe at each latitude band —
+    // van Heuklon's longitude term (amplitude ~20 DU) is a small correction next
+    // to its latitude/season term (up to ~190 DU), so it barely moves the
+    // threshold. Sea level (elevationM omitted): the boundary is not per-place.
     for (let la = 0; la <= 90; la += 0.5) {
-      if (vitDHrs(la, doy, MIN_UVI_ELEVATION) > 0) n = la;
-      if (vitDHrs(-la, doy, MIN_UVI_ELEVATION) > 0) s = -la;
+      if (vitDHrs(la, doy, synthesisThresholdElevation(la, 0, doy)) > 0) n = la;
+      if (vitDHrs(-la, doy, synthesisThresholdElevation(-la, 0, doy)) > 0) s = -la;
     }
     return { north: n, south: s };
   }, [doy]);
