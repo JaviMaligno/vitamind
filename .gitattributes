@@ -1,0 +1,5 @@
+# Shell scripts must keep LF endings. Git's autocrlf rewrites them to CRLF on
+# Windows checkouts, and bash then fails with "syntax error: unexpected end of
+# file" the moment the script defines a function -- a confusing failure far from
+# its cause.
+*.sh text eol=lf
