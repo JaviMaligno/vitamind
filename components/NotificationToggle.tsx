@@ -13,6 +13,8 @@ interface Props {
   skinType: number;
   areaFraction: number;
   cityName: string;
+  labelOff?: string;
+  labelOn?: string;
 }
 
 type Status = "loading" | "unsupported" | "denied" | "off" | "on";
@@ -26,7 +28,7 @@ function urlBase64ToUint8Array(base64String: string): Uint8Array {
   return arr;
 }
 
-export default function NotificationToggle({ lat, lon, tz, timezone, skinType, areaFraction, cityName }: Props) {
+export default function NotificationToggle({ lat, lon, tz, timezone, skinType, areaFraction, cityName, labelOff, labelOn }: Props) {
   const [status, setStatus] = useState<Status>("loading");
   const t = useTranslations("notifications");
   const tInstall = useTranslations("install");
@@ -203,7 +205,7 @@ export default function NotificationToggle({ lat, lon, tz, timezone, skinType, a
             : t("enableHint")
       }
     >
-      {status === "on" ? `🔔 ${t("on")}` : status === "denied" ? `🚫 ${t("blocked")}` : `🔕 ${t("notify")}`}
+      {status === "on" ? (labelOn ?? `🔔 ${t("on")}`) : status === "denied" ? `🚫 ${t("blocked")}` : (labelOff ?? `🔕 ${t("notify")}`)}
     </button>
   );
 }
