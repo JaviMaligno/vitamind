@@ -665,7 +665,7 @@
     "seasonImpossible": "{month}: synthesis isn't possible.",
     "seasonNote": "Estimated for Fitzpatrick type III skin, arms and face exposed, clear sky.",
     "supplementHeading": "When to supplement in {city}",
-    "supplementBody": "During the months without solar synthesis, a common approach is a vitamin D3 supplement, often paired with K2 and magnesium, which support its absorption and use.",
+    "supplementBody": "During the months without solar synthesis, vitamin D comes only from food or a supplement. It is usually taken as D3, often with magnesium — which the body needs to activate it — and vitamin K (as K2), which contributes to the maintenance of normal bones.",
     "ctaLabel": "Calculate my window in {city}",
     "faqHeading": "Frequently asked questions about vitamin D in {city}",
     "faqWinterQ": "Can I get vitamin D from the sun in winter in {city}?",

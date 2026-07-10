@@ -665,7 +665,7 @@
     "seasonImpossible": "{month}\u202f: la synthèse n'est pas possible.",
     "seasonNote": "Estimation pour une peau de type III, visage et bras exposés, ciel dégagé.",
     "supplementHeading": "Quand se supplémenter {atCity}",
-    "supplementBody": "Pendant les mois sans synthèse solaire, beaucoup se tournent vers la supplémentation en vitamine D3, souvent associée à la vitamine K2 et au magnésium, qui participent à son absorption et à son utilisation.",
+    "supplementBody": "Durant les mois sans synthèse solaire, la vitamine D provient uniquement de l'alimentation ou d'un supplément. Elle se prend sous forme de D3, souvent avec du magnésium — nécessaire à son activation — et de la vitamine K (sous forme de K2), qui contribue au maintien d'une ossature normale.",
     "ctaLabel": "Calculer ma fenêtre {atCity}",
     "faqHeading": "Questions fréquentes sur la vitamine D {atCity}",
     "faqWinterQ": "Puis-je obtenir de la vitamine D du soleil en hiver {atCity}\u202f?",

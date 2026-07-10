@@ -665,7 +665,7 @@
     "seasonImpossible": "{month}: la síntesis no es posible.",
     "seasonNote": "Estimado para piel tipo III, brazos y cara expuestos, cielo despejado.",
     "supplementHeading": "Cuándo suplementar en {city}",
-    "supplementBody": "En los meses sin síntesis solar, una opción es suplementar con vitamina D3, que suele combinarse con K2 y magnesio.",
+    "supplementBody": "En los meses sin síntesis solar, la vitamina D solo procede de la dieta o de un suplemento. Suele tomarse como D3, a menudo con magnesio —que el organismo necesita para activarla— y vitamina K (como K2), que contribuye al mantenimiento de los huesos en condiciones normales.",
     "ctaLabel": "Calcular mi ventana en {city}",
     "faqHeading": "Preguntas frecuentes sobre la vitamina D en {city}",
     "faqWinterQ": "¿Puedo obtener vitamina D del sol en invierno en {city}?",

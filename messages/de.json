@@ -665,7 +665,7 @@
     "seasonImpossible": "{month}: Die Bildung ist nicht möglich.",
     "seasonNote": "Geschätzt für Hauttyp III, Arme und Gesicht unbedeckt, klarer Himmel.",
     "supplementHeading": "Wann du in {city} supplementieren solltest",
-    "supplementBody": "In den Monaten ohne ausreichende Sonne kann Vitamin D3 helfen, deinen Spiegel zu halten – zusammen mit K2 und Magnesium für Aufnahme und Verwertung.",
+    "supplementBody": "In den Monaten ohne Vitamin-D-Bildung kommt Vitamin D nur über die Ernährung oder ein Supplement. Meist wird es als D3 eingenommen, häufig zusammen mit Magnesium – das dein Körper zur Aktivierung von Vitamin D braucht – und Vitamin K (als K2), das zur Erhaltung normaler Knochen beiträgt.",
     "ctaLabel": "Mein Zeitfenster in {city} berechnen",
     "faqHeading": "Häufige Fragen zu Vitamin D in {city}",
     "faqWinterQ": "Kann ich im Winter in {city} Vitamin D durch die Sonne bekommen?",
