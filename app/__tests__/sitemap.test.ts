@@ -5,8 +5,8 @@ import { SITE_URL } from "@/lib/site";
 describe("sitemap", () => {
   const entries = sitemap();
 
-  it("emits 36 URLs (6 pages × 6 locales)", () => {
-    expect(entries).toHaveLength(36);
+  it("emits 36 static URLs plus 438 city URLs", () => {
+    expect(entries).toHaveLength(36 + 438); // 6 pages + 73 cities, each × 6 locales
   });
 
   it("uses no prefix for es and /xx for other locales", () => {
@@ -30,5 +30,28 @@ describe("sitemap", () => {
   it("x-default points at the es (prefix-free) version of the same path", () => {
     const learnEs = entries.find((e) => e.url === `${SITE_URL}/learn`);
     expect(learnEs?.alternates?.languages?.["x-default"]).toBe(`${SITE_URL}/learn`);
+  });
+
+  it("emits the localized city URLs", () => {
+    const urls = entries.map((e) => e.url);
+    expect(urls).toContain(`${SITE_URL}/vitamina-d/madrid`);
+    expect(urls).toContain(`${SITE_URL}/en/vitamin-d/london`);
+    expect(urls).toContain(`${SITE_URL}/fr/vitamine-d/londres`);
+    expect(urls).toContain(`${SITE_URL}/lt/vitaminas-d/londonas`);
+    // ru borrows the real Latin name; it is not a back-transliteration.
+    expect(urls).toContain(`${SITE_URL}/ru/vitamin-d/london`);
+  });
+
+  it("gives each city entry six hreflang alternates plus x-default", () => {
+    const london = entries.find((e) => e.url === `${SITE_URL}/en/vitamin-d/london`);
+    expect(london?.alternates?.languages?.es).toBe(`${SITE_URL}/vitamina-d/londres`);
+    expect(london?.alternates?.languages?.fr).toBe(`${SITE_URL}/fr/vitamine-d/londres`);
+    expect(london?.alternates?.languages?.["x-default"]).toBe(`${SITE_URL}/vitamina-d/londres`);
+    expect(Object.keys(london?.alternates?.languages ?? {})).toHaveLength(7); // 6 + x-default
+  });
+
+  it("has no duplicate URLs", () => {
+    const urls = entries.map((e) => e.url);
+    expect(new Set(urls).size).toBe(urls.length);
   });
 });
