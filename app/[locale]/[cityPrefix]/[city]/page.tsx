@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import CityYearStrip from "@/components/CityYearStrip";
+import NotificationToggle from "@/components/NotificationToggle";
 import { BUILTIN_CITIES } from "@/lib/cities";
 import {
   cityYearProfile, citySeasonalWindows, contiguousMonthRange, viableDateBoundaries,
@@ -142,6 +143,23 @@ export default async function CityPage({ params }: { params: Promise<Params> }) 
       {dateRange && (
         <p className="mt-1 text-xs opacity-60">{t("exactWindow", { dateRange })}</p>
       )}
+
+      <section className="mt-6">
+        <p className="text-sm">{t("notifyLead", labels)}</p>
+        <div className="mt-2">
+          <NotificationToggle
+            lat={city.lat}
+            lon={city.lon}
+            tz={city.tz}
+            timezone={city.timezone}
+            skinType={3}
+            areaFraction={0.25}
+            cityName={localizedCityName(p.locale, base)}
+            labelOff={t("notifyOff")}
+            labelOn={t("notifyOn")}
+          />
+        </div>
+      </section>
 
       <section className="mt-8">
         <h2 className="text-lg font-semibold">{t("yearHeading", labels)}</h2>
