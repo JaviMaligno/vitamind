@@ -31,20 +31,27 @@ check_redirect "/es/learn" "/learn" 307
 
 # ---------------------------------------------------------------- city pages --
 
-# Fetch once into a variable rather than piping curl into grep. `grep -q` exits on
-# the first match, curl then dies of SIGPIPE (exit 23), and `pipefail` reports the
-# whole pipeline as failed -- so the check FAILs precisely because it matched, and
-# the bigger the body the more reliably it misfires (the 400 KB sitemap always did).
-body_of() { curl -s "$BASE$1" || true; }
+# `grep -q` exits at the first match without draining its input. Whatever is
+# feeding it -- curl, or printf from a variable -- then dies of SIGPIPE, and
+# `set -o pipefail` reports the whole pipeline as failed. The check therefore
+# FAILs precisely because it matched, and the larger the body the more reliably
+# it misfires: the 400 KB sitemap did it every single time.
+#
+# `grep -c` reads its input to the end, so nothing gets SIGPIPE. Count, then test.
+count_in() { # url pattern [-i]
+  local body
+  body=$(curl -s "$BASE$1" || true)
+  printf '%s' "$body" | grep -c ${3:-} -e "$2" || true
+}
 
 has() { # url pattern label   -- pattern must be a *rendered* value, not a template
-  if printf '%s' "$(body_of "$1")" | grep -q "$2"; then echo "OK  $3"; else echo "FAIL $3  ($1)"; fail=1; fi
+  if [ "$(count_in "$1" "$2")" -gt 0 ]; then echo "OK  $3"; else echo "FAIL $3  ($1)"; fail=1; fi
 }
 hasnt() { # url pattern label
-  if printf '%s' "$(body_of "$1")" | grep -q "$2"; then echo "FAIL $3  ($1 should not contain it)"; fail=1; else echo "OK  $3"; fi
+  if [ "$(count_in "$1" "$2")" -gt 0 ]; then echo "FAIL $3  ($1 should not contain it)"; fail=1; else echo "OK  $3"; fi
 }
 has_i() { # url pattern label   -- case-insensitive
-  if printf '%s' "$(body_of "$1")" | grep -qi "$2"; then echo "OK  $3"; else echo "FAIL $3  ($1)"; fail=1; fi
+  if [ "$(count_in "$1" "$2" -i)" -gt 0 ]; then echo "OK  $3"; else echo "FAIL $3  ($1)"; fail=1; fi
 }
 code_is() { # url expected_code label
   local code
