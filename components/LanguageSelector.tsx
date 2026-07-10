@@ -2,6 +2,8 @@
 
 import { useLocale } from "next-intl";
 import { useRouter, usePathname } from "@/i18n/navigation";
+import { routing } from "@/i18n/routing";
+import { alternatePathForLocale } from "@/i18n/locale-path";
 
 const LANGUAGES = [
   { code: "es", label: "ES" },
@@ -18,9 +20,18 @@ export default function LanguageSelector() {
   const pathname = usePathname();
 
   const handleChange = (lang: string) => {
-    // Navigate to the same page in the chosen language; next-intl persists the
-    // preference in the `locale` cookie automatically.
-    router.replace(pathname, { locale: lang });
+    // A path is not always the same path in another language: the city pages
+    // localize both the route prefix and the slug, so /vitamina-d/madrid becomes
+    // /en/vitamin-d/madrid. Reusing the current pathname and swapping only the
+    // locale segment produced /en/vitamina-d/madrid, which 404s.
+    //
+    // Every page already emits the right URL per locale as an hreflang link, so
+    // read the answer from there. Fall back to the current path for routes whose
+    // path does not change across locales.
+    const target = alternatePathForLocale(document, lang, routing.locales) ?? pathname;
+
+    // next-intl re-adds the locale prefix and persists the `locale` cookie.
+    router.replace(target as Parameters<typeof router.replace>[0], { locale: lang });
   };
 
   return (

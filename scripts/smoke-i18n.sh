@@ -75,6 +75,13 @@ check_lang "/ru/vitamin-d/moscow" ru
 code_is "/en/vitamina-d/london" 404 "wrong prefix for locale 404s"
 code_is "/vitamina-d/atlantis" 404 "unknown city 404s"
 
+# The language switcher navigates by following the page's own hreflang links, so
+# every target it can reach must exist. These are the ones /vitamina-d/madrid
+# advertises; a stale alternate would send a user to a 404.
+code_is "/en/vitamin-d/madrid" 200 "hreflang target: en Madrid"
+code_is "/lt/vitaminas-d/madridas" 200 "hreflang target: lt Madridas"
+code_is "/fr/vitamine-d/londres" 200 "hreflang target: fr Londres"
+
 # SEO plumbing on a city page.
 has "/en/vitamin-d/london" '"@type":"FAQPage"' "city FAQPage schema"
 has "/en/vitamin-d/london" 'rel="canonical" href="[^"]*/en/vitamin-d/london"' "city canonical self-references"
