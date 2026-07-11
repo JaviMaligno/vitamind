@@ -341,6 +341,16 @@
           { "label": "Young AR et al. (2021) — A revised action spectrum for vitamin D synthesis by suberythemal UV. PNAS 118(40):e2015867118", "url": "https://www.pnas.org/doi/10.1073/pnas.2015867118" },
           { "label": "Schindl A et al. (2022) — Bunsen-Roscoe reciprocity: Is it still valid? Indian J Ophthalmol", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9672781/" }
         ]
+      },
+      "q9": {
+        "q": "Is it better to expose a little skin for a long time, or a lot of skin for a short time?",
+        "a": "For the same amount of vitamin D, exposing more skin for less time is almost always better — more efficient and less harmful. The reason is that vitamin D production per patch of skin saturates: previtamin D3 photodegrades to inert lumisterol and tachysterol, so each area of skin has a ceiling no matter how long you stay out. That ceiling scales with exposed area, not with how tanned you are — roughly ~19,000 IU for the whole body at 1 MED, so ~1,900 IU for 10% of the body (face + hands) versus ~7,700 IU for 40% (swimsuit). With very little skin exposed you may be physically unable to reach a 2,000 IU target in a single session, whereas with more skin you get there in a few sub-erythemal minutes. The health argument follows the same logic: vitamin D per minute on an already-dosed patch falls (saturation), but DNA/erythema damage per minute stays roughly constant, so the vitamin-D-to-damage ratio is best at low per-patch doses. Sunburn depends on the local dose versus your Minimal Erythemal Dose (MED), independent of area — concentrating a dose on a small patch pushes it toward or past 1 MED (a burn), while spreading the same total over more skin keeps every patch well below its threshold (no burn). That is exactly why guidelines recommend ~¼–½ MED over a large body area, a few times a week. Two extras favour more skin: exposed skin releases nitric oxide under UVA that lowers blood pressure, and this scales with area, not with vitamin D; and concentrating exposure on one patch tans it, raising its MED and making it progressively less efficient over repeated sessions. The only case for 'little skin, long time' is practical — when clothing or context won't let you uncover more — and even then you'll often fail to reach the target in one go.",
+        "sources": [
+          { "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/" },
+          { "label": "Neville JJ et al. (2021) — Physical Determinants of Vitamin D Photosynthesis: A Review. JBMR Plus 5(1):e10460", "url": "https://academic.oup.com/jbmrplus/article/5/1/e10460/7486276" },
+          { "label": "Liu D et al. (2014) — UVA irradiation of human skin vasodilates arterial vasculature and lowers blood pressure. J Invest Dermatol 134(7):1839-1846", "url": "https://pubmed.ncbi.nlm.nih.gov/24445737/" },
+          { "label": "Young AR et al. (2021) — A revised action spectrum for vitamin D synthesis by suberythemal UV. PNAS 118(40):e2015867118", "url": "https://www.pnas.org/doi/10.1073/pnas.2015867118" }
+        ]
       }
     },
     "block2": {

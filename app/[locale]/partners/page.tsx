@@ -131,7 +131,7 @@ export default function PartnersPage() {
       {/* Back link */}
       <div className="pt-2 border-t border-border-subtle">
         <Link
-          href="/explore"
+          href="/dashboard"
           className="text-[11px] text-text-muted hover:text-text-secondary transition-colors"
         >
           ← Try the app
