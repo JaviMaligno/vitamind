@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useCallback, useEffect, useRef } from "react";
-import { useTranslations } from "next-intl";
+import { useState, useCallback, useEffect, useMemo, useRef } from "react";
+import { useTranslations, useLocale } from "next-intl";
 import { useSwipe } from "@/hooks/useSwipe";
 import PartnerBadge from "@/components/PartnerBadge";
 import type { DayRecord } from "@/lib/types";
@@ -28,11 +28,15 @@ function daysInMonth(year: number, month: number): number {
   return new Date(year, month + 1, 0).getDate();
 }
 
-const DAY_LABELS = ["L", "M", "X", "J", "V", "S", "D"];
-const MONTH_NAMES = [
-  "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
-  "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre",
-];
+function capFirst(s: string): string {
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
+/** 2024-01-01 is a Monday — a fixed reference so the week always starts Mon..Sun
+ *  regardless of when this runs, matching `getMonday()`'s Mon-first convention. */
+const REF_MONDAY = new Date(2024, 0, 1);
+/** Any mid-month day works as a reference for locale month-name formatting. */
+const refMonthDate = (monthIndex: number) => new Date(2024, monthIndex, 15);
 
 type DayStatus = "empty" | "future" | "unfavorable" | "favorable" | "confirmed";
 
@@ -84,8 +88,25 @@ function computeSummary(records: DayRecord[]): { favorable: number; total: numbe
 
 export default function HistoryCalendar({ records, onToggleOverride, onNavigate }: Props) {
   const t = useTranslations("dashboard");
+  const locale = useLocale();
   const today = new Date();
   const todayStr = toDateStr(today);
+
+  // Localized weekday/month labels — was hardcoded Spanish, showing wrong in
+  // EN/FR/DE/RU/LT. Weekday uses "narrow" (single-glyph, matches the old L/M/X.. look);
+  // month uses "long" since headers render e.g. "24–30 Julio" / "24–30 July".
+  const dayLabels = useMemo(() => {
+    const fmt = new Intl.DateTimeFormat(locale, { weekday: "narrow" });
+    return Array.from({ length: 7 }, (_, i) => {
+      const d = new Date(REF_MONDAY);
+      d.setDate(d.getDate() + i);
+      return fmt.format(d);
+    });
+  }, [locale]);
+  const monthNames = useMemo(() => {
+    const fmt = new Intl.DateTimeFormat(locale, { month: "long" });
+    return Array.from({ length: 12 }, (_, m) => capFirst(fmt.format(refMonthDate(m))));
+  }, [locale]);
 
   const [viewMode, setViewMode] = useState<ViewMode>("week");
   const [weekOffset, setWeekOffset] = useState(0);
@@ -196,11 +217,11 @@ export default function HistoryCalendar({ records, onToggleOverride, onNavigate 
         const startDay = viewMonday.getDate();
         const endDay = endOfWeek.getDate();
         if (viewMonday.getMonth() === endOfWeek.getMonth()) {
-          return `${startDay}\u{2013}${endDay} ${MONTH_NAMES[viewMonday.getMonth()]}`;
+          return `${startDay}\u{2013}${endDay} ${monthNames[viewMonday.getMonth()]}`;
         }
-        return `${startDay} ${MONTH_NAMES[viewMonday.getMonth()]} \u{2013} ${endDay} ${MONTH_NAMES[endOfWeek.getMonth()]}`;
+        return `${startDay} ${monthNames[viewMonday.getMonth()]} \u{2013} ${endDay} ${monthNames[endOfWeek.getMonth()]}`;
       })()
-    : `${MONTH_NAMES[viewMonth]} ${viewYear}`;
+    : `${monthNames[viewMonth]} ${viewYear}`;
 
   function renderDayCell(ds: string, record: DayRecord | null, isFuture: boolean, isToday: boolean, label: string | number, shape: "circle" | "square") {
     const status = getDayStatus(record, isFuture);
@@ -229,13 +250,13 @@ export default function HistoryCalendar({ records, onToggleOverride, onNavigate 
   }
 
   return (
-    <div className="rounded-xl border border-border-default bg-surface-card p-4" {...swipeHandlers}>
+    <div className="rounded-2xl bg-glass border border-glass-border backdrop-blur-md p-4 shadow-lg" {...swipeHandlers}>
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
         <div className="flex gap-1">
           <button
             onClick={() => setViewMode("week")}
-            className={`px-2.5 py-1 rounded-md text-[11px] font-medium transition-colors ${
+            className={`px-2.5 py-1 rounded-md text-caption font-medium transition-colors ${
               viewMode === "week" ? "bg-amber-400/20 text-accent" : "text-text-muted hover:text-text-secondary"
             }`}
           >
@@ -243,7 +264,7 @@ export default function HistoryCalendar({ records, onToggleOverride, onNavigate 
           </button>
           <button
             onClick={() => setViewMode("month")}
-            className={`px-2.5 py-1 rounded-md text-[11px] font-medium transition-colors ${
+            className={`px-2.5 py-1 rounded-md text-caption font-medium transition-colors ${
               viewMode === "month" ? "bg-amber-400/20 text-accent" : "text-text-muted hover:text-text-secondary"
             }`}
           >
@@ -280,7 +301,7 @@ export default function HistoryCalendar({ records, onToggleOverride, onNavigate 
             const record = records.find((r) => r.date === ds) ?? null;
             const isFuture = d > today;
             const isToday = ds === todayStr;
-            return renderDayCell(ds, record, isFuture, isToday, DAY_LABELS[i], "circle");
+            return renderDayCell(ds, record, isFuture, isToday, dayLabels[i], "circle");
           })}
         </div>
       )}
@@ -299,8 +320,8 @@ export default function HistoryCalendar({ records, onToggleOverride, onNavigate 
         return (
           <div>
             <div className="grid grid-cols-7 gap-1 mb-1">
-              {DAY_LABELS.map((label) => (
-                <div key={label} className="text-center text-[9px] text-text-faint font-medium">{label}</div>
+              {dayLabels.map((label, i) => (
+                <div key={`${label}-${i}`} className="text-center text-[9px] text-text-faint font-medium">{label}</div>
               ))}
             </div>
             <div className="grid grid-cols-7 gap-1">
@@ -343,9 +364,9 @@ export default function HistoryCalendar({ records, onToggleOverride, onNavigate 
 
       {/* Feedback or legend */}
       {feedbackMsg ? (
-        <p className="text-[10px] text-accent/70 mt-2 text-center animate-pulse">{feedbackMsg}</p>
+        <p className="text-caption text-accent/70 mt-2 text-center animate-pulse">{feedbackMsg}</p>
       ) : (
-        <div className="flex items-center justify-center gap-4 mt-3 text-[9px] text-text-faint">
+        <div className="flex items-center justify-center gap-4 mt-3 text-caption text-text-faint">
           <span className="flex items-center gap-1">
             <span className="inline-block w-2.5 h-2.5 rounded-sm bg-amber-400/25" />
             {t("legendFavorable")}

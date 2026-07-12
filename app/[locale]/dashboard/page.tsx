@@ -16,7 +16,15 @@ import ExposureQuickPicker from "@/components/dashboard/ExposureQuickPicker";
 import CitySearch from "@/components/CitySearch";
 import GpsButton from "@/components/GpsButton";
 import PartnerBadge from "@/components/PartnerBadge";
+import CityHero from "@/components/CityHero";
+import Card from "@/components/ui/Card";
 import { Link } from "@/i18n/navigation";
+
+// Full-row navigation link ("noUvLearnTitle" prompt, "Learn more"): same glass
+// surface as Card, accent-coloured chevron, but no underline decoration — a nav
+// row, not inline text, so <A> (which is always underlined) doesn't fit here.
+const navRowClasses =
+  "flex items-center justify-between rounded-2xl bg-glass border border-glass-border backdrop-blur-md px-4 py-3 shadow-lg hover:bg-surface-elevated transition-colors";
 
 export default function DashboardPage() {
   const t = useTranslations("dashboard");
@@ -62,7 +70,7 @@ export default function DashboardPage() {
         {hasCity && (
           <Link
             href="/profile"
-            className="px-3 py-2 rounded-lg bg-surface-card text-text-muted text-xs hover:bg-surface-elevated hover:text-text-secondary transition-colors whitespace-nowrap"
+            className="px-3 py-2 rounded-lg bg-glass border border-glass-border text-text-muted text-caption hover:bg-surface-elevated hover:text-text-secondary transition-colors whitespace-nowrap"
           >
             {t("editProfile")}
           </Link>
@@ -70,29 +78,43 @@ export default function DashboardPage() {
       </div>
 
       {hasCity && (
-        <div className="px-1 -mt-2 text-xs">
+        <div className="px-1 -mt-2 text-caption">
           <CityPageLink cityId={app.cityId} lat={app.lat} lon={app.lon} />
         </div>
       )}
 
       {!hasCity && (
-        <div className="rounded-xl border border-border-subtle bg-surface-card p-6 text-center space-y-2">
-          <h2 className="text-base font-semibold text-text-primary">{tHero("whereAreYou")}</h2>
-          <p className="text-[12px] text-text-faint">{tHero("searchHint")}</p>
-        </div>
+        <Card variant="glass" className="text-center space-y-2">
+          <h2 className="font-display text-title text-text-primary">{tHero("whereAreYou")}</h2>
+          <p className="text-caption text-text-faint">{tHero("searchHint")}</p>
+        </Card>
       )}
 
       {hasCity && <>
-      {/* Hero: Today's recommendation */}
-      <DayRecommendation
-        nowStatus={nowStatus}
-        cityName={cityName}
-        cityFlag={app.cityFlag}
-        targetIU={app.targetIU}
-        loading={loading}
-      />
+      {/* Hero: Today's recommendation — same phase-gradient + earthrise + glass-card
+          pattern as the city page, so My Day matches it. */}
+      <CityHero lat={app.lat} lon={app.lon}>
+        <DayRecommendation
+          nowStatus={nowStatus}
+          cityName={cityName}
+          cityFlag={app.cityFlag}
+          targetIU={app.targetIU}
+          loading={loading}
+        />
+      </CityHero>
 
-      {/* Retention hook: a daily push for this city, only on days it's possible. */}
+      {/* Quick exposure picker */}
+      <Card variant="glass">
+        <ExposureQuickPicker
+          value={effectiveArea}
+          onChange={handleAreaChange}
+          isOverride={areaOverride !== null}
+          onReset={handleAreaReset}
+        />
+      </Card>
+
+      {/* Retention hook: a daily push for this city, only on days it's possible.
+          Moved below the exposure picker so it no longer competes with the hero. */}
       <div className="flex flex-wrap items-center gap-3 px-1">
         <NotificationToggle
           lat={app.lat}
@@ -106,16 +128,8 @@ export default function DashboardPage() {
           labelOn={tCity("notifyOn")}
           prominent
         />
-        <span className="text-xs text-text-muted">{tCity("notifyLead", { city: cityName })}</span>
+        <span className="text-caption text-text-muted">{tCity("notifyLead", { city: cityName })}</span>
       </div>
-
-      {/* Quick exposure picker */}
-      <ExposureQuickPicker
-        value={effectiveArea}
-        onChange={handleAreaChange}
-        isOverride={areaOverride !== null}
-        onReset={handleAreaReset}
-      />
 
       {/* 5-day forecast (expandable) */}
       <ForecastRow
@@ -128,15 +142,12 @@ export default function DashboardPage() {
 
       {!loading && todayRecord && !todayRecord.sufficient && (
         <div className="space-y-2">
-          <Link
-            href="/learn#supplement"
-            className="flex items-center justify-between rounded-xl border border-border-subtle bg-surface-card px-4 py-3 hover:bg-surface-elevated transition-colors"
-          >
+          <Link href="/learn#supplement" className={navRowClasses}>
             <div>
-              <p className="text-[12px] font-medium text-text-secondary">{t("noUvLearnTitle")}</p>
-              <p className="text-[10px] text-text-faint mt-0.5">{t("noUvLearnHint")}</p>
+              <p className="text-caption font-medium text-text-secondary">{t("noUvLearnTitle")}</p>
+              <p className="text-caption text-text-faint mt-0.5">{t("noUvLearnHint")}</p>
             </div>
-            <span className="text-text-faint text-[11px]">→</span>
+            <span className="text-sun-strong text-caption">→</span>
           </Link>
           <PartnerBadge />
         </div>
@@ -151,15 +162,12 @@ export default function DashboardPage() {
       </>}
 
       {/* Learn more — always visible */}
-      <Link
-        href="/learn"
-        className="flex items-center justify-between rounded-xl border border-border-subtle bg-surface-card px-4 py-3 hover:bg-surface-elevated transition-colors"
-      >
+      <Link href="/learn" className={navRowClasses}>
         <div className="flex items-center gap-2">
           <span className="text-base">📖</span>
-          <span className="text-[12px] font-medium text-text-secondary">{tc("learnMore")}</span>
+          <span className="text-caption font-medium text-text-secondary">{tc("learnMore")}</span>
         </div>
-        <span className="text-text-faint text-[11px]">→</span>
+        <span className="text-sun-strong text-caption">→</span>
       </Link>
     </div>
   );

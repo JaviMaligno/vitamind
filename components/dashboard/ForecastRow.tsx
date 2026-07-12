@@ -38,9 +38,9 @@ export default function ForecastRow({ forecast, skinType, areaFraction, age, tar
 
   if (!forecast) {
     return (
-      <div className="rounded-xl border border-border-default bg-surface-card p-4">
-        <h3 className="text-xs font-semibold uppercase tracking-wider text-text-faint mb-3">{t("forecast")}</h3>
-        <p className="text-sm text-text-muted">{t("noForecast")}</p>
+      <div className="rounded-2xl bg-glass border border-glass-border backdrop-blur-md p-4 shadow-lg">
+        <h3 className="font-display text-heading text-text-primary mb-3">{t("forecast")}</h3>
+        <p className="text-body text-text-muted">{t("noForecast")}</p>
       </div>
     );
   }
@@ -51,8 +51,8 @@ export default function ForecastRow({ forecast, skinType, areaFraction, age, tar
     : null;
 
   return (
-    <div className="rounded-xl border border-border-default bg-surface-card p-4">
-      <h3 className="text-xs font-semibold uppercase tracking-wider text-text-faint mb-3">{t("forecast")}</h3>
+    <div className="rounded-2xl bg-glass border border-glass-border backdrop-blur-md p-4 shadow-lg">
+      <h3 className="font-display text-heading text-text-primary mb-3">{t("forecast")}</h3>
       <div className="flex gap-2 overflow-x-auto">
         {forecast.map((day) => {
           const hasWindow = day.windowStart >= 0 && day.windowEnd > day.windowStart;
@@ -67,12 +67,12 @@ export default function ForecastRow({ forecast, skinType, areaFraction, age, tar
                   : "bg-surface-card border-border-subtle hover:border-border-default"
               }`}
             >
-              <span className="text-[11px] font-medium text-text-secondary">{day.dayName}</span>
+              <span className="text-caption font-medium text-text-secondary">{day.dayName}</span>
               <span className="text-lg">{weatherIcon(day.avgCloud, day.peakUVI)}</span>
               <span className={`text-xs font-mono font-semibold ${day.peakUVI >= 3 ? "text-accent" : "text-text-muted"}`}>
                 UVI {day.peakUVI}
               </span>
-              <span className="text-[10px] text-text-muted">
+              <span className="text-caption text-text-muted">
                 {hasWindow ? `${day.windowStart}\u{2013}${day.windowEnd}h` : "\u{2014}"}
               </span>
             </button>
@@ -91,13 +91,13 @@ export default function ForecastRow({ forecast, skinType, areaFraction, age, tar
               <>
                 <div className="flex flex-wrap gap-4 text-sm">
                   <div>
-                    <span className="text-[10px] uppercase tracking-wider text-text-faint block">{t("forecastWindow")}</span>
+                    <span className="text-caption uppercase tracking-wider text-text-faint block">{t("forecastWindow")}</span>
                     <span className="font-mono text-accent font-semibold">
                       {formatHour(exposure.windowStart)} – {formatHour(exposure.windowEnd)}
                     </span>
                   </div>
                   <div>
-                    <span className="text-[10px] uppercase tracking-wider text-text-faint block">{t("peakUVI")}</span>
+                    <span className="text-caption uppercase tracking-wider text-text-faint block">{t("peakUVI")}</span>
                     <span className="font-mono text-text-secondary font-semibold">{exposure.bestUVI.toFixed(1)}</span>
                   </div>
                 </div>
@@ -108,7 +108,7 @@ export default function ForecastRow({ forecast, skinType, areaFraction, age, tar
 
                 {/* Hourly table */}
                 <div>
-                  <span className="text-[10px] uppercase tracking-wider text-text-faint">{t("forecastHourly")}</span>
+                  <span className="text-caption uppercase tracking-wider text-text-faint">{t("forecastHourly")}</span>
                   <div className="mt-1 space-y-0.5">
                     {exposure.hourlyMinutes
                       .filter((h) => h.uvi >= 3)
@@ -122,7 +122,7 @@ export default function ForecastRow({ forecast, skinType, areaFraction, age, tar
                   </div>
                 </div>
 
-                <p className="text-[10px] text-text-faint">
+                <p className="text-caption text-text-faint">
                   {t("forecastCloud", { percent: expandedDay.avgCloud })}
                 </p>
               </>
