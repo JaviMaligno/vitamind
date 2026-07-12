@@ -111,7 +111,27 @@ Se **conservan y revisten** (nueva piel, misma lógica): `CityYearStrip`, `Forec
 - Sin regresiones funcionales ni de SEO; Learn ahora indexable.
 - Móvil impecable (validación en viewport real, pendiente en la auditoría).
 
-## 9. Riesgos y mitigaciones
+## 9. Testing y verificación (contrato obligatorio por página)
+
+Cada página modificada pasa por **dos revisiones** antes de darse por buena:
+
+**9.1 Verificación en navegador por el implementador (yo), obligatoria por página:**
+- **Visual:** abrir la página en navegador en **móvil y desktop**, y en **varios estados del gradiente solar** (amanecer/día/atardecer/noche + override), comprobando jerarquía, contraste AA real y que no hay regresiones de layout.
+- **Funcional end-to-end — el contrato frontend↔backend no se puede romper.** Verificar en vivo, según la página:
+  - **Push:** subscribe/unsubscribe reales (`POST`/`DELETE /api/push/subscribe`) con el payload intacto (lat, lon, tz, timezone, skinType, areaFraction, cityName, locale); estados loading/on/off/denied del toggle.
+  - **Weather:** `/api/weather` (proxy Open-Meteo) devuelve y pinta datos (dashboard/explore).
+  - **Búsqueda de ciudad:** GeoNames + fuzzy search; selección actualiza estado y cálculos.
+  - **Supabase:** favoritos, perfil, auth sync sin romperse.
+  - **Cálculos:** los números (ventana, minutos, veredicto) coinciden con el baseline — el rediseño no altera `solar.ts`/`vitd.ts`.
+  - **i18n:** las 6 lenguas y las rutas localizadas siguen funcionando; nada hardcodeado nuevo.
+  - **PWA/SEO:** service worker, metadata, JSON-LD (FAQPage/CollectionPage), hreflang y sitemap intactos.
+- Se documenta qué se verificó (no "parece que va"): capturas y checklist de contrato por página.
+
+**9.2 Revisión del usuario:** después de mi verificación, el usuario revisa cada página antes de continuar.
+
+**9.3 La página de ciudad es el campo de pruebas.** Todo el sistema se valida a fondo en la city page piloto (visual + contrato + tu revisión) **antes** de propagar al resto de páginas. Si algo del sistema falla ahí, se corrige antes de seguir.
+
+## 10. Riesgos y mitigaciones
 
 - **Contraste sobre gradiente dinámico** → el texto solo sobre superficies opacas validadas; tokens de opacidad mínima; no confiar en glass translúcido para legibilidad.
 - **Rendimiento del gradiente** (repintados) → gradiente CSS estático por fase, transición suave entre fases; no animación continua costosa.
