@@ -67,7 +67,7 @@ export default function SaveLocationModal({ lat, lon, cityName, cityFlag, onSave
       <div className="flex gap-2">
         <button
           onClick={handleSave}
-          className="min-h-[44px] flex-1 px-4 py-2 rounded-lg bg-amber-400/20 text-amber-400 text-sm font-semibold cursor-pointer hover:bg-amber-400/30 transition-colors"
+          className="min-h-[44px] flex-1 px-4 py-2 rounded-lg bg-amber-400/20 text-accent text-sm font-semibold cursor-pointer hover:bg-amber-400/30 transition-colors"
         >
           {t("saveAndFavorite")}
         </button>

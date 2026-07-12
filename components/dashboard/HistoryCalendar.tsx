@@ -218,7 +218,7 @@ export default function HistoryCalendar({ records, onToggleOverride, onNavigate 
           canTap ? "cursor-pointer active:scale-95" : "cursor-default"
         }`}
       >
-        <span className={`text-[10px] font-medium ${status === "confirmed" ? "text-emerald-300" : status === "favorable" ? "text-amber-400" : "text-text-secondary"}`}>
+        <span className={`text-[10px] font-medium ${status === "confirmed" ? "text-emerald-300" : status === "favorable" ? "text-accent" : "text-text-secondary"}`}>
           {isRound && icon ? icon : label}
         </span>
         {isRound && (
@@ -236,7 +236,7 @@ export default function HistoryCalendar({ records, onToggleOverride, onNavigate 
           <button
             onClick={() => setViewMode("week")}
             className={`px-2.5 py-1 rounded-md text-[11px] font-medium transition-colors ${
-              viewMode === "week" ? "bg-amber-400/20 text-amber-400" : "text-text-muted hover:text-text-secondary"
+              viewMode === "week" ? "bg-amber-400/20 text-accent" : "text-text-muted hover:text-text-secondary"
             }`}
           >
             {t("week")}
@@ -244,7 +244,7 @@ export default function HistoryCalendar({ records, onToggleOverride, onNavigate 
           <button
             onClick={() => setViewMode("month")}
             className={`px-2.5 py-1 rounded-md text-[11px] font-medium transition-colors ${
-              viewMode === "month" ? "bg-amber-400/20 text-amber-400" : "text-text-muted hover:text-text-secondary"
+              viewMode === "month" ? "bg-amber-400/20 text-accent" : "text-text-muted hover:text-text-secondary"
             }`}
           >
             {t("month")}
@@ -333,7 +333,7 @@ export default function HistoryCalendar({ records, onToggleOverride, onNavigate 
         )}
         {summary.total >= 7 && summary.favorable < summary.total * 0.4 && (
           <>
-            <p className="text-xs text-amber-400/50">
+            <p className="text-xs text-accent/50">
               {t("supplementHint")}
             </p>
             <PartnerBadge className="mt-1" />
@@ -343,7 +343,7 @@ export default function HistoryCalendar({ records, onToggleOverride, onNavigate 
 
       {/* Feedback or legend */}
       {feedbackMsg ? (
-        <p className="text-[10px] text-amber-400/70 mt-2 text-center animate-pulse">{feedbackMsg}</p>
+        <p className="text-[10px] text-accent/70 mt-2 text-center animate-pulse">{feedbackMsg}</p>
       ) : (
         <div className="flex items-center justify-center gap-4 mt-3 text-[9px] text-text-faint">
           <span className="flex items-center gap-1">

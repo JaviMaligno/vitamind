@@ -38,7 +38,7 @@ function getStatusKey(ns: NowStatus): StatusKey {
 
 const COLOR_MAP: Record<StatusKey, { border: string; bg: string; dot: string; text: string }> = {
   optimal: { border: "border-green-400/20", bg: "from-green-400/[0.08] to-amber-400/[0.04]", dot: "bg-green-400", text: "text-green-400/80" },
-  moderate: { border: "border-amber-400/15", bg: "from-amber-400/[0.06] to-orange-600/[0.03]", dot: "bg-amber-400", text: "text-amber-400/70" },
+  moderate: { border: "border-amber-400/15", bg: "from-amber-400/[0.06] to-orange-600/[0.03]", dot: "bg-amber-400", text: "text-accent/70" },
   upcoming: { border: "border-blue-400/15", bg: "from-blue-400/[0.04] to-blue-600/[0.02]", dot: "bg-blue-400", text: "text-blue-400/70" },
   windowClosed: { border: "border-gray-400/15", bg: "from-gray-400/[0.04] to-gray-600/[0.02]", dot: "bg-gray-400", text: "text-gray-400/70" },
   insufficient: { border: "border-red-400/10", bg: "from-red-500/[0.06] to-red-900/[0.03]", dot: "bg-red-400", text: "text-red-400/70" },
@@ -107,7 +107,7 @@ export default function DayRecommendation({ nowStatus, cityName, cityFlag, targe
             {t("nowUpcomingTitle", { countdown: formatCountdown(ns.minutesUntilWindow ?? 0), hour: `${ns.window?.start ?? 0}:00` })}
           </h2>
           {ns.cloudDegraded && (
-            <p className="text-sm text-amber-400/70 mb-2">
+            <p className="text-sm text-accent/70 mb-2">
               {t("cloudDegraded")}
             </p>
           )}
@@ -152,7 +152,7 @@ export default function DayRecommendation({ nowStatus, cityName, cityFlag, targe
           {ns.state === "good_now" && ns.minutesNeeded !== null && (
             <div>
               <span className="text-[11px] uppercase tracking-wider text-text-faint block mb-0.5">{t("nowTimeNeeded")}</span>
-              <span className="font-mono text-[15px] font-semibold text-amber-400">{fmtMin(ns.minutesNeeded)}</span>
+              <span className="font-mono text-[15px] font-semibold text-accent">{fmtMin(ns.minutesNeeded)}</span>
               <span className="text-[11px] text-text-faint ml-1">{t("forIU", { iu: targetIU })}</span>
             </div>
           )}

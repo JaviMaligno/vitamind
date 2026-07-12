@@ -45,7 +45,7 @@ export default function VitDEstimate({ weather, curve, skinType, areaFraction, a
       <div className="text-[10px] text-text-secondary font-semibold mb-2 uppercase tracking-wider">
         {t("title")}
         {isTheoretical && (
-          <span className="ml-2 text-[9px] text-amber-400/50 font-normal normal-case tracking-normal">
+          <span className="ml-2 text-[9px] text-accent/50 font-normal normal-case tracking-normal">
             {t("theoreticalHint")}
           </span>
         )}
@@ -67,7 +67,7 @@ export default function VitDEstimate({ weather, curve, skinType, areaFraction, a
           {/* Main result */}
           <div className="flex flex-wrap gap-4 items-baseline mb-2">
             <div>
-              <span className="text-[28px] font-bold text-amber-400 font-mono">
+              <span className="text-[28px] font-bold text-accent font-mono">
                 {fmtMin(result.minutesNeeded)}
               </span>
               <span className="text-[11px] text-text-muted ml-1.5">
@@ -75,7 +75,7 @@ export default function VitDEstimate({ weather, curve, skinType, areaFraction, a
               </span>
             </div>
             <div className="text-[11px] text-text-muted leading-relaxed">
-              <div>{t("bestHour")} <strong className="text-amber-400">{result.bestHour}:00</strong> (UVI {result.bestUVI.toFixed(1)})</div>
+              <div>{t("bestHour")} <strong className="text-accent">{result.bestHour}:00</strong> (UVI {result.bestUVI.toFixed(1)})</div>
               <div>{t("uvWindow")} <strong className="text-text-secondary">{result.windowStart}:00 – {result.windowEnd}:00</strong></div>
             </div>
           </div>

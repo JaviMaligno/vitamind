@@ -40,7 +40,7 @@ export default function ExposureQuickPicker({ value, onChange, isOverride, onRes
           aria-pressed={value === p.value}
           className={`px-2 py-1 rounded-full text-[10px] transition-all cursor-pointer ${
             value === p.value
-              ? "bg-amber-400/20 text-amber-400 border border-amber-400/30 font-semibold"
+              ? "bg-amber-400/20 text-accent border border-amber-400/30 font-semibold"
               : "bg-surface-elevated/50 text-text-muted border border-transparent hover:bg-surface-elevated hover:text-text-secondary"
           }`}
         >
@@ -52,7 +52,7 @@ export default function ExposureQuickPicker({ value, onChange, isOverride, onRes
           type="button"
           onClick={onReset}
           aria-label={t("exposureResetDefault")}
-          className="text-[9px] text-text-faint hover:text-amber-400 transition-colors cursor-pointer ml-0.5"
+          className="text-[9px] text-text-faint hover:text-accent transition-colors cursor-pointer ml-0.5"
           title={t("exposureResetDefault")}
         >
           ✕

@@ -21,7 +21,7 @@ export default function PartnerBadge({ className = "" }: { className?: string })
       href={url}
       target="_blank"
       rel="noopener noreferrer sponsored"
-      className={`inline-flex items-center gap-1.5 rounded-lg border border-amber-500/20 bg-amber-500/5 px-3 py-1.5 text-[11px] text-amber-600 dark:text-amber-400/80 hover:bg-amber-500/10 transition-colors ${className}`}
+      className={`inline-flex items-center gap-1.5 rounded-lg border border-amber-500/20 bg-amber-500/5 px-3 py-1.5 text-[11px] text-amber-600 dark:text-accent/80 hover:bg-amber-500/10 transition-colors ${className}`}
     >
       <span className="font-semibold">{activePartner.name}</span>
       <span className="text-text-faint">·</span>

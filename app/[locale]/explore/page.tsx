@@ -191,7 +191,7 @@ export default function ExplorePage() {
           >
             ▶
           </button>
-          <span className="font-mono text-[11px] text-amber-400 min-w-[50px]">
+          <span className="font-mono text-[11px] text-accent min-w-[50px]">
             {dateLabel}
           </span>
           <button
@@ -199,7 +199,7 @@ export default function ExplorePage() {
             className={`min-h-[44px] px-3 py-1.5 rounded-md text-[10px] font-semibold cursor-pointer ${
               animating
                 ? "bg-red-500/15 text-red-400"
-                : "bg-amber-400/10 text-amber-400"
+                : "bg-amber-400/10 text-accent"
             }`}
           >
             {animating ? t("config.pause") : t("config.animate")}

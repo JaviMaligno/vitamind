@@ -42,7 +42,7 @@ export default function LanguageSelector() {
           onClick={() => handleChange(code)}
           className={`px-1.5 py-0.5 rounded text-[9px] font-medium cursor-pointer transition-colors ${
             locale === code
-              ? "bg-amber-400/15 text-amber-400 font-semibold"
+              ? "bg-amber-400/15 text-accent font-semibold"
               : "bg-transparent text-text-muted hover:text-text-secondary"
           }`}
         >

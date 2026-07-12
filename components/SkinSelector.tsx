@@ -60,7 +60,7 @@ export default function SkinSelector({ skinType, areaFraction, age, onSkinChange
             onClick={() => setShowHelp(!showHelp)}
             className={`w-5 h-5 rounded-full border flex items-center justify-center text-[11px] font-bold cursor-pointer p-0 leading-none ${
               showHelp
-                ? "border-amber-400/30 bg-amber-400/15 text-amber-400"
+                ? "border-amber-400/30 bg-amber-400/15 text-accent"
                 : "border-border-default bg-surface-elevated text-text-muted"
             }`}
             title={t("help")}
@@ -90,7 +90,7 @@ export default function SkinSelector({ skinType, areaFraction, age, onSkinChange
 
       {showHelp && (
         <div className="mt-2 p-3 rounded-lg bg-amber-400/[0.04] border border-amber-400/10">
-          <div className="text-[11px] font-semibold text-amber-400 mb-1.5">
+          <div className="text-[11px] font-semibold text-accent mb-1.5">
             {t("fitzpatrickTitle")}
           </div>
           <div className="text-[10px] text-text-muted mb-2 leading-relaxed">
@@ -107,7 +107,7 @@ export default function SkinSelector({ skinType, areaFraction, age, onSkinChange
                     : "bg-surface-card border border-transparent"
                 }`}
               >
-                <span className="font-mono text-[10px] font-bold text-amber-400 min-w-[18px]">{s.type}</span>
+                <span className="font-mono text-[10px] font-bold text-accent min-w-[18px]">{s.type}</span>
                 <div>
                   <div className="text-[10px] text-text-secondary leading-snug">{s.desc}</div>
                   <div className="text-[9px] text-text-faint mt-0.5">{s.example}</div>

@@ -69,7 +69,7 @@ export default function ForecastRow({ forecast, skinType, areaFraction, age, tar
             >
               <span className="text-[11px] font-medium text-text-secondary">{day.dayName}</span>
               <span className="text-lg">{weatherIcon(day.avgCloud, day.peakUVI)}</span>
-              <span className={`text-xs font-mono font-semibold ${day.peakUVI >= 3 ? "text-amber-400" : "text-text-muted"}`}>
+              <span className={`text-xs font-mono font-semibold ${day.peakUVI >= 3 ? "text-accent" : "text-text-muted"}`}>
                 UVI {day.peakUVI}
               </span>
               <span className="text-[10px] text-text-muted">
@@ -92,7 +92,7 @@ export default function ForecastRow({ forecast, skinType, areaFraction, age, tar
                 <div className="flex flex-wrap gap-4 text-sm">
                   <div>
                     <span className="text-[10px] uppercase tracking-wider text-text-faint block">{t("forecastWindow")}</span>
-                    <span className="font-mono text-amber-400 font-semibold">
+                    <span className="font-mono text-accent font-semibold">
                       {formatHour(exposure.windowStart)} – {formatHour(exposure.windowEnd)}
                     </span>
                   </div>
@@ -115,7 +115,7 @@ export default function ForecastRow({ forecast, skinType, areaFraction, age, tar
                       .map((h) => (
                         <div key={h.hour} className="flex items-center gap-3 text-[11px] font-mono">
                           <span className="text-text-muted w-8">{String(h.hour).padStart(2, "0")}h</span>
-                          <span className="text-amber-400/70 w-12">UVI {h.uvi.toFixed(1)}</span>
+                          <span className="text-accent/70 w-12">UVI {h.uvi.toFixed(1)}</span>
                           <span className="text-text-secondary">{"\u{2192}"} {h.minutes !== null ? `${Math.round(h.minutes)} min` : "\u{2014}"}</span>
                         </div>
                       ))}

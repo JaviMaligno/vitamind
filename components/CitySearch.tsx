@@ -177,7 +177,7 @@ export default function CitySearch({ onSelect, onAddFav, favorites, allCities }:
                   onClick={(e) => { e.stopPropagation(); handleAddFav(c); }}
                   className={`shrink-0 px-2.5 py-1.5 rounded-lg text-xs cursor-pointer transition-colors ${
                     isFav || wasJustAdded
-                      ? "bg-amber-400/15 text-amber-400"
+                      ? "bg-amber-400/15 text-accent"
                       : "bg-surface-elevated text-text-muted hover:bg-surface-input"
                   }`}
                   title={t("addFavorite")}

@@ -24,7 +24,7 @@ function TipPanel({ open, text, href, learnMoreLabel, onClose }: TipPanelProps) 
   return (
     <div className="mt-2 mb-1 rounded-lg border border-border-subtle bg-surface-elevated px-3 py-2.5 text-[11px] text-text-muted leading-relaxed">
       <p>{text}</p>
-      <Link href={href} className="block mt-1.5 text-amber-400/70 hover:text-amber-400 text-[10px]" onClick={onClose}>
+      <Link href={href} className="block mt-1.5 text-accent/70 hover:text-accent text-[10px]" onClick={onClose}>
         {learnMoreLabel} →
       </Link>
     </div>
@@ -97,7 +97,7 @@ export default function ProfilePage() {
           {!app.isCurrentFav && app.cityName && (
             <button
               onClick={() => app.toggleFav(app.cityId)}
-              className="min-h-[44px] px-3 py-1 rounded-full bg-amber-400/10 text-amber-400 text-[10px] font-semibold cursor-pointer"
+              className="min-h-[44px] px-3 py-1 rounded-full bg-amber-400/10 text-accent text-[10px] font-semibold cursor-pointer"
             >
               {tc("favorite")}
             </button>
@@ -146,7 +146,7 @@ export default function ProfilePage() {
                       : "rounded-xl"
                   } ${
                     isSel
-                      ? "bg-amber-400/[0.18] text-amber-400 font-semibold"
+                      ? "bg-amber-400/[0.18] text-accent font-semibold"
                       : "bg-surface-card text-text-muted"
                   }`}
                 >
@@ -170,7 +170,7 @@ export default function ProfilePage() {
             onClick={() => app.setEditingFavs(!app.editingFavs)}
             className={`min-h-[44px] px-2.5 py-1 rounded-xl text-[9px] cursor-pointer ${
               app.editingFavs
-                ? "bg-amber-400/10 text-amber-400"
+                ? "bg-amber-400/10 text-accent"
                 : "bg-surface-card text-text-faint"
             }`}
           >
@@ -223,7 +223,7 @@ export default function ProfilePage() {
               onClick={() => app.setTargetIU(value)}
               className={`min-h-[44px] px-3 py-1.5 rounded-md text-[10px] cursor-pointer ${
                 app.targetIU === value
-                  ? "bg-amber-400/15 text-amber-400 font-semibold"
+                  ? "bg-amber-400/15 text-accent font-semibold"
                   : "bg-surface-card text-text-muted"
               }`}
             >

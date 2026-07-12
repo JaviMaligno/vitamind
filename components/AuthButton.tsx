@@ -94,7 +94,7 @@ export default function AuthButton({ onAuthChange }: Props) {
     return (
       <button
         onClick={() => setShowForm(true)}
-        className="px-2.5 py-1 rounded-md bg-amber-400/[0.08] text-amber-400/60 text-[10px] cursor-pointer border-none"
+        className="px-2.5 py-1 rounded-md bg-amber-400/[0.08] text-accent/60 text-[10px] cursor-pointer border-none"
         title={t("loginHint")}
       >
         {t("login")}
@@ -105,7 +105,7 @@ export default function AuthButton({ onAuthChange }: Props) {
   return (
     <div className="p-3 rounded-lg bg-amber-400/[0.03] border border-amber-400/[0.08] max-w-[280px]">
       <div className="flex justify-between items-center mb-2">
-        <span className="text-[11px] font-semibold text-amber-400">
+        <span className="text-[11px] font-semibold text-accent">
           {mode === "login" ? t("login") : mode === "signup" ? t("signup") : t("resendConfirmation")}
         </span>
         <button
@@ -144,7 +144,7 @@ export default function AuthButton({ onAuthChange }: Props) {
           <button
             type="submit"
             disabled={loading}
-            className="flex-1 px-2.5 py-1 rounded-md bg-amber-400/15 text-amber-400 text-[10px] font-semibold cursor-pointer border-none"
+            className="flex-1 px-2.5 py-1 rounded-md bg-amber-400/15 text-accent text-[10px] font-semibold cursor-pointer border-none"
           >
             {loading ? "..." : mode === "login" ? t("enter") : mode === "signup" ? t("register") : t("resend")}
           </button>

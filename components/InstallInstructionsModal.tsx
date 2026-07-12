@@ -115,12 +115,12 @@ export default function InstallInstructionsModal({ open, mode, platform, isInApp
         {variant === "ios" && (
           <div className="px-6 pb-4">
             <div className="flex items-center gap-3 py-3 border-b border-border-subtle text-sm">
-              <div className="w-6 h-6 rounded-full bg-text-primary text-amber-400 flex items-center justify-center font-bold text-xs flex-shrink-0">1</div>
+              <div className="w-6 h-6 rounded-full bg-text-primary text-accent flex items-center justify-center font-bold text-xs flex-shrink-0">1</div>
               <div className="flex-1">{t("step1")}</div>
               <div className="px-2 py-1 rounded-md bg-surface-card border border-border-subtle text-blue-400 text-base">⬆︎</div>
             </div>
             <div className="flex items-center gap-3 py-3 text-sm">
-              <div className="w-6 h-6 rounded-full bg-text-primary text-amber-400 flex items-center justify-center font-bold text-xs flex-shrink-0">2</div>
+              <div className="w-6 h-6 rounded-full bg-text-primary text-accent flex items-center justify-center font-bold text-xs flex-shrink-0">2</div>
               <div className="flex-1">{t("step2")}</div>
               <div className="px-2 py-1 rounded-md bg-surface-card border border-border-subtle text-base">⊞</div>
             </div>

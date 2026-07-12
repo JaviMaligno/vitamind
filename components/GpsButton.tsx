@@ -18,7 +18,7 @@ export default function GpsButton() {
       ? "text-emerald-400"
       : isDenied
         ? "text-red-400"
-        : "text-amber-400";
+        : "text-accent";
 
   const bgColor = gps.loading
     ? "bg-surface-card"
@@ -74,7 +74,7 @@ export default function GpsButton() {
         )}
       </button>
       {gps.slow && !gps.error && (
-        <p className="text-[10px] text-amber-400/60 max-w-[180px] leading-tight animate-pulse">
+        <p className="text-[10px] text-accent/60 max-w-[180px] leading-tight animate-pulse">
           {t("gpsEnableHint")}
         </p>
       )}

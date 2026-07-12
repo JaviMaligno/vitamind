@@ -192,7 +192,7 @@ export default function NotificationToggle({ lat, lon, tz, timezone, skinType, a
       disabled={status === "denied"}
       className={`min-h-[44px] px-4 py-2 rounded-lg text-sm cursor-pointer transition-colors ${
         status === "on"
-          ? "bg-amber-400/15 text-amber-400 font-semibold"
+          ? "bg-amber-400/15 text-accent font-semibold"
           : status === "denied"
             ? "bg-red-500/[0.08] text-red-400/40 opacity-50 cursor-not-allowed"
             : "bg-surface-elevated text-text-muted hover:bg-surface-input"

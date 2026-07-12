@@ -80,7 +80,7 @@ export default function VisualizationZone({
             onClick={() => setTab(key)}
             className={`px-5 py-2 rounded-t-lg text-xs font-medium transition-colors cursor-pointer border-b-2 ${
               tab === key
-                ? "bg-surface-elevated text-amber-400 border-amber-400 font-semibold"
+                ? "bg-surface-elevated text-accent border-amber-400 font-semibold"
                 : "bg-transparent text-text-muted border-transparent hover:text-text-secondary"
             }`}
           >
@@ -124,7 +124,7 @@ export default function VisualizationZone({
                 onClick={onScrubModeToggle}
                 className={`px-3 py-1 rounded-md text-[9px] cursor-pointer ${
                   scrubMode
-                    ? "bg-amber-400/15 text-amber-400 font-semibold"
+                    ? "bg-amber-400/15 text-accent font-semibold"
                     : "bg-surface-elevated text-text-muted"
                 }`}
               >

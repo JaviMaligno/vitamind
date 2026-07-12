@@ -80,7 +80,7 @@ export default function HeroZone({
       ? "bg-gray-400"
       : "bg-red-400";
   const labelClass = positive
-    ? "text-amber-400/70"
+    ? "text-accent/70"
     : muted
       ? "text-gray-400/80"
       : "text-red-400/70";
@@ -131,7 +131,7 @@ export default function HeroZone({
               {gpsLoading ? t("locating") : t("useMyLocation")}
             </button>
             {gpsSlow && !gpsError && (
-              <p className="mt-3 text-xs text-amber-400/60 max-w-sm mx-auto animate-pulse">
+              <p className="mt-3 text-xs text-accent/60 max-w-sm mx-auto animate-pulse">
                 {t("gpsEnableHint")}
               </p>
             )}
@@ -208,7 +208,7 @@ export default function HeroZone({
               {gpsLoading ? t("locating") : t("useMyLocation")}
             </button>
             {gpsSlow && !gpsError && (
-              <p className="text-[10px] text-amber-400/60 max-w-[240px] leading-tight animate-pulse">
+              <p className="text-[10px] text-accent/60 max-w-[240px] leading-tight animate-pulse">
                 {t("gpsEnableHint")}
               </p>
             )}
@@ -245,7 +245,7 @@ export default function HeroZone({
               })}
             </h2>
             {nowStatus?.cloudDegraded && (
-              <p className="text-sm text-amber-400/70 mb-4">
+              <p className="text-sm text-accent/70 mb-4">
                 {td("cloudDegraded")}
               </p>
             )}
@@ -276,7 +276,7 @@ export default function HeroZone({
               · {dateLabel}
             </p>
             <div className="rounded-xl bg-surface-card border border-border-default px-4 py-3 text-sm text-text-secondary max-w-lg">
-              <span className="text-amber-400/70 font-semibold">{t("advice")}</span>{" "}
+              <span className="text-accent/70 font-semibold">{t("advice")}</span>{" "}
               <Link href="/learn#supplement" className="underline decoration-dotted hover:text-text-secondary transition-colors">
                 {t("adviceText")}
               </Link>
