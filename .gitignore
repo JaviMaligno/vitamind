@@ -10,6 +10,7 @@ supabase/*
 
 .vercel
 .worktrees/
+.superpowers/
 scripts/.probe-out/
 
 # Generated at build time from scripts/sw.template.js by scripts/build-sw.mjs
