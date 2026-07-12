@@ -3,25 +3,33 @@ import { useEffect } from "react";
 import { useApp } from "@/context/AppProvider";
 import { useTheme } from "@/context/ThemeProvider";
 import { useSolarPhase } from "@/hooks/useSolarPhase";
+import { PHASE_STYLE, type SolarPhase } from "@/lib/solar-phase";
 
 /**
- * Neutral page background (cream by day, deep navy by night via the resolved
- * theme). The vibrant solar gradient is NOT a full-screen wash — it lives
- * contained in page heroes and accents. This component only keeps the neutral
- * canvas and feeds the live solar phase to the theme (so auto mode resolves
- * light/dark by the real sky).
+ * Page canvas: a SOFT phase tint (not a vibrant wash) — cream-ish by dawn/day,
+ * warm peach at dusk, deep navy at night. The vibrant gradient stays contained
+ * in heroes/accents. Also feeds the live phase to the theme so auto mode
+ * resolves light/dark by the real sky (only night is dark).
  */
 export default function SolarBackground({ children }: { children: React.ReactNode }) {
   const app = useApp();
-  const { setAutoPhase } = useTheme();
+  const { theme, setAutoPhase } = useTheme();
   const livePhase = useSolarPhase(app.lat, app.lon);
 
   useEffect(() => {
     if (livePhase) setAutoPhase(livePhase);
   }, [livePhase, setAutoPhase]);
 
+  // Manual override forces a representative phase; auto follows the live sky.
+  const phase: SolarPhase =
+    theme === "dark" ? "night" : theme === "light" ? "day" : (livePhase ?? "day");
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-bg-page-from via-bg-page-via to-bg-page-to text-text-primary font-sans pb-20">
+    <div
+      className="min-h-screen text-text-primary font-sans pb-20 transition-[background] duration-1000"
+      style={{ background: PHASE_STYLE[phase].page }}
+      suppressHydrationWarning
+    >
       {children}
     </div>
   );

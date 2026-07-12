@@ -41,7 +41,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const resolved: "light" | "dark" =
     theme === "light" ? "light"
     : theme === "dark" ? "dark"
-    : autoPhase === "night" || autoPhase === "dusk" ? "dark" : "light";
+    : autoPhase === "night" ? "dark" : "light";
 
   const setTheme = useCallback((t: Theme) => {
     setThemeState(t);

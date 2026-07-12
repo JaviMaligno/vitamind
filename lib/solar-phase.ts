@@ -11,10 +11,14 @@ export function solarPhase(elevationDeg: number, rising: boolean): SolarPhase {
   return rising ? "dawn" : "dusk";
 }
 
-/** Mapea una fase a los tokens CSS de gradiente y al tema resuelto que le pega. */
-export const PHASE_STYLE: Record<SolarPhase, { grad: string; theme: "light" | "dark" }> = {
-  dawn: { grad: "var(--grad-dawn)", theme: "light" },
-  day: { grad: "var(--grad-day)", theme: "light" },
-  dusk: { grad: "var(--grad-dusk)", theme: "dark" },
-  night: { grad: "var(--grad-night)", theme: "dark" },
+/**
+ * Mapea una fase a: `grad` (gradiente vibrante del hero/acentos), `page` (tinte
+ * suave del fondo de página) y `theme` (tokens de texto). Solo la noche es tema
+ * oscuro; el atardecer todavía tiene luz, así que es tema claro cálido.
+ */
+export const PHASE_STYLE: Record<SolarPhase, { grad: string; page: string; theme: "light" | "dark" }> = {
+  dawn: { grad: "var(--grad-dawn)", page: "var(--page-dawn)", theme: "light" },
+  day: { grad: "var(--grad-day)", page: "var(--page-day)", theme: "light" },
+  dusk: { grad: "var(--grad-dusk)", page: "var(--page-dusk)", theme: "light" },
+  night: { grad: "var(--grad-night)", page: "var(--page-night)", theme: "dark" },
 };

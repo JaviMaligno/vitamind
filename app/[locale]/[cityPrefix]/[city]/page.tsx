@@ -8,7 +8,6 @@ import NotificationToggle from "@/components/NotificationToggle";
 import Card from "@/components/ui/Card";
 import VerdictBadge from "@/components/ui/VerdictBadge";
 import A from "@/components/ui/A";
-import { SunArc } from "@/components/ui/Icon";
 import { BUILTIN_CITIES } from "@/lib/cities";
 import {
   cityYearProfile, citySeasonalWindows, contiguousMonthRange, viableDateBoundaries,
@@ -151,7 +150,7 @@ export default async function CityPage({ params }: { params: Promise<Params> }) 
 
         <div className="mt-3">
           <VerdictBadge tone={!profile.neverPossible ? "possible" : "winter"}>
-            <SunArc className="w-5 h-5" /> {verdict}
+            {verdict}
           </VerdictBadge>
         </div>
 

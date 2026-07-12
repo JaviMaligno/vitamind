@@ -59,11 +59,17 @@
   --color-on-window: #f4f1ff;                     /* texto sobre ventana */
   --color-on-window-faint: rgba(255, 255, 255, 0.55);
 
-  /* Gradientes de fondo por fase solar (dirección "clima vibrante"). */
+  /* Gradientes vibrantes por fase (hero y acentos). */
   --grad-dawn: linear-gradient(165deg, #ffb07a 0%, #ff7a9c 55%, #c9457e 100%);
   --grad-day: linear-gradient(165deg, #ffdcb0 0%, #ffb083 52%, #ff9a80 100%);
   --grad-dusk: linear-gradient(165deg, #ff7a45 0%, #e0457e 55%, #7a3a9e 100%);
   --grad-night: radial-gradient(120% 90% at 75% -10%, #3a2f6b 0%, #141a3a 50%, #0a0e24 100%);
+
+  /* Tinte SUAVE del fondo de página por fase (no wash: matiz claro salvo noche). */
+  --page-dawn: linear-gradient(180deg, #fff2ea 0%, #ffe8ee 100%);
+  --page-day: linear-gradient(180deg, #fff8ef 0%, #fdeee0 100%);
+  --page-dusk: linear-gradient(180deg, #fdece0 0%, #f8ddce 100%);
+  --page-night: linear-gradient(180deg, #050816 0%, #0a0e27 100%);
 }
 
 .dark {
