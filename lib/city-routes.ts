@@ -3,6 +3,7 @@ import { getPathname } from "@/i18n/navigation";
 import { BUILTIN_CITIES } from "./cities";
 import { slugify } from "./city-slug";
 import { SITE_URL } from "./site";
+import { CITY_PREFIX } from "./city-prefix";
 import es from "@/messages/es.json";
 import en from "@/messages/en.json";
 import fr from "@/messages/fr.json";
@@ -21,15 +22,9 @@ const CITY_NAMES: Record<string, Record<string, string>> = {
   lt: (lt as { cities: Record<string, string> }).cities,
 };
 
-/** Path prefix per locale — ASCII, keyword-bearing. */
-export const CITY_PREFIX: Record<string, string> = {
-  es: "vitamina-d",
-  en: "vitamin-d",
-  fr: "vitamine-d",
-  de: "vitamin-d",
-  ru: "vitamin-d",
-  lt: "vitaminas-d",
-};
+// Re-exported from the lean `city-prefix` module so both server callers here and
+// client components share one source of truth without bundling the messages.
+export { CITY_PREFIX };
 
 /** "builtin:nueva-york" → "nueva-york" */
 export function baseSlug(cityId: string): string {
@@ -115,4 +110,32 @@ export function cityStaticParams(): { locale: string; cityPrefix: string; city: 
       city: localizedCitySlug(locale, baseSlug(c.id)),
     })),
   );
+}
+
+// --- The city index (the prefix URL, e.g. /vitamina-d) — a directory of every
+// --- city page, and the entry point into the mesh from a high-authority page. ---
+
+/** Locale-local path of the index (no locale prefix): "/vitamin-d". */
+export function indexPathname(locale: string): string {
+  return `/${CITY_PREFIX[locale]}`;
+}
+
+/** Absolute URL of the index, with the locale prefix (es is prefix-free). */
+export function indexUrl(locale: string): string {
+  return `${SITE_URL}${getPathname({ href: indexPathname(locale), locale: locale as Locale })}`;
+}
+
+/** Canonical + hreflang alternates for the index, mirroring `buildCityAlternates`. */
+export function buildIndexAlternates(
+  locale: string,
+): { canonical: string; languages: Record<string, string> } {
+  const languages: Record<string, string> = {};
+  for (const l of routing.locales) languages[l] = indexUrl(l);
+  languages["x-default"] = indexUrl(routing.defaultLocale);
+  return { canonical: indexUrl(locale), languages };
+}
+
+/** The 6 (locale, cityPrefix) index pages for generateStaticParams. */
+export function indexStaticParams(): { locale: string; cityPrefix: string }[] {
+  return routing.locales.map((locale) => ({ locale, cityPrefix: CITY_PREFIX[locale] }));
 }

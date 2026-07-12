@@ -682,6 +682,11 @@
     "notifyOn": "🔔 Subscribed",
     "faqHeading": "Frequently asked questions about vitamin D in {city}",
   "nearbyHeading": "Nearby cities",
+  "indexTitle": "Vitamin D from the sun, city by city",
+  "indexDescription": "When you can synthesize vitamin D from the sun in 73 cities worldwide: possible months, seasonal windows, and when to supplement.",
+  "indexHeading": "Vitamin D from the sun, city by city",
+  "indexIntro": "Pick your city to see which months the sun lets you make vitamin D there, with each season's windows.",
+  "allCitiesLink": "Browse all cities",
     "faqWinterQ": "Can I get vitamin D from the sun in winter in {city}?",
     "faqMinutesQ": "How many minutes of sun do I need in {city}?",
     "faqMinutesA": "In summer, about {minutes} minutes with arms and face exposed is enough for 1000 IU (Fitzpatrick type III skin, clear sky)."

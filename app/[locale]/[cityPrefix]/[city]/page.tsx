@@ -10,7 +10,7 @@ import {
 } from "@/lib/city-content";
 import {
   CITY_PREFIX, baseSlug, cityIdFromSlug, localizedCityName, cityPathname,
-  buildCityAlternates, cityStaticParams,
+  buildCityAlternates, cityStaticParams, indexPathname,
 } from "@/lib/city-routes";
 import { nearbyCities } from "@/lib/city-nearby";
 import { capFirst, cityLabels, monthLabels, monthName, verdictMonths } from "@/lib/city-copy";
@@ -240,6 +240,11 @@ export default async function CityPage({ params }: { params: Promise<Params> }) 
             );
           })}
         </ul>
+        <p className="mt-3 text-sm">
+          <Link href={indexPathname(p.locale)} className="font-medium text-amber-400 underline decoration-dotted">
+            {t("allCitiesLink")} →
+          </Link>
+        </p>
       </nav>
     </main>
   );

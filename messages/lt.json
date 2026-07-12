@@ -682,6 +682,11 @@
     "notifyOn": "🔔 Prenumeruojate",
     "faqHeading": "Dažni klausimai apie vitaminą D: {city}",
   "nearbyHeading": "Netoliese esantys miestai",
+  "indexTitle": "Vitaminas D iš saulės — pagal miestus",
+  "indexDescription": "Kada 73 pasaulio miestuose galite gaminti vitaminą D saulėje: galimi mėnesiai, sezoniniai langai ir kada vartoti papildus.",
+  "indexHeading": "Vitaminas D iš saulės — pagal miestus",
+  "indexIntro": "Pasirinkite savo miestą ir pamatykite, kuriais mėnesiais saulė leidžia gaminti vitaminą D, su kiekvieno sezono langais.",
+  "allCitiesLink": "Visi miestai",
     "faqWinterQ": "{city} – ar žiemą galima gauti vitamino D iš saulės?",
     "faqMinutesQ": "{city} – kiek saulės minučių man reikia per dieną?",
     "faqMinutesA": "Vasarą apie {minutes, plural, one {# minutę} few {# minutes} many {# minutės} other {# minučių}} su atidengtomis rankomis ir veidu pakanka 1000 TV (III tipo oda, giedras dangus)."

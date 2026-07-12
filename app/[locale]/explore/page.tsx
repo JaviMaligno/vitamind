@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useMemo, useCallback } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
+import { indexPath } from "@/lib/city-client-links";
 import { useApp } from "@/context/AppProvider";
 import { useCityDisplayName } from "@/hooks/useCityDisplayName";
 import { getCurve, dayOfYear, dateFromDoy, fmtDate } from "@/lib/solar";
@@ -26,6 +27,8 @@ const FAQ_LINKS = [
 
 export default function ExplorePage() {
   const t = useTranslations();
+  const tCity = useTranslations("cityPage");
+  const locale = useLocale();
   const app = useApp();
 
   // Local state (explorer-specific)
@@ -130,6 +133,14 @@ export default function ExplorePage() {
           <GpsButton />
         </div>
       )}
+
+      {/* Entry into the per-city SEO pages, which are otherwise only reachable
+          from Google or the sitemap. */}
+      <div className="mx-auto max-w-[960px] px-4 pb-1 text-xs">
+        <Link href={indexPath(locale)} className="text-amber-400 underline decoration-dotted">
+          {tCity("allCitiesLink")} →
+        </Link>
+      </div>
 
       {/* Zone 2 -- Visualization */}
       <VisualizationZone

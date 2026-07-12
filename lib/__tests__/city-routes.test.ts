@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import {
   CITY_PREFIX, baseSlug, localizedCitySlug, cityIdFromSlug,
   cityPathname, cityUrl, buildCityAlternates, cityStaticParams,
+  indexPathname, indexUrl, buildIndexAlternates, indexStaticParams,
 } from "@/lib/city-routes";
 import { BUILTIN_CITIES } from "@/lib/cities";
 import { routing } from "@/i18n/routing";
@@ -78,5 +79,27 @@ describe("city-routes", () => {
 
   it("returns null for an unknown slug", () => {
     expect(cityIdFromSlug("en", "atlantis")).toBeNull();
+  });
+
+  it("builds the index pathname and url per locale", () => {
+    expect(indexPathname("es")).toBe("/vitamina-d");
+    expect(indexPathname("en")).toBe("/vitamin-d");
+    expect(indexUrl("es")).toBe(`${SITE_URL}/vitamina-d`);
+    expect(indexUrl("en")).toBe(`${SITE_URL}/en/vitamin-d`);
+    expect(indexUrl("lt")).toBe(`${SITE_URL}/lt/vitaminas-d`);
+  });
+
+  it("builds index alternates: 6 languages + x-default (es)", () => {
+    const alt = buildIndexAlternates("en");
+    expect(alt.canonical).toBe(`${SITE_URL}/en/vitamin-d`);
+    expect(alt.languages.es).toBe(`${SITE_URL}/vitamina-d`);
+    expect(alt.languages.fr).toBe(`${SITE_URL}/fr/vitamine-d`);
+    expect(alt.languages["x-default"]).toBe(`${SITE_URL}/vitamina-d`);
+  });
+
+  it("emits 6 index static params (one per locale)", () => {
+    const params = indexStaticParams();
+    expect(params).toHaveLength(routing.locales.length);
+    expect(params).toContainEqual({ locale: "en", cityPrefix: "vitamin-d" });
   });
 });

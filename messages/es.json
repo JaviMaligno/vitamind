@@ -682,6 +682,11 @@
     "notifyOn": "🔔 Suscrito",
     "faqHeading": "Preguntas frecuentes sobre la vitamina D en {city}",
   "nearbyHeading": "Ciudades cercanas",
+  "indexTitle": "Vitamina D del sol, ciudad por ciudad",
+  "indexDescription": "Cuándo puedes sintetizar vitamina D con el sol en 73 ciudades del mundo: meses posibles, ventanas por estación y cuándo suplementar.",
+  "indexHeading": "Vitamina D del sol, ciudad por ciudad",
+  "indexIntro": "Elige tu ciudad para ver en qué meses el sol permite producir vitamina D allí, con las ventanas de cada estación.",
+  "allCitiesLink": "Ver todas las ciudades",
     "faqWinterQ": "¿Puedo obtener vitamina D del sol en invierno en {city}?",
     "faqMinutesQ": "¿Cuántos minutos de sol necesito en {city}?",
     "faqMinutesA": "En verano, unos {minutes} minutos con brazos y cara al sol bastan para 1000 UI (piel tipo III, cielo despejado)."
