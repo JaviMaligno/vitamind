@@ -415,8 +415,8 @@
         ]
       },
       "q2": {
-        "q": "Kodėl rekomenduojama kartu vartoti K2 su D3?",
-        "a": "Vitaminas D3 padidina kalcio įsisavinimą žarnyne. Vitaminas K2 — ypač MK-7 forma — aktyvuoja du svarbius baltymus: osteokalciną (nukreipia kalcį į kaulus) ir matricos Gla baltymą (neleidžia kalciui nusėsti arterijose ir minkštuosiuose audiniuose). Be pakankamai K2, didelių dozių D3 papildinimo sukeltas papildomas kalcis gali prisidėti prie arterijų kalcifikacijos. Natūralūs K2 šaltiniai: natto, brandinti kieti sūriai ir kiaušinių tryniai. Jei vartojate daugiau nei 1 000 TV D3 per dieną, plačiai rekomenduojama 100–200 mcg MK-7.",
+        "q": "Kokį vaidmenį K2 atlieka kartu su D3?",
+        "a": "Vitaminas D3 padidina kalcio įsisavinimą žarnyne. Vitaminas K2 — ypač MK-7 forma — aktyvuoja du baltymus: osteokalciną, kuris padeda fiksuoti kalcį kauluose, ir matricos Gla baltymą, dalyvaujantį reguliuojant kalcį minkštuosiuose audiniuose. Stebėjimo tyrimuose didesnis menachinono (K2) suvartojimas buvo siejamas su mažesne arterijų kalcifikacija, nors intervencinių tyrimų duomenų vis dar trūksta. Natūralūs K2 šaltiniai: natto, brandinti kieti sūriai ir kiaušinių tryniai. Todėl daugelis papildų vartojimo protokolų D3 derina su 100–200 mcg MK-7, ypač esant didesnėms D3 dozėms.",
         "sources": [
           { "label": "Geleijnse JM et al. (2004) — Dietary intake of menaquinone is associated with a reduced risk of coronary heart disease: the Rotterdam Study. J Nutr 134(11):3100-3105", "url": "https://pubmed.ncbi.nlm.nih.gov/15514282/" },
           { "label": "Knapen MH et al. (2013) — Three-year low-dose menaquinone-7 supplementation helps decrease bone loss in healthy postmenopausal women. Osteoporos Int 24(9):2499-2507", "url": "https://pubmed.ncbi.nlm.nih.gov/23525894/" },

@@ -8,7 +8,10 @@ import lt from "@/messages/lt.json";
 
 const LOCALES = { es, en, fr, de, ru, lt } as Record<
   string,
-  { cityPage: { supplementBody: string } }
+  {
+    cityPage: { supplementBody: string };
+    learn: { block3: { q2: { q: string; a: string } } };
+  }
 >;
 
 /**
@@ -75,11 +78,60 @@ describe("cityPage.supplementBody health claims", () => {
     expect(body).toMatch(CLAIM_AFTER_FORM_MARKER[locale as keyof typeof CLAIM_AFTER_FORM_MARKER]);
   });
 
-  it("never says an authority recommends the combination", () => {
+  it("never says an authority recommends the combination in the supplement copy", () => {
     // No health authority, guideline or medical society recommends D3 + K2 + magnesium.
     const forbidden = /recomienda|recommend|empfohlen|рекоменд|rekomenduoj/i;
     for (const locale of Object.keys(LOCALES)) {
       expect(LOCALES[locale].cityPage.supplementBody).not.toMatch(forbidden);
     }
+  });
+});
+
+/**
+ * The /learn K2 FAQ (learn.block3.q2) is cited educational content, so it keeps
+ * the science and citations — but it must not present the D3+K2 combination as an
+ * authority recommendation, nor state as fact that K2 prevents arterial calcium
+ * deposition (the EFSA-rejected ID 125 cardiovascular claim). The arterial link
+ * stays only as an attributed, hedged observational-study finding.
+ */
+// Matches only the OLD definitive "K2 prevents calcium depositing" framing — not
+// the neutral noun "arterial calcification", which the attributed, hedged version
+// ("associated with less arterial calcification in observational studies") keeps.
+const K2_ARTERY_CLAIM = {
+  es: /impide que el calcio se deposite/i,
+  en: /prevents calcium (from )?depositing/i,
+  fr: /emp[eê]che le calcium de se déposer/i,
+  de: /verhindert die Ablagerung von Kalzium/i,
+  ru: /предотвраща\w+ отложение кальция/i,
+  lt: /neleidžia kalciui nus[eė]sti/i,
+};
+
+const K2_RECOMMENDED = {
+  es: /se recomienda (tomar |ampliamente)/i,
+  en: /\bis (widely )?recommended\b/i,
+  fr: /est.*recommand[eé]|largement recommand/i,
+  de: /wird\b.*\bempfohlen/i,
+  ru: /рекомендуют вместе|широко рекомендуется/i,
+  lt: /rekomenduojama kartu|plačiai rekomenduojama/i,
+};
+
+describe("learn K2 FAQ (block3.q2)", () => {
+  it.each(Object.keys(LOCALES))("%s makes no 'K2 prevents arterial calcification' claim", (locale) => {
+    const { q, a } = LOCALES[locale].learn.block3.q2;
+    expect(`${q} ${a}`).not.toMatch(K2_ARTERY_CLAIM[locale as keyof typeof K2_ARTERY_CLAIM]);
+  });
+
+  it.each(Object.keys(LOCALES))("%s does not frame the combination as recommended", (locale) => {
+    const { q, a } = LOCALES[locale].learn.block3.q2;
+    expect(`${q} ${a}`).not.toMatch(K2_RECOMMENDED[locale as keyof typeof K2_RECOMMENDED]);
+  });
+
+  it.each(Object.keys(LOCALES))("%s keeps the observational-study attribution", (locale) => {
+    const attribution = {
+      es: /observacional/i, en: /observational/i, fr: /observationnel/i,
+      de: /Beobachtungsstud/i, ru: /наблюдательн/i, lt: /Stebėjimo tyrim/i,
+    };
+    const { a } = LOCALES[locale].learn.block3.q2;
+    expect(a).toMatch(attribution[locale as keyof typeof attribution]);
   });
 });

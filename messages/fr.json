@@ -415,8 +415,8 @@
         ]
       },
       "q2": {
-        "q": "Pourquoi le K2 est-il recommandé avec le D3 ?",
-        "a": "La vitamine D3 augmente l'absorption du calcium par l'intestin. La vitamine K2 — en particulier la forme MK-7 — active deux protéines clés : l'ostéocalcine (qui dirige le calcium vers les os) et la protéine Gla matricielle (qui empêche le calcium de se déposer dans les artères et les tissus mous). Sans un apport suffisant en K2, le calcium supplémentaire mobilisé par une supplémentation élevée en D3 peut contribuer à la calcification artérielle. Les sources naturelles de K2 comprennent le natto, les fromages à pâte dure affinés et les jaunes d'œuf. Si vous supplémentez plus de 1 000 UI/jour de D3, 100–200 mcg de MK-7 est largement recommandé.",
+        "q": "Quel rôle joue le K2 aux côtés du D3\u202f?",
+        "a": "La vitamine D3 augmente l'absorption du calcium par l'intestin. La vitamine K2 — en particulier la forme MK-7 — active deux protéines\u202f: l'ostéocalcine, qui aide à fixer le calcium dans les os, et la protéine Gla matricielle, impliquée dans la régulation du calcium dans les tissus mous. Dans les études observationnelles, un apport plus élevé en ménaquinone (K2) a été associé à une moindre calcification artérielle, bien que les preuves issues d'essais d'intervention restent limitées. Les sources naturelles de K2 comprennent le natto, les fromages à pâte dure affinés et les jaunes d'œuf. C'est pourquoi de nombreux protocoles de supplémentation associent le D3 à 100–200 mcg de MK-7, en particulier aux doses élevées de D3.",
         "sources": [
           { "label": "Geleijnse JM et al. (2004) — Dietary intake of menaquinone is associated with a reduced risk of coronary heart disease: the Rotterdam Study. J Nutr 134(11):3100-3105", "url": "https://pubmed.ncbi.nlm.nih.gov/15514282/" },
           { "label": "Knapen MH et al. (2013) — Three-year low-dose menaquinone-7 supplementation helps decrease bone loss in healthy postmenopausal women. Osteoporos Int 24(9):2499-2507", "url": "https://pubmed.ncbi.nlm.nih.gov/23525894/" },

@@ -415,8 +415,8 @@
         ]
       },
       "q2": {
-        "q": "¿Por qué se recomienda tomar K2 junto con D3?",
-        "a": "La vitamina D3 aumenta la absorción de calcio en el intestino. La vitamina K2 — en particular la forma MK-7 — activa dos proteínas clave: la osteocalcina (dirige el calcio hacia los huesos) y la proteína Gla de la matriz (impide que el calcio se deposite en arterias y tejidos blandos). Sin K2 suficiente, el calcio extra movilizado por dosis altas de D3 puede contribuir a la calcificación arterial. Fuentes naturales de K2: natto, quesos curados duros y yemas de huevo. Si suplementas más de 1.000 UI/día de D3, se recomienda ampliamente añadir 100–200 mcg de MK-7.",
+        "q": "¿Qué papel tiene la K2 junto con la D3?",
+        "a": "La vitamina D3 aumenta la absorción de calcio en el intestino. La vitamina K2 — en particular la forma MK-7 — activa dos proteínas: la osteocalcina, que ayuda a fijar el calcio en los huesos, y la proteína Gla de la matriz, implicada en la regulación del calcio en los tejidos blandos. En estudios observacionales, una mayor ingesta de menaquinona (K2) se ha asociado a menor calcificación arterial, aunque la evidencia de intervención aún es limitada. Fuentes naturales de K2: natto, quesos curados duros y yemas de huevo. Por eso muchos protocolos de suplementación combinan la D3 con 100–200 mcg de MK-7, sobre todo a dosis altas de D3.",
         "sources": [
           { "label": "Geleijnse JM et al. (2004) — Dietary intake of menaquinone is associated with a reduced risk of coronary heart disease: the Rotterdam Study. J Nutr 134(11):3100-3105", "url": "https://pubmed.ncbi.nlm.nih.gov/15514282/" },
           { "label": "Knapen MH et al. (2013) — Three-year low-dose menaquinone-7 supplementation helps decrease bone loss in healthy postmenopausal women. Osteoporos Int 24(9):2499-2507", "url": "https://pubmed.ncbi.nlm.nih.gov/23525894/" },

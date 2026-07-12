@@ -415,8 +415,8 @@
         ]
       },
       "q2": {
-        "q": "Why is K2 recommended alongside D3?",
-        "a": "Vitamin D3 increases calcium absorption from the gut. Vitamin K2 — particularly the MK-7 form — activates two key proteins: osteocalcin (directs calcium into bones) and matrix Gla protein (prevents calcium from depositing in arteries and soft tissues). Without adequate K2, the extra calcium mobilised by high-dose D3 supplementation may contribute to arterial calcification. Natural K2 sources include natto, aged hard cheeses, and egg yolks. If you supplement more than 1,000 IU/day of D3, 100–200 mcg of MK-7 is widely recommended.",
+        "q": "What role does K2 play alongside D3?",
+        "a": "Vitamin D3 increases calcium absorption from the gut. Vitamin K2 — particularly the MK-7 form — activates two proteins: osteocalcin, which helps fix calcium into bone, and matrix Gla protein, involved in regulating calcium in soft tissues. In observational studies, higher menaquinone (K2) intake has been associated with less arterial calcification, though intervention evidence is still limited. Natural K2 sources include natto, aged hard cheeses, and egg yolks. This is why many supplement protocols pair D3 with 100–200 mcg of MK-7, especially at higher D3 doses.",
         "sources": [
           { "label": "Geleijnse JM et al. (2004) — Dietary intake of menaquinone is associated with a reduced risk of coronary heart disease: the Rotterdam Study. J Nutr 134(11):3100-3105", "url": "https://pubmed.ncbi.nlm.nih.gov/15514282/" },
           { "label": "Knapen MH et al. (2013) — Three-year low-dose menaquinone-7 supplementation helps decrease bone loss in healthy postmenopausal women. Osteoporos Int 24(9):2499-2507", "url": "https://pubmed.ncbi.nlm.nih.gov/23525894/" },
