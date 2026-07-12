@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { useApp } from "@/context/AppProvider";
 import CityPageLink from "@/components/CityPageLink";
@@ -53,6 +53,23 @@ export default function DashboardPage() {
     [records, app.cityId],
   );
   const todayRecord = getToday();
+
+  // Hydration guard: hasCity (localStorage) and several child components
+  // (DayRecommendation, HistoryCalendar) derive text from `new Date()`, both
+  // of which can differ between server and first client render → React #418.
+  // Render a stable, data-free placeholder until mounted, then swap to the
+  // real content. All hooks above still run unconditionally every render;
+  // only the returned JSX branches on `mounted`.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
+  if (!mounted) {
+    return (
+      <div className="mx-auto max-w-[960px] px-3 space-y-4">
+        <div className="min-h-[420px]" aria-hidden="true" />
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto max-w-[960px] px-3 space-y-4">
