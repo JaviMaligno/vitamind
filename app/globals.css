@@ -65,11 +65,13 @@
   --grad-dusk: linear-gradient(165deg, #ff7a45 0%, #e0457e 55%, #7a3a9e 100%);
   --grad-night: radial-gradient(120% 90% at 75% -10%, #3a2f6b 0%, #141a3a 50%, #0a0e24 100%);
 
-  /* Tinte SUAVE del fondo de página por fase (no wash: matiz claro salvo noche). */
-  --page-dawn: linear-gradient(180deg, #fff2ea 0%, #ffe8ee 100%);
-  --page-day: linear-gradient(180deg, #fff8ef 0%, #fdeee0 100%);
-  --page-dusk: linear-gradient(180deg, #fdece0 0%, #f8ddce 100%);
-  --page-night: linear-gradient(180deg, #050816 0%, #0a0e27 100%);
+  /* Fondo de página por fase: presencia media del gradiente (color arriba, cerca
+     del hero, difuminando a un neutro cálido abajo). Ni wash saturado ni casi
+     blanco. Solo la noche es oscura. */
+  --page-dawn: linear-gradient(180deg, #ffc7d2 0%, #ffe0e6 40%, #fff2f0 100%);
+  --page-day: linear-gradient(180deg, #ffd0ac 0%, #ffe6d2 40%, #fff5ec 100%);
+  --page-dusk: linear-gradient(180deg, #f3b79c 0%, #f8d2bf 40%, #fbe7dc 100%);
+  --page-night: linear-gradient(180deg, #171a45 0%, #0d1030 45%, #070a1c 100%);
 }
 
 .dark {
