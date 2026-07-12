@@ -34,7 +34,7 @@ export default function CityYearStrip({
         })}
       </svg>
       <div
-        className="text-text-muted"
+        className="text-on-window-faint"
         style={{
           display: "grid",
           gridTemplateColumns: `repeat(${monthLabels.length}, 1fr)`,
@@ -48,13 +48,13 @@ export default function CityYearStrip({
       </div>
       {legend && (
         <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 6 }}>
-          <span style={{ fontSize: 12 }} className="text-text-muted">{legend.low}</span>
+          <span style={{ fontSize: 12 }} className="text-on-window-faint">{legend.low}</span>
           <span style={{ flex: 1, height: 8, borderRadius: 99,
             background: "linear-gradient(90deg, hsl(45,80%,15%), hsl(20,100%,65%))" }} />
-          <span style={{ fontSize: 12 }} className="text-text-muted">{legend.high}</span>
+          <span style={{ fontSize: 12 }} className="text-on-window-faint">{legend.high}</span>
         </div>
       )}
-      <figcaption className="text-text-muted" style={{ fontSize: 12, marginTop: 4 }}>{caption}</figcaption>
+      <figcaption className="text-on-window-faint" style={{ fontSize: 12, marginTop: 4 }}>{caption}</figcaption>
     </figure>
   );
 }
