@@ -670,6 +670,8 @@
     "exactWindow": "Tiksliau: {dateRange}.",
     "yearHeading": "Metinis profilis: {city}",
     "yearCaption": "Valandos per dieną, kai saulės pakanka vitaminui D gaminti — ištisus metus.",
+    "yearLegendLow": "0 h",
+    "yearLegendHigh": "10 h+",
     "seasonHeading": "Sezoniniai saulės langai",
     "seasonWindow": "{month}: {start}–{end} · ~{minutes} min. 1000 TV.",
     "seasonImpossible": "{month}: sintezė negalima.",

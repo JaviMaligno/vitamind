@@ -670,6 +670,8 @@
     "exactWindow": "More precisely: {dateRange}.",
     "yearHeading": "Year-round profile in {city}",
     "yearCaption": "Daily hours with enough sun to synthesize vitamin D across the year.",
+    "yearLegendLow": "0 h",
+    "yearLegendHigh": "10 h+",
     "seasonHeading": "Seasonal windows",
     "seasonWindow": "{month}: between {start} and {end}, about {minutes} min for 1000 IU.",
     "seasonImpossible": "{month}: synthesis isn't possible.",

@@ -670,6 +670,8 @@
     "exactWindow": "Plus précisément\u202f: {dateRange}.",
     "yearHeading": "Profil annuel {atCity}",
     "yearCaption": "Nombre d'heures par jour où le soleil est assez haut pour synthétiser la vitamine D, au fil de l'année.",
+    "yearLegendLow": "0 h",
+    "yearLegendHigh": "10 h+",
     "seasonHeading": "Fenêtres saisonnières",
     "seasonWindow": "{month}\u202f: entre {start} et {end}, environ {minutes} min pour 1 000 UI.",
     "seasonImpossible": "{month}\u202f: la synthèse n'est pas possible.",

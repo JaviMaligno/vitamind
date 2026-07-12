@@ -7,10 +7,12 @@ export default function CityYearStrip({
   hoursByDay,
   monthLabels,
   caption,
+  legend,
 }: {
   hoursByDay: number[];
   monthLabels: string[];
   caption: string;
+  legend?: { low: string; high: string };
 }) {
   const width = 365;
   const height = 48;
@@ -32,11 +34,11 @@ export default function CityYearStrip({
         })}
       </svg>
       <div
+        className="text-text-muted"
         style={{
           display: "grid",
           gridTemplateColumns: `repeat(${monthLabels.length}, 1fr)`,
-          fontSize: 10,
-          opacity: 0.7,
+          fontSize: 12,
           marginTop: 4,
         }}
       >
@@ -44,7 +46,15 @@ export default function CityYearStrip({
           <span key={`${m}-${i}`}>{m}</span>
         ))}
       </div>
-      <figcaption style={{ fontSize: 11, opacity: 0.6, marginTop: 4 }}>{caption}</figcaption>
+      {legend && (
+        <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 6 }}>
+          <span style={{ fontSize: 12 }} className="text-text-muted">{legend.low}</span>
+          <span style={{ flex: 1, height: 8, borderRadius: 99,
+            background: "linear-gradient(90deg, hsl(45,80%,15%), hsl(20,100%,65%))" }} />
+          <span style={{ fontSize: 12 }} className="text-text-muted">{legend.high}</span>
+        </div>
+      )}
+      <figcaption className="text-text-muted" style={{ fontSize: 12, marginTop: 4 }}>{caption}</figcaption>
     </figure>
   );
 }

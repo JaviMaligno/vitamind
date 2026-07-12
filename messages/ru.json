@@ -670,6 +670,8 @@
     "exactWindow": "Точнее: {dateRange}.",
     "yearHeading": "Годовой профиль — {city}",
     "yearCaption": "Сколько часов в день солнце стоит достаточно высоко для синтеза витамина D — по месяцам года.",
+    "yearLegendLow": "0 ч",
+    "yearLegendHigh": "10 ч+",
     "seasonHeading": "Солнечные окна по сезонам",
     "seasonWindow": "{month}: с {start} до {end}, около {minutes} мин для 1000 МЕ.",
     "seasonImpossible": "{month}: синтез невозможен.",

@@ -670,6 +670,8 @@
     "exactWindow": "Más exactamente: {dateRange}.",
     "yearHeading": "Perfil anual en {city}",
     "yearCaption": "Horas diarias con sol suficiente para sintetizar vitamina D a lo largo del año.",
+    "yearLegendLow": "0 h",
+    "yearLegendHigh": "10 h+",
     "seasonHeading": "Ventanas por estación",
     "seasonWindow": "{month}: entre las {start} y las {end}, unos {minutes} min para 1000 UI.",
     "seasonImpossible": "{month}: la síntesis no es posible.",

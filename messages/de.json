@@ -670,6 +670,8 @@
     "exactWindow": "Genauer: {dateRange}.",
     "yearHeading": "Jahresprofil in {city}",
     "yearCaption": "Tägliche Stunden mit ausreichender Sonne zur Vitamin-D-Bildung im Jahresverlauf.",
+    "yearLegendLow": "0 h",
+    "yearLegendHigh": "10 h+",
     "seasonHeading": "Saisonale Zeitfenster",
     "seasonWindow": "{month}: zwischen {start} und {end}, etwa {minutes} Min. für 1000 IE.",
     "seasonImpossible": "{month}: Die Bildung ist nicht möglich.",
