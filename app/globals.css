@@ -42,6 +42,22 @@
   --color-chart-bar-medium: rgba(255, 143, 0, 0.5);
   --color-chart-bar-slow: rgba(255, 109, 0, 0.3);
   --color-chart-bar-inactive: rgba(128, 128, 128, 0.1);
+
+  /* Color semántico */
+  --color-possible: #15803d;            /* verde: síntesis posible */
+  --color-possible-surface: #dcfce7;
+  --color-possible-border: #86efac;
+  --color-sun: #ea580c;                 /* naranja: sol / UV / marca */
+  --color-sun-strong: #c2410c;
+  --color-winter: #64748b;              /* frío: sin sol / invierno */
+
+  /* Superficies del sistema glass */
+  --color-glass: rgba(255, 255, 255, 0.86);      /* tarjeta clara sobre gradiente */
+  --color-glass-border: rgba(255, 255, 255, 0.6);
+  --color-window: #0e1330;                        /* ventana oscura de datos */
+  --color-window-border: rgba(255, 255, 255, 0.14);
+  --color-on-window: #f4f1ff;                     /* texto sobre ventana */
+  --color-on-window-faint: rgba(255, 255, 255, 0.55);
 }
 
 .dark {
@@ -69,4 +85,14 @@
   --color-chart-bar-medium: rgba(255, 143, 0, 0.5);
   --color-chart-bar-slow: rgba(255, 109, 0, 0.3);
   --color-chart-bar-inactive: rgba(128, 128, 128, 0.1);
+
+  --color-possible: #4ade80;
+  --color-possible-surface: rgba(74, 222, 128, 0.14);
+  --color-possible-border: rgba(74, 222, 128, 0.4);
+  --color-sun: #fb923c;
+  --color-sun-strong: #fdba74;
+  --color-winter: #94a3b8;
+  --color-glass: rgba(18, 22, 48, 0.72);
+  --color-glass-border: rgba(255, 255, 255, 0.12);
+  /* window/on-window son iguales en ambos temas (siempre oscura) */
 }
