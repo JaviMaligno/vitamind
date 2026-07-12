@@ -13,6 +13,9 @@
   --color-text-secondary: rgba(26, 26, 46, 0.7);
   --color-text-muted: rgba(26, 26, 46, 0.55);
   --color-text-faint: rgba(26, 26, 46, 0.4);
+  /* Accent for links/CTAs. amber-400 is the brand colour but only 1.4:1 on the
+     cream light background; amber-800 gives 6:1 (AA). Dark mode keeps amber-400. */
+  --color-accent: #92400e;
   --color-border-default: rgba(26, 26, 46, 0.15);
   --color-border-subtle: rgba(26, 26, 46, 0.08);
   --color-chart-grid: rgba(255, 255, 255, 0.05);
@@ -37,6 +40,7 @@
   --color-text-secondary: rgba(255, 255, 255, 0.5);
   --color-text-muted: rgba(255, 255, 255, 0.3);
   --color-text-faint: rgba(255, 255, 255, 0.15);
+  --color-accent: #fbbf24; /* amber-400 — 11:1 on the dark background */
   --color-border-default: rgba(255, 255, 255, 0.06);
   --color-border-subtle: rgba(255, 255, 255, 0.04);
   --color-chart-grid: rgba(255, 255, 255, 0.05);

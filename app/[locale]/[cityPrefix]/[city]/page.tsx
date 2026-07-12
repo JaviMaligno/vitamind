@@ -206,7 +206,7 @@ export default async function CityPage({ params }: { params: Promise<Params> }) 
       <section className="mt-8">
         <Link
           href="/dashboard"
-          className="inline-block rounded bg-amber-400/15 px-4 py-2 text-sm font-semibold text-amber-400"
+          className="inline-block rounded bg-amber-400/15 px-4 py-2 text-sm font-semibold text-accent"
         >
           {t("ctaLabel", labels)}
         </Link>
@@ -241,7 +241,7 @@ export default async function CityPage({ params }: { params: Promise<Params> }) 
           })}
         </ul>
         <p className="mt-3 text-sm">
-          <Link href={indexPathname(p.locale)} className="font-medium text-amber-400 underline decoration-dotted">
+          <Link href={indexPathname(p.locale)} className="font-medium text-accent underline decoration-dotted">
             {t("allCitiesLink")} →
           </Link>
         </p>

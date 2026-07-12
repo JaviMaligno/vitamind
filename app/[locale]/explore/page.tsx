@@ -137,7 +137,7 @@ export default function ExplorePage() {
       {/* Entry into the per-city SEO pages, which are otherwise only reachable
           from Google or the sitemap. */}
       <div className="mx-auto max-w-[960px] px-4 pb-1 text-xs">
-        <Link href={indexPath(locale)} className="text-amber-400 underline decoration-dotted">
+        <Link href={indexPath(locale)} className="text-accent underline decoration-dotted">
           {tCity("allCitiesLink")} →
         </Link>
       </div>
