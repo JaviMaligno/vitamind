@@ -61,7 +61,7 @@
 
   /* Gradientes vibrantes por fase (hero y acentos). */
   --grad-dawn: linear-gradient(165deg, #ffb07a 0%, #ff7a9c 55%, #c9457e 100%);
-  --grad-day: linear-gradient(165deg, #ffdcb0 0%, #ffb083 52%, #ff9a80 100%);
+  --grad-day: linear-gradient(165deg, #6fb7ef 0%, #a6d4f4 42%, #ffd7a8 100%);
   --grad-dusk: linear-gradient(165deg, #ff7a45 0%, #e0457e 55%, #7a3a9e 100%);
   --grad-night: radial-gradient(120% 90% at 75% -10%, #3a2f6b 0%, #141a3a 50%, #0a0e24 100%);
 
@@ -70,7 +70,7 @@
      dorado de día, coral al atardecer, navy de noche. Medio-saturado: se lee la
      hora en el ambiente, pero el contenido va en glass cards, así que no cansa. */
   --page-dawn: linear-gradient(180deg, #ffb3c4 0%, #ffcdd7 55%, #ffe2e7 100%);
-  --page-day: linear-gradient(180deg, #ffc78f 0%, #ffdab4 55%, #ffecd6 100%);
+  --page-day: linear-gradient(180deg, #a9d6f5 0%, #cfe8fb 55%, #edf6fe 100%);
   --page-dusk: linear-gradient(180deg, #ec9576 0%, #f4b89b 55%, #f9d6c2 100%);
   --page-night: linear-gradient(180deg, #1c1f52 0%, #111440 45%, #080b22 100%);
 }
