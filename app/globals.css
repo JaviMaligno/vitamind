@@ -61,7 +61,7 @@
 
   /* Gradientes de fondo por fase solar (dirección "clima vibrante"). */
   --grad-dawn: linear-gradient(165deg, #ffb07a 0%, #ff7a9c 55%, #c9457e 100%);
-  --grad-day: linear-gradient(165deg, #ffc637 0%, #ff8f3f 55%, #ff6b57 100%);
+  --grad-day: linear-gradient(165deg, #ffdcb0 0%, #ffb083 52%, #ff9a80 100%);
   --grad-dusk: linear-gradient(165deg, #ff7a45 0%, #e0457e 55%, #7a3a9e 100%);
   --grad-night: radial-gradient(120% 90% at 75% -10%, #3a2f6b 0%, #141a3a 50%, #0a0e24 100%);
 }

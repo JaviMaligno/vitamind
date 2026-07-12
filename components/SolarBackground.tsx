@@ -22,6 +22,7 @@ export default function SolarBackground({ children }: { children: React.ReactNod
     <div
       className="min-h-screen text-text-primary font-sans pb-20 transition-[background] duration-1000"
       style={{ background: grad }}
+      suppressHydrationWarning
     >
       {children}
     </div>

@@ -28,8 +28,15 @@ function getStored(): Theme {
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setThemeState] = useState<Theme>(() => getStored());
+  // Start from "auto" on both server and first client render so hydration
+  // matches; the stored preference is applied after mount (below).
+  const [theme, setThemeState] = useState<Theme>("auto");
   const [autoPhase, setAutoPhase] = useState<SolarPhase | null>(null);
+
+  useEffect(() => {
+    const stored = getStored();
+    if (stored !== "auto") setThemeState(stored);
+  }, []);
 
   const resolved: "light" | "dark" =
     theme === "light" ? "light"

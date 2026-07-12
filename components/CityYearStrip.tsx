@@ -40,8 +40,8 @@ export default function CityYearStrip({
           marginTop: 4,
         }}
       >
-        {monthLabels.map((m) => (
-          <span key={m}>{m}</span>
+        {monthLabels.map((m, i) => (
+          <span key={`${m}-${i}`}>{m}</span>
         ))}
       </div>
       <figcaption style={{ fontSize: 11, opacity: 0.6, marginTop: 4 }}>{caption}</figcaption>
