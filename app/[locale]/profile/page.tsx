@@ -264,6 +264,7 @@ export default function ProfilePage() {
           skinType={app.skinType}
           areaFraction={app.areaFraction}
           cityName={app.cityName}
+          prominent
         />
       </section>
 

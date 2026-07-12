@@ -4,6 +4,7 @@ import { useState, useCallback, useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { useApp } from "@/context/AppProvider";
 import CityPageLink from "@/components/CityPageLink";
+import NotificationToggle from "@/components/NotificationToggle";
 import { useCityDisplayName } from "@/hooks/useCityDisplayName";
 import { useHistory } from "@/hooks/useHistory";
 import { useForecast } from "@/hooks/useForecast";
@@ -21,6 +22,7 @@ export default function DashboardPage() {
   const t = useTranslations("dashboard");
   const tc = useTranslations("common");
   const tHero = useTranslations("hero");
+  const tCity = useTranslations("cityPage");
   const app = useApp();
   const getCityDisplayName = useCityDisplayName();
   const cityName = getCityDisplayName(app.cityId, app.cityName);
@@ -89,6 +91,23 @@ export default function DashboardPage() {
         targetIU={app.targetIU}
         loading={loading}
       />
+
+      {/* Retention hook: a daily push for this city, only on days it's possible. */}
+      <div className="flex flex-wrap items-center gap-3 px-1">
+        <NotificationToggle
+          lat={app.lat}
+          lon={app.lon}
+          tz={app.tz}
+          timezone={app.timezone}
+          skinType={app.skinType}
+          areaFraction={app.areaFraction}
+          cityName={cityName}
+          labelOff={tCity("notifyOff")}
+          labelOn={tCity("notifyOn")}
+          prominent
+        />
+        <span className="text-xs text-text-muted">{tCity("notifyLead", { city: cityName })}</span>
+      </div>
 
       {/* Quick exposure picker */}
       <ExposureQuickPicker
