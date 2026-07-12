@@ -15,6 +15,9 @@ interface Props {
   cityName: string;
   labelOff?: string;
   labelOn?: string;
+  /** Render the off state as an inviting CTA (accent tint) instead of the subtle
+   *  toggle look used on the profile page. */
+  prominent?: boolean;
 }
 
 type Status = "loading" | "unsupported" | "denied" | "off" | "on";
@@ -28,7 +31,7 @@ function urlBase64ToUint8Array(base64String: string): Uint8Array {
   return arr;
 }
 
-export default function NotificationToggle({ lat, lon, tz, timezone, skinType, areaFraction, cityName, labelOff, labelOn }: Props) {
+export default function NotificationToggle({ lat, lon, tz, timezone, skinType, areaFraction, cityName, labelOff, labelOn, prominent }: Props) {
   const [status, setStatus] = useState<Status>("loading");
   const t = useTranslations("notifications");
   const tInstall = useTranslations("install");
@@ -195,7 +198,9 @@ export default function NotificationToggle({ lat, lon, tz, timezone, skinType, a
           ? "bg-amber-400/15 text-accent font-semibold"
           : status === "denied"
             ? "bg-red-500/[0.08] text-red-400/40 opacity-50 cursor-not-allowed"
-            : "bg-surface-elevated text-text-muted hover:bg-surface-input"
+            : prominent
+              ? "bg-amber-400/20 text-accent font-semibold ring-1 ring-accent/30 hover:bg-amber-400/30"
+              : "bg-surface-elevated text-text-muted hover:bg-surface-input"
       }`}
       title={
         status === "denied"

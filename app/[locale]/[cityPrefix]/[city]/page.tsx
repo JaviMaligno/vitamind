@@ -160,6 +160,7 @@ export default async function CityPage({ params }: { params: Promise<Params> }) 
             cityName={localizedCityName(p.locale, base)}
             labelOff={t("notifyOff")}
             labelOn={t("notifyOn")}
+            prominent
           />
         </div>
       </section>
