@@ -681,6 +681,7 @@
     "notifyOff": "🔔 Prévenez-moi",
     "notifyOn": "🔔 Abonné",
     "faqHeading": "Questions fréquentes sur la vitamine D {atCity}",
+  "nearbyHeading": "Villes à proximité",
     "faqWinterQ": "Puis-je obtenir de la vitamine D du soleil en hiver {atCity}\u202f?",
     "faqMinutesQ": "Combien de minutes de soleil me faut-il {atCity}\u202f?",
     "faqMinutesA": "En été, environ {minutes} minutes avec le visage et les bras exposés suffisent pour 1 000 UI (peau de type III, ciel dégagé)."

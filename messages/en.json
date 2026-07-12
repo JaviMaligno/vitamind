@@ -681,6 +681,7 @@
     "notifyOff": "🔔 Notify me",
     "notifyOn": "🔔 Subscribed",
     "faqHeading": "Frequently asked questions about vitamin D in {city}",
+  "nearbyHeading": "Nearby cities",
     "faqWinterQ": "Can I get vitamin D from the sun in winter in {city}?",
     "faqMinutesQ": "How many minutes of sun do I need in {city}?",
     "faqMinutesA": "In summer, about {minutes} minutes with arms and face exposed is enough for 1000 IU (Fitzpatrick type III skin, clear sky)."

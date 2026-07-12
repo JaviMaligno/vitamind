@@ -9,9 +9,10 @@ import {
   cityYearProfile, citySeasonalWindows, contiguousMonthRange, viableDateBoundaries,
 } from "@/lib/city-content";
 import {
-  CITY_PREFIX, baseSlug, cityIdFromSlug, localizedCityName,
+  CITY_PREFIX, baseSlug, cityIdFromSlug, localizedCityName, cityPathname,
   buildCityAlternates, cityStaticParams,
 } from "@/lib/city-routes";
+import { nearbyCities } from "@/lib/city-nearby";
 import { capFirst, cityLabels, monthLabels, monthName, verdictMonths } from "@/lib/city-copy";
 import { fmtTime, dateFromDoy } from "@/lib/solar";
 
@@ -90,6 +91,8 @@ export default async function CityPage({ params }: { params: Promise<Params> }) 
   // Circular band: southern-hemisphere cities wrap around January.
   const possibleBand = contiguousMonthRange(profile.possibleMonths);
   const impossibleBand = contiguousMonthRange(profile.impossibleMonths);
+
+  const nearby = nearbyCities(city.id);
 
   const verdict = profile.allYear
     ? t("verdictAllYear", labels)
@@ -220,6 +223,24 @@ export default async function CityPage({ params }: { params: Promise<Params> }) 
           ))}
         </dl>
       </section>
+
+      {/* Cross-links to the nearest cities: turns the 438 pages into a crawlable
+          mesh and gives the reader somewhere to go. Static, so Google follows it. */}
+      <nav className="mt-10">
+        <h2 className="text-lg font-semibold">{t("nearbyHeading")}</h2>
+        <ul className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-sm">
+          {nearby.map((nb) => {
+            const nbBase = baseSlug(nb.id);
+            return (
+              <li key={nb.id}>
+                <Link href={cityPathname(p.locale, nbBase)} className="underline decoration-dotted">
+                  {localizedCityName(p.locale, nbBase)}
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      </nav>
     </main>
   );
 }

@@ -681,6 +681,7 @@
     "notifyOff": "🔔 Avísame",
     "notifyOn": "🔔 Suscrito",
     "faqHeading": "Preguntas frecuentes sobre la vitamina D en {city}",
+  "nearbyHeading": "Ciudades cercanas",
     "faqWinterQ": "¿Puedo obtener vitamina D del sol en invierno en {city}?",
     "faqMinutesQ": "¿Cuántos minutos de sol necesito en {city}?",
     "faqMinutesA": "En verano, unos {minutes} minutos con brazos y cara al sol bastan para 1000 UI (piel tipo III, cielo despejado)."
