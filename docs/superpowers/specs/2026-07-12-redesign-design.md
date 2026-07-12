@@ -23,7 +23,9 @@ Elevar la app de "funcional pero de juguete" a "producto de verdad" mediante un 
 
 ### 3.1 Motor de gradiente solar
 
-Una función pura que, dado el **estado solar**, devuelve el token de gradiente de fondo.
+**Contención (revisado 2026-07-12 tras CHECKPOINT 1):** el gradiente vibrante **NO** es un wash a pantalla completa (probado en el checkpoint: cansa la vista como fondo total). Va **contenido**: el fondo de página es neutro suave (crema de día / navy de noche, vía el tema resuelto), y el gradiente de fase vibrante vive en el **hero/cabecera** de cada página (banda contenida que refleja la hora solar real) y en **acentos** (badge de veredicto, botones, la "ventana al cielo" de datos). Es como los mockups aprobados: color enmarcado con aire neutro alrededor, no un mar de color. `SolarBackground` solo mantiene el lienzo neutro y alimenta la fase al tema.
+
+Una función pura que, dado el **estado solar**, devuelve el token de gradiente para el hero/acentos.
 
 - **Entrada:** elevación solar actual (o fase del ciclo) derivada de `lib/solar.ts` a partir de lat/lon + fecha + hora. `lib/solar.ts` ya expone la geometría necesaria (elevación, amanecer, atardecer); el motor la consume, no la recalcula.
 - **Fases (v1, discretas con interpolación de bordes):** `noche` (sol bajo el horizonte), `amanecer`/`atardecer` (sol ≈ -6°…+12°), `día` (sol alto). Cada fase → un gradiente definido en tokens.
