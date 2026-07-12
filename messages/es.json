@@ -687,6 +687,7 @@
   "indexHeading": "Vitamina D del sol, ciudad por ciudad",
   "indexIntro": "Elige tu ciudad para ver en qué meses el sol permite producir vitamina D allí, con las ventanas de cada estación.",
   "allCitiesLink": "Ver todas las ciudades",
+  "viewCityPage": "{city}: página completa →",
     "faqWinterQ": "¿Puedo obtener vitamina D del sol en invierno en {city}?",
     "faqMinutesQ": "¿Cuántos minutos de sol necesito en {city}?",
     "faqMinutesA": "En verano, unos {minutes} minutos con brazos y cara al sol bastan para 1000 UI (piel tipo III, cielo despejado)."

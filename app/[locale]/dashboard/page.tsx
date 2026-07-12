@@ -3,6 +3,7 @@
 import { useState, useCallback, useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { useApp } from "@/context/AppProvider";
+import CityPageLink from "@/components/CityPageLink";
 import { useCityDisplayName } from "@/hooks/useCityDisplayName";
 import { useHistory } from "@/hooks/useHistory";
 import { useForecast } from "@/hooks/useForecast";
@@ -65,6 +66,12 @@ export default function DashboardPage() {
           </Link>
         )}
       </div>
+
+      {hasCity && (
+        <div className="px-1 -mt-2 text-xs">
+          <CityPageLink cityId={app.cityId} lat={app.lat} lon={app.lon} />
+        </div>
+      )}
 
       {!hasCity && (
         <div className="rounded-xl border border-border-subtle bg-surface-card p-6 text-center space-y-2">

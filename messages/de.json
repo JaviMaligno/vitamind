@@ -687,6 +687,7 @@
   "indexHeading": "Vitamin D durch Sonne, Stadt für Stadt",
   "indexIntro": "Wähle deine Stadt, um zu sehen, in welchen Monaten die Sonne dort Vitamin D möglich macht — mit den Zeitfenstern jeder Jahreszeit.",
   "allCitiesLink": "Alle Städte ansehen",
+  "viewCityPage": "{city}: vollständige Seite →",
     "faqWinterQ": "Kann ich im Winter in {city} Vitamin D durch die Sonne bekommen?",
     "faqMinutesQ": "Wie viele Minuten Sonne brauche ich in {city}?",
     "faqMinutesA": "Im Sommer reichen etwa {minutes} Minuten mit unbedeckten Armen und Gesicht für 1000 IE (Hauttyp III, klarer Himmel)."

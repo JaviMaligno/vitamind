@@ -687,6 +687,7 @@
   "indexHeading": "Vitamine D du soleil, ville par ville",
   "indexIntro": "Choisissez votre ville pour voir les mois où le soleil permet de produire de la vitamine D, avec les fenêtres de chaque saison.",
   "allCitiesLink": "Voir toutes les villes",
+  "viewCityPage": "{city}\u202f: page complète →",
     "faqWinterQ": "Puis-je obtenir de la vitamine D du soleil en hiver {atCity}\u202f?",
     "faqMinutesQ": "Combien de minutes de soleil me faut-il {atCity}\u202f?",
     "faqMinutesA": "En été, environ {minutes} minutes avec le visage et les bras exposés suffisent pour 1 000 UI (peau de type III, ciel dégagé)."

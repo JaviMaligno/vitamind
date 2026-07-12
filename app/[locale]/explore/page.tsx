@@ -3,6 +3,7 @@
 import { useState, useMemo, useCallback } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { indexPath } from "@/lib/city-client-links";
+import CityPageLink from "@/components/CityPageLink";
 import { useApp } from "@/context/AppProvider";
 import { useCityDisplayName } from "@/hooks/useCityDisplayName";
 import { getCurve, dayOfYear, dateFromDoy, fmtDate } from "@/lib/solar";
@@ -135,8 +136,9 @@ export default function ExplorePage() {
       )}
 
       {/* Entry into the per-city SEO pages, which are otherwise only reachable
-          from Google or the sitemap. */}
-      <div className="mx-auto max-w-[960px] px-4 pb-1 text-xs">
+          from Google or the sitemap: the current city direct, plus the full index. */}
+      <div className="mx-auto max-w-[960px] px-4 pb-1 text-xs flex items-center gap-4">
+        <CityPageLink cityId={cityId} lat={lat} lon={lon} />
         <Link href={indexPath(locale)} className="text-accent underline decoration-dotted">
           {tCity("allCitiesLink")} →
         </Link>
