@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Link } from "@/i18n/navigation";
+import CityCta from "@/components/CityCta";
 import CityHeroBold from "@/components/CityHeroBold";
 import CityYearStrip from "@/components/CityYearStrip";
+import PhaseWindow from "@/components/PhaseWindow";
 import NotificationToggle from "@/components/NotificationToggle";
 import Card from "@/components/ui/Card";
 import A from "@/components/ui/A";
@@ -56,12 +57,6 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   };
 }
 
-// Primary CTA styled like <Button variant="primary"> (see components/ui/Button.tsx)
-// but rendered as the i18n Link itself, so it stays a valid, navigable anchor.
-// Sized up for the bold variant: same colors/behavior, bigger tap target.
-const ctaClasses =
-  "inline-flex items-center justify-center gap-2 min-h-[56px] px-8 rounded-2xl text-heading font-bold " +
-  "transition-colors bg-sun text-white hover:bg-sun-strong shadow-lg shadow-sun/20";
 
 export default async function CityPage({ params }: { params: Promise<Params> }) {
   const p = await params;
@@ -196,7 +191,7 @@ export default async function CityPage({ params }: { params: Promise<Params> }) 
       <section className="mt-10 sm:mt-16">
         <h2 className="font-display text-2xl sm:text-4xl font-bold">{t("yearHeading", labels)}</h2>
         <p className="mt-2 text-body text-text-muted max-w-2xl">{t("yearCaption")}</p>
-        <Card variant="window" className="mt-5 sm:mt-6 !p-5 sm:!p-8">
+        <PhaseWindow lat={city.lat} lon={city.lon} className="mt-5 p-5 sm:mt-6 sm:p-8">
           <CityYearStrip
             hoursByDay={profile.hoursByDay}
             monthLabels={labelsForChart}
@@ -204,7 +199,7 @@ export default async function CityPage({ params }: { params: Promise<Params> }) 
             legend={{ low: t("yearLegendLow"), high: t("yearLegendHigh") }}
             height={110}
           />
-        </Card>
+        </PhaseWindow>
       </section>
 
       {/* Seasonal windows + supplement: two balanced columns (supplement drops
@@ -243,11 +238,10 @@ export default async function CityPage({ params }: { params: Promise<Params> }) 
       </div>
 
       {/* Primary CTA — full-width, centered conversion band (the main action, so
-          it stands on its own instead of being tucked into a column). */}
+          it stands on its own instead of being tucked into a column). Adapts to
+          the live solar phase so it never clashes with the warm-phase page tints. */}
       <div className="mt-10 sm:mt-14 flex justify-center">
-        <Link href="/dashboard" className={`${ctaClasses} w-full sm:w-auto sm:min-w-[420px]`}>
-          {t("ctaLabel", labels)}
-        </Link>
+        <CityCta lat={city.lat} lon={city.lon} href="/dashboard" label={t("ctaLabel", labels)} />
       </div>
 
       {/* FAQ — full-width, two columns on desktop. */}
