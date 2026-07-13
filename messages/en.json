@@ -35,9 +35,9 @@
     "gpsDeniedHint": "In Chrome: click the lock icon in the address bar > Permissions > Location > Allow. Then reload the page."
   },
   "tabs": {
-    "dailyCurve": "📈 Daily Curve",
-    "worldMap": "🌍 World Map",
-    "heatmap": "📊 Latitude × Year"
+    "dailyCurve": "Daily Curve",
+    "worldMap": "World Map",
+    "heatmap": "Latitude × Year"
   },
   "viz": {
     "dailyCurveTitle": "DAILY CURVE",

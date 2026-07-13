@@ -35,9 +35,9 @@
     "gpsDeniedHint": "Chrome: spustelėkite spynos piktogramą adreso juostoje > Leidimai > Vieta > Leisti. Tada perkraukite puslapį."
   },
   "tabs": {
-    "dailyCurve": "📈 Dienos kreivė",
-    "worldMap": "🌍 Pasaulio žemėlapis",
-    "heatmap": "📊 Platuma × Metai"
+    "dailyCurve": "Dienos kreivė",
+    "worldMap": "Pasaulio žemėlapis",
+    "heatmap": "Platuma × Metai"
   },
   "viz": {
     "dailyCurveTitle": "DIENOS KREIVĖ",

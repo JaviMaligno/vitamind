@@ -1,3 +1,5 @@
+import type { LucideIcon } from "lucide-react";
+import { Sun, Pill, FlaskConical, Sunrise } from "lucide-react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
@@ -9,7 +11,7 @@ export function generateStaticParams() {
 }
 
 interface Block {
-  emoji: string;
+  Icon: LucideIcon;
   titleKey: string;
   subtitleKey: string;
   questions: { qKey: string; aKey: string }[];
@@ -17,25 +19,25 @@ interface Block {
 
 const BLOCKS: Block[] = [
   {
-    emoji: "☀️",
+    Icon: Sun,
     titleKey: "block1.title",
     subtitleKey: "block1.subtitle",
     questions: Array.from({ length: 9 }, (_, i) => ({ qKey: `block1.q${i + 1}.q`, aKey: `block1.q${i + 1}.a` })),
   },
   {
-    emoji: "💊",
+    Icon: Pill,
     titleKey: "block2.title",
     subtitleKey: "block2.subtitle",
     questions: Array.from({ length: 5 }, (_, i) => ({ qKey: `block2.q${i + 1}.q`, aKey: `block2.q${i + 1}.a` })),
   },
   {
-    emoji: "🧪",
+    Icon: FlaskConical,
     titleKey: "block3.title",
     subtitleKey: "block3.subtitle",
     questions: Array.from({ length: 6 }, (_, i) => ({ qKey: `block3.q${i + 1}.q`, aKey: `block3.q${i + 1}.a` })),
   },
   {
-    emoji: "🌅",
+    Icon: Sunrise,
     titleKey: "block4.title",
     subtitleKey: "block4.subtitle",
     questions: Array.from({ length: 5 }, (_, i) => ({ qKey: `block4.q${i + 1}.q`, aKey: `block4.q${i + 1}.a` })),
@@ -77,7 +79,7 @@ export default async function LearnPage({ params }: { params: Promise<{ locale: 
                   href={`#block-${i + 1}`}
                   className="inline-flex items-center gap-2 rounded-full bg-glass border border-glass-border backdrop-blur-md px-3 py-1.5 text-caption text-text-secondary shadow-lg transition-colors hover:bg-surface-elevated lg:rounded-lg lg:w-full"
                 >
-                  <span aria-hidden>{block.emoji}</span>
+                  <block.Icon className="h-4 w-4 text-accent shrink-0" aria-hidden />
                   <span>{t(block.titleKey)}</span>
                 </a>
               </li>
@@ -97,7 +99,9 @@ export default async function LearnPage({ params }: { params: Promise<{ locale: 
               {/* Anchor alias for /learn#supplement */}
               {bi === 2 && <div id="supplement" className="sr-only" />}
               <div className="mb-5 flex items-center gap-3">
-                <span className="text-3xl" aria-hidden>{block.emoji}</span>
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-amber-400/15 text-accent" aria-hidden>
+                  <block.Icon className="h-6 w-6" />
+                </span>
                 <div>
                   <h2 className="font-display font-bold text-2xl sm:text-3xl tracking-tight text-text-primary">
                     {t(block.titleKey)}

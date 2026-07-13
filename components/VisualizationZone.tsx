@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import type { LucideIcon } from "lucide-react";
+import { LineChart, Globe, Grid3x3 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import WorldMap from "@/components/WorldMap";
 import GlobalHeatmap from "@/components/GlobalHeatmap";
@@ -65,26 +67,27 @@ export default function VisualizationZone({
   const tTabs = useTranslations("tabs");
   const tViz = useTranslations("viz");
 
-  const TABS: { key: Tab; label: string }[] = [
-    { key: "curve", label: tTabs("dailyCurve") },
-    { key: "map", label: tTabs("worldMap") },
-    { key: "heatmap", label: tTabs("heatmap") },
+  const TABS: { key: Tab; label: string; Icon: LucideIcon }[] = [
+    { key: "curve", label: tTabs("dailyCurve"), Icon: LineChart },
+    { key: "map", label: tTabs("worldMap"), Icon: Globe },
+    { key: "heatmap", label: tTabs("heatmap"), Icon: Grid3x3 },
   ];
 
   return (
     <section className="mx-auto max-w-[1280px] px-4 py-2">
       {/* Tab bar */}
       <div className="flex gap-1 mb-3">
-        {TABS.map(({ key, label }) => (
+        {TABS.map(({ key, label, Icon }) => (
           <button
             key={key}
             onClick={() => setTab(key)}
-            className={`px-5 py-2.5 rounded-t-lg text-body font-medium transition-colors cursor-pointer border-b-2 ${
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-t-lg text-body font-medium transition-colors cursor-pointer border-b-2 ${
               tab === key
                 ? "bg-surface-elevated text-accent border-amber-400 font-semibold"
                 : "bg-transparent text-text-muted border-transparent hover:text-text-secondary"
             }`}
           >
+            <Icon className="h-4 w-4" aria-hidden />
             {label}
           </button>
         ))}

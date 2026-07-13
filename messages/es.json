@@ -35,9 +35,9 @@
     "gpsDeniedHint": "En Chrome: pulsa el candado en la barra de direcciones > Permisos > Ubicación > Permitir. Luego recarga la página."
   },
   "tabs": {
-    "dailyCurve": "📈 Curva del Día",
-    "worldMap": "🌍 Mapa Mundi",
-    "heatmap": "📊 Latitud × Año"
+    "dailyCurve": "Curva del Día",
+    "worldMap": "Mapa Mundi",
+    "heatmap": "Latitud × Año"
   },
   "viz": {
     "dailyCurveTitle": "CURVA DEL DÍA",

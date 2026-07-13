@@ -35,9 +35,9 @@
     "gpsDeniedHint": "In Chrome: Klicken Sie auf das Schloss-Symbol in der Adressleiste > Berechtigungen > Standort > Zulassen. Dann laden Sie die Seite neu."
   },
   "tabs": {
-    "dailyCurve": "📈 Tageskurve",
-    "worldMap": "🌍 Weltkarte",
-    "heatmap": "📊 Breitengrad × Jahr"
+    "dailyCurve": "Tageskurve",
+    "worldMap": "Weltkarte",
+    "heatmap": "Breitengrad × Jahr"
   },
   "viz": {
     "dailyCurveTitle": "TAGESKURVE",

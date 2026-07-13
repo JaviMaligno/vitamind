@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, useCallback, useEffect } from "react";
+import { Sun, Pill, FlaskConical, Sunrise } from "lucide-react";
 import { useTranslations, useLocale } from "next-intl";
 import { indexPath } from "@/lib/city-client-links";
 import CityPageLink from "@/components/CityPageLink";
@@ -20,10 +21,10 @@ import { useAnimation } from "@/hooks/useAnimation";
 import { useNowStatus } from "@/hooks/useNowStatus";
 
 const FAQ_LINKS = [
-  { anchor: "block-1", titleKey: "learn.block1.title", subKey: "learn.block1.subtitle", emoji: "☀️" },
-  { anchor: "block-2", titleKey: "learn.block2.title", subKey: "learn.block2.subtitle", emoji: "💊" },
-  { anchor: "block-3", titleKey: "learn.block3.title", subKey: "learn.block3.subtitle", emoji: "🧪" },
-  { anchor: "block-4", titleKey: "learn.block4.title", subKey: "learn.block4.subtitle", emoji: "🌅" },
+  { anchor: "block-1", titleKey: "learn.block1.title", subKey: "learn.block1.subtitle", Icon: Sun },
+  { anchor: "block-2", titleKey: "learn.block2.title", subKey: "learn.block2.subtitle", Icon: Pill },
+  { anchor: "block-3", titleKey: "learn.block3.title", subKey: "learn.block3.subtitle", Icon: FlaskConical },
+  { anchor: "block-4", titleKey: "learn.block4.title", subKey: "learn.block4.subtitle", Icon: Sunrise },
 ] as const;
 
 export default function ExplorePage() {
@@ -263,7 +264,9 @@ export default function ExplorePage() {
               href={`/learn#${link.anchor}`}
               className="flex items-start gap-3 rounded-2xl border border-glass-border bg-glass backdrop-blur-md shadow-lg px-4 py-3 hover:bg-surface-elevated transition-colors"
             >
-              <span className="text-2xl leading-none mt-0.5">{link.emoji}</span>
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-amber-400/15 text-accent mt-0.5" aria-hidden>
+                <link.Icon className="h-5 w-5" />
+              </span>
               <div className="flex-1 min-w-0">
                 <p className="text-body font-semibold text-text-primary truncate">
                   {t(link.titleKey)}
