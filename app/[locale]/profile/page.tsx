@@ -13,6 +13,7 @@ import GpsButton from "@/components/GpsButton";
 import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
 import Chip from "@/components/ui/Chip";
+import Flag from "@/components/ui/Flag";
 import ProfileHeroBold from "@/components/ProfileHeroBold";
 
 // Same full-row nav-link treatment as the dashboard's "Learn more" row: glass
@@ -149,7 +150,7 @@ export default function ProfilePage() {
             return (
               <div key={fid} className="flex items-center gap-1">
                 <Chip active={isSel} onClick={() => app.selectCity(c)}>
-                  {c.flag} {c.name}
+                  <Flag flag={c.flag} className="text-base" /> {c.name}
                 </Chip>
                 {app.editingFavs && (
                   <button

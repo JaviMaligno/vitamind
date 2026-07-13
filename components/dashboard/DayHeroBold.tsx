@@ -4,6 +4,7 @@ import { useTranslations, useLocale } from "next-intl";
 import type { NowStatus } from "@/lib/types";
 import { useSolarPhase } from "@/hooks/useSolarPhase";
 import { PHASE_STYLE } from "@/lib/solar-phase";
+import Flag from "@/components/ui/Flag";
 import { formatCountdown, fmtMin, getStatusKey, type StatusKey } from "./day-status";
 
 /**
@@ -133,7 +134,7 @@ export default function DayHeroBold({ nowStatus, cityName, cityFlag, targetIU, l
           <>
             {/* city + date */}
             <div className="flex flex-wrap items-center justify-between gap-2">
-              <span className="text-body font-semibold text-white/90">{cityFlag} {cityName}</span>
+              <span className="text-body font-semibold text-white/90"><Flag flag={cityFlag} className="text-body" /> {cityName}</span>
               <span className="text-caption sm:text-sm text-white/60">{todayStr}</span>
             </div>
 

@@ -3,6 +3,7 @@
 import { useState, useMemo, useCallback, useRef, useEffect } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { searchCities } from "@/lib/cities-api";
+import Flag from "@/components/ui/Flag";
 import type { City } from "@/lib/types";
 
 interface Props {
@@ -160,7 +161,7 @@ export default function CitySearch({ onSelect, onAddFav, favorites, allCities }:
               >
                 {/* City info */}
                 <div className="flex-1 min-w-0">
-                  <div className="text-sm text-text-primary">{c.flag} {displayName(c)}</div>
+                  <div className="text-sm text-text-primary"><Flag flag={c.flag} className="text-sm" /> {displayName(c)}</div>
                   {(c as { _full?: string })._full && (
                     <div className="text-[10px] text-text-muted truncate max-w-[260px]">
                       {(c as { _full?: string })._full}

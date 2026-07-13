@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import IndexHeroBold from "@/components/IndexHeroBold";
+import Flag from "@/components/ui/Flag";
 import { BUILTIN_CITIES } from "@/lib/cities";
 import {
   CITY_PREFIX, baseSlug, localizedCityName, cityPathname,
@@ -135,7 +136,7 @@ export default async function CityIndexPage({ params }: { params: Promise<Params
                     href={c.href}
                     className="flex min-h-[56px] items-center gap-3 rounded-2xl bg-glass border border-glass-border backdrop-blur-md px-4 py-3 shadow-lg transition-colors hover:bg-surface-elevated focus-visible:outline focus-visible:outline-2 focus-visible:outline-sun"
                   >
-                    <span aria-hidden="true" className="text-2xl">{c.flag}</span>
+                    <Flag flag={c.flag} className="text-2xl shrink-0" />
                     <span className="flex min-w-0 flex-col">
                       <span className="text-body font-semibold text-text-primary">{c.name}</span>
                       <span className="text-caption text-text-muted">{c.datum}</span>

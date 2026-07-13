@@ -6,6 +6,7 @@ import WorldMap from "@/components/WorldMap";
 import GlobalHeatmap from "@/components/GlobalHeatmap";
 import DailyCurve from "@/components/DailyCurve";
 import VitDEstimate from "@/components/VitDEstimate";
+import Flag from "@/components/ui/Flag";
 import { synthesisThresholdElevation } from "@/lib/uv-model";
 import type { City, SolarPoint, WeatherData } from "@/lib/types";
 import type { SkinType } from "@/lib/vitd";
@@ -96,7 +97,7 @@ export default function VisualizationZone({
           <>
             <div className="text-caption text-on-window-faint mb-2 pl-2">
               <strong className="text-on-window">{tViz("dailyCurveTitle")}</strong> ·{" "}
-              {cityFlag} {cityName} · {dateLabel}
+              <Flag flag={cityFlag} className="text-caption" /> {cityName} · {dateLabel}
               {weather && (
                 <span className="ml-2 text-on-window-faint">
                   · {tViz("withWeatherData")}

@@ -7,6 +7,7 @@ import GpsErrorHint from "@/components/GpsErrorHint";
 import PartnerBadge from "@/components/PartnerBadge";
 import { useSolarPhase } from "@/hooks/useSolarPhase";
 import { PHASE_STYLE } from "@/lib/solar-phase";
+import Flag from "@/components/ui/Flag";
 import type { City, NowStatus } from "@/lib/types";
 
 interface Props {
@@ -214,7 +215,7 @@ export default function ExploreHeroBold({
           <p className="text-lg sm:text-xl text-white/85 max-w-2xl [text-shadow:0_1px_10px_rgba(0,0,0,0.35)]">
             {hint}
             {(mode === "no_synthesis" || mode === "day_impossible") && (
-              <> <span className="text-white/95">{cityFlag} {cityName}</span> · {dateLabel}</>
+              <> <span className="text-white/95"><Flag flag={cityFlag} className="text-body" /> {cityName}</span> · {dateLabel}</>
             )}
           </p>
         )}
@@ -239,7 +240,7 @@ export default function ExploreHeroBold({
             </div>
             <div>
               <span className="block text-caption uppercase tracking-wider text-white/55">{t("location")}</span>
-              <span className="text-xl text-white/90">{cityFlag} {cityName}</span>
+              <span className="text-xl text-white/90"><Flag flag={cityFlag} className="text-lg" /> {cityName}</span>
             </div>
             <div>
               <span className="block text-caption uppercase tracking-wider text-white/55">{t("date")}</span>
