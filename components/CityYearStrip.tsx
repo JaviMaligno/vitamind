@@ -8,14 +8,16 @@ export default function CityYearStrip({
   monthLabels,
   caption,
   legend,
+  height = 48,
 }: {
   hoursByDay: number[];
   monthLabels: string[];
   caption: string;
   legend?: { low: string; high: string };
+  /** SVG height in px — same data/ramp, just a taller strip for a bigger treatment. */
+  height?: number;
 }) {
   const width = 365;
-  const height = 48;
 
   return (
     <figure style={{ margin: 0 }}>
