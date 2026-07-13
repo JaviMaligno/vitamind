@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { indexPath } from "@/lib/city-client-links";
 import CityPageLink from "@/components/CityPageLink";
@@ -9,7 +9,7 @@ import { useCityDisplayName } from "@/hooks/useCityDisplayName";
 import { getCurve, dayOfYear, dateFromDoy, fmtDate } from "@/lib/solar";
 import { computeExposure, computeExposureFromCurve } from "@/lib/vitd";
 import { ozoneDU } from "@/lib/uv-model";
-import HeroZone from "@/components/HeroZone";
+import ExploreHeroBold from "@/components/ExploreHeroBold";
 import VisualizationZone from "@/components/VisualizationZone";
 import CitySearch from "@/components/CitySearch";
 import GpsButton from "@/components/GpsButton";
@@ -87,34 +87,52 @@ export default function ExplorePage() {
     [app.lat, app.lon, app.tz, app.timezone, app.cityName, app.cityFlag],
   );
 
+  // Hydration guard: this page derives content from `new Date()` (doy →
+  // dateLabel/curve/exposure/isToday) and from localStorage (app.hasLocation,
+  // cityName) — both can differ between server and first client render → React
+  // #418. Render a stable, data-free placeholder until mounted, then swap to
+  // the real content. All hooks above run unconditionally every render.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
+  if (!mounted) {
+    return (
+      <div className="mx-auto max-w-[1280px] px-4 py-8">
+        <div className="min-h-[520px]" aria-hidden="true" />
+      </div>
+    );
+  }
+
   return (
     <>
-      {/* Zone 1 -- Hero */}
-      <HeroZone
-        tz={tz}
-        timezone={timezone}
-        doy={doy}
-        canSynthesize={exposure !== null}
-        nowStatus={isToday ? todayNowStatus : null}
-        cityName={cityName}
-        cityFlag={cityFlag}
-        hasLocation={app.hasLocation}
-        onSelectCity={(c) => { setExploreCity(c); app.selectCity(c); }}
-        onAddFav={app.toggleFav}
-        favorites={app.favorites}
-        allCities={app.allCities}
-        peakElevation={peak}
-        dateLabel={dateLabel}
-        targetIU={app.targetIU}
-        onRequestGps={app.gps.enableGps}
-        gpsLoading={app.gps.loading}
-        gpsSlow={app.gps.slow}
-        gpsError={app.gps.error}
-      />
+      {/* Zone 1 -- Hero (bold poster) */}
+      <div className="mx-auto max-w-[1280px] px-4 pt-6 sm:pt-8">
+        <ExploreHeroBold
+          lat={lat}
+          lon={lon}
+          doy={doy}
+          canSynthesize={exposure !== null}
+          nowStatus={isToday ? todayNowStatus : null}
+          cityName={cityName}
+          cityFlag={cityFlag}
+          hasLocation={app.hasLocation}
+          onSelectCity={(c) => { setExploreCity(c); app.selectCity(c); }}
+          onAddFav={app.toggleFav}
+          favorites={app.favorites}
+          allCities={app.allCities}
+          peakElevation={peak}
+          dateLabel={dateLabel}
+          targetIU={app.targetIU}
+          onRequestGps={app.gps.enableGps}
+          gpsLoading={app.gps.loading}
+          gpsSlow={app.gps.slow}
+          gpsError={app.gps.error}
+        />
+      </div>
 
       {/* Local city search — only affects Explore, not Dashboard */}
       {app.hasLocation && (
-        <div className="mx-auto max-w-[960px] px-4 pb-2 flex items-center gap-2">
+        <div className="mx-auto max-w-[1280px] px-4 pt-4 pb-2 flex items-center gap-2">
           <div className="flex-1">
             <CitySearch
               onSelect={(city) => { setExploreCity(city); app.selectCity(city); }}
@@ -137,7 +155,7 @@ export default function ExplorePage() {
 
       {/* Entry into the per-city SEO pages, which are otherwise only reachable
           from Google or the sitemap: the current city direct, plus the full index. */}
-      <div className="mx-auto max-w-[960px] px-4 pb-1 text-xs flex items-center gap-4">
+      <div className="mx-auto max-w-[1280px] px-4 pb-1 text-caption flex items-center gap-4">
         <CityPageLink cityId={cityId} lat={lat} lon={lon} />
         <Link href={indexPath(locale)} className="text-accent underline decoration-dotted">
           {tCity("allCitiesLink")} →
@@ -171,11 +189,11 @@ export default function ExplorePage() {
       />
 
       {/* Zone 3 -- Date controls */}
-      <section className="mx-auto max-w-[960px] px-4 pt-6 pb-2">
+      <section className="mx-auto max-w-[1280px] px-4 pt-6 pb-2">
         <div className="flex items-center gap-2 flex-wrap">
           <button
             onClick={() => setDoy((d: number) => Math.max(1, d - 1))}
-            className="min-h-[44px] px-2 py-1.5 rounded-md bg-surface-elevated text-text-secondary cursor-pointer text-[10px]"
+            className="min-h-[44px] px-3 py-1.5 rounded-md bg-surface-elevated text-text-secondary cursor-pointer text-body"
           >
             ◀
           </button>
@@ -185,20 +203,20 @@ export default function ExplorePage() {
             max="365"
             value={doy}
             onChange={(e) => setDoy(parseInt(e.target.value))}
-            className="flex-1 min-w-[140px] h-1 accent-amber-400"
+            className="flex-1 min-w-[140px] h-1.5 accent-amber-400"
           />
           <button
             onClick={() => setDoy((d: number) => Math.min(365, d + 1))}
-            className="min-h-[44px] px-2 py-1.5 rounded-md bg-surface-elevated text-text-secondary cursor-pointer text-[10px]"
+            className="min-h-[44px] px-3 py-1.5 rounded-md bg-surface-elevated text-text-secondary cursor-pointer text-body"
           >
             ▶
           </button>
-          <span className="font-mono text-[11px] text-accent min-w-[50px]">
+          <span className="font-mono text-caption text-accent min-w-[64px]">
             {dateLabel}
           </span>
           <button
             onClick={toggleAnim}
-            className={`min-h-[44px] px-3 py-1.5 rounded-md text-[10px] font-semibold cursor-pointer ${
+            className={`min-h-[44px] px-4 py-1.5 rounded-md text-caption font-semibold cursor-pointer ${
               animating
                 ? "bg-red-500/15 text-red-400"
                 : "bg-amber-400/10 text-accent"
@@ -210,8 +228,8 @@ export default function ExplorePage() {
       </section>
 
       {/* Legend */}
-      <div className="mx-auto max-w-[960px] px-4 mt-6">
-        <div className="flex flex-wrap items-center gap-3 py-1.5 px-3 rounded-lg bg-surface-card border border-border-subtle text-[9px] text-text-faint">
+      <div className="mx-auto max-w-[1280px] px-4 mt-6">
+        <div className="flex flex-wrap items-center gap-3 py-2 px-3 rounded-lg bg-glass border border-glass-border backdrop-blur-md text-caption text-text-muted">
           <span>{t("legend.vitDHours")}</span>
           <div className="w-[100px] h-1.5 rounded-sm bg-gradient-to-r from-[#0a0f28] via-[#b36200] to-amber-400" />
           <span className="font-mono">{t("legend.range")}</span>
@@ -229,44 +247,44 @@ export default function ExplorePage() {
       </div>
 
       {/* Related questions — deep links to /learn anchors */}
-      <section className="mx-auto max-w-[960px] px-4 mt-8">
-        <div className="mb-3">
-          <h2 className="text-[13px] font-semibold text-text-primary">
+      <section className="mx-auto max-w-[1280px] px-4 mt-10">
+        <div className="mb-4">
+          <h2 className="font-display font-bold text-2xl sm:text-3xl tracking-tight text-text-primary">
             {t("explore.faqHeading")}
           </h2>
-          <p className="text-[10px] text-text-faint mt-0.5">
+          <p className="text-caption text-text-muted mt-1">
             {t("explore.faqSubheading")}
           </p>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {FAQ_LINKS.map((link) => (
             <Link
               key={link.anchor}
               href={`/learn#${link.anchor}`}
-              className="flex items-start gap-2 rounded-xl border border-border-subtle bg-surface-card px-3 py-2 hover:bg-surface-elevated transition-colors"
+              className="flex items-start gap-3 rounded-2xl border border-glass-border bg-glass backdrop-blur-md shadow-lg px-4 py-3 hover:bg-surface-elevated transition-colors"
             >
-              <span className="text-base leading-none mt-0.5">{link.emoji}</span>
+              <span className="text-2xl leading-none mt-0.5">{link.emoji}</span>
               <div className="flex-1 min-w-0">
-                <p className="text-[12px] font-medium text-text-secondary truncate">
+                <p className="text-body font-semibold text-text-primary truncate">
                   {t(link.titleKey)}
                 </p>
-                <p className="text-[10px] text-text-faint mt-0.5 line-clamp-2">
+                <p className="text-caption text-text-muted mt-0.5 line-clamp-2">
                   {t(link.subKey)}
                 </p>
               </div>
-              <span className="text-text-faint text-[11px] mt-1">→</span>
+              <span className="text-text-muted text-body mt-1">→</span>
             </Link>
           ))}
         </div>
-        <div className="mt-3">
-          <Link href="/learn" className="text-[11px] text-text-muted hover:text-text-secondary transition-colors">
+        <div className="mt-4">
+          <Link href="/learn" className="text-caption text-text-muted hover:text-text-secondary transition-colors">
             {t("explore.faqCta")}
           </Link>
         </div>
       </section>
 
       {/* Footer */}
-      <div className="mx-auto max-w-[960px] px-4 mt-3 text-[9px] text-text-faint leading-relaxed">
+      <div className="mx-auto max-w-[1280px] px-4 mt-4 text-caption text-text-faint leading-relaxed">
         {t("app.footer")}
       </div>
     </>

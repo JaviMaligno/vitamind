@@ -71,14 +71,14 @@ export default function VisualizationZone({
   ];
 
   return (
-    <section className="mx-auto max-w-[960px] px-4 py-2">
+    <section className="mx-auto max-w-[1280px] px-4 py-2">
       {/* Tab bar */}
       <div className="flex gap-1 mb-3">
         {TABS.map(({ key, label }) => (
           <button
             key={key}
             onClick={() => setTab(key)}
-            className={`px-5 py-2 rounded-t-lg text-xs font-medium transition-colors cursor-pointer border-b-2 ${
+            className={`px-5 py-2.5 rounded-t-lg text-body font-medium transition-colors cursor-pointer border-b-2 ${
               tab === key
                 ? "bg-surface-elevated text-accent border-amber-400 font-semibold"
                 : "bg-transparent text-text-muted border-transparent hover:text-text-secondary"
@@ -89,15 +89,16 @@ export default function VisualizationZone({
         ))}
       </div>
 
-      {/* Visualization content */}
-      <div className="rounded-xl border border-border-default bg-surface-card p-3">
+      {/* Visualization content — a dark "window to the sky": the charts are
+          drawn on a deep-navy plot area, so a dark window frames them naturally. */}
+      <div className="rounded-2xl border border-window-border bg-window text-on-window p-4 shadow-lg">
         {tab === "curve" && (
           <>
-            <div className="text-[10px] text-text-muted mb-1 pl-2">
-              <strong className="text-text-secondary">{tViz("dailyCurveTitle")}</strong> ·{" "}
+            <div className="text-caption text-on-window-faint mb-2 pl-2">
+              <strong className="text-on-window">{tViz("dailyCurveTitle")}</strong> ·{" "}
               {cityFlag} {cityName} · {dateLabel}
               {weather && (
-                <span className="ml-2 text-text-faint">
+                <span className="ml-2 text-on-window-faint">
                   · {tViz("withWeatherData")}
                 </span>
               )}
@@ -119,13 +120,13 @@ export default function VisualizationZone({
 
         {tab === "map" && (
           <>
-            <div className="flex justify-end mb-1 pr-2">
+            <div className="flex justify-end mb-2 pr-2">
               <button
                 onClick={onScrubModeToggle}
-                className={`px-3 py-1 rounded-md text-[9px] cursor-pointer ${
+                className={`px-3 py-1.5 rounded-md text-caption cursor-pointer ${
                   scrubMode
-                    ? "bg-amber-400/15 text-accent font-semibold"
-                    : "bg-surface-elevated text-text-muted"
+                    ? "bg-amber-400/20 text-amber-300 font-semibold"
+                    : "bg-white/10 text-on-window-faint hover:bg-white/15"
                 }`}
               >
                 {scrubMode ? tViz("explore") : tViz("move")}
@@ -145,8 +146,8 @@ export default function VisualizationZone({
 
         {tab === "heatmap" && (
           <>
-            <div className="text-[10px] text-text-muted mb-1 pl-2">
-              <strong className="text-text-secondary">{tViz("heatmapTitle")}</strong> ·{" "}
+            <div className="text-caption text-on-window-faint mb-2 pl-2">
+              <strong className="text-on-window">{tViz("heatmapTitle")}</strong> ·{" "}
               {tViz("heatmapDesc")} ·{" "}
               <em>{tViz("heatmapHint")}</em>
             </div>
