@@ -206,9 +206,9 @@ export default async function CityPage({ params }: { params: Promise<Params> }) 
         </Card>
       </section>
 
-      {/* Asymmetric section: seasonal windows on the left (wider), supplement +
-          CTA + FAQ stacked on the right — breaks the uniform card column. */}
-      <div className="mt-10 sm:mt-16 grid lg:grid-cols-[1.15fr_0.85fr] gap-6 lg:gap-10 items-start">
+      {/* Seasonal windows + supplement: two balanced columns (supplement drops
+          when the city synthesizes all year, and then seasons runs full-width). */}
+      <div className={`mt-10 sm:mt-16 grid gap-6 lg:gap-8 items-start ${profile.allYear ? "" : "lg:grid-cols-2"}`}>
         <Card variant="glass" className="!p-6 sm:!p-8">
           <h2 className="font-display text-title sm:text-2xl font-bold">{t("seasonHeading")}</h2>
           <ul className="mt-4 space-y-3 text-body sm:text-heading">
@@ -230,34 +230,37 @@ export default async function CityPage({ params }: { params: Promise<Params> }) 
           <p className="mt-4 text-caption text-text-muted">{t("seasonNote")}</p>
         </Card>
 
-        <div className="flex flex-col gap-6">
-          {!profile.allYear && (
-            <Card variant="glass">
-              <h2 className="font-display text-title font-bold">{t("supplementHeading", labels)}</h2>
-              <p className="text-body mt-2">{t("supplementBody")}</p>
-              <A href="/learn#supplement" className="text-caption mt-2 inline-block">
-                {t("supplementMore")}
-              </A>
-            </Card>
-          )}
-
-          <Link href="/dashboard" className={ctaClasses}>
-            {t("ctaLabel", labels)}
-          </Link>
-
-          <Card variant="glass">
-            <h2 className="font-display text-title font-bold">{t("faqHeading", labels)}</h2>
-            <dl className="mt-3 space-y-3">
-              {faq.map((q) => (
-                <div key={q.name}>
-                  <dt className="font-semibold">{q.name}</dt>
-                  <dd className="text-body text-text-muted">{q.acceptedAnswer.text}</dd>
-                </div>
-              ))}
-            </dl>
+        {!profile.allYear && (
+          <Card variant="glass" className="!p-6 sm:!p-8">
+            <h2 className="font-display text-title sm:text-2xl font-bold">{t("supplementHeading", labels)}</h2>
+            <p className="text-body mt-3 sm:text-heading">{t("supplementBody")}</p>
+            <A href="/learn#supplement" className="text-caption mt-3 inline-block">
+              {t("supplementMore")}
+            </A>
           </Card>
-        </div>
+        )}
       </div>
+
+      {/* Primary CTA — full-width, centered conversion band (the main action, so
+          it stands on its own instead of being tucked into a column). */}
+      <div className="mt-10 sm:mt-14 flex justify-center">
+        <Link href="/dashboard" className={`${ctaClasses} w-full sm:w-auto sm:min-w-[420px]`}>
+          {t("ctaLabel", labels)}
+        </Link>
+      </div>
+
+      {/* FAQ — full-width, two columns on desktop. */}
+      <section className="mt-10 sm:mt-16">
+        <h2 className="font-display text-2xl sm:text-3xl font-bold">{t("faqHeading", labels)}</h2>
+        <dl className="mt-5 grid gap-5 sm:grid-cols-2 sm:gap-8">
+          {faq.map((q) => (
+            <div key={q.name}>
+              <dt className="font-semibold text-heading">{q.name}</dt>
+              <dd className="text-body text-text-muted mt-1">{q.acceptedAnswer.text}</dd>
+            </div>
+          ))}
+        </dl>
+      </section>
 
       {/* Cross-links to the nearest cities: turns the 438 pages into a crawlable
           mesh and gives the reader somewhere to go. Static, so Google follows it.
