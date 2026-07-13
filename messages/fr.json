@@ -690,6 +690,8 @@
   "indexDescription": "Quand vous pouvez synthétiser la vitamine D au soleil dans 73 villes du monde\u202f: mois possibles, fenêtres saisonnières et quand se supplémenter.",
   "indexHeading": "Vitamine D du soleil, ville par ville",
   "indexIntro": "Choisissez votre ville pour voir les mois où le soleil permet de produire de la vitamine D, avec les fenêtres de chaque saison.",
+  "indexEyebrow": "Répertoire des villes",
+  "indexCitiesLabel": "villes",
   "allCitiesLink": "Voir toutes les villes",
   "viewCityPage": "{city}\u202f: page complète →",
   "indexBandVeryHigh": "Latitudes extrêmes (55°+) — longs hivers sans soleil utile",

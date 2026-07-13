@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import Card from "@/components/ui/Card";
-import A from "@/components/ui/A";
+import { Link } from "@/i18n/navigation";
+import IndexHeroBold from "@/components/IndexHeroBold";
 import { BUILTIN_CITIES } from "@/lib/cities";
 import {
   CITY_PREFIX, baseSlug, localizedCityName, cityPathname,
@@ -97,7 +97,7 @@ export default async function CityIndexPage({ params }: { params: Promise<Params
   })).filter((band) => band.cities.length > 0);
 
   return (
-    <main className="mx-auto max-w-[1100px] px-4 py-6">
+    <main className="mx-auto max-w-[1280px] px-4 py-6 sm:py-8">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -114,25 +114,37 @@ export default async function CityIndexPage({ params }: { params: Promise<Params
         }}
       />
 
-      <Card variant="glass">
-        <h1 className="font-display text-display">{t("indexHeading")}</h1>
-        <p className="mt-2 text-body text-text-secondary">{t("indexIntro")}</p>
-      </Card>
+      <IndexHeroBold
+        eyebrow={t("indexEyebrow")}
+        title={t("indexHeading")}
+        intro={t("indexIntro")}
+        count={cities.length}
+        countLabel={t("indexCitiesLabel")}
+      />
 
-      <div className="mt-6 space-y-6">
+      <div className="mt-10 space-y-8 sm:mt-16 sm:space-y-10">
         {bands.map((band) => (
-          <Card variant="glass" key={band.key}>
-            <h2 className="font-display text-title">{t(band.headingKey)}</h2>
-            <ul className="mt-3 grid grid-cols-1 gap-x-6 gap-y-1 sm:grid-cols-2 lg:grid-cols-3">
+          <section key={band.key}>
+            <h2 className="font-display font-bold text-2xl sm:text-3xl md:text-4xl tracking-tight text-text-primary">
+              {t(band.headingKey)}
+            </h2>
+            <ul className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {band.cities.map((c) => (
-                <li key={c.base} className="flex min-h-[44px] items-center gap-2 text-body">
-                  <span aria-hidden="true" className="text-lg">{c.flag}</span>
-                  <A href={c.href}>{c.name}</A>
-                  <span className="text-caption text-text-muted">· {c.datum}</span>
+                <li key={c.base}>
+                  <Link
+                    href={c.href}
+                    className="flex min-h-[56px] items-center gap-3 rounded-2xl bg-glass border border-glass-border backdrop-blur-md px-4 py-3 shadow-lg transition-colors hover:bg-surface-elevated focus-visible:outline focus-visible:outline-2 focus-visible:outline-sun"
+                  >
+                    <span aria-hidden="true" className="text-2xl">{c.flag}</span>
+                    <span className="flex min-w-0 flex-col">
+                      <span className="text-body font-semibold text-text-primary">{c.name}</span>
+                      <span className="text-caption text-text-muted">{c.datum}</span>
+                    </span>
+                  </Link>
                 </li>
               ))}
             </ul>
-          </Card>
+          </section>
         ))}
       </div>
     </main>

@@ -690,6 +690,8 @@
   "indexDescription": "Wann du in 73 Städten weltweit Vitamin D durch die Sonne bilden kannst: mögliche Monate, saisonale Zeitfenster und wann du supplementieren solltest.",
   "indexHeading": "Vitamin D durch Sonne, Stadt für Stadt",
   "indexIntro": "Wähle deine Stadt, um zu sehen, in welchen Monaten die Sonne dort Vitamin D möglich macht — mit den Zeitfenstern jeder Jahreszeit.",
+  "indexEyebrow": "Städteverzeichnis",
+  "indexCitiesLabel": "Städte",
   "allCitiesLink": "Alle Städte ansehen",
   "viewCityPage": "{city}: vollständige Seite →",
   "indexBandVeryHigh": "Extreme Breiten (55°+) — lange Winter ohne nutzbare Sonne",
