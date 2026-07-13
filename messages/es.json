@@ -50,6 +50,8 @@
   },
   "config": {
     "title": "Configuración",
+    "eyebrow": "Personaliza tu vitamina D",
+    "subtitle": "Tu ciudad, tu piel y cuándo te avisamos — todo en un sitio.",
     "searchCity": "Buscar ciudad",
     "favorites": "Favoritos",
     "edit": "✎ Editar",

@@ -50,6 +50,8 @@
   },
   "config": {
     "title": "Nustatymai",
+    "eyebrow": "Pritaikykite savo vitaminą D",
+    "subtitle": "Jūsų miestas, oda ir kada pranešti — viskas vienoje vietoje.",
     "searchCity": "Ieškoti miesto",
     "favorites": "Mėgstamiausi",
     "edit": "✎ Redaguoti",

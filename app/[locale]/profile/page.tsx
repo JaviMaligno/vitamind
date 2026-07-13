@@ -13,6 +13,7 @@ import GpsButton from "@/components/GpsButton";
 import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
 import Chip from "@/components/ui/Chip";
+import ProfileHeroBold from "@/components/ProfileHeroBold";
 
 // Same full-row nav-link treatment as the dashboard's "Learn more" row: glass
 // surface, accent-coloured chevron, no underline (a nav row, not inline text,
@@ -20,7 +21,7 @@ import Chip from "@/components/ui/Chip";
 const navRowClasses =
   "flex items-center justify-between rounded-2xl bg-glass border border-glass-border backdrop-blur-md px-4 py-3 shadow-lg hover:bg-surface-elevated transition-colors";
 
-const sectionHeading = "font-display text-heading text-text-primary";
+const sectionHeading = "font-display font-bold text-xl sm:text-2xl text-text-primary";
 
 interface TipPanelProps {
   open: boolean;
@@ -63,14 +64,17 @@ export default function ProfilePage() {
 
   if (!mounted) {
     return (
-      <div className="mx-auto max-w-[960px] px-4 space-y-6">
+      <div className="mx-auto max-w-[1280px] px-4 space-y-6">
         <div className="min-h-[600px]" aria-hidden />
       </div>
     );
   }
 
   return (
-    <div className="mx-auto max-w-[960px] px-4 space-y-6">
+    <div className="mx-auto max-w-[1280px] px-4 py-6 sm:py-8 space-y-6 sm:space-y-8">
+      {/* Bold poster hero (text-only), matching the rest of the redesign. */}
+      <ProfileHeroBold eyebrow={t("eyebrow")} title={t("title")} subtitle={t("subtitle")} />
+
       {/* Search city */}
       <Card variant="glass">
         <h3 className={`${sectionHeading} mb-3`}>{t("searchCity")}</h3>
@@ -167,6 +171,8 @@ export default function ProfilePage() {
         </div>
       </Card>
 
+      {/* "How you synthesize" pair — balanced 2-col on desktop. */}
+      <div className="grid gap-6 lg:grid-cols-2 items-start">
       {/* Solar profile */}
       <Card variant="glass">
         <div className="flex items-center gap-2 mb-3">
@@ -226,6 +232,7 @@ export default function ProfilePage() {
           {ts("targetHint", { max: Math.round(maxSessionIU(app.areaFraction, app.age)) })}
         </p>
       </Card>
+      </div>
 
       {/* Notifications */}
       <Card variant="glass">
