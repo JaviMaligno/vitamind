@@ -186,6 +186,7 @@ export default async function CityPage({ params }: { params: Promise<Params> }) 
             labelOff={t("notifyOff")}
             labelOn={t("notifyOn")}
             prominent
+            onDark
           />
         }
       />

@@ -18,6 +18,10 @@ interface Props {
   /** Render the off state as an inviting CTA (accent tint) instead of the subtle
    *  toggle look used on the profile page. */
   prominent?: boolean;
+  /** Use a light-on-dark palette — the toggle sits inside a dark hero panel (e.g.
+   *  the city page hero), where the theme's accent/muted tokens (tuned for the
+   *  light page surface) don't contrast. */
+  onDark?: boolean;
 }
 
 type Status = "loading" | "unsupported" | "denied" | "off" | "on";
@@ -31,7 +35,7 @@ function urlBase64ToUint8Array(base64String: string): Uint8Array {
   return arr;
 }
 
-export default function NotificationToggle({ lat, lon, tz, timezone, skinType, areaFraction, cityName, labelOff, labelOn, prominent }: Props) {
+export default function NotificationToggle({ lat, lon, tz, timezone, skinType, areaFraction, cityName, labelOff, labelOn, prominent, onDark }: Props) {
   const [status, setStatus] = useState<Status>("loading");
   const t = useTranslations("notifications");
   const tInstall = useTranslations("install");
@@ -179,13 +183,13 @@ export default function NotificationToggle({ lat, lon, tz, timezone, skinType, a
 
   if (status === "loading") {
     return (
-      <span className="text-xs text-text-faint italic">{t("loading")}</span>
+      <span className={`text-xs italic ${onDark ? "text-white/70" : "text-text-faint"}`}>{t("loading")}</span>
     );
   }
 
   if (status === "unsupported") {
     return (
-      <span className="text-xs text-text-faint">{t("unsupported")}</span>
+      <span className={`text-xs ${onDark ? "text-white/70" : "text-text-faint"}`}>{t("unsupported")}</span>
     );
   }
 
@@ -195,11 +199,17 @@ export default function NotificationToggle({ lat, lon, tz, timezone, skinType, a
       disabled={status === "denied"}
       className={`min-h-[44px] px-4 py-2 rounded-lg text-sm cursor-pointer transition-colors ${
         status === "on"
-          ? "bg-amber-400/15 text-accent font-semibold"
+          ? onDark
+            ? "bg-amber-400/25 text-amber-100 font-semibold ring-1 ring-amber-300/40"
+            : "bg-amber-400/15 text-accent font-semibold"
           : status === "denied"
-            ? "bg-red-500/[0.08] text-red-400/40 opacity-50 cursor-not-allowed"
+            ? onDark
+              ? "bg-red-500/25 text-red-100 ring-1 ring-red-300/30 cursor-not-allowed"
+              : "bg-red-500/[0.08] text-red-500/70 cursor-not-allowed"
             : prominent
-              ? "bg-amber-400/20 text-accent font-semibold ring-1 ring-accent/30 hover:bg-amber-400/30"
+              ? onDark
+                ? "bg-amber-400/30 text-white font-semibold ring-1 ring-amber-200/50 hover:bg-amber-400/40"
+                : "bg-amber-400/20 text-accent font-semibold ring-1 ring-accent/30 hover:bg-amber-400/30"
               : "bg-surface-elevated text-text-muted hover:bg-surface-input"
       }`}
       title={
