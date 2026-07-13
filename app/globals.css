@@ -111,3 +111,30 @@
   --color-glass-border: rgba(255, 255, 255, 0.12);
   /* window/on-window son iguales en ambos temas (siempre oscura) */
 }
+
+/* Typographic quality pass — applies app-wide so every page benefits.
+   - Smooth DM Sans on both platforms and hint the browser to optimise legibility.
+   - `text-wrap: balance` evens out headline line breaks (no lone last word);
+     `pretty` avoids widows in body copy. Both no-op gracefully where unsupported.
+   - Enable kerning + common ligatures for the Playfair display face.
+   - Tabular, lining figures line up numeric data (mono is used for all figures). */
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+  h1, h2, h3 {
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+  .font-display {
+    font-feature-settings: "kern", "liga", "clig";
+    letter-spacing: -0.011em;
+  }
+  .font-mono {
+    font-variant-numeric: tabular-nums lining-nums;
+  }
+}

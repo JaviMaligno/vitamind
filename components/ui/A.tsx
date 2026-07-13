@@ -5,7 +5,7 @@ import type { ComponentProps } from "react";
 export default function A({ className = "", ...rest }: ComponentProps<typeof Link>) {
   return (
     <Link
-      className={`text-sun-strong underline decoration-2 underline-offset-2 hover:opacity-80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sun ${className}`}
+      className={`text-sun-strong underline decoration-1 decoration-sun-strong/40 underline-offset-[3px] transition-colors hover:decoration-sun-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-sun ${className}`}
       {...rest}
     />
   );
