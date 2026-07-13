@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useApp } from "@/context/AppProvider";
@@ -10,6 +10,17 @@ import SkinSelector from "@/components/SkinSelector";
 import NotificationToggle from "@/components/NotificationToggle";
 import SaveLocationModal from "@/components/SaveLocationModal";
 import GpsButton from "@/components/GpsButton";
+import Card from "@/components/ui/Card";
+import Button from "@/components/ui/Button";
+import Chip from "@/components/ui/Chip";
+
+// Same full-row nav-link treatment as the dashboard's "Learn more" row: glass
+// surface, accent-coloured chevron, no underline (a nav row, not inline text,
+// so <A> — which is always underlined — doesn't fit here).
+const navRowClasses =
+  "flex items-center justify-between rounded-2xl bg-glass border border-glass-border backdrop-blur-md px-4 py-3 shadow-lg hover:bg-surface-elevated transition-colors";
+
+const sectionHeading = "font-display text-heading text-text-primary";
 
 interface TipPanelProps {
   open: boolean;
@@ -22,9 +33,9 @@ interface TipPanelProps {
 function TipPanel({ open, text, href, learnMoreLabel, onClose }: TipPanelProps) {
   if (!open) return null;
   return (
-    <div className="mt-2 mb-1 rounded-lg border border-border-subtle bg-surface-elevated px-3 py-2.5 text-[11px] text-text-muted leading-relaxed">
+    <div className="mt-2 mb-1 rounded-lg border border-border-subtle bg-surface-elevated px-3 py-2.5 text-caption text-text-muted leading-relaxed">
       <p>{text}</p>
-      <Link href={href} className="block mt-1.5 text-accent/70 hover:text-accent text-[10px]" onClick={onClose}>
+      <Link href={href} className="block mt-1.5 text-sun-strong hover:opacity-80 text-caption" onClick={onClose}>
         {learnMoreLabel} →
       </Link>
     </div>
@@ -41,25 +52,28 @@ export default function ProfilePage() {
   const [openTip, setOpenTip] = useState<string | null>(null);
   const closeTip = () => setOpenTip(null);
 
+  // Hydration guard: this page renders state hydrated from localStorage
+  // (app.lat/lon/skinType/favorites/targetIU/cityName via AppProvider), which
+  // can differ between server and first client render → React #418. Render a
+  // stable, data-free placeholder until mounted, then swap to the real
+  // content. All hooks above still run unconditionally every render; only the
+  // returned JSX branches on `mounted`.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
+  if (!mounted) {
+    return (
+      <div className="mx-auto max-w-[960px] px-4 space-y-6">
+        <div className="min-h-[600px]" aria-hidden />
+      </div>
+    );
+  }
+
   return (
     <div className="mx-auto max-w-[960px] px-4 space-y-6">
-      {/* Learn more — top entry point */}
-      <Link
-        href="/learn"
-        className="flex items-center justify-between rounded-xl border border-border-subtle bg-surface-card px-4 py-3 hover:bg-surface-elevated transition-colors"
-      >
-        <div className="flex items-center gap-2">
-          <span className="text-base">📖</span>
-          <span className="text-[12px] font-medium text-text-secondary">{tc("learnMore")}</span>
-        </div>
-        <span className="text-text-faint text-[11px]">→</span>
-      </Link>
-
       {/* Search city */}
-      <section>
-        <h3 className="text-[11px] uppercase tracking-wider text-text-faint font-semibold mb-3">
-          {t("searchCity")}
-        </h3>
+      <Card variant="glass">
+        <h3 className={`${sectionHeading} mb-3`}>{t("searchCity")}</h3>
         <div className="flex flex-wrap gap-3 items-center">
           <CitySearch
             onSelect={app.selectCity}
@@ -69,7 +83,7 @@ export default function ProfilePage() {
           />
           <GpsButton />
           <div className="flex gap-1.5 items-center">
-            <span className="text-[9px] text-text-faint">{tc("lat")}</span>
+            <span className="text-caption text-text-faint">{tc("lat")}</span>
             <input
               value={app.lat}
               onChange={(e) => {
@@ -79,7 +93,7 @@ export default function ProfilePage() {
               }}
               className="w-16 px-2 py-1.5 rounded-lg bg-surface-input border border-border-default text-text-primary text-[11px] font-mono outline-none"
             />
-            <span className="text-[9px] text-text-faint">{tc("lon")}</span>
+            <span className="text-caption text-text-faint">{tc("lon")}</span>
             <input
               value={app.lon}
               onChange={(e) => {
@@ -95,19 +109,13 @@ export default function ProfilePage() {
         {/* Actions row */}
         <div className="flex flex-wrap gap-2 mt-3 items-center">
           {!app.isCurrentFav && app.cityName && (
-            <button
-              onClick={() => app.toggleFav(app.cityId)}
-              className="min-h-[44px] px-3 py-1 rounded-full bg-amber-400/10 text-accent text-[10px] font-semibold cursor-pointer"
-            >
+            <Button variant="secondary" onClick={() => app.toggleFav(app.cityId)}>
               {tc("favorite")}
-            </button>
+            </Button>
           )}
-          <button
-            onClick={() => setSavingLocation(true)}
-            className="min-h-[44px] px-3 py-1 rounded-full bg-surface-elevated text-text-muted text-[10px] cursor-pointer"
-          >
+          <Button variant="secondary" onClick={() => setSavingLocation(true)}>
             {tc("saveAs")}
-          </button>
+          </Button>
         </div>
         {savingLocation && (
           <div className="mt-3">
@@ -124,41 +132,28 @@ export default function ProfilePage() {
             />
           </div>
         )}
-      </section>
+      </Card>
 
       {/* Favorites */}
-      <section>
-        <h3 className="text-[11px] uppercase tracking-wider text-text-faint font-semibold mb-3">
-          {t("favorites")}
-        </h3>
-        <div className="flex flex-wrap gap-1 items-center">
+      <Card variant="glass">
+        <h3 className={`${sectionHeading} mb-3`}>{t("favorites")}</h3>
+        <div className="flex flex-wrap gap-1.5 items-center">
           {app.favorites.map((fid) => {
             const c = app.allCities.find((x) => x.id === fid);
             if (!c) return null;
             const isSel = app.cityId === fid;
             return (
-              <div key={fid} className="flex items-center">
-                <button
-                  onClick={() => app.selectCity(c)}
-                  className={`min-h-[44px] px-2.5 py-1 text-[10px] cursor-pointer ${
-                    app.editingFavs
-                      ? "rounded-l-xl"
-                      : "rounded-xl"
-                  } ${
-                    isSel
-                      ? "bg-amber-400/[0.18] text-accent font-semibold"
-                      : "bg-surface-card text-text-muted"
-                  }`}
-                >
+              <div key={fid} className="flex items-center gap-1">
+                <Chip active={isSel} onClick={() => app.selectCity(c)}>
                   {c.flag} {c.name}
-                </button>
+                </Chip>
                 {app.editingFavs && (
                   <button
                     onClick={() => {
                       app.toggleFav(fid);
                       if (c.source === "custom") app.handleDeleteCustom(fid);
                     }}
-                    className="min-h-[44px] px-1.5 py-1 rounded-r-xl bg-red-500/10 text-red-400 text-[9px] cursor-pointer"
+                    className="min-h-[44px] px-2.5 rounded-xl bg-red-500/10 text-red-400 text-caption cursor-pointer"
                   >
                     ✕
                   </button>
@@ -166,25 +161,16 @@ export default function ProfilePage() {
               </div>
             );
           })}
-          <button
-            onClick={() => app.setEditingFavs(!app.editingFavs)}
-            className={`min-h-[44px] px-2.5 py-1 rounded-xl text-[9px] cursor-pointer ${
-              app.editingFavs
-                ? "bg-amber-400/10 text-accent"
-                : "bg-surface-card text-text-faint"
-            }`}
-          >
+          <Chip active={app.editingFavs} onClick={() => app.setEditingFavs(!app.editingFavs)}>
             {app.editingFavs ? t("done") : t("edit")}
-          </button>
+          </Chip>
         </div>
-      </section>
+      </Card>
 
       {/* Solar profile */}
-      <section>
+      <Card variant="glass">
         <div className="flex items-center gap-2 mb-3">
-          <h3 className="text-[11px] uppercase tracking-wider text-text-faint font-semibold flex-1">
-            {t("solarProfile")}
-          </h3>
+          <h3 className={`${sectionHeading} flex-1`}>{t("solarProfile")}</h3>
           <button
             onClick={() => setOpenTip(openTip === "skin" ? null : "skin")}
             className="w-5 h-5 rounded-full bg-surface-elevated text-text-faint hover:text-text-muted text-[9px] font-bold inline-flex items-center justify-center transition-colors cursor-pointer"
@@ -199,17 +185,15 @@ export default function ProfilePage() {
           onAreaChange={app.setAreaFraction}
           onAgeChange={app.setAge}
         />
-        <p className="text-[9px] text-text-faint mt-1.5 leading-relaxed">
+        <p className="text-caption text-text-faint mt-1.5 leading-relaxed">
           {ts("exposureDefaultHint")}
         </p>
-      </section>
+      </Card>
 
       {/* Target IU */}
-      <section>
+      <Card variant="glass">
         <div className="flex items-center gap-2 mb-3">
-          <h3 className="text-[11px] uppercase tracking-wider text-text-faint font-semibold flex-1">
-            {t("targetIU")}
-          </h3>
+          <h3 className={`${sectionHeading} flex-1`}>{t("targetIU")}</h3>
           <button
             onClick={() => setOpenTip(openTip === "iu" ? null : "iu")}
             className="w-5 h-5 rounded-full bg-surface-elevated text-text-faint hover:text-text-muted text-[9px] font-bold inline-flex items-center justify-center transition-colors cursor-pointer"
@@ -218,17 +202,9 @@ export default function ProfilePage() {
         <TipPanel open={openTip === "iu"} text={ts("tipTargetIU")} href="/learn#supplement" learnMoreLabel={tc("learnMore")} onClose={closeTip} />
         <div className="flex flex-wrap gap-1.5 items-center">
           {TARGET_IU_PRESETS.map(({ value, labelKey }) => (
-            <button
-              key={value}
-              onClick={() => app.setTargetIU(value)}
-              className={`min-h-[44px] px-3 py-1.5 rounded-md text-[10px] cursor-pointer ${
-                app.targetIU === value
-                  ? "bg-amber-400/15 text-accent font-semibold"
-                  : "bg-surface-card text-text-muted"
-              }`}
-            >
-              <span className="font-mono">{value}</span> <span className="text-[9px]">{ts(labelKey)}</span>
-            </button>
+            <Chip key={value} active={app.targetIU === value} onClick={() => app.setTargetIU(value)}>
+              <span className="font-mono">{value}</span> {ts(labelKey)}
+            </Chip>
           ))}
           <div className="flex items-center gap-1.5">
             <input
@@ -243,19 +219,17 @@ export default function ProfilePage() {
               }}
               className="w-20 min-h-[44px] px-2 py-1.5 rounded-md bg-surface-input border border-border-default text-text-primary text-[11px] font-mono outline-none text-center"
             />
-            <span className="text-[10px] text-text-muted">IU</span>
+            <span className="text-caption text-text-muted">IU</span>
           </div>
         </div>
-        <p className="text-[9px] text-text-faint mt-2 leading-relaxed">
+        <p className="text-caption text-text-faint mt-2 leading-relaxed">
           {ts("targetHint", { max: Math.round(maxSessionIU(app.areaFraction, app.age)) })}
         </p>
-      </section>
+      </Card>
 
       {/* Notifications */}
-      <section>
-        <h3 className="text-[11px] uppercase tracking-wider text-text-faint font-semibold mb-3">
-          {t("notifications")}
-        </h3>
+      <Card variant="glass">
+        <h3 className={`${sectionHeading} mb-3`}>{t("notifications")}</h3>
         <NotificationToggle
           lat={app.lat}
           lon={app.lon}
@@ -266,8 +240,17 @@ export default function ProfilePage() {
           cityName={app.cityName}
           prominent
         />
-      </section>
+      </Card>
 
+      {/* Learn more — moved to the bottom; an educational deep-dive belongs
+          after the settings, not ahead of them. */}
+      <Link href="/learn" className={navRowClasses}>
+        <div className="flex items-center gap-2">
+          <span className="text-base">📖</span>
+          <span className="text-caption font-medium text-text-secondary">{tc("learnMore")}</span>
+        </div>
+        <span className="text-sun-strong text-caption">→</span>
+      </Link>
     </div>
   );
 }
