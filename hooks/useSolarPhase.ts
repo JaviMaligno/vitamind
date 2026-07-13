@@ -8,12 +8,6 @@ import { solarPhase, type SolarPhase } from "@/lib/solar-phase";
 export function useSolarPhase(lat: number, lon: number): SolarPhase | null {
   const [phase, setPhase] = useState<SolarPhase | null>(null);
   useEffect(() => {
-    // QA override: ?phase=dawn|day|dusk|night forces the phase (skips the clock).
-    const forced = new URLSearchParams(window.location.search).get("phase");
-    if (forced === "dawn" || forced === "day" || forced === "dusk" || forced === "night") {
-      setPhase(forced);
-      return;
-    }
     function compute() {
       const now = new Date();
       const utcH = now.getUTCHours() + now.getUTCMinutes() / 60;
