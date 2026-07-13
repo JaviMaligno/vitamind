@@ -67,7 +67,7 @@ export default function LearnHeroBold({
 
       <div
         className="absolute inset-0"
-        style={{ background: "linear-gradient(190deg, rgba(6,8,20,0.05) 0%, rgba(6,8,20,0.16) 45%, rgba(6,8,20,0.6) 100%)" }}
+        style={{ background: "linear-gradient(190deg, rgba(6,8,20,0.05) 0%, rgba(6,8,20,0.2) 45%, rgba(6,8,20,0.72) 100%)" }}
         aria-hidden
       />
 

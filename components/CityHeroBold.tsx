@@ -49,7 +49,7 @@ export default function CityHeroBold({
   const statColor = tone === "possible" ? "#4ade80" : "#cbd5e1";
 
   return (
-    <section className="relative isolate overflow-hidden rounded-[2rem] sm:rounded-[2.5rem] min-h-[440px] sm:min-h-[560px] lg:min-h-[70vh]">
+    <section className="relative isolate overflow-hidden rounded-[2rem] sm:rounded-[2.5rem] min-h-[440px] sm:min-h-[560px] lg:min-h-[600px]">
       {/* the sky */}
       <div className="absolute inset-0" style={{ background: PHASE_STYLE[phase].grad }} suppressHydrationWarning aria-hidden />
 
@@ -103,13 +103,13 @@ export default function CityHeroBold({
           content that sits at the bottom */}
       <div
         className="absolute inset-0"
-        style={{ background: "linear-gradient(190deg, rgba(6,8,20,0.06) 0%, rgba(6,8,20,0.18) 40%, rgba(6,8,20,0.68) 100%)" }}
+        style={{ background: "linear-gradient(190deg, rgba(6,8,20,0.05) 0%, rgba(6,8,20,0.24) 42%, rgba(6,8,20,0.8) 100%)" }}
         aria-hidden
       />
 
       {/* content, anchored to the bottom like a poster */}
       <div className="relative z-10 flex h-full flex-col justify-end gap-5 p-6 sm:p-10 lg:p-14">
-        <p className="text-caption sm:text-sm font-semibold uppercase tracking-[0.2em] text-white/70">
+        <p className="text-caption sm:text-sm font-semibold uppercase tracking-[0.2em] text-white/80">
           {eyebrow}
         </p>
 
@@ -124,17 +124,17 @@ export default function CityHeroBold({
           >
             {statPhrase}
           </p>
-          <p className="mt-2 text-lg sm:text-xl md:text-2xl text-white/90 max-w-2xl [text-shadow:0_1px_10px_rgba(0,0,0,0.35)]">
+          <p className="mt-2 text-lg sm:text-xl md:text-2xl text-white max-w-2xl [text-shadow:0_1px_10px_rgba(0,0,0,0.4)]">
             {verdict}
           </p>
           {impossibleText && (
-            <p className="mt-2 text-body sm:text-lg text-white/70 max-w-2xl">{impossibleText}</p>
+            <p className="mt-2 text-body sm:text-lg text-white/80 max-w-2xl [text-shadow:0_1px_8px_rgba(0,0,0,0.35)]">{impossibleText}</p>
           )}
         </div>
 
         {dateRange && (
           <div>
-            <div className="text-caption sm:text-sm uppercase tracking-wide text-white/60">{exactWindowLabel}</div>
+            <div className="text-caption sm:text-sm uppercase tracking-wide text-white/70">{exactWindowLabel}</div>
             <div className="font-display text-2xl sm:text-3xl md:text-4xl font-semibold text-white">{dateRange}</div>
           </div>
         )}

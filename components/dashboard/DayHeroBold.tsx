@@ -118,7 +118,7 @@ export default function DayHeroBold({ nowStatus, cityName, cityFlag, targetIU, l
       {/* legibility scrim */}
       <div
         className="absolute inset-0"
-        style={{ background: "linear-gradient(190deg, rgba(6,8,20,0.06) 0%, rgba(6,8,20,0.18) 40%, rgba(6,8,20,0.68) 100%)" }}
+        style={{ background: "linear-gradient(190deg, rgba(6,8,20,0.05) 0%, rgba(6,8,20,0.24) 42%, rgba(6,8,20,0.8) 100%)" }}
         aria-hidden
       />
 
