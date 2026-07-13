@@ -9,14 +9,13 @@ import { useCityDisplayName } from "@/hooks/useCityDisplayName";
 import { useHistory } from "@/hooks/useHistory";
 import { useForecast } from "@/hooks/useForecast";
 import { useNowStatus } from "@/hooks/useNowStatus";
-import DayRecommendation from "@/components/dashboard/DayRecommendation";
+import DayHeroBold from "@/components/dashboard/DayHeroBold";
 import ForecastRow from "@/components/dashboard/ForecastRow";
 import HistoryCalendar from "@/components/dashboard/HistoryCalendar";
 import ExposureQuickPicker from "@/components/dashboard/ExposureQuickPicker";
 import CitySearch from "@/components/CitySearch";
 import GpsButton from "@/components/GpsButton";
 import PartnerBadge from "@/components/PartnerBadge";
-import CityHero from "@/components/CityHero";
 import Card from "@/components/ui/Card";
 import { Link } from "@/i18n/navigation";
 
@@ -65,14 +64,14 @@ export default function DashboardPage() {
 
   if (!mounted) {
     return (
-      <div className="mx-auto max-w-[960px] px-3 space-y-4">
-        <div className="min-h-[420px]" aria-hidden="true" />
+      <div className="mx-auto max-w-[1280px] px-4 space-y-6">
+        <div className="min-h-[540px]" aria-hidden="true" />
       </div>
     );
   }
 
   return (
-    <div className="mx-auto max-w-[960px] px-3 space-y-4">
+    <div className="mx-auto max-w-[1280px] px-4 py-6 sm:py-8 space-y-6 sm:space-y-8">
       {/* Quick actions */}
       <div className="flex items-center gap-2">
         <div className="flex-1">
@@ -108,44 +107,47 @@ export default function DashboardPage() {
       )}
 
       {hasCity && <>
-      {/* Hero: Today's recommendation — same phase-gradient + earthrise + glass-card
-          pattern as the city page, so My Day matches it. */}
-      <CityHero lat={app.lat} lon={app.lon}>
-        <DayRecommendation
-          nowStatus={nowStatus}
-          cityName={cityName}
-          cityFlag={app.cityFlag}
-          targetIU={app.targetIU}
-          loading={loading}
-        />
-      </CityHero>
+      {/* Hero: today's live status as a bold poster (phase gradient + earthrise +
+          scrim, giant status headline), matching the bold city page. */}
+      <DayHeroBold
+        nowStatus={nowStatus}
+        cityName={cityName}
+        cityFlag={app.cityFlag}
+        targetIU={app.targetIU}
+        loading={loading}
+        lat={app.lat}
+        lon={app.lon}
+      />
 
-      {/* Quick exposure picker */}
-      <Card variant="glass">
-        <ExposureQuickPicker
-          value={effectiveArea}
-          onChange={handleAreaChange}
-          isOverride={areaOverride !== null}
-          onReset={handleAreaReset}
-        />
-      </Card>
+      {/* Exposure + notify: balanced 2-col below the hero. */}
+      <div className="grid gap-6 lg:grid-cols-2">
+        <Card variant="glass">
+          <ExposureQuickPicker
+            value={effectiveArea}
+            onChange={handleAreaChange}
+            isOverride={areaOverride !== null}
+            onReset={handleAreaReset}
+          />
+        </Card>
 
-      {/* Retention hook: a daily push for this city, only on days it's possible.
-          Moved below the exposure picker so it no longer competes with the hero. */}
-      <div className="flex flex-wrap items-center gap-3 px-1">
-        <NotificationToggle
-          lat={app.lat}
-          lon={app.lon}
-          tz={app.tz}
-          timezone={app.timezone}
-          skinType={app.skinType}
-          areaFraction={app.areaFraction}
-          cityName={cityName}
-          labelOff={tCity("notifyOff")}
-          labelOn={tCity("notifyOn")}
-          prominent
-        />
-        <span className="text-caption text-text-muted">{tCity("notifyLead", { city: cityName })}</span>
+        {/* Retention hook: a daily push for this city, only on days it's possible. */}
+        <Card variant="glass" className="flex flex-col justify-center gap-3">
+          <p className="text-body text-text-secondary">{tCity("notifyLead", { city: cityName })}</p>
+          <div>
+            <NotificationToggle
+              lat={app.lat}
+              lon={app.lon}
+              tz={app.tz}
+              timezone={app.timezone}
+              skinType={app.skinType}
+              areaFraction={app.areaFraction}
+              cityName={cityName}
+              labelOff={tCity("notifyOff")}
+              labelOn={tCity("notifyOn")}
+              prominent
+            />
+          </div>
+        </Card>
       </div>
 
       {/* 5-day forecast (expandable) */}
