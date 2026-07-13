@@ -5,6 +5,7 @@ import * as d3 from "d3";
 import { decodeTopo } from "@/lib/geo";
 import { vitDHrs } from "@/lib/solar";
 import { synthesisThresholdElevation } from "@/lib/uv-model";
+import Flag from "@/components/ui/Flag";
 import type { City, HoverInfo } from "@/lib/types";
 
 interface Props {
@@ -100,7 +101,7 @@ export default function WorldMap({ lat, lon, doy, onSelect, favorites, allCities
       if (isFav) {
         ctx.strokeStyle = "rgba(255,213,79,0.7)"; ctx.lineWidth = 0.8; ctx.stroke();
         ctx.fillStyle = "rgba(255,255,255,0.45)"; ctx.font = "9px 'JetBrains Mono',monospace"; ctx.textAlign = "left";
-        ctx.fillText(`${city.flag || ""} ${city.name}`, pt[0] + 7, pt[1] + 3);
+        ctx.fillText(city.name, pt[0] + 7, pt[1] + 3);
       }
     });
 
@@ -184,7 +185,7 @@ export default function WorldMap({ lat, lon, doy, onSelect, favorites, allCities
         const geo = clientToGeo(e.clientX, e.clientY);
         if (geo && geo[1] > -80 && geo[1] < 85) {
           const snap = clientToSnap(e.clientX, e.clientY);
-          setHover(snap ? { lat: snap.lat, lon: snap.lon, name: `${snap.flag || ""} ${snap.name}`, snap } : { lat: geo[1], lon: geo[0], name: `${geo[1].toFixed(1)}\u00B0, ${geo[0].toFixed(1)}\u00B0`, snap: null });
+          setHover(snap ? { lat: snap.lat, lon: snap.lon, name: snap.name, snap } : { lat: geo[1], lon: geo[0], name: `${geo[1].toFixed(1)}\u00B0, ${geo[0].toFixed(1)}\u00B0`, snap: null });
         } else setHover(null);
         return;
       }
@@ -199,7 +200,7 @@ export default function WorldMap({ lat, lon, doy, onSelect, favorites, allCities
         const geo = clientToGeo(e.clientX, e.clientY);
         if (geo && geo[1] > -80 && geo[1] < 85) {
           const snap = clientToSnap(e.clientX, e.clientY);
-          setHover(snap ? { lat: snap.lat, lon: snap.lon, name: `${snap.flag || ""} ${snap.name}`, snap } : { lat: geo[1], lon: geo[0], name: `${geo[1].toFixed(1)}\u00B0, ${geo[0].toFixed(1)}\u00B0`, snap: null });
+          setHover(snap ? { lat: snap.lat, lon: snap.lon, name: snap.name, snap } : { lat: geo[1], lon: geo[0], name: `${geo[1].toFixed(1)}\u00B0, ${geo[0].toFixed(1)}\u00B0`, snap: null });
         } else setHover(null);
       }
     };
@@ -292,7 +293,7 @@ export default function WorldMap({ lat, lon, doy, onSelect, favorites, allCities
       <div ref={overlayRef} style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, cursor: scrubMode ? "crosshair" : "grab", touchAction: "none", userSelect: "none", WebkitUserSelect: "none", zIndex: 1 }} />
       {hover && hoverPt && (
         <div style={{ position: "absolute", pointerEvents: "none", zIndex: 2, left: Math.max(8, Math.min((hoverPt[0] / W * 100), 85)) + "%", top: Math.max((hoverPt[1] / H * 100) - 8, 2) + "%", transform: "translate(-50%,-100%)", background: "rgba(0,0,0,0.88)", borderRadius: 6, padding: "5px 10px", border: "1px solid rgba(255,255,255,0.12)", fontSize: 11, fontFamily: "'JetBrains Mono',monospace", color: "#FFD54F", whiteSpace: "nowrap" }}>
-          {hover.name}{hover.snap && <span style={{ color: "rgba(255,255,255,0.3)", marginLeft: 6, fontSize: 9 }}>&#x25CF; clic</span>}
+          {hover.snap?.flag && <Flag flag={hover.snap.flag} className="text-[11px] mr-1.5" />}{hover.name}{hover.snap && <span style={{ color: "rgba(255,255,255,0.3)", marginLeft: 6, fontSize: 9 }}>&#x25CF; clic</span>}
         </div>
       )}
       <div style={{ position: "absolute", top: 10, right: 10, display: "flex", flexDirection: "column", gap: 3, zIndex: 5 }}>
