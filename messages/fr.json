@@ -272,6 +272,9 @@
     "pageTitle": "La Vitamine D & le Soleil",
     "pageSubtitle": "Des réponses scientifiques aux questions courantes",
     "sourcesLabel": "Sources",
+    "searchPlaceholder": "Rechercher dans la FAQ…",
+    "searchNoResults": "Aucune question ne correspond",
+    "searchClear": "Effacer la recherche",
     "block1": {
       "title": "Le Soleil et la Vitamine D",
       "subtitle": "Pourquoi l'angle solaire, l'indice UV et le verre ont tous de l'importance",

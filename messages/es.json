@@ -272,6 +272,9 @@
     "pageTitle": "Vitamina D y el Sol",
     "pageSubtitle": "Respuestas científicas a preguntas frecuentes",
     "sourcesLabel": "Fuentes",
+    "searchPlaceholder": "Buscar en las preguntas…",
+    "searchNoResults": "Ninguna pregunta coincide",
+    "searchClear": "Limpiar búsqueda",
     "block1": {
       "title": "El Sol y la Vitamina D",
       "subtitle": "Por qué importan el ángulo solar, el índice UV y el cristal",

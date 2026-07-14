@@ -272,6 +272,9 @@
     "pageTitle": "Vitamin D & die Sonne",
     "pageSubtitle": "Wissenschaftlich fundierte Antworten auf häufige Fragen",
     "sourcesLabel": "Quellen",
+    "searchPlaceholder": "FAQ durchsuchen…",
+    "searchNoResults": "Keine Frage gefunden",
+    "searchClear": "Suche löschen",
     "block1": {
       "title": "Die Sonne und Vitamin D",
       "subtitle": "Warum Sonnenwinkel, UV-Index und Glas eine Rolle spielen",

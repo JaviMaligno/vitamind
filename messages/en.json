@@ -272,6 +272,9 @@
     "pageTitle": "Vitamin D & the Sun",
     "pageSubtitle": "Science-backed answers to common questions",
     "sourcesLabel": "Sources",
+    "searchPlaceholder": "Search the FAQ…",
+    "searchNoResults": "No questions match",
+    "searchClear": "Clear search",
     "block1": {
       "title": "The Sun and Vitamin D",
       "subtitle": "Why solar angle, UV index, and glass all matter",

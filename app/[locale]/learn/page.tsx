@@ -5,6 +5,7 @@ import { Link } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 import PosterHero from "@/components/PosterHero";
 import LearnQA from "@/components/LearnQA";
+import LearnSearch from "@/components/LearnSearch";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -88,11 +89,18 @@ export default async function LearnPage({ params }: { params: Promise<{ locale: 
         </nav>
 
         {/* FAQ content — a readable measure inside the wide layout. */}
-        <div className="max-w-3xl space-y-10">
+        <div className="max-w-3xl">
+          <LearnSearch
+            placeholder={t("searchPlaceholder")}
+            noResults={t("searchNoResults")}
+            clearLabel={t("searchClear")}
+          />
+          <div className="space-y-10">
           {blocks.map((block, bi) => (
             <section
               key={bi}
               id={`block-${bi + 1}`}
+              data-qa-block
               className="scroll-mt-6"
               {...(bi === 2 ? { "data-alias": "supplement" } : {})}
             >
@@ -112,6 +120,7 @@ export default async function LearnPage({ params }: { params: Promise<{ locale: 
               <LearnQA items={block.items} sourcesLabel={t("sourcesLabel")} />
             </section>
           ))}
+          </div>
         </div>
       </div>
 

@@ -272,6 +272,9 @@
     "pageTitle": "Vitaminas D ir Saulė",
     "pageSubtitle": "Mokslu pagrįsti atsakymai į dažnus klausimus",
     "sourcesLabel": "Šaltiniai",
+    "searchPlaceholder": "Ieškoti DUK…",
+    "searchNoResults": "Klausimų nerasta",
+    "searchClear": "Išvalyti paiešką",
     "block1": {
       "title": "Saulė ir vitaminas D",
       "subtitle": "Kodėl saulės kampas, UV indeksas ir stiklas yra svarbūs",
