@@ -26,7 +26,7 @@ export default function SolarBackground({ children }: { children: React.ReactNod
 
   return (
     <div
-      className="min-h-screen text-text-primary font-sans pb-20 transition-[background] duration-1000"
+      className="min-h-screen text-text-primary font-sans pb-[calc(6rem+env(safe-area-inset-bottom))] transition-[background] duration-1000"
       style={{ background: PHASE_STYLE[phase].page }}
       suppressHydrationWarning
     >
