@@ -19,17 +19,18 @@ function TopBar() {
   const t = useTranslations();
 
   return (
-    <div className="mx-auto max-w-[960px] mb-4 px-3 pt-5">
-      <div className="flex items-center justify-between flex-wrap gap-2">
-        <div className="flex items-baseline gap-2.5">
-          <span className="text-[30px] font-extrabold tracking-tight font-[Playfair_Display,serif] bg-gradient-to-br from-amber-400 to-amber-700 bg-clip-text text-transparent">
+    <div className="mx-auto max-w-[1280px] mb-4 px-4 pt-5">
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex items-baseline gap-2.5 min-w-0">
+          <span className="text-[26px] sm:text-[30px] font-extrabold tracking-tight font-[Playfair_Display,serif] bg-gradient-to-br from-amber-500 to-amber-700 bg-clip-text text-transparent [text-shadow:0_1px_2px_rgba(0,0,0,0.08)]">
             {t("app.title")}
           </span>
-          <span className="text-[13px] text-text-muted font-medium">
+          {/* Subtitle is noise on the crowded mobile header — desktop only. */}
+          <span className="hidden md:inline text-[13px] text-text-muted font-medium truncate">
             {t("app.subtitle")}
           </span>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-1.5 sm:gap-2">
           <InstallHelpButton />
           <ThemeToggle />
           <LanguageSelector />

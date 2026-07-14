@@ -76,13 +76,13 @@ export default function AuthButton({ onAuthChange }: Props) {
 
   if (user) {
     return (
-      <div className="flex items-center gap-1.5">
-        <span className="text-[9px] text-text-muted">
+      <div className="flex items-center gap-2">
+        <span className="hidden sm:inline text-caption text-text-muted max-w-[140px] truncate">
           {user.email}
         </span>
         <button
           onClick={handleLogout}
-          className="px-2.5 py-1 rounded-md bg-surface-elevated text-text-muted text-[10px] cursor-pointer border-none"
+          className="inline-flex min-h-[44px] items-center rounded-lg bg-surface-elevated px-3.5 text-caption text-text-secondary cursor-pointer border-none hover:bg-surface-input transition-colors"
         >
           {t("logout")}
         </button>
@@ -94,7 +94,7 @@ export default function AuthButton({ onAuthChange }: Props) {
     return (
       <button
         onClick={() => setShowForm(true)}
-        className="px-2.5 py-1 rounded-md bg-amber-400/[0.08] text-accent/60 text-[10px] cursor-pointer border-none"
+        className="inline-flex min-h-[44px] items-center rounded-lg bg-amber-400/[0.12] px-3.5 text-caption font-medium text-accent cursor-pointer border-none hover:bg-amber-400/20 transition-colors"
         title={t("loginHint")}
       >
         {t("login")}

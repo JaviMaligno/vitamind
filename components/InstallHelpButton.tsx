@@ -23,7 +23,7 @@ export default function InstallHelpButton() {
       onClick={() => { void trigger(); }}
       aria-label={label}
       title={label}
-      className="text-lg leading-none hover:opacity-80 transition-opacity"
+      className="flex h-11 w-11 items-center justify-center rounded-lg text-lg leading-none hover:bg-glass transition-colors"
     >
       <span aria-hidden>📲</span>
     </button>

@@ -8,7 +8,7 @@ export default function ThemeToggle() {
   return (
     <button
       onClick={cycle}
-      className="w-9 h-9 flex items-center justify-center rounded-lg bg-glass border border-glass-border text-text-secondary hover:text-text-primary transition-colors"
+      className="w-11 h-11 flex items-center justify-center rounded-lg bg-glass border border-glass-border text-text-secondary hover:text-text-primary transition-colors"
       aria-label={label}
       title={label}
       suppressHydrationWarning
