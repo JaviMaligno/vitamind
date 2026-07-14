@@ -136,9 +136,9 @@ export default function CitySearch({ onSelect, onAddFav, favorites, allCities }:
         <input
           value={query} onChange={handleChange} onFocus={() => setOpen(true)}
           placeholder={t("placeholder")}
-          className="flex-1 px-3 py-2 rounded-l-lg bg-surface-input border border-border-default text-text-primary text-sm outline-none focus:border-amber-400/30"
+          className="flex-1 min-h-[44px] px-3 rounded-l-lg bg-surface-input border border-border-default text-text-primary text-sm outline-none focus:border-amber-400/30"
         />
-        <div className="px-3 py-2 rounded-r-lg bg-surface-elevated border border-border-default border-l-0 text-text-muted text-sm flex items-center">
+        <div className="px-3 min-h-[44px] rounded-r-lg bg-surface-elevated border border-border-default border-l-0 text-text-muted text-sm flex items-center">
           {searching ? "⏳" : "🔍"}
         </div>
       </div>

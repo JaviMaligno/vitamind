@@ -180,7 +180,7 @@ export default function ProfilePage() {
           <h3 className={`${sectionHeading} flex-1`}>{t("solarProfile")}</h3>
           <button
             onClick={() => setOpenTip(openTip === "skin" ? null : "skin")}
-            className="w-5 h-5 rounded-full bg-surface-elevated text-text-faint hover:text-text-muted text-[9px] font-bold inline-flex items-center justify-center transition-colors cursor-pointer"
+            className="w-9 h-9 rounded-full bg-surface-elevated text-text-faint hover:text-text-muted text-caption font-bold inline-flex items-center justify-center transition-colors cursor-pointer"
           >ℹ</button>
         </div>
         <TipPanel open={openTip === "skin"} text={ts("tipSolarProfile")} href="/learn" learnMoreLabel={tc("learnMore")} onClose={closeTip} />
@@ -203,7 +203,7 @@ export default function ProfilePage() {
           <h3 className={`${sectionHeading} flex-1`}>{t("targetIU")}</h3>
           <button
             onClick={() => setOpenTip(openTip === "iu" ? null : "iu")}
-            className="w-5 h-5 rounded-full bg-surface-elevated text-text-faint hover:text-text-muted text-[9px] font-bold inline-flex items-center justify-center transition-colors cursor-pointer"
+            className="w-9 h-9 rounded-full bg-surface-elevated text-text-faint hover:text-text-muted text-caption font-bold inline-flex items-center justify-center transition-colors cursor-pointer"
           >ℹ</button>
         </div>
         <TipPanel open={openTip === "iu"} text={ts("tipTargetIU")} href="/learn#supplement" learnMoreLabel={tc("learnMore")} onClose={closeTip} />

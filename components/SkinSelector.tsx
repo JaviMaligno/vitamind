@@ -44,39 +44,43 @@ export default function SkinSelector({ skinType, areaFraction, age, onSkinChange
 
   return (
     <div className="mb-2">
-      <div className="flex flex-wrap gap-2 items-center">
-        <span className="text-[9px] text-text-faint uppercase tracking-wider">{t("type")}</span>
+      <div className="flex flex-wrap gap-x-3 gap-y-2 items-center">
+        <span className="text-caption text-text-faint uppercase tracking-wider">{t("type")}</span>
         <div className="flex items-center gap-1">
           <select
             value={skinType}
             onChange={(e) => onSkinChange(Number(e.target.value) as SkinType)}
-            className="px-2 py-1.5 rounded-md bg-surface-input border border-border-default text-text-primary text-[11px] outline-none cursor-pointer"
+            className="min-h-[44px] px-3 rounded-lg bg-surface-input border border-border-default text-text-primary text-caption outline-none cursor-pointer"
           >
             {([1, 2, 3, 4, 5, 6] as SkinType[]).map((st) => (
               <option key={st} value={st}>{skinLabels[st]}</option>
             ))}
           </select>
+          {/* 44px hit area, smaller visible circle */}
           <button
             onClick={() => setShowHelp(!showHelp)}
-            className={`w-5 h-5 rounded-full border flex items-center justify-center text-[11px] font-bold cursor-pointer p-0 leading-none ${
+            className="flex h-11 w-11 items-center justify-center cursor-pointer"
+            title={t("help")}
+            aria-label={t("help")}
+          >
+            <span className={`flex h-6 w-6 items-center justify-center rounded-full border text-[11px] font-bold leading-none ${
               showHelp
                 ? "border-amber-400/30 bg-amber-400/15 text-accent"
                 : "border-border-default bg-surface-elevated text-text-muted"
-            }`}
-            title={t("help")}
-          >?</button>
+            }`}>?</span>
+          </button>
         </div>
-        <span className="text-[9px] text-text-faint uppercase tracking-wider">{t("area")}</span>
+        <span className="text-caption text-text-faint uppercase tracking-wider">{t("area")}</span>
         <select
           value={areaFraction}
           onChange={(e) => onAreaChange(Number(e.target.value))}
-          className="px-2 py-1.5 rounded-md bg-surface-input border border-border-default text-text-primary text-[11px] outline-none cursor-pointer"
+          className="min-h-[44px] px-3 rounded-lg bg-surface-input border border-border-default text-text-primary text-caption outline-none cursor-pointer"
         >
           {AREA_PRESETS.map((p) => (
             <option key={p.value} value={p.value}>{areaLabels[p.value] ?? p.label}</option>
           ))}
         </select>
-        <span className="text-[9px] text-text-faint uppercase tracking-wider">{t("age")}</span>
+        <span className="text-caption text-text-faint uppercase tracking-wider">{t("age")}</span>
         <input
           type="number"
           min="1"
@@ -84,7 +88,7 @@ export default function SkinSelector({ skinType, areaFraction, age, onSkinChange
           placeholder="—"
           value={age ?? ""}
           onChange={(e) => onAgeChange(e.target.value ? parseInt(e.target.value) : null)}
-          className="w-[50px] px-2 py-1.5 rounded-md bg-surface-input border border-border-default text-text-primary text-[11px] text-center outline-none cursor-pointer"
+          className="w-16 min-h-[44px] px-2 rounded-lg bg-surface-input border border-border-default text-text-primary text-caption text-center outline-none"
         />
       </div>
 

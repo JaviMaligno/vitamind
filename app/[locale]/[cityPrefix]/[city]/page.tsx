@@ -270,7 +270,7 @@ export default async function CityPage({ params }: { params: Promise<Params> }) 
               <li key={nb.id}>
                 <A
                   href={cityPathname(p.locale, nbBase)}
-                  className="inline-flex min-h-[40px] items-center rounded-full border border-border-default bg-glass px-4 text-body no-underline hover:bg-surface-elevated"
+                  className="inline-flex min-h-[44px] items-center rounded-full border border-border-default bg-glass px-4 text-body no-underline hover:bg-surface-elevated"
                 >
                   {localizedCityName(p.locale, nbBase)}
                 </A>
