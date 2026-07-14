@@ -85,7 +85,7 @@ export default function ExploreHeroBold({
   const mode: Mode = nowStatus ? nowStatus.state : canSynthesize ? "day_possible" : "day_impossible";
   const positive = mode === "good_now" || mode === "day_possible";
   const muted = mode === "upcoming" || mode === "window_closed";
-  const dot = positive ? "#4ade80" : muted ? "#cbd5e1" : "#f87171";
+  const dot = positive ? PHASE_STYLE[phase].stat : muted ? "#cbd5e1" : "#f87171";
 
   const statusLabel = (() => {
     if (mode === "good_now") return t("synthesisPossible");

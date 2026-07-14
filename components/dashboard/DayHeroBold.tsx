@@ -43,7 +43,9 @@ export default function DayHeroBold({ nowStatus, cityName, cityFlag, targetIU, l
   const ns = nowStatus;
 
   const statusKey = getStatusKey(ns);
-  const dot = DOT[statusKey];
+  // "optimal" green follows the phase (mint by day, neon at night) so it stops
+  // reading as neon against the warm/light gradients; other states keep their hue.
+  const dot = statusKey === "optimal" ? PHASE_STYLE[phase].stat : DOT[statusKey];
   const todayStr = new Date().toLocaleDateString(locale, { weekday: "long", day: "numeric", month: "long" });
 
   // The giant headline copy, per state.
@@ -173,7 +175,7 @@ export default function DayHeroBold({ nowStatus, cityName, cityFlag, targetIU, l
                 {ns.state === "good_now" && ns.minutesNeeded !== null && (
                   <div>
                     <span className="block text-caption uppercase tracking-wider text-white/55">{t("nowTimeNeeded")}</span>
-                    <span className="font-mono text-xl font-semibold" style={{ color: "#4ade80" }}>{fmtMin(ns.minutesNeeded)}</span>
+                    <span className="font-mono text-xl font-semibold" style={{ color: PHASE_STYLE[phase].stat }}>{fmtMin(ns.minutesNeeded)}</span>
                     <span className="ml-1 text-caption text-white/50">{t("forIU", { iu: targetIU })}</span>
                   </div>
                 )}
