@@ -123,9 +123,12 @@
   --color-chart-bar-slow: rgba(255, 109, 0, 0.3);
   --color-chart-bar-inactive: rgba(128, 128, 128, 0.1);
 
-  --color-possible: #4ade80;
-  --color-possible-surface: rgba(74, 222, 128, 0.14);
-  --color-possible-border: rgba(74, 222, 128, 0.4);
+  /* Softer, less-neon emerald for the dark theme (chips, any text-possible).
+     The old #4ade80 read as neon; #5fd39b keeps clear "green = possible"
+     meaning with lower saturation. Surface/border retinted to match. */
+  --color-possible: #5fd39b;
+  --color-possible-surface: rgba(95, 211, 155, 0.15);
+  --color-possible-border: rgba(95, 211, 155, 0.4);
   --color-sun: #fb923c;
   --color-sun-strong: #fdba74;
   --color-winter: #94a3b8;

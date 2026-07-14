@@ -17,9 +17,10 @@ import { formatCountdown, fmtMin, getStatusKey, type StatusKey } from "./day-sta
  * Replaces the contained CityHero + DayRecommendation pairing on the dashboard.
  */
 
-// Dot colour per status, tuned to read on the dark poster.
+// Dot colour per status, tuned to read on the dark poster. (optimal is
+// overridden per-phase in the component; this value is just a fallback.)
 const DOT: Record<StatusKey, string> = {
-  optimal: "#4ade80",
+  optimal: "#5fd39b",
   moderate: "#fbbf24",
   upcoming: "#60a5fa",
   windowClosed: "#cbd5e1",
