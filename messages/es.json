@@ -223,6 +223,7 @@
     "swimsuit": "bañador",
     "loading": "Cargando tus datos...",
     "week": "Semana",
+    "popularCities": "Ciudades populares",
     "month": "Mes",
     "calPrev": "Anterior",
     "calNext": "Siguiente",
@@ -951,5 +952,11 @@
     "title": "Sin conexión",
     "description": "Vitamina D Explorer necesita conexión a internet para cargar datos meteorológicos y de ciudades. Vuelve a intentarlo cuando tengas conexión.",
     "retry": "Reintentar"
+  },
+  "theme": {
+    "label": "Tema",
+    "auto": "Auto",
+    "light": "Claro",
+    "dark": "Oscuro"
   }
 }

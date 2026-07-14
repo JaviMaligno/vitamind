@@ -223,6 +223,7 @@
     "swimsuit": "maillot de bain",
     "loading": "Chargement de vos données...",
     "week": "Semaine",
+    "popularCities": "Villes populaires",
     "month": "Mois",
     "calPrev": "Précédent",
     "calNext": "Suivant",
@@ -951,5 +952,11 @@
     "title": "Hors ligne",
     "description": "Vitamin D Explorer a besoin d'une connexion internet pour charger les données météo et des villes. Réessayez une fois reconnecté.",
     "retry": "Réessayer"
+  },
+  "theme": {
+    "label": "Thème",
+    "auto": "Auto",
+    "light": "Clair",
+    "dark": "Sombre"
   }
 }

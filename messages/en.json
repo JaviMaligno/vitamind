@@ -223,6 +223,7 @@
     "swimsuit": "swimsuit",
     "loading": "Loading your data...",
     "week": "Week",
+    "popularCities": "Popular cities",
     "month": "Month",
     "calPrev": "Previous",
     "calNext": "Next",
@@ -951,5 +952,11 @@
     "title": "You're offline",
     "description": "Vitamin D Explorer needs an internet connection to load weather and city data. Try again once you're back online.",
     "retry": "Retry"
+  },
+  "theme": {
+    "label": "Theme",
+    "auto": "Auto",
+    "light": "Light",
+    "dark": "Dark"
   }
 }

@@ -223,6 +223,7 @@
     "swimsuit": "Badeanzug",
     "loading": "Deine Daten werden geladen...",
     "week": "Woche",
+    "popularCities": "Beliebte Städte",
     "month": "Monat",
     "calPrev": "Zurück",
     "calNext": "Weiter",
@@ -951,5 +952,11 @@
     "title": "Offline",
     "description": "Vitamin D Explorer benötigt eine Internetverbindung, um Wetter- und Städtedaten zu laden. Versuchen Sie es erneut, sobald Sie wieder online sind.",
     "retry": "Erneut versuchen"
+  },
+  "theme": {
+    "label": "Thema",
+    "auto": "Auto",
+    "light": "Hell",
+    "dark": "Dunkel"
   }
 }

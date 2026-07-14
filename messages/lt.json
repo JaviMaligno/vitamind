@@ -223,6 +223,7 @@
     "swimsuit": "maudymosi kostiumėlis",
     "loading": "Kraunami jūsų duomenys...",
     "week": "Savaitė",
+    "popularCities": "Populiarūs miestai",
     "month": "Mėnuo",
     "calPrev": "Ankstesnis",
     "calNext": "Kitas",
@@ -951,5 +952,11 @@
     "title": "Neprisijungę",
     "description": "Vitamin D Explorer reikia interneto ryšio, kad įkeltų orų ir miestų duomenis. Bandykite dar kartą, kai atsiras ryšys.",
     "retry": "Bandyti dar kartą"
+  },
+  "theme": {
+    "label": "Tema",
+    "auto": "Auto",
+    "light": "Šviesi",
+    "dark": "Tamsi"
   }
 }

@@ -17,6 +17,8 @@ import CitySearch from "@/components/CitySearch";
 import GpsButton from "@/components/GpsButton";
 import PartnerBadge from "@/components/PartnerBadge";
 import Card from "@/components/ui/Card";
+import Flag from "@/components/ui/Flag";
+import { BookOpen, ArrowRight } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 
 // Full-row navigation link ("noUvLearnTitle" prompt, "Learn more"): same glass
@@ -46,6 +48,15 @@ export default function DashboardPage() {
   );
   const forecast = useForecast(app.lat, app.lon);
   const nowStatus = useNowStatus(app.lat, app.lon, app.tz, app.timezone, app.skinType, effectiveArea, app.age, app.targetIU);
+
+  // A few well-known cities to seed the empty state, so a first-time visitor has
+  // a one-tap way in instead of a bare search box on a big empty card.
+  const popularCities = useMemo(() => {
+    const ids = ["builtin:madrid", "builtin:londres", "builtin:nueva-york", "builtin:paris", "builtin:tokio", "builtin:sidney"];
+    return ids
+      .map((id) => app.allCities.find((c) => c.id === id))
+      .filter((c): c is NonNullable<typeof c> => Boolean(c));
+  }, [app.allCities]);
 
   const cityRecords = useMemo(
     () => records.filter((r) => r.cityId === app.cityId),
@@ -100,9 +111,28 @@ export default function DashboardPage() {
       )}
 
       {!hasCity && (
-        <Card variant="glass" className="text-center space-y-2">
-          <h2 className="font-display text-title text-text-primary">{tHero("whereAreYou")}</h2>
-          <p className="text-caption text-text-faint">{tHero("searchHint")}</p>
+        <Card variant="glass" className="text-center space-y-5">
+          <div className="space-y-2">
+            <h2 className="font-display text-title text-text-primary">{tHero("whereAreYou")}</h2>
+            <p className="text-caption text-text-faint">{tHero("searchHint")}</p>
+          </div>
+          {popularCities.length > 0 && (
+            <div className="space-y-2">
+              <p className="text-caption uppercase tracking-wider text-text-muted">{t("popularCities")}</p>
+              <div className="flex flex-wrap justify-center gap-2">
+                {popularCities.map((c) => (
+                  <button
+                    key={c.id}
+                    onClick={() => app.selectCity(c)}
+                    className="inline-flex min-h-[44px] items-center gap-2 rounded-xl bg-surface-elevated px-4 text-body font-medium text-text-secondary hover:bg-surface-input hover:text-text-primary transition-colors"
+                  >
+                    <Flag flag={c.flag} className="text-lg" />
+                    {getCityDisplayName(c.id, c.name)}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
         </Card>
       )}
 
@@ -166,7 +196,7 @@ export default function DashboardPage() {
               <p className="text-caption font-medium text-text-secondary">{t("noUvLearnTitle")}</p>
               <p className="text-caption text-text-faint mt-0.5">{t("noUvLearnHint")}</p>
             </div>
-            <span className="text-sun-strong text-caption">→</span>
+            <ArrowRight className="h-4 w-4 shrink-0 text-sun-strong" aria-hidden />
           </Link>
           <PartnerBadge />
         </div>
@@ -183,10 +213,10 @@ export default function DashboardPage() {
       {/* Learn more — always visible */}
       <Link href="/learn" className={navRowClasses}>
         <div className="flex items-center gap-2">
-          <span className="text-base">📖</span>
+          <BookOpen className="h-4 w-4 text-text-muted" aria-hidden />
           <span className="text-caption font-medium text-text-secondary">{tc("learnMore")}</span>
         </div>
-        <span className="text-sun-strong text-caption">→</span>
+        <ArrowRight className="h-4 w-4 text-sun-strong" aria-hidden />
       </Link>
     </div>
   );
