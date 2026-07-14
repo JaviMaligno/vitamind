@@ -66,6 +66,7 @@ export default function VisualizationZone({
   const [hoverTime, setHoverTime] = useState<number | null>(null);
   const tTabs = useTranslations("tabs");
   const tViz = useTranslations("viz");
+  const tCfg = useTranslations("config");
 
   const TABS: { key: Tab; label: string; Icon: LucideIcon }[] = [
     { key: "curve", label: tTabs("dailyCurve"), Icon: LineChart },
@@ -107,10 +108,29 @@ export default function VisualizationZone({
                 </span>
               )}
             </div>
+            {/* Threshold control — a titled, touch-friendly tray outside the chart
+                (replaces the tiny in-chart ▲/▼ widget). */}
+            <div className="mb-3 flex flex-wrap items-center gap-3 pl-2">
+              <span className="text-caption uppercase tracking-wider text-on-window-faint">{tCfg("threshold")}</span>
+              <div className="inline-flex items-center gap-1 rounded-xl bg-white/10 p-1">
+                <button
+                  type="button"
+                  onClick={() => onThresholdChange(Math.max(20, threshold - 5))}
+                  aria-label="−5°"
+                  className="flex h-11 w-11 items-center justify-center rounded-lg text-lg text-on-window hover:bg-white/10 transition-colors"
+                >−</button>
+                <span className="min-w-[52px] text-center font-mono text-body font-semibold text-on-window">{threshold}°</span>
+                <button
+                  type="button"
+                  onClick={() => onThresholdChange(Math.min(70, threshold + 5))}
+                  aria-label="+5°"
+                  className="flex h-11 w-11 items-center justify-center rounded-lg text-lg text-on-window hover:bg-white/10 transition-colors"
+                >+</button>
+              </div>
+            </div>
             <DailyCurve
               curve={curve}
               threshold={threshold}
-              onThresholdChange={onThresholdChange}
               hoverTime={hoverTime}
               onHover={setHoverTime}
               weather={weather}
