@@ -5,6 +5,7 @@ import type { LucideIcon } from "lucide-react";
 import { Target, FlaskConical, Globe, Users, Star, Link2, PenLine, Check, ArrowLeft, Mail } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import PosterHero from "@/components/PosterHero";
+import PhaseButton from "@/components/PhaseButton";
 
 const CONTACT_EMAIL = "javiecija96@gmail.com";
 
@@ -36,13 +37,13 @@ export default function PartnersPage() {
         <p className="text-body text-text-secondary leading-relaxed max-w-2xl">
           {t("heroDescription")}
         </p>
-        <a
+        <PhaseButton
           href={`mailto:${CONTACT_EMAIL}?subject=Partnership%20—%20Vitamina%20D%20Explorer`}
-          className="inline-flex items-center justify-center gap-2 min-h-[44px] px-6 rounded-xl bg-accent text-surface font-semibold text-body shadow-lg hover:brightness-110 transition-all whitespace-nowrap"
+          className="whitespace-nowrap"
         >
           <Mail className="h-4 w-4" aria-hidden />
           {t("ctaEmail")}
-        </a>
+        </PhaseButton>
       </section>
 
       {/* Why partner */}
@@ -115,20 +116,20 @@ export default function PartnersPage() {
       </section>
 
       {/* CTA */}
-      <section className="rounded-[2rem] border border-accent/25 bg-accent/8 p-8 sm:p-10 space-y-4 text-center">
+      <section className="rounded-[2rem] border border-glass-border bg-glass backdrop-blur-md p-8 sm:p-10 space-y-4 text-center shadow-lg">
         <h2 className="text-title sm:text-display font-display font-bold text-text-primary">
           {t("ctaTitle")}
         </h2>
         <p className="text-body text-text-muted max-w-xl mx-auto leading-relaxed">
           {t("ctaText")}
         </p>
-        <a
+        <PhaseButton
           href={`mailto:${CONTACT_EMAIL}?subject=Partnership%20—%20Vitamina%20D%20Explorer`}
-          className="inline-flex items-center justify-center gap-2 min-h-[48px] px-8 rounded-xl bg-accent text-surface font-semibold text-body shadow-lg hover:brightness-110 transition-all"
+          className="px-8"
         >
           <Mail className="h-4 w-4" aria-hidden />
           {t("ctaEmail")}
-        </a>
+        </PhaseButton>
         <p className="text-caption text-text-faint">
           {t("ctaNote")}
         </p>

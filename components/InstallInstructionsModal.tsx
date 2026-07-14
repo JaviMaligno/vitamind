@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { detectMobileOS, type InstallPlatform } from "@/lib/install";
+import PhaseButton from "@/components/PhaseButton";
 
 export type InstallModalMode = "banner" | "gating";
 
@@ -129,12 +130,9 @@ export default function InstallInstructionsModal({ open, mode, platform, isInApp
 
         {variant === "in-app" && (
           <div className="px-6 pb-4">
-            <button
-              onClick={handleCopyUrl}
-              className="w-full py-2.5 rounded-lg bg-amber-400 hover:bg-amber-300 text-neutral-900 font-semibold text-sm transition-colors"
-            >
+            <PhaseButton onClick={handleCopyUrl} className="w-full">
               {copied ? t("linkCopied") : t("copyUrl")}
-            </button>
+            </PhaseButton>
           </div>
         )}
 

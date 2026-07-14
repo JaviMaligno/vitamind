@@ -2,8 +2,10 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
+import { Smartphone, X } from "lucide-react";
 import { useInstallPrompt } from "@/hooks/useInstallPrompt";
 import { getInstallBannerSeen, isStandalone, setInstallBannerSeen } from "@/lib/install";
+import PhaseButton from "@/components/PhaseButton";
 
 export default function InstallBanner() {
   const t = useTranslations("install");
@@ -73,20 +75,17 @@ export default function InstallBanner() {
       }`}
     >
       <div className="mx-auto max-w-[960px] rounded-xl bg-neutral-900 text-white shadow-2xl flex items-center gap-3 px-3 py-2.5">
-        <span className="text-lg" aria-hidden>📲</span>
+        <Smartphone className="h-5 w-5 shrink-0" aria-hidden />
         <span className="flex-1 text-xs leading-tight">{t("banner.title")}</span>
-        <button
-          onClick={handleInstall}
-          className="px-3 py-1.5 rounded-md bg-amber-400 text-neutral-900 font-bold text-xs hover:bg-amber-300 transition-colors"
-        >
+        <PhaseButton compact onClick={handleInstall}>
           {t("banner.cta")}
-        </button>
+        </PhaseButton>
         <button
           onClick={dismiss}
           aria-label={t("modal.close")}
-          className="text-neutral-400 hover:text-white px-1"
+          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-neutral-400 hover:text-white"
         >
-          ✕
+          <X className="h-4 w-4" aria-hidden />
         </button>
       </div>
     </div>
