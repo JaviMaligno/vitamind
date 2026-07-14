@@ -16,3 +16,6 @@ scripts/.probe-out/
 # Generated at build time from scripts/sw.template.js by scripts/build-sw.mjs
 public/sw.js
 .env*
+
+# UI audit screenshots (local reference, not part of the app)
+screenshots/
