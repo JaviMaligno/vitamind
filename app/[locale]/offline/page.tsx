@@ -16,11 +16,11 @@ export default function OfflinePage() {
     }}>
       <div style={{ fontSize: "4rem", marginBottom: "1rem" }}>&#9788;</div>
       <h1 style={{ fontSize: "1.5rem", fontWeight: 700, marginBottom: "0.5rem" }}>
-        Sin conexion
+        Sin conexión
       </h1>
       <p style={{ color: "rgba(255,255,255,0.6)", maxWidth: "320px", lineHeight: 1.5 }}>
-        Vitamina D Explorer necesita conexion a internet para cargar datos meteorologicos y de ciudades.
-        Vuelve a intentarlo cuando tengas conexion.
+        Vitamina D Explorer necesita conexión a internet para cargar datos meteorológicos y de ciudades.
+        Vuelve a intentarlo cuando tengas conexión.
       </p>
       <button
         onClick={() => typeof window !== "undefined" && window.location.reload()}

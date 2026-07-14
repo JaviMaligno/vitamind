@@ -134,7 +134,7 @@ export default function PartnersPage() {
           href="/dashboard"
           className="text-[11px] text-text-muted hover:text-text-secondary transition-colors"
         >
-          ← Try the app
+          ← {t("backToApp")}
         </Link>
       </div>
     </div>

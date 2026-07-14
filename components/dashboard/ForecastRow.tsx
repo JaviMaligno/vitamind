@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { computeExposure } from "@/lib/vitd";
 import type { ForecastDay } from "@/hooks/useForecast";
 import type { SkinType } from "@/lib/vitd";
@@ -34,7 +34,16 @@ function getAreaKey(areaFraction: number): string {
 
 export default function ForecastRow({ forecast, skinType, areaFraction, age, targetIU }: Props) {
   const t = useTranslations("dashboard");
+  const locale = useLocale();
   const [expandedDate, setExpandedDate] = useState<string | null>(null);
+
+  // Localized short weekday from the ISO date (was hardcoded EN "Tue/Wed…").
+  // Noon avoids any TZ date-shift; capitalize since some locales lowercase it.
+  const dayFmt = new Intl.DateTimeFormat(locale, { weekday: "short" });
+  const dayLabel = (isoDate: string) => {
+    const s = dayFmt.format(new Date(isoDate + "T12:00:00"));
+    return s.charAt(0).toUpperCase() + s.slice(1);
+  };
 
   if (!forecast) {
     return (
@@ -67,7 +76,7 @@ export default function ForecastRow({ forecast, skinType, areaFraction, age, tar
                   : "bg-surface-card border-border-subtle hover:border-border-default"
               }`}
             >
-              <span className="text-caption font-medium text-text-secondary">{day.dayName}</span>
+              <span className="text-caption font-medium text-text-secondary">{dayLabel(day.date)}</span>
               <span className="text-lg">{weatherIcon(day.avgCloud, day.peakUVI)}</span>
               <span className={`text-xs font-mono font-semibold ${day.peakUVI >= 3 ? "text-accent" : "text-text-muted"}`}>
                 UVI {day.peakUVI}
