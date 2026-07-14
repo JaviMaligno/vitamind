@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useEffect, useMemo, useRef } from "react";
 import { useTranslations, useLocale } from "next-intl";
+import { ChevronLeft, ChevronRight, Check } from "lucide-react";
 import { useSwipe } from "@/hooks/useSwipe";
 import PartnerBadge from "@/components/PartnerBadge";
 import type { DayRecord } from "@/lib/types";
@@ -48,29 +49,23 @@ function getDayStatus(record: DayRecord | null, isFuture: boolean): DayStatus {
   return "unfavorable";
 }
 
+// Cell fill + number colour per status. Both views share this — the status is
+// read from the FILL (amber = sun window, emerald = you logged sun, neutral =
+// no window), the date number always stays visible for reference, and confirmed
+// days get a corner check so the meaning survives without relying on colour.
 function getCellClasses(status: DayStatus, isToday: boolean): string {
-  const todayBorder = isToday ? "ring-2 ring-amber-400/50" : "";
-
+  const ring = isToday ? "ring-2 ring-amber-400/70" : "";
   switch (status) {
     case "confirmed":
-      return `bg-emerald-500/40 ${todayBorder}`;
+      return `bg-emerald-500/35 text-emerald-100 ${ring}`;
     case "favorable":
-      return `bg-amber-400/25 ${todayBorder}`;
+      return `bg-amber-400/25 text-accent ${ring}`;
     case "unfavorable":
-      return `bg-surface-elevated ${todayBorder}`;
+      return `bg-surface-elevated text-text-muted ${ring}`;
     case "future":
-      return "opacity-25";
+      return `text-text-faint/50 ${ring}`;
     default:
-      return `bg-transparent ${todayBorder}`;
-  }
-}
-
-function getCellIcon(status: DayStatus): string | null {
-  switch (status) {
-    case "confirmed": return "\u2713";    // checkmark
-    case "favorable": return "\u25cb";    // open circle (pending)
-    case "unfavorable": return "\u2014";  // em dash
-    default: return null;
+      return `text-text-faint ${ring}`;
   }
 }
 
@@ -93,8 +88,8 @@ export default function HistoryCalendar({ records, onToggleOverride, onNavigate 
   const todayStr = toDateStr(today);
 
   // Localized weekday/month labels — was hardcoded Spanish, showing wrong in
-  // EN/FR/DE/RU/LT. Weekday uses "narrow" (single-glyph, matches the old L/M/X.. look);
-  // month uses "long" since headers render e.g. "24–30 Julio" / "24–30 July".
+  // EN/FR/DE/RU/LT. Weekday uses "narrow" (single-glyph L/M/X..) for the header
+  // row; month uses "long" since headers render e.g. "24–30 Julio" / "24–30 July".
   const dayLabels = useMemo(() => {
     const fmt = new Intl.DateTimeFormat(locale, { weekday: "narrow" });
     return Array.from({ length: 7 }, (_, i) => {
@@ -223,27 +218,29 @@ export default function HistoryCalendar({ records, onToggleOverride, onNavigate 
       })()
     : `${monthNames[viewMonth]} ${viewYear}`;
 
-  function renderDayCell(ds: string, record: DayRecord | null, isFuture: boolean, isToday: boolean, label: string | number, shape: "circle" | "square") {
+  // One cell, shared by both views: a rounded square that always shows the day
+  // NUMBER (so every date is identifiable), colours the fill by status, and adds
+  // a corner check for confirmed days. The weekday letter lives in the header
+  // row above — never inside the cell — which removes the old duplicate-letter
+  // and gives the week view real dates instead of a lone glyph.
+  function renderDayCell(ds: string, record: DayRecord | null, isFuture: boolean, isToday: boolean, dayNum: number, heightClass: string) {
     const status = getDayStatus(record, isFuture);
     const cellClasses = getCellClasses(status, isToday);
-    const icon = getCellIcon(status);
     const canTap = !isFuture && !!record;
-    const isRound = shape === "circle";
 
     return (
       <button
         key={ds}
         onClick={() => handleDayTap(ds, record, isFuture)}
-        disabled={!canTap}
-        className={`flex flex-col items-center justify-center ${isRound ? "rounded-full w-10 h-10" : "rounded-md h-8"} flex-shrink-0 transition-colors ${cellClasses} ${
+        disabled={isFuture || !record}
+        aria-label={ds}
+        className={`relative flex items-center justify-center rounded-xl ${heightClass} transition-colors ${cellClasses} ${
           canTap ? "cursor-pointer active:scale-95" : "cursor-default"
         }`}
       >
-        <span className={`text-[10px] font-medium ${status === "confirmed" ? "text-emerald-300" : status === "favorable" ? "text-accent" : "text-text-secondary"}`}>
-          {isRound && icon ? icon : label}
-        </span>
-        {isRound && (
-          <span className="text-[8px] text-text-faint leading-none">{label}</span>
+        <span className="font-mono text-body font-semibold leading-none">{dayNum}</span>
+        {status === "confirmed" && (
+          <Check className="absolute right-1 top-1 h-3 w-3 text-emerald-200" strokeWidth={3} aria-hidden />
         )}
       </button>
     );
@@ -252,48 +249,58 @@ export default function HistoryCalendar({ records, onToggleOverride, onNavigate 
   return (
     <div className="rounded-2xl bg-glass border border-glass-border backdrop-blur-md p-4 shadow-lg" {...swipeHandlers}>
       {/* Header */}
-      <div className="flex items-center justify-between mb-3">
-        <div className="flex gap-1">
+      <div className="flex items-center justify-between mb-3 gap-2">
+        <div className="flex gap-1 rounded-xl bg-surface-elevated p-1">
           <button
             onClick={() => setViewMode("week")}
-            className={`px-2.5 py-1 rounded-md text-caption font-medium transition-colors ${
-              viewMode === "week" ? "bg-amber-400/20 text-accent" : "text-text-muted hover:text-text-secondary"
+            className={`min-h-[44px] px-4 rounded-lg text-caption font-semibold transition-colors ${
+              viewMode === "week" ? "bg-amber-400/25 text-accent" : "text-text-muted hover:text-text-secondary"
             }`}
           >
             {t("week")}
           </button>
           <button
             onClick={() => setViewMode("month")}
-            className={`px-2.5 py-1 rounded-md text-caption font-medium transition-colors ${
-              viewMode === "month" ? "bg-amber-400/20 text-accent" : "text-text-muted hover:text-text-secondary"
+            className={`min-h-[44px] px-4 rounded-lg text-caption font-semibold transition-colors ${
+              viewMode === "month" ? "bg-amber-400/25 text-accent" : "text-text-muted hover:text-text-secondary"
             }`}
           >
             {t("month")}
           </button>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1">
           <button
             onClick={goBack}
             disabled={!canGoBack}
-            className="text-text-muted hover:text-text-secondary disabled:opacity-20 disabled:cursor-default text-sm px-1"
+            aria-label={t("calPrev")}
+            className="flex h-11 w-11 items-center justify-center rounded-lg text-text-muted hover:text-text-secondary hover:bg-surface-elevated disabled:opacity-20 disabled:cursor-default transition-colors"
           >
-            {"\u2039"}
+            <ChevronLeft className="h-5 w-5" aria-hidden />
           </button>
-          <span className="text-xs text-text-secondary min-w-[120px] text-center">{headerLabel}</span>
+          <span className="text-body font-medium text-text-secondary min-w-[130px] text-center">{headerLabel}</span>
           <button
             onClick={goForward}
             disabled={!canGoForward}
-            className="text-text-muted hover:text-text-secondary disabled:opacity-20 disabled:cursor-default text-sm px-1"
+            aria-label={t("calNext")}
+            className="flex h-11 w-11 items-center justify-center rounded-lg text-text-muted hover:text-text-secondary hover:bg-surface-elevated disabled:opacity-20 disabled:cursor-default transition-colors"
           >
-            {"\u203a"}
+            <ChevronRight className="h-5 w-5" aria-hidden />
           </button>
         </div>
       </div>
 
+      {/* Weekday header row — shared by both views, so week cells no longer carry
+          their own letter (that was the duplicate-letter bug). */}
+      <div className="grid grid-cols-7 gap-1.5 mb-1.5">
+        {dayLabels.map((label, i) => (
+          <div key={`${label}-${i}`} className="text-center text-caption text-text-faint font-semibold uppercase">{label}</div>
+        ))}
+      </div>
+
       {/* Week view */}
       {viewMode === "week" && (
-        <div className="flex justify-between gap-1">
+        <div className="grid grid-cols-7 gap-1.5">
           {Array.from({ length: 7 }, (_, i) => {
             const d = new Date(viewMonday);
             d.setDate(d.getDate() + i);
@@ -301,7 +308,7 @@ export default function HistoryCalendar({ records, onToggleOverride, onNavigate 
             const record = records.find((r) => r.date === ds) ?? null;
             const isFuture = d > today;
             const isToday = ds === todayStr;
-            return renderDayCell(ds, record, isFuture, isToday, dayLabels[i], "circle");
+            return renderDayCell(ds, record, isFuture, isToday, d.getDate(), "h-14");
           })}
         </div>
       )}
@@ -318,24 +325,17 @@ export default function HistoryCalendar({ records, onToggleOverride, onNavigate 
         while (cells.length % 7 !== 0) cells.push(null);
 
         return (
-          <div>
-            <div className="grid grid-cols-7 gap-1 mb-1">
-              {dayLabels.map((label, i) => (
-                <div key={`${label}-${i}`} className="text-center text-[9px] text-text-faint font-medium">{label}</div>
-              ))}
-            </div>
-            <div className="grid grid-cols-7 gap-1">
-              {cells.map((day, idx) => {
-                if (day === null) return <div key={`empty-${idx}`} className="h-8" />;
+          <div className="grid grid-cols-7 gap-1.5">
+            {cells.map((day, idx) => {
+              if (day === null) return <div key={`empty-${idx}`} className="h-12" />;
 
-                const ds = `${viewYear}-${String(viewMonth + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
-                const d = new Date(viewYear, viewMonth, day);
-                const record = records.find((r) => r.date === ds) ?? null;
-                const isFuture = d > today;
-                const isToday = ds === todayStr;
-                return renderDayCell(ds, record, isFuture, isToday, day, "square");
-              })}
-            </div>
+              const ds = `${viewYear}-${String(viewMonth + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+              const d = new Date(viewYear, viewMonth, day);
+              const record = records.find((r) => r.date === ds) ?? null;
+              const isFuture = d > today;
+              const isToday = ds === todayStr;
+              return renderDayCell(ds, record, isFuture, isToday, day, "h-12");
+            })}
           </div>
         );
       })()}
@@ -366,17 +366,19 @@ export default function HistoryCalendar({ records, onToggleOverride, onNavigate 
       {feedbackMsg ? (
         <p className="text-caption text-accent/70 mt-2 text-center animate-pulse">{feedbackMsg}</p>
       ) : (
-        <div className="flex items-center justify-center gap-4 mt-3 text-caption text-text-faint">
-          <span className="flex items-center gap-1">
-            <span className="inline-block w-2.5 h-2.5 rounded-sm bg-amber-400/25" />
+        <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 mt-3 text-caption text-text-faint">
+          <span className="flex items-center gap-1.5">
+            <span className="inline-block w-3 h-3 rounded-md bg-amber-400/25" />
             {t("legendFavorable")}
           </span>
-          <span className="flex items-center gap-1">
-            <span className="inline-block w-2.5 h-2.5 rounded-sm bg-emerald-500/40" />
+          <span className="flex items-center gap-1.5">
+            <span className="inline-flex w-3 h-3 rounded-md bg-emerald-500/35 items-center justify-center">
+              <Check className="h-2 w-2 text-emerald-200" strokeWidth={3} aria-hidden />
+            </span>
             {t("legendConfirmed")}
           </span>
-          <span className="flex items-center gap-1">
-            <span className="inline-block w-2.5 h-2.5 rounded-sm bg-surface-elevated" />
+          <span className="flex items-center gap-1.5">
+            <span className="inline-block w-3 h-3 rounded-md bg-surface-elevated" />
             {t("legendUnfavorable")}
           </span>
         </div>

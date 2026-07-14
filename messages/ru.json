@@ -224,6 +224,8 @@
     "loading": "Загрузка ваших данных...",
     "week": "Неделя",
     "month": "Месяц",
+    "calPrev": "Назад",
+    "calNext": "Вперёд",
     "confirmedCount": "{count} подтверждено",
     "favorableSummary": "{count} из {total} дней с благоприятными условиями",
     "forecastWindow": "Окно",

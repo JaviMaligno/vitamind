@@ -224,6 +224,8 @@
     "loading": "Deine Daten werden geladen...",
     "week": "Woche",
     "month": "Monat",
+    "calPrev": "Zurück",
+    "calNext": "Weiter",
     "confirmedCount": "{count} bestätigt",
     "favorableSummary": "{count} von {total} Tagen mit günstigen Bedingungen",
     "forecastWindow": "Fenster",

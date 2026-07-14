@@ -224,6 +224,8 @@
     "loading": "Cargando tus datos...",
     "week": "Semana",
     "month": "Mes",
+    "calPrev": "Anterior",
+    "calNext": "Siguiente",
     "confirmedCount": "{count} confirmados",
     "favorableSummary": "{count} de {total} días con condiciones favorables",
     "forecastWindow": "Ventana",

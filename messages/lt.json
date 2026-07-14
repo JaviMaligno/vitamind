@@ -224,6 +224,8 @@
     "loading": "Kraunami jūsų duomenys...",
     "week": "Savaitė",
     "month": "Mėnuo",
+    "calPrev": "Ankstesnis",
+    "calNext": "Kitas",
     "confirmedCount": "{count} patvirtinta",
     "favorableSummary": "{count} iš {total} dienų su palankiomis sąlygomis",
     "forecastWindow": "Langas",
