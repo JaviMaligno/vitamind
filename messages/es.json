@@ -828,6 +828,7 @@
     "pageTitle": "Colabora con Vitamina D Explorer",
     "pageSubtitle": "Llega a usuarios interesados en salud en el momento exacto en que necesitan tu producto",
     "heroDescription": "Vitamina D Explorer es una calculadora solar de vitamina D gratuita y basada en ciencia, utilizada por personas que se preocupan activamente por sus niveles de vitamina D. Cuando nuestros usuarios no pueden sintetizar vitamina D de forma natural, ven recomendaciones personalizadas de suplementación — ahí es donde entra tu marca.",
+    "eyebrow": "Para marcas y socios",
     "whyTitle": "¿Por qué colaborar con nosotros?",
     "why1Title": "Relevancia contextual",
     "why1Text": "Tu producto aparece exactamente cuando los usuarios más lo necesitan — cuando no pueden producir vitamina D de forma natural y buscan activamente consejo de suplementación.",
@@ -942,5 +943,10 @@
     "faqWinterQ": "¿Puedo obtener vitamina D del sol en invierno en {city}?",
     "faqMinutesQ": "¿Cuántos minutos de sol necesito en {city}?",
     "faqMinutesA": "En verano, unos {minutes} minutos con brazos y cara al sol bastan para 1000 UI (piel tipo III, cielo despejado)."
+  },
+  "offline": {
+    "title": "Sin conexión",
+    "description": "Vitamina D Explorer necesita conexión a internet para cargar datos meteorológicos y de ciudades. Vuelve a intentarlo cuando tengas conexión.",
+    "retry": "Reintentar"
   }
 }

@@ -3,7 +3,7 @@ import { Sun, Pill, FlaskConical, Sunrise } from "lucide-react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
-import LearnHeroBold from "@/components/LearnHeroBold";
+import PosterHero from "@/components/PosterHero";
 import LearnQA from "@/components/LearnQA";
 
 export function generateStaticParams() {
@@ -67,7 +67,7 @@ export default async function LearnPage({ params }: { params: Promise<{ locale: 
 
   return (
     <main className="mx-auto max-w-[1280px] px-4 py-6 sm:py-8 space-y-8 sm:space-y-10">
-      <LearnHeroBold eyebrow={t("eyebrow")} title={t("pageTitle")} subtitle={t("pageSubtitle")} />
+      <PosterHero eyebrow={t("eyebrow")} title={t("pageTitle")} subtitle={t("pageSubtitle")} />
 
       <div className="lg:grid lg:grid-cols-[220px_1fr] lg:gap-10">
         {/* Table of contents — jump links, sticky on desktop. */}

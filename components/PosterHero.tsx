@@ -4,13 +4,13 @@ import { useSolarPhase } from "@/hooks/useSolarPhase";
 import { PHASE_STYLE } from "@/lib/solar-phase";
 
 /**
- * BOLD poster hero for the Learn page. Text-only poster (phase gradient +
- * earthrise + scrim, content anchored bottom), matching the rest of the
- * redesign. A small client island so the Learn page itself stays a server
- * component (its FAQ content ships in the static HTML for SEO); this only
+ * BOLD poster hero shared by text-first pages (Learn, Partners, …). A text-only
+ * poster (phase gradient + earthrise + scrim, content anchored bottom) matching
+ * the rest of the redesign. A small client island so the host page can stay a
+ * server component (its content ships in the static HTML for SEO); this only
  * reads the user's location so its sky matches the live page background.
  */
-export default function LearnHeroBold({
+export default function PosterHero({
   eyebrow,
   title,
   subtitle,
@@ -33,12 +33,12 @@ export default function LearnHeroBold({
         aria-hidden
       >
         <defs>
-          <linearGradient id="learn-limb" x1="0" x2="1">
+          <linearGradient id="poster-limb" x1="0" x2="1">
             <stop offset="0" stopColor="white" stopOpacity="0.03" />
             <stop offset="0.5" stopColor="white" stopOpacity="0.5" />
             <stop offset="1" stopColor="white" stopOpacity="0.03" />
           </linearGradient>
-          <radialGradient id="learn-sun">
+          <radialGradient id="poster-sun">
             <stop offset="0" stopColor="white" stopOpacity="1" />
             <stop offset="0.3" stopColor="white" stopOpacity="0.6" />
             <stop offset="1" stopColor="white" stopOpacity="0" />
@@ -59,9 +59,9 @@ export default function LearnHeroBold({
         )}
 
         <path d="M-80,700 Q600,120 1280,700" fill="none" stroke="white" strokeOpacity="0.08" strokeWidth="60" />
-        <path d="M-80,700 Q600,120 1280,700" fill="none" stroke="url(#learn-limb)" strokeWidth="3" />
+        <path d="M-80,700 Q600,120 1280,700" fill="none" stroke="url(#poster-limb)" strokeWidth="3" />
         <circle cx="960" cy="230" r="150" fill="none" stroke="white" strokeOpacity="0.06" strokeWidth="1.5" />
-        <circle cx="960" cy="230" r="95" fill="url(#learn-sun)" />
+        <circle cx="960" cy="230" r="95" fill="url(#poster-sun)" />
         <circle cx="960" cy="230" r="12" fill="white" />
       </svg>
 

@@ -828,6 +828,7 @@
     "pageTitle": "Tapkite Vitamina D Explorer partneriu",
     "pageSubtitle": "Pasiekite sveikata besirūpinančius vartotojus būtent tada, kai jiems reikia jūsų produkto",
     "heroDescription": "Vitamina D Explorer yra nemokamas, mokslu pagrįstas saulės vitamino D skaičiuotuvas, naudojamas žmonių, kurie aktyviai rūpinasi savo vitamino D lygiu. Kai mūsų vartotojai negali natūraliai sintetinti vitamino D, jie mato individualizuotas papildų rekomendacijas — čia atsiranda jūsų prekės ženklas.",
+    "eyebrow": "Prekės ženklams ir partneriams",
     "whyTitle": "Kodėl bendradarbiauti su mumis?",
     "why1Title": "Kontekstinis aktualumas",
     "why1Text": "Jūsų produktas pasirodo būtent tada, kai vartotojams jo labiausiai reikia — kai jie negali gaminti vitamino D ir aktyviai ieško papildų patarimų.",
@@ -942,5 +943,10 @@
     "faqWinterQ": "{city} – ar žiemą galima gauti vitamino D iš saulės?",
     "faqMinutesQ": "{city} – kiek saulės minučių man reikia per dieną?",
     "faqMinutesA": "Vasarą apie {minutes, plural, one {# minutę} few {# minutes} many {# minutės} other {# minučių}} su atidengtomis rankomis ir veidu pakanka 1000 TV (III tipo oda, giedras dangus)."
+  },
+  "offline": {
+    "title": "Neprisijungę",
+    "description": "Vitamin D Explorer reikia interneto ryšio, kad įkeltų orų ir miestų duomenis. Bandykite dar kartą, kai atsiras ryšys.",
+    "retry": "Bandyti dar kartą"
   }
 }
