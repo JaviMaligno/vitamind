@@ -59,10 +59,10 @@
   /* Ventana de datos teñida por fase (fondo SÓLIDO oscuro → etiquetas claras
      legibles y la viz de calor contrasta, pero con el matiz del momento del
      día). Consumidos por PhaseWindow vía PHASE_STYLE. */
-  --window-dawn: #2d1533;                          /* magenta/vino oscuro */
-  --window-day: #0f1c3e;                           /* azul marino */
-  --window-dusk: #211640;                          /* morado/índigo oscuro */
-  --window-night: #0e1330;                         /* navy (= --color-window) */
+  --window-dawn: #3f1c47;                           /* magenta/vino, con vida */
+  --window-day: #16305c;                            /* azul, más vivo */
+  --window-dusk: #3a2056;                           /* índigo/morado, menos oscuro */
+  --window-night: #0e1330;                          /* navy (= --color-window) */
   --color-on-window: #f4f1ff;                     /* texto sobre ventana */
   --color-on-window-faint: rgba(255, 255, 255, 0.55);
 

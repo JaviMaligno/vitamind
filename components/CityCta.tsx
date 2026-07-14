@@ -28,10 +28,10 @@ export default function CityCta({
   return (
     <Link
       href={href}
-      className="group relative inline-flex w-full items-center justify-center gap-2 overflow-hidden rounded-2xl px-8 text-heading font-bold text-white shadow-lg min-h-[56px] sm:w-auto sm:min-w-[420px] [text-shadow:0_1px_8px_rgba(0,0,0,0.35)]"
+      className="group relative inline-flex w-full items-center justify-center gap-2 overflow-hidden rounded-2xl px-8 text-heading font-bold text-white shadow-lg min-h-[56px] sm:w-auto sm:min-w-[420px] [text-shadow:0_2px_12px_rgba(0,0,0,0.55)]"
     >
       <span className="absolute inset-0" style={{ background: PHASE_STYLE[phase].grad }} suppressHydrationWarning aria-hidden />
-      <span className="absolute inset-0 bg-black/20 transition-colors group-hover:bg-black/10" aria-hidden />
+      <span className="absolute inset-0 bg-black/10 transition-colors group-hover:bg-black/[0.02]" aria-hidden />
       <span className="relative">{label}</span>
     </Link>
   );
