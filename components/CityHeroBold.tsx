@@ -46,7 +46,9 @@ export default function CityHeroBold({
   notify: ReactNode;
 }) {
   const phase = useSolarPhase(lat, lon) ?? "day";
-  const statColor = tone === "possible" ? "#4ade80" : "#cbd5e1";
+  // "possible" green integrates with each phase (neon only at night); "winter"
+  // stays a neutral grey. See --stat-{phase} in globals.
+  const statColor = tone === "possible" ? PHASE_STYLE[phase].stat : "#cbd5e1";
 
   return (
     <section className="relative isolate overflow-hidden rounded-[2rem] sm:rounded-[2.5rem] min-h-[440px] sm:min-h-[560px] lg:min-h-[600px]">

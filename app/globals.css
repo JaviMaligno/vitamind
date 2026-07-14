@@ -71,6 +71,13 @@
   --cta-day: #1f5fd0;                               /* azul profundo */
   --cta-dusk: #9b3d84;                              /* magenta/morado */
   --cta-night: #6d4aff;                             /* violeta brillante */
+  /* Verde del dato protagonista ("possible") por fase, sobre el hero oscuro.
+     Neón (#4ade80) sólo en night; en las fases cálidas/claras un verde algo
+     más suave y desaturado que no grita contra el paisaje del gradiente. */
+  --stat-dawn: #8fe6a3;                             /* verde suave, tibio */
+  --stat-day: #63e0ab;                              /* menta, no compite con el azul */
+  --stat-dusk: #9ae89a;                             /* verde-lima suave, cálido */
+  --stat-night: #4ade80;                            /* neón brillante sobre navy */
   --color-on-window: #f4f1ff;                     /* texto sobre ventana */
   --color-on-window-faint: rgba(255, 255, 255, 0.55);
 
