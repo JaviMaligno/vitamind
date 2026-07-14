@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo, useCallback, useEffect } from "react";
-import { Sun, Pill, FlaskConical, Sunrise } from "lucide-react";
+import { Sun, Pill, FlaskConical, Sunrise, ChevronLeft, ChevronRight, ArrowRight, X } from "lucide-react";
 import { useTranslations, useLocale } from "next-intl";
 import { indexPath } from "@/lib/city-client-links";
 import CityPageLink from "@/components/CityPageLink";
@@ -145,9 +145,10 @@ export default function ExplorePage() {
           {exploreCity && (
             <button
               onClick={() => setExploreCity(null)}
-              className="px-3 py-2 rounded-lg bg-surface-card text-text-muted text-xs hover:bg-surface-elevated hover:text-text-secondary transition-colors whitespace-nowrap"
+              className="inline-flex min-h-[44px] items-center gap-1.5 px-3 rounded-lg bg-surface-card text-text-muted text-caption hover:bg-surface-elevated hover:text-text-secondary transition-colors whitespace-nowrap"
             >
-              × {app.cityName}
+              <X className="h-3.5 w-3.5" aria-hidden />
+              {app.cityName}
             </button>
           )}
           <GpsButton />
@@ -194,9 +195,10 @@ export default function ExplorePage() {
         <div className="flex items-center gap-2 flex-wrap">
           <button
             onClick={() => setDoy((d: number) => Math.max(1, d - 1))}
-            className="min-h-[44px] px-3 py-1.5 rounded-md bg-surface-elevated text-text-secondary cursor-pointer text-body"
+            aria-label={t("dashboard.calPrev")}
+            className="flex h-11 w-11 items-center justify-center rounded-md bg-surface-elevated text-text-secondary cursor-pointer"
           >
-            ◀
+            <ChevronLeft className="h-5 w-5" aria-hidden />
           </button>
           <input
             type="range"
@@ -208,9 +210,10 @@ export default function ExplorePage() {
           />
           <button
             onClick={() => setDoy((d: number) => Math.min(365, d + 1))}
-            className="min-h-[44px] px-3 py-1.5 rounded-md bg-surface-elevated text-text-secondary cursor-pointer text-body"
+            aria-label={t("dashboard.calNext")}
+            className="flex h-11 w-11 items-center justify-center rounded-md bg-surface-elevated text-text-secondary cursor-pointer"
           >
-            ▶
+            <ChevronRight className="h-5 w-5" aria-hidden />
           </button>
           <span className="font-mono text-caption text-accent min-w-[64px]">
             {dateLabel}
@@ -275,7 +278,7 @@ export default function ExplorePage() {
                   {t(link.subKey)}
                 </p>
               </div>
-              <span className="text-text-muted text-body mt-1">→</span>
+              <ArrowRight className="h-4 w-4 shrink-0 text-text-muted mt-1.5" aria-hidden />
             </Link>
           ))}
         </div>
