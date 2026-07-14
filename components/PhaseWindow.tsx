@@ -27,7 +27,7 @@ export default function PhaseWindow({
   const phase = useSolarPhase(lat, lon) ?? "night";
   return (
     <div
-      className={`rounded-2xl border border-window-border text-on-window shadow-lg transition-[background] duration-1000 ${className}`}
+      className={`rounded-2xl border border-window-border text-on-window shadow-lg ${className}`}
       style={{ background: PHASE_STYLE[phase].window }}
       suppressHydrationWarning
     >
