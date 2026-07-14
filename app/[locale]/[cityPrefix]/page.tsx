@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import IndexHeroBold from "@/components/IndexHeroBold";
+import CityIndexSearch from "@/components/CityIndexSearch";
 import Flag from "@/components/ui/Flag";
 import { BUILTIN_CITIES } from "@/lib/cities";
 import {
@@ -46,12 +47,12 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
  */
 type BandKey = "veryHigh" | "high" | "mid" | "sub" | "trop";
 
-const BANDS: { key: BandKey; headingKey: string }[] = [
-  { key: "veryHigh", headingKey: "indexBandVeryHigh" },
-  { key: "high", headingKey: "indexBandHigh" },
-  { key: "mid", headingKey: "indexBandMid" },
-  { key: "sub", headingKey: "indexBandSub" },
-  { key: "trop", headingKey: "indexBandTrop" },
+const BANDS: { key: BandKey; headingKey: string; short: string }[] = [
+  { key: "veryHigh", headingKey: "indexBandVeryHigh", short: "55°+" },
+  { key: "high", headingKey: "indexBandHigh", short: "45–55°" },
+  { key: "mid", headingKey: "indexBandMid", short: "35–45°" },
+  { key: "sub", headingKey: "indexBandSub", short: "23–35°" },
+  { key: "trop", headingKey: "indexBandTrop", short: "<23°" },
 ];
 
 function bandForLat(lat: number): BandKey {
@@ -123,15 +124,24 @@ export default async function CityIndexPage({ params }: { params: Promise<Params
         countLabel={t("indexCitiesLabel")}
       />
 
-      <div className="mt-10 space-y-8 sm:mt-16 sm:space-y-10">
+      <div className="mt-6 sm:mt-8">
+        <CityIndexSearch
+          bands={bands.map((b) => ({ id: `band-${b.key}`, short: b.short }))}
+          placeholder={t("indexSearchPlaceholder")}
+          noResults={t("indexNoResults")}
+          clearLabel={t("indexClearSearch")}
+        />
+      </div>
+
+      <div className="mt-8 space-y-8 sm:mt-10 sm:space-y-10">
         {bands.map((band) => (
-          <section key={band.key}>
+          <section key={band.key} id={`band-${band.key}`} data-band-section className="scroll-mt-28">
             <h2 className="font-display font-bold text-2xl sm:text-3xl md:text-4xl tracking-tight text-text-primary">
               {t(band.headingKey)}
             </h2>
             <ul className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {band.cities.map((c) => (
-                <li key={c.base}>
+                <li key={c.base} data-city={c.name.toLowerCase()}>
                   <Link
                     href={c.href}
                     className="flex min-h-[56px] items-center gap-3 rounded-2xl bg-glass border border-glass-border backdrop-blur-md px-4 py-3 shadow-lg transition-colors hover:bg-surface-elevated focus-visible:outline focus-visible:outline-2 focus-visible:outline-sun"

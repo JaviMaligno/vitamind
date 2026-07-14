@@ -940,6 +940,9 @@
     "indexMonths": "{count, plural, one {# mois de soleil} other {# mois de soleil}}",
     "indexAllYear": "soleil toute l'année",
     "indexNever": "pas de synthèse solaire",
+    "indexSearchPlaceholder": "Rechercher une ville…",
+    "indexNoResults": "Aucune ville ne correspond",
+    "indexClearSearch": "Effacer la recherche",
     "faqWinterQ": "Puis-je obtenir de la vitamine D du soleil en hiver {atCity} ?",
     "faqMinutesQ": "Combien de minutes de soleil me faut-il {atCity} ?",
     "faqMinutesA": "En été, environ {minutes} minutes avec le visage et les bras exposés suffisent pour 1 000 UI (peau de type III, ciel dégagé)."

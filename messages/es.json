@@ -940,6 +940,9 @@
     "indexMonths": "{count, plural, one {# mes de sol} other {# meses de sol}}",
     "indexAllYear": "sol todo el año",
     "indexNever": "sin síntesis solar",
+    "indexSearchPlaceholder": "Buscar ciudad…",
+    "indexNoResults": "Ninguna ciudad coincide",
+    "indexClearSearch": "Limpiar búsqueda",
     "faqWinterQ": "¿Puedo obtener vitamina D del sol en invierno en {city}?",
     "faqMinutesQ": "¿Cuántos minutos de sol necesito en {city}?",
     "faqMinutesA": "En verano, unos {minutes} minutos con brazos y cara al sol bastan para 1000 UI (piel tipo III, cielo despejado)."

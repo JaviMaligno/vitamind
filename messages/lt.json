@@ -940,6 +940,9 @@
     "indexMonths": "{count, plural, one {# saulėtas mėnuo} few {# saulėti mėnesiai} many {# saulėto mėnesio} other {# saulėtų mėnesių}}",
     "indexAllYear": "saulė ištisus metus",
     "indexNever": "be saulės sintezės",
+    "indexSearchPlaceholder": "Ieškoti miesto…",
+    "indexNoResults": "Miestų nerasta",
+    "indexClearSearch": "Išvalyti paiešką",
     "faqWinterQ": "{city} – ar žiemą galima gauti vitamino D iš saulės?",
     "faqMinutesQ": "{city} – kiek saulės minučių man reikia per dieną?",
     "faqMinutesA": "Vasarą apie {minutes, plural, one {# minutę} few {# minutes} many {# minutės} other {# minučių}} su atidengtomis rankomis ir veidu pakanka 1000 TV (III tipo oda, giedras dangus)."
