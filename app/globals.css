@@ -63,6 +63,14 @@
   --window-day: #16305c;                            /* azul, más vivo */
   --window-dusk: #2e1b4b;                           /* índigo/morado, intermedio */
   --window-night: #0e1330;                          /* navy (= --color-window) */
+  /* CTA sólido por fase (fondo del botón, texto blanco). Colores LIMPIOS que
+     destacan sobre el tinte de página de cada fase, sin el scrim que
+     enturbiaba el gradiente. Validados ≥4.5:1 con blanco. night = violeta
+     brillante para destacar sobre navy (donde el gradiente se camuflaba). */
+  --cta-dawn: #c2367a;                              /* frambuesa profunda */
+  --cta-day: #1f5fd0;                               /* azul profundo */
+  --cta-dusk: #9b3d84;                              /* magenta/morado */
+  --cta-night: #6d4aff;                             /* violeta brillante */
   --color-on-window: #f4f1ff;                     /* texto sobre ventana */
   --color-on-window-faint: rgba(255, 255, 255, 0.55);
 
