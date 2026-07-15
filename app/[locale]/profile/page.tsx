@@ -107,7 +107,7 @@ export default function ProfilePage() {
                 app.setCityName(`${e.target.value}°`);
                 app.setCityFlag("📍");
               }}
-              className="w-16 px-2 py-1.5 rounded-lg bg-surface-input border border-border-default text-text-primary text-[11px] font-mono outline-none"
+              className="w-16 min-h-[44px] px-2 rounded-lg bg-surface-input border border-border-default text-text-primary text-caption font-mono outline-none focus-visible:ring-2 focus-visible:ring-sun"
             />
             <span className="text-caption text-text-faint">{tc("lon")}</span>
             <input
@@ -118,7 +118,7 @@ export default function ProfilePage() {
                   Math.round((parseFloat(e.target.value) || 0) / 15),
                 );
               }}
-              className="w-16 px-2 py-1.5 rounded-lg bg-surface-input border border-border-default text-text-primary text-[11px] font-mono outline-none"
+              className="w-16 min-h-[44px] px-2 rounded-lg bg-surface-input border border-border-default text-text-primary text-caption font-mono outline-none focus-visible:ring-2 focus-visible:ring-sun"
             />
           </div>
         </div>

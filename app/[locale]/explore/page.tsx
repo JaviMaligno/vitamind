@@ -200,13 +200,21 @@ export default function ExplorePage() {
           >
             <ChevronLeft className="h-5 w-5" aria-hidden />
           </button>
+          {/* 44px-tall touch zone with a thin visual track: appearance-none +
+              custom track/thumb so the hitbox is finger-sized while the line
+              stays slim (the bare h-1.5 input was a ~6px tall target). */}
           <input
             type="range"
             min="1"
             max="365"
             value={doy}
             onChange={(e) => setDoy(parseInt(e.target.value))}
-            className="flex-1 min-w-[140px] h-1.5 accent-amber-400"
+            aria-label={dateLabel}
+            className="h-11 min-w-[140px] flex-1 cursor-pointer appearance-none bg-transparent
+              [&::-webkit-slider-runnable-track]:h-1.5 [&::-webkit-slider-runnable-track]:rounded-full [&::-webkit-slider-runnable-track]:bg-surface-input
+              [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:-mt-[5px] [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-amber-400
+              [&::-moz-range-track]:h-1.5 [&::-moz-range-track]:rounded-full [&::-moz-range-track]:bg-surface-input
+              [&::-moz-range-thumb]:h-4 [&::-moz-range-thumb]:w-4 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:bg-amber-400"
           />
           <button
             onClick={() => setDoy((d: number) => Math.min(365, d + 1))}

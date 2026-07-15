@@ -36,10 +36,9 @@ export default function LearnSearch({
       block.querySelectorAll<HTMLDetailsElement>("[data-qa]").forEach((d) => {
         const match = !term || (d.dataset.qa ?? "").includes(term);
         d.hidden = !match;
-        // While searching: open matches, close non-matches. When the query
-        // clears: restore the server default (first item of each block stays
-        // open via data-qa-default-open; everything else collapses).
-        d.open = term ? match : d.hasAttribute("data-qa-default-open");
+        // Open matches while searching (so the answer is visible); collapse
+        // everything when the query clears (all questions start collapsed).
+        d.open = !!term && match;
         if (match) blockHas = true;
       });
       block.hidden = !blockHas;

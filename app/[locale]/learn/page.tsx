@@ -117,7 +117,7 @@ export default async function LearnPage({ params }: { params: Promise<{ locale: 
                   <p className="text-caption text-text-muted">{t(block.subtitleKey)}</p>
                 </div>
               </div>
-              <LearnQA items={block.items} sourcesLabel={t("sourcesLabel")} />
+              <LearnQA items={block.items} sourcesLabel={t("sourcesLabel")} recommendedLabel={t("recommended")} />
             </section>
           ))}
           </div>
