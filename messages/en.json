@@ -751,9 +751,7 @@
         ]
       }
     },
-    "backToApp": "Back to the app",
-    "learnMoreLink": "Learn more about vitamin D →",
-    "supplementLink": "How to supplement well →"
+    "backToApp": "Back to the app"
   },
   "cities": {
     "reikiavik": "Reykjavik",
@@ -902,7 +900,7 @@
   "explore": {
     "faqHeading": "Frequently asked questions",
     "faqSubheading": "Dive into the science behind the app",
-    "faqCta": "See all questions →"
+    "faqCta": "See all questions"
   },
   "cityPage": {
     "title": "Vitamin D from the sun in {city}",
@@ -923,7 +921,7 @@
     "seasonNote": "Estimated for Fitzpatrick type III skin, arms and face exposed, clear sky.",
     "supplementHeading": "When to supplement in {city}",
     "supplementBody": "During the months without solar synthesis, vitamin D comes only from food or a supplement. It is usually taken as D3, often with magnesium — which the body needs to activate it — and vitamin K (as K2), which contributes to the maintenance of normal bones.",
-    "supplementMore": "More about supplements →",
+    "supplementMore": "More about supplements",
     "ctaLabel": "Calculate my window in {city}",
     "notifyLead": "{city}: we'll tell you the days you can make vitamin D.",
     "notifyOff": "🔔 Notify me",
@@ -937,7 +935,7 @@
     "indexEyebrow": "City directory",
     "indexCitiesLabel": "cities",
     "allCitiesLink": "Browse all cities",
-    "viewCityPage": "{city}: full page →",
+    "viewCityPage": "View the full {city} page",
     "indexBandVeryHigh": "Extreme latitudes (55°+) — long winters with no useful sun",
     "indexBandHigh": "High latitudes (45–55°)",
     "indexBandMid": "Mid latitudes (35–45°)",

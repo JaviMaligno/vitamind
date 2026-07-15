@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo, useCallback, useEffect } from "react";
-import { Sun, Pill, FlaskConical, Sunrise, ChevronLeft, ChevronRight, ArrowRight, X } from "lucide-react";
+import { Sun, Pill, FlaskConical, Sunrise, ChevronLeft, ChevronRight, ArrowRight, ArrowUpRight, X } from "lucide-react";
 import { useTranslations, useLocale } from "next-intl";
 import { indexPath } from "@/lib/city-client-links";
 import CityPageLink from "@/components/CityPageLink";
@@ -159,8 +159,12 @@ export default function ExplorePage() {
           from Google or the sitemap: the current city direct, plus the full index. */}
       <div className="mx-auto max-w-[1280px] px-4 pb-1 text-caption flex items-center gap-4">
         <CityPageLink cityId={cityId} lat={lat} lon={lon} />
-        <Link href={indexPath(locale)} className="text-accent underline decoration-dotted">
-          {tCity("allCitiesLink")} →
+        <Link
+          href={indexPath(locale)}
+          className="inline-flex min-h-[36px] w-fit items-center gap-1.5 rounded-full border border-glass-border bg-glass px-3 text-caption font-medium text-accent shadow-sm backdrop-blur-md transition-colors hover:bg-surface-elevated"
+        >
+          {tCity("allCitiesLink")}
+          <ArrowUpRight className="h-3.5 w-3.5 shrink-0" aria-hidden />
         </Link>
       </div>
 
@@ -291,8 +295,9 @@ export default function ExplorePage() {
           ))}
         </div>
         <div className="mt-4">
-          <Link href="/learn" className="text-caption text-text-muted hover:text-text-secondary transition-colors">
+          <Link href="/learn" className="inline-flex items-center gap-1.5 text-caption text-text-muted hover:text-text-secondary transition-colors">
             {t("explore.faqCta")}
+            <ArrowRight className="h-3.5 w-3.5" aria-hidden />
           </Link>
         </div>
       </section>

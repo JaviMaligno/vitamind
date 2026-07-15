@@ -280,7 +280,7 @@ export default async function CityPage({ params }: { params: Promise<Params> }) 
         </ul>
         <p className="mt-5 text-body">
           <A href={indexPathname(p.locale)} className="font-semibold">
-            {t("allCitiesLink")} →
+            {t("allCitiesLink")}
           </A>
         </p>
       </nav>

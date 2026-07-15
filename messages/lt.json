@@ -751,9 +751,7 @@
         ]
       }
     },
-    "backToApp": "Grįžti į programėlę",
-    "learnMoreLink": "Sužinoti daugiau apie vitaminą D →",
-    "supplementLink": "Kaip tinkamai vartoti papildus →"
+    "backToApp": "Grįžti į programėlę"
   },
   "cities": {
     "reikiavik": "Reikjavikas",
@@ -902,7 +900,7 @@
   "explore": {
     "faqHeading": "Dažnai užduodami klausimai",
     "faqSubheading": "Įsigilinkite į mokslą, slypintį už programos",
-    "faqCta": "Žiūrėti visus klausimus →"
+    "faqCta": "Žiūrėti visus klausimus"
   },
   "cityPage": {
     "title": "Vitaminas D iš saulės: {city}",
@@ -923,7 +921,7 @@
     "seasonNote": "Įvertinta III tipo odai (atidengtos rankos ir veidas, giedras dangus).",
     "supplementHeading": "Kada vartoti papildus: {city}",
     "supplementBody": "Mėnesiais be saulės sintezės vitamino D reikia gauti iš maisto arba papildo. Jis vartojamas kaip D3, dažnai kartu su magniu, kurio organizmui reikia vitaminui D aktyvinti, ir vitaminu K (kaip K2), kuris padeda palaikyti normalią kaulų būklę.",
-    "supplementMore": "Daugiau apie papildus →",
+    "supplementMore": "Daugiau apie papildus",
     "ctaLabel": "Apskaičiuoti savo saulės langą",
     "notifyLead": "{city}: pranešime, kuriomis dienomis galėsite pasigaminti vitamino D.",
     "notifyOff": "🔔 Pranešti man",
@@ -937,7 +935,7 @@
     "indexEyebrow": "Miestų katalogas",
     "indexCitiesLabel": "miestai",
     "allCitiesLink": "Visi miestai",
-    "viewCityPage": "{city}: visas puslapis →",
+    "viewCityPage": "Žiūrėti visą {city} puslapį",
     "indexBandVeryHigh": "Kraštutinės platumos (55°+) — ilgos žiemos be naudingos saulės",
     "indexBandHigh": "Aukštos platumos (45–55°)",
     "indexBandMid": "Vidutinės platumos (35–45°)",

@@ -751,9 +751,7 @@
         ]
       }
     },
-    "backToApp": "Retour à l'application",
-    "learnMoreLink": "En savoir plus sur la vitamine D →",
-    "supplementLink": "Comment bien supplémenter →"
+    "backToApp": "Retour à l'application"
   },
   "cities": {
     "reikiavik": "Reykjavik",
@@ -902,7 +900,7 @@
   "explore": {
     "faqHeading": "Questions fréquentes",
     "faqSubheading": "Plongez dans la science derrière l'app",
-    "faqCta": "Voir toutes les questions →"
+    "faqCta": "Voir toutes les questions"
   },
   "cityPage": {
     "title": "Vitamine D du soleil {atCity}",
@@ -923,7 +921,7 @@
     "seasonNote": "Estimation pour une peau de type III, visage et bras exposés, ciel dégagé.",
     "supplementHeading": "Quand se supplémenter {atCity}",
     "supplementBody": "Durant les mois sans synthèse solaire, la vitamine D provient uniquement de l'alimentation ou d'un supplément. Elle se prend sous forme de D3, souvent avec du magnésium — nécessaire à son activation — et de la vitamine K (sous forme de K2), qui contribue au maintien d'une ossature normale.",
-    "supplementMore": "En savoir plus sur les suppléments →",
+    "supplementMore": "En savoir plus sur les suppléments",
     "ctaLabel": "Calculer ma fenêtre {atCity}",
     "notifyLead": "{city} : nous vous prévenons les jours où vous pouvez produire de la vitamine D.",
     "notifyOff": "🔔 Prévenez-moi",
@@ -937,7 +935,7 @@
     "indexEyebrow": "Répertoire des villes",
     "indexCitiesLabel": "villes",
     "allCitiesLink": "Voir toutes les villes",
-    "viewCityPage": "{city} : page complète →",
+    "viewCityPage": "Voir la page complète de {city}",
     "indexBandVeryHigh": "Latitudes extrêmes (55°+) — longs hivers sans soleil utile",
     "indexBandHigh": "Latitudes élevées (45–55°)",
     "indexBandMid": "Latitudes moyennes (35–45°)",

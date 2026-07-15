@@ -751,9 +751,7 @@
         ]
       }
     },
-    "backToApp": "Volver a la app",
-    "learnMoreLink": "Más sobre vitamina D →",
-    "supplementLink": "Cómo suplementar bien →"
+    "backToApp": "Volver a la app"
   },
   "cities": {
     "reikiavik": "Reikiavik",
@@ -902,7 +900,7 @@
   "explore": {
     "faqHeading": "Preguntas frecuentes",
     "faqSubheading": "Profundiza en la ciencia detrás de la app",
-    "faqCta": "Ver todas las preguntas →"
+    "faqCta": "Ver todas las preguntas"
   },
   "cityPage": {
     "title": "Vitamina D del sol en {city}",
@@ -923,7 +921,7 @@
     "seasonNote": "Estimado para piel tipo III, brazos y cara expuestos, cielo despejado.",
     "supplementHeading": "Cuándo suplementar en {city}",
     "supplementBody": "En los meses sin síntesis solar, la vitamina D solo procede de la dieta o de un suplemento. Suele tomarse como D3, a menudo con magnesio —que el organismo necesita para activarla— y vitamina K (como K2), que contribuye al mantenimiento de los huesos en condiciones normales.",
-    "supplementMore": "Más sobre suplementos →",
+    "supplementMore": "Más sobre suplementos",
     "ctaLabel": "Calcular mi ventana en {city}",
     "notifyLead": "{city}: te avisamos los días que puedas hacer vitamina D.",
     "notifyOff": "🔔 Avísame",
@@ -937,7 +935,7 @@
     "indexEyebrow": "Directorio de ciudades",
     "indexCitiesLabel": "ciudades",
     "allCitiesLink": "Ver todas las ciudades",
-    "viewCityPage": "{city}: página completa →",
+    "viewCityPage": "Ver la página completa de {city}",
     "indexBandVeryHigh": "Latitudes extremas (55°+) — inviernos largos sin sol útil",
     "indexBandHigh": "Latitudes altas (45–55°)",
     "indexBandMid": "Latitudes medias (35–45°)",

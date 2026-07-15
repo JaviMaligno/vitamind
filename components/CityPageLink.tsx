@@ -1,6 +1,7 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
+import { ArrowUpRight } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { targetCityBase, cityPagePath } from "@/lib/city-client-links";
 
@@ -30,8 +31,12 @@ export default function CityPageLink({
 
   const name = tNames.has(base) ? tNames(base) : base;
   return (
-    <Link href={path} className="text-accent underline decoration-dotted">
+    <Link
+      href={path}
+      className="inline-flex min-h-[36px] w-fit items-center gap-1.5 rounded-full border border-glass-border bg-glass px-3 text-caption font-medium text-accent shadow-sm backdrop-blur-md transition-colors hover:bg-surface-elevated"
+    >
       {tCity("viewCityPage", { city: name })}
+      <ArrowUpRight className="h-3.5 w-3.5 shrink-0" aria-hidden />
     </Link>
   );
 }

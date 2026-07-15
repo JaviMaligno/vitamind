@@ -751,9 +751,7 @@
         ]
       }
     },
-    "backToApp": "Zurück zur App",
-    "learnMoreLink": "Mehr über Vitamin D erfahren →",
-    "supplementLink": "Wie man richtig supplementiert →"
+    "backToApp": "Zurück zur App"
   },
   "cities": {
     "reikiavik": "Reykjavik",
@@ -902,7 +900,7 @@
   "explore": {
     "faqHeading": "Häufig gestellte Fragen",
     "faqSubheading": "Tauche tiefer in die Wissenschaft hinter der App ein",
-    "faqCta": "Alle Fragen ansehen →"
+    "faqCta": "Alle Fragen ansehen"
   },
   "cityPage": {
     "title": "Vitamin D durch Sonne in {city}",
@@ -923,7 +921,7 @@
     "seasonNote": "Geschätzt für Hauttyp III, Arme und Gesicht unbedeckt, klarer Himmel.",
     "supplementHeading": "Wann du in {city} supplementieren solltest",
     "supplementBody": "In den Monaten ohne Vitamin-D-Bildung kommt Vitamin D nur über die Ernährung oder ein Supplement. Meist wird es als D3 eingenommen, häufig zusammen mit Magnesium – das dein Körper zur Aktivierung von Vitamin D braucht – und Vitamin K (als K2), das zur Erhaltung normaler Knochen beiträgt.",
-    "supplementMore": "Mehr über Nahrungsergänzung →",
+    "supplementMore": "Mehr über Nahrungsergänzung",
     "ctaLabel": "Mein Zeitfenster in {city} berechnen",
     "notifyLead": "{city}: Wir sagen dir Bescheid, an welchen Tagen du Vitamin D bilden kannst.",
     "notifyOff": "🔔 Benachrichtige mich",
@@ -937,7 +935,7 @@
     "indexEyebrow": "Städteverzeichnis",
     "indexCitiesLabel": "Städte",
     "allCitiesLink": "Alle Städte ansehen",
-    "viewCityPage": "{city}: vollständige Seite →",
+    "viewCityPage": "Vollständige {city}-Seite ansehen",
     "indexBandVeryHigh": "Extreme Breiten (55°+) — lange Winter ohne nutzbare Sonne",
     "indexBandHigh": "Hohe Breiten (45–55°)",
     "indexBandMid": "Mittlere Breiten (35–45°)",
