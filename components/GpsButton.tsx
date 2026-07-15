@@ -20,13 +20,15 @@ export default function GpsButton() {
         ? "text-red-400"
         : "text-accent";
 
+  // Contained glass surface + border in every state so the icon keeps contrast
+  // on any phase page tint (it used to float on a near-invisible bg-surface-card).
   const bgColor = gps.loading
-    ? "bg-surface-card"
+    ? "bg-glass border border-glass-border"
     : isActive
-      ? "bg-emerald-400/10 hover:bg-emerald-400/20"
+      ? "bg-emerald-500/15 border border-emerald-500/30 hover:bg-emerald-500/25"
       : isDenied
-        ? "bg-red-400/10 hover:bg-red-400/20"
-        : "bg-surface-card hover:bg-surface-elevated";
+        ? "bg-red-500/15 border border-red-500/30 hover:bg-red-500/25"
+        : "bg-glass border border-glass-border hover:bg-surface-elevated";
 
   return (
     <div className="flex flex-col items-start gap-1">

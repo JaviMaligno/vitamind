@@ -23,23 +23,25 @@ export default function GpsErrorHint({ error, hint }: Props) {
   }, [open]);
 
   return (
-    <div className="relative inline-flex items-center gap-1.5" ref={ref}>
-      <span className="text-[11px] text-red-400/80">{error}</span>
-      {hint && (
-        <>
+    <div className="relative inline-flex" ref={ref}>
+      {/* Contained red pill so the message stays legible on ANY phase background
+          (it used to be faint red text floating on the page tint). */}
+      <span className="inline-flex items-center gap-1.5 rounded-lg border border-red-500/25 bg-red-500/12 px-2.5 py-1.5 text-caption font-medium text-red-600 dark:text-red-300">
+        {error}
+        {hint && (
           <button
             onClick={() => setOpen((o) => !o)}
-            className="w-4 h-4 rounded-full bg-red-400/15 text-red-400/70 text-[10px] font-semibold flex items-center justify-center hover:bg-red-400/25 transition-colors shrink-0"
+            className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-red-500/20 text-caption font-bold text-red-600 dark:text-red-200 hover:bg-red-500/30 transition-colors"
             aria-label="Info"
           >
             ?
           </button>
-          {open && (
-            <div className="absolute right-0 top-full mt-1.5 z-50 w-[calc(100vw-2rem)] max-w-xs rounded-xl bg-[#1e1e2e] border border-white/10 shadow-2xl p-3.5 text-[12px] text-neutral-300 leading-relaxed">
-              {hint}
-            </div>
-          )}
-        </>
+        )}
+      </span>
+      {hint && open && (
+        <div className="absolute right-0 top-full mt-1.5 z-50 w-[calc(100vw-2rem)] max-w-xs rounded-xl bg-[#1e1e2e] border border-white/10 shadow-2xl p-3.5 text-caption text-neutral-300 leading-relaxed">
+          {hint}
+        </div>
       )}
     </div>
   );

@@ -18,7 +18,9 @@ import GpsButton from "@/components/GpsButton";
 import PartnerBadge from "@/components/PartnerBadge";
 import Card from "@/components/ui/Card";
 import Flag from "@/components/ui/Flag";
-import { BookOpen, ArrowRight } from "lucide-react";
+import PhaseButton from "@/components/PhaseButton";
+import GpsErrorHint from "@/components/GpsErrorHint";
+import { BookOpen, ArrowRight, MapPin } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 
 // Full-row navigation link ("noUvLearnTitle" prompt, "Learn more"): same glass
@@ -115,6 +117,23 @@ export default function DashboardPage() {
           <div className="space-y-2">
             <h2 className="font-display text-title text-text-primary">{tHero("whereAreYou")}</h2>
             <p className="text-caption text-text-faint">{tHero("searchHint")}</p>
+          </div>
+          {/* Primary action right where the prompt asks: use my location. */}
+          <div className="flex flex-col items-center gap-2">
+            <PhaseButton onClick={app.gps.enableGps} disabled={app.gps.loading}>
+              <MapPin className="h-4 w-4" aria-hidden />
+              {app.gps.loading ? tHero("locating") : tHero("useMyLocation")}
+            </PhaseButton>
+            {app.gps.error && (
+              <GpsErrorHint
+                error={tHero(app.gps.error)}
+                hint={
+                  app.gps.error === "gpsDenied" ? tHero("gpsDeniedHint")
+                  : (app.gps.error === "gpsTimeout" || app.gps.error === "gpsUnavailable") ? tHero("gpsEnableHint")
+                  : undefined
+                }
+              />
+            )}
           </div>
           {popularCities.length > 0 && (
             <div className="space-y-2">

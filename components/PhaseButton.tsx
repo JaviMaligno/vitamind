@@ -20,6 +20,7 @@ export default function PhaseButton({
   rel,
   type = "button",
   compact = false,
+  disabled = false,
   className = "",
   children,
   "aria-label": ariaLabel,
@@ -30,6 +31,7 @@ export default function PhaseButton({
   rel?: string;
   type?: "button" | "submit";
   compact?: boolean;
+  disabled?: boolean;
   className?: string;
   children: ReactNode;
   "aria-label"?: string;
@@ -38,7 +40,7 @@ export default function PhaseButton({
   const phase = useSolarPhase(app.lat, app.lon) ?? "day";
   const size = compact ? "min-h-[36px] px-3 text-caption gap-1.5" : "min-h-[48px] px-6 text-body gap-2";
   const cls =
-    `inline-flex items-center justify-center ${size} rounded-xl font-semibold text-white shadow-lg transition-[filter] hover:brightness-110 cursor-pointer ` +
+    `inline-flex items-center justify-center ${size} rounded-xl font-semibold text-white shadow-lg transition-[filter] hover:brightness-110 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed ` +
     className;
   const style = { background: PHASE_STYLE[phase].cta };
 
@@ -50,7 +52,7 @@ export default function PhaseButton({
     );
   }
   return (
-    <button type={type} onClick={onClick} aria-label={ariaLabel} className={cls} style={style} suppressHydrationWarning>
+    <button type={type} onClick={onClick} disabled={disabled} aria-label={ariaLabel} className={cls} style={style} suppressHydrationWarning>
       {children}
     </button>
   );
