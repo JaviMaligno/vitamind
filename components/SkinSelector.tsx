@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
+import { ChevronDown } from "lucide-react";
 import { AREA_PRESETS, type SkinType } from "@/lib/vitd";
 
 interface Props {
@@ -47,15 +48,18 @@ export default function SkinSelector({ skinType, areaFraction, age, onSkinChange
       <div className="flex flex-wrap gap-x-3 gap-y-2 items-center">
         <span className="text-caption text-text-faint uppercase tracking-wider">{t("type")}</span>
         <div className="flex items-center gap-1">
-          <select
-            value={skinType}
-            onChange={(e) => onSkinChange(Number(e.target.value) as SkinType)}
-            className="min-h-[44px] px-3 rounded-lg bg-surface-input border border-border-default text-text-primary text-caption outline-none cursor-pointer"
-          >
-            {([1, 2, 3, 4, 5, 6] as SkinType[]).map((st) => (
-              <option key={st} value={st}>{skinLabels[st]}</option>
-            ))}
-          </select>
+          <div className="relative">
+            <select
+              value={skinType}
+              onChange={(e) => onSkinChange(Number(e.target.value) as SkinType)}
+              className="min-h-[44px] appearance-none rounded-lg bg-surface-input border border-border-default pl-3 pr-9 text-text-primary text-body cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-sun"
+            >
+              {([1, 2, 3, 4, 5, 6] as SkinType[]).map((st) => (
+                <option key={st} value={st}>{skinLabels[st]}</option>
+              ))}
+            </select>
+            <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted" aria-hidden />
+          </div>
           {/* 44px hit area, smaller visible circle */}
           <button
             onClick={() => setShowHelp(!showHelp)}
@@ -71,15 +75,18 @@ export default function SkinSelector({ skinType, areaFraction, age, onSkinChange
           </button>
         </div>
         <span className="text-caption text-text-faint uppercase tracking-wider">{t("area")}</span>
-        <select
-          value={areaFraction}
-          onChange={(e) => onAreaChange(Number(e.target.value))}
-          className="min-h-[44px] px-3 rounded-lg bg-surface-input border border-border-default text-text-primary text-caption outline-none cursor-pointer"
-        >
-          {AREA_PRESETS.map((p) => (
-            <option key={p.value} value={p.value}>{areaLabels[p.value] ?? p.label}</option>
-          ))}
-        </select>
+        <div className="relative">
+          <select
+            value={areaFraction}
+            onChange={(e) => onAreaChange(Number(e.target.value))}
+            className="min-h-[44px] appearance-none rounded-lg bg-surface-input border border-border-default pl-3 pr-9 text-text-primary text-body cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-sun"
+          >
+            {AREA_PRESETS.map((p) => (
+              <option key={p.value} value={p.value}>{areaLabels[p.value] ?? p.label}</option>
+            ))}
+          </select>
+          <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted" aria-hidden />
+        </div>
         <span className="text-caption text-text-faint uppercase tracking-wider">{t("age")}</span>
         <input
           type="number"
@@ -88,7 +95,7 @@ export default function SkinSelector({ skinType, areaFraction, age, onSkinChange
           placeholder="—"
           value={age ?? ""}
           onChange={(e) => onAgeChange(e.target.value ? parseInt(e.target.value) : null)}
-          className="w-16 min-h-[44px] px-2 rounded-lg bg-surface-input border border-border-default text-text-primary text-caption text-center outline-none"
+          className="w-16 min-h-[44px] px-2 rounded-lg bg-surface-input border border-border-default text-text-primary text-body text-center outline-none focus-visible:ring-2 focus-visible:ring-sun"
         />
       </div>
 

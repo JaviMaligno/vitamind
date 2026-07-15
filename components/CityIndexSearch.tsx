@@ -16,6 +16,10 @@ interface IndexCity {
 
 type GeoState = "idle" | "loading" | "denied" | "unavailable";
 
+// Beyond this the built-in directory (73 global cities) has nothing genuinely
+// "near"; be honest about it instead of passing a far city off as nearby.
+const NEAR_THRESHOLD_KM = 500;
+
 /**
  * Sticky search + region filter + "near me" for the city index. The index page
  * is a SERVER component (SSG) so all 73 city links ship in the static HTML for
@@ -127,14 +131,14 @@ export default function CityIndexSearch({
                   onChange={(e) => onQuery(e.target.value)}
                   placeholder={t("indexSearchPlaceholder")}
                   aria-label={t("indexSearchPlaceholder")}
-                  className="min-h-[44px] w-full rounded-xl bg-surface-input pl-10 pr-10 text-body text-text-primary placeholder:text-text-faint outline-none focus-visible:ring-2 focus-visible:ring-sun"
+                  className="min-h-[44px] w-full rounded-xl bg-surface-input pl-10 pr-12 text-body text-text-primary placeholder:text-text-faint outline-none focus-visible:ring-2 focus-visible:ring-sun"
                 />
                 {query && (
                   <button
                     type="button"
                     onClick={() => onQuery("")}
                     aria-label={t("indexClearSearch")}
-                    className="absolute right-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-lg text-text-muted hover:text-text-secondary hover:bg-surface-elevated"
+                    className="absolute right-1.5 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-lg text-text-muted hover:text-text-secondary hover:bg-surface-elevated"
                   >
                     <X className="h-4 w-4" aria-hidden />
                   </button>
@@ -200,9 +204,18 @@ export default function CityIndexSearch({
       </div>
 
       {/* Near-me results — distance-sorted top 8, rendered client-side (the SSG
-          band list is hidden while this is active). */}
+          band list is hidden while this is active). A caption states how far the
+          nearest actually is (the built-in directory is sparse), so a 600 km
+          "nearest" doesn't masquerade as nearby. */}
       {nearby && (
-        <ul className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <>
+          <p className="mt-6 flex items-center justify-center gap-1.5 text-center text-caption text-text-muted">
+            <MapPin className="h-3.5 w-3.5 shrink-0" aria-hidden />
+            {nearby[0].km > NEAR_THRESHOLD_KM
+              ? t("indexNoneNearby")
+              : t("indexNearestDistance", { km: Math.round(nearby[0].km).toLocaleString(locale) })}
+          </p>
+          <ul className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {nearby.map((c) => (
             <li key={c.href}>
               <a
@@ -217,7 +230,8 @@ export default function CityIndexSearch({
               </a>
             </li>
           ))}
-        </ul>
+          </ul>
+        </>
       )}
     </>
   );

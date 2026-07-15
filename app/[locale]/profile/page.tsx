@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useTranslations } from "next-intl";
-import { Info, X, BookOpen, ArrowRight } from "lucide-react";
+import { Info, X, BookOpen, ArrowRight, Star, Plus } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { useApp } from "@/context/AppProvider";
 import { TARGET_IU_PRESETS, maxSessionIU } from "@/lib/vitd";
@@ -54,6 +54,16 @@ export default function ProfilePage() {
   const [savingLocation, setSavingLocation] = useState(false);
   const [openTip, setOpenTip] = useState<string | null>(null);
   const closeTip = () => setOpenTip(null);
+
+  // Seed the empty favorites state with a few well-known cities so a first-time
+  // visitor can add one with a single tap instead of hunting in the search box.
+  // Mirrors dashboard/page.tsx's popularCities; here the action ADDS a favorite.
+  const popularCities = useMemo(() => {
+    const ids = ["builtin:madrid", "builtin:londres", "builtin:nueva-york", "builtin:paris", "builtin:tokio", "builtin:sidney"];
+    return ids
+      .map((id) => app.allCities.find((c) => c.id === id))
+      .filter((c): c is NonNullable<typeof c> => Boolean(c));
+  }, [app.allCities]);
 
   // Hydration guard: this page renders state hydrated from localStorage
   // (app.lat/lon/skinType/favorites/targetIU/cityName via AppProvider), which
@@ -143,35 +153,59 @@ export default function ProfilePage() {
       {/* Favorites */}
       <Card variant="glass">
         <h3 className={`${sectionHeading} mb-3`}>{t("favorites")}</h3>
-        <div className="flex flex-wrap gap-1.5 items-center">
-          {app.favorites.map((fid) => {
-            const c = app.allCities.find((x) => x.id === fid);
-            if (!c) return null;
-            const isSel = app.cityId === fid;
-            return (
-              <div key={fid} className="flex items-center gap-1">
-                <Chip active={isSel} onClick={() => app.selectCity(c)}>
-                  <Flag flag={c.flag} className="text-base" /> {c.name}
-                </Chip>
-                {app.editingFavs && (
+        {app.favorites.length === 0 ? (
+          <div className="space-y-4">
+            <div className="flex items-start gap-2.5">
+              <Star className="h-5 w-5 shrink-0 text-accent mt-0.5" aria-hidden />
+              <p className="text-body text-text-secondary leading-relaxed">{t("favoritesEmpty")}</p>
+            </div>
+            {popularCities.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {popularCities.map((c) => (
                   <button
-                    onClick={() => {
-                      app.toggleFav(fid);
-                      if (c.source === "custom") app.handleDeleteCustom(fid);
-                    }}
-                    aria-label={tc("cancel")}
-                    className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl bg-red-500/10 text-red-400 cursor-pointer"
+                    key={c.id}
+                    onClick={() => app.toggleFav(c.id)}
+                    className="inline-flex min-h-[44px] items-center gap-2 rounded-xl bg-surface-elevated px-4 text-body font-medium text-text-secondary hover:bg-surface-input hover:text-text-primary transition-colors cursor-pointer"
                   >
-                    <X className="h-4 w-4" aria-hidden />
+                    <Plus className="h-4 w-4 text-accent" aria-hidden />
+                    <Flag flag={c.flag} className="text-lg" />
+                    {c.name}
                   </button>
-                )}
+                ))}
               </div>
-            );
-          })}
-          <Chip active={app.editingFavs} onClick={() => app.setEditingFavs(!app.editingFavs)}>
-            {app.editingFavs ? t("done") : t("edit")}
-          </Chip>
-        </div>
+            )}
+          </div>
+        ) : (
+          <div className="flex flex-wrap gap-1.5 items-center">
+            {app.favorites.map((fid) => {
+              const c = app.allCities.find((x) => x.id === fid);
+              if (!c) return null;
+              const isSel = app.cityId === fid;
+              return (
+                <div key={fid} className="flex items-center gap-1">
+                  <Chip active={isSel} onClick={() => app.selectCity(c)}>
+                    <Flag flag={c.flag} className="text-base" /> {c.name}
+                  </Chip>
+                  {app.editingFavs && (
+                    <button
+                      onClick={() => {
+                        app.toggleFav(fid);
+                        if (c.source === "custom") app.handleDeleteCustom(fid);
+                      }}
+                      aria-label={tc("cancel")}
+                      className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl bg-red-500/10 text-red-400 cursor-pointer"
+                    >
+                      <X className="h-4 w-4" aria-hidden />
+                    </button>
+                  )}
+                </div>
+              );
+            })}
+            <Chip active={app.editingFavs} onClick={() => app.setEditingFavs(!app.editingFavs)}>
+              {app.editingFavs ? t("done") : t("edit")}
+            </Chip>
+          </div>
+        )}
       </Card>
 
       {/* "How you synthesize" pair — balanced 2-col on desktop. */}

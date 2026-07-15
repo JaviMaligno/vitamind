@@ -36,9 +36,10 @@ export default function LearnSearch({
       block.querySelectorAll<HTMLDetailsElement>("[data-qa]").forEach((d) => {
         const match = !term || (d.dataset.qa ?? "").includes(term);
         d.hidden = !match;
-        // Open matches while searching (so the answer is visible), restore the
-        // collapsed default when the query clears.
-        d.open = !!term && match;
+        // While searching: open matches, close non-matches. When the query
+        // clears: restore the server default (first item of each block stays
+        // open via data-qa-default-open; everything else collapses).
+        d.open = term ? match : d.hasAttribute("data-qa-default-open");
         if (match) blockHas = true;
       });
       block.hidden = !blockHas;
@@ -64,14 +65,14 @@ export default function LearnSearch({
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
           aria-label={placeholder}
-          className="min-h-[44px] w-full rounded-xl bg-glass border border-glass-border backdrop-blur-md pl-10 pr-10 text-body text-text-primary placeholder:text-text-faint shadow-lg outline-none focus-visible:ring-2 focus-visible:ring-sun"
+          className="min-h-[44px] w-full rounded-xl bg-glass border border-glass-border backdrop-blur-md pl-10 pr-12 text-body text-text-primary placeholder:text-text-faint shadow-lg outline-none focus-visible:ring-2 focus-visible:ring-sun"
         />
         {query && (
           <button
             type="button"
             onClick={clear}
             aria-label={clearLabel}
-            className="absolute right-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-lg text-text-muted hover:text-text-secondary hover:bg-surface-elevated"
+            className="absolute right-1.5 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-lg text-text-muted hover:text-text-secondary hover:bg-surface-elevated"
           >
             <X className="h-4 w-4" aria-hidden />
           </button>

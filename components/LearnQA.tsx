@@ -37,6 +37,8 @@ export default function LearnQA({ items, sourcesLabel }: { items: QA[]; sourcesL
         <details
           key={i}
           data-qa={`${item.q} ${item.a}`.toLowerCase()}
+          open={i === 0}
+          {...(i === 0 ? { "data-qa-default-open": "" } : {})}
           className="group rounded-xl border border-glass-border bg-glass backdrop-blur-md shadow-lg overflow-hidden"
         >
           <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-5 py-4 [&::-webkit-details-marker]:hidden">
