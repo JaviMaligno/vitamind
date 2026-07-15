@@ -72,7 +72,7 @@ export default function DayHeroBold({ nowStatus, cityName, cityFlag, targetIU, l
   const showData = ns.state === "good_now" || ns.state === "upcoming";
 
   return (
-    <section className="relative isolate flex flex-col overflow-hidden rounded-[2rem] sm:rounded-[2.5rem] min-h-[420px] sm:min-h-[500px]">
+    <section className="relative isolate flex flex-col overflow-hidden rounded-[2rem] sm:rounded-[2.5rem] min-h-[300px] sm:min-h-[360px]">
       {/* the sky */}
       <div className="absolute inset-0" style={{ background: PHASE_STYLE[phase].grad }} suppressHydrationWarning aria-hidden />
 
@@ -125,11 +125,9 @@ export default function DayHeroBold({ nowStatus, cityName, cityFlag, targetIU, l
         aria-hidden
       />
 
-      {/* Content fills the hero and DISTRIBUTES it (flex-1 + justify-between):
-          the city/date label pins to the top, the status cluster to the bottom,
-          with the earthrise/sun occupying the middle — using the height on
-          purpose instead of shoving everything to one edge. */}
-      <div className="relative z-10 flex flex-1 flex-col justify-between gap-6 p-6 sm:p-10 lg:p-14">
+      {/* Content sits at the TOP as one compact cluster (the hero is kept short
+          so it doesn't dominate the mobile viewport with empty sky). */}
+      <div className="relative z-10 flex flex-col gap-3.5 p-6 sm:p-10 lg:p-12">
         {loading ? (
           <div className="animate-pulse space-y-4">
             <div className="h-6 w-40 rounded bg-white/20" />
@@ -138,14 +136,12 @@ export default function DayHeroBold({ nowStatus, cityName, cityFlag, targetIU, l
           </div>
         ) : (
           <>
-            {/* TOP: city + date */}
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <span className="text-body font-semibold text-white/90"><Flag flag={cityFlag} className="text-body" /> {cityName}</span>
-              <span className="text-caption sm:text-sm text-white/60">{todayStr}</span>
+            {/* city + date, stacked on the left */}
+            <div className="leading-tight">
+              <div className="text-body font-semibold text-white/90"><Flag flag={cityFlag} className="text-body" /> {cityName}</div>
+              <div className="text-caption sm:text-sm text-white/60 mt-0.5">{todayStr}</div>
             </div>
 
-            {/* BOTTOM: status cluster (pill → headline → hint → data) */}
-            <div className="flex flex-col gap-4">
             {/* status pill */}
             <div className="flex items-center gap-2">
               <span className="inline-block h-2.5 w-2.5 rounded-full" style={{ background: dot }} />
@@ -200,7 +196,6 @@ export default function DayHeroBold({ nowStatus, cityName, cityFlag, targetIU, l
                 )}
               </div>
             )}
-            </div>
           </>
         )}
       </div>

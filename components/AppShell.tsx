@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/context/ThemeProvider";
 import InstallProvider from "@/context/InstallProvider";
 import SolarBackground from "@/components/SolarBackground";
 import BottomTabBar from "@/components/BottomTabBar";
+import SwipeNav from "@/components/SwipeNav";
 import LanguageSelector from "@/components/LanguageSelector";
 import AuthButton from "@/components/AuthButton";
 import ThemeToggle from "@/components/ThemeToggle";
@@ -52,7 +53,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         <InstallProvider>
           <SolarBackground>
             <TopBar />
-            {children}
+            <SwipeNav>{children}</SwipeNav>
             <div className="mx-auto max-w-[960px] px-4 mt-6 mb-2 text-center text-[10px] text-text-faint">
               <a href="https://javieraguilar.ai" target="_blank" rel="noopener" className="underline hover:text-text-secondary">
                 {t("app.builtBy")}
