@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useRef } from "react";
 import { useTranslations, useLocale } from "next-intl";
-import { Search, X, MapPin } from "lucide-react";
+import { Search, X, MapPin, Loader2 } from "lucide-react";
 import Flag from "@/components/ui/Flag";
 import { haversineKm } from "@/lib/continent";
 
@@ -141,24 +141,35 @@ export default function CityIndexSearch({
                 )}
               </div>
 
-              {/* Near-me + region filter */}
-              <div className="flex gap-1.5 overflow-x-auto pb-0.5">
+              {/* Near-me + region filter. The row scrolls horizontally on
+                  mobile; a right-edge mask fade hints there's more to swipe. */}
+              <div className="flex gap-1.5 overflow-x-auto pb-0.5 [mask-image:linear-gradient(to_right,#000_88%,transparent)]">
                 <button
                   type="button"
                   onClick={goNearMe}
-                  className="inline-flex min-h-[36px] shrink-0 items-center gap-1.5 rounded-lg bg-sun/15 px-3 text-caption font-semibold text-sun hover:bg-sun/25 transition-colors"
+                  disabled={geo === "loading"}
+                  className="inline-flex min-h-[44px] shrink-0 items-center gap-1.5 rounded-lg bg-sun/15 px-3.5 text-caption font-semibold text-sun hover:bg-sun/25 disabled:opacity-70 transition-colors"
                 >
-                  <MapPin className="h-3.5 w-3.5" aria-hidden />
-                  {t("indexNearMe")}
+                  {geo === "loading" ? (
+                    <>
+                      <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden />
+                      {t("indexNearMeLocating")}
+                    </>
+                  ) : (
+                    <>
+                      <MapPin className="h-3.5 w-3.5" aria-hidden />
+                      {t("indexNearMe")}
+                    </>
+                  )}
                 </button>
-                <span className="w-px shrink-0 bg-border-default my-1" aria-hidden />
+                <span className="w-px shrink-0 bg-border-default my-1.5" aria-hidden />
                 {["all", ...regions].map((r) => (
                   <button
                     key={r}
                     type="button"
                     onClick={() => onRegion(r)}
                     aria-pressed={region === r}
-                    className={`min-h-[36px] shrink-0 rounded-lg px-3 text-caption font-semibold transition-colors ${
+                    className={`min-h-[44px] shrink-0 rounded-lg px-3.5 text-caption font-semibold transition-colors ${
                       region === r
                         ? "bg-amber-400/25 text-accent"
                         : "bg-surface-elevated text-text-secondary hover:bg-surface-input"
@@ -183,7 +194,6 @@ export default function CityIndexSearch({
           )}
         </div>
 
-        {geo === "loading" && <p className="mt-2 text-center text-caption text-text-muted animate-pulse">{t("indexNearMeLocating")}</p>}
         {geo === "denied" && <p className="mt-2 text-center text-caption text-text-muted">{t("indexNearMeDenied")}</p>}
         {geo === "unavailable" && <p className="mt-2 text-center text-caption text-text-muted">{t("indexNearMeUnavailable")}</p>}
         {empty && !nearby && <p className="mt-3 text-center text-body text-text-muted">{t("indexNoResults")}</p>}

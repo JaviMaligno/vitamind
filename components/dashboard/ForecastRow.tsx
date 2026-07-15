@@ -62,7 +62,9 @@ export default function ForecastRow({ forecast, skinType, areaFraction, age, tar
   return (
     <div className="rounded-2xl bg-glass border border-glass-border backdrop-blur-md p-4 shadow-lg">
       <h3 className="font-display text-heading text-text-primary mb-3">{t("forecast")}</h3>
-      <div className="flex gap-2 overflow-x-auto">
+      {/* Right-edge mask fade hints the row scrolls horizontally (5 days don't
+          all fit on a 390px viewport). */}
+      <div className="flex gap-2 overflow-x-auto pb-1 [mask-image:linear-gradient(to_right,#000_92%,transparent)]">
         {forecast.map((day) => {
           const hasWindow = day.windowStart >= 0 && day.windowEnd > day.windowStart;
           const isExpanded = expandedDate === day.date;

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
+import { Info, X, BookOpen, ArrowRight } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { useApp } from "@/context/AppProvider";
 import { TARGET_IU_PRESETS, maxSessionIU } from "@/lib/vitd";
@@ -158,9 +159,10 @@ export default function ProfilePage() {
                       app.toggleFav(fid);
                       if (c.source === "custom") app.handleDeleteCustom(fid);
                     }}
-                    className="min-h-[44px] px-2.5 rounded-xl bg-red-500/10 text-red-400 text-caption cursor-pointer"
+                    aria-label={tc("cancel")}
+                    className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl bg-red-500/10 text-red-400 cursor-pointer"
                   >
-                    ✕
+                    <X className="h-4 w-4" aria-hidden />
                   </button>
                 )}
               </div>
@@ -180,8 +182,9 @@ export default function ProfilePage() {
           <h3 className={`${sectionHeading} flex-1`}>{t("solarProfile")}</h3>
           <button
             onClick={() => setOpenTip(openTip === "skin" ? null : "skin")}
-            className="w-9 h-9 rounded-full bg-surface-elevated text-text-faint hover:text-text-muted text-caption font-bold inline-flex items-center justify-center transition-colors cursor-pointer"
-          >ℹ</button>
+            aria-label={tc("learnMore")}
+            className="w-11 h-11 rounded-full bg-surface-elevated text-text-faint hover:text-text-muted inline-flex items-center justify-center transition-colors cursor-pointer"
+          ><Info className="h-4 w-4" aria-hidden /></button>
         </div>
         <TipPanel open={openTip === "skin"} text={ts("tipSolarProfile")} href="/learn" learnMoreLabel={tc("learnMore")} onClose={closeTip} />
         <SkinSelector
@@ -203,8 +206,9 @@ export default function ProfilePage() {
           <h3 className={`${sectionHeading} flex-1`}>{t("targetIU")}</h3>
           <button
             onClick={() => setOpenTip(openTip === "iu" ? null : "iu")}
-            className="w-9 h-9 rounded-full bg-surface-elevated text-text-faint hover:text-text-muted text-caption font-bold inline-flex items-center justify-center transition-colors cursor-pointer"
-          >ℹ</button>
+            aria-label={tc("learnMore")}
+            className="w-11 h-11 rounded-full bg-surface-elevated text-text-faint hover:text-text-muted inline-flex items-center justify-center transition-colors cursor-pointer"
+          ><Info className="h-4 w-4" aria-hidden /></button>
         </div>
         <TipPanel open={openTip === "iu"} text={ts("tipTargetIU")} href="/learn#supplement" learnMoreLabel={tc("learnMore")} onClose={closeTip} />
         <div className="flex flex-wrap gap-1.5 items-center">
@@ -254,10 +258,10 @@ export default function ProfilePage() {
           after the settings, not ahead of them. */}
       <Link href="/learn" className={navRowClasses}>
         <div className="flex items-center gap-2">
-          <span className="text-base">📖</span>
+          <BookOpen className="h-4 w-4 text-text-muted" aria-hidden />
           <span className="text-caption font-medium text-text-secondary">{tc("learnMore")}</span>
         </div>
-        <span className="text-sun-strong text-caption">→</span>
+        <ArrowRight className="h-4 w-4 text-sun-strong" aria-hidden />
       </Link>
     </div>
   );

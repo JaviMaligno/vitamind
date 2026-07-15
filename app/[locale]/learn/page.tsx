@@ -78,7 +78,7 @@ export default async function LearnPage({ params }: { params: Promise<{ locale: 
               <li key={i}>
                 <a
                   href={`#block-${i + 1}`}
-                  className="inline-flex items-center gap-2 rounded-full bg-glass border border-glass-border backdrop-blur-md px-3 py-1.5 text-caption text-text-secondary shadow-lg transition-colors hover:bg-surface-elevated lg:rounded-lg lg:w-full"
+                  className="inline-flex min-h-[44px] items-center gap-2 rounded-full bg-glass border border-glass-border backdrop-blur-md px-4 text-caption text-text-secondary shadow-lg transition-colors hover:bg-surface-elevated lg:rounded-lg lg:w-full"
                 >
                   <block.Icon className="h-4 w-4 text-accent shrink-0" aria-hidden />
                   <span>{t(block.titleKey)}</span>

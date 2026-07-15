@@ -28,7 +28,7 @@ export default function PartnersPage() {
   const t = useTranslations("partners");
 
   return (
-    <main className="mx-auto max-w-[1100px] px-4 py-6 sm:py-8 space-y-10 sm:space-y-14">
+    <main className="mx-auto max-w-[1100px] px-4 py-6 sm:py-8 space-y-8 sm:space-y-12">
       <PosterHero eyebrow={t("eyebrow")} title={t("pageTitle")} subtitle={t("pageSubtitle")} />
 
       {/* Lede + inline CTA, so the primary action is visible above the fold
@@ -47,7 +47,7 @@ export default function PartnersPage() {
       </section>
 
       {/* Why partner */}
-      <section className="space-y-5">
+      <section className="space-y-4">
         <h2 className="text-title font-display font-bold text-text-primary">
           {t("whyTitle")}
         </h2>
@@ -55,7 +55,7 @@ export default function PartnersPage() {
           {WHY_ITEMS.map(({ Icon, titleKey, textKey }) => (
             <div
               key={titleKey}
-              className="rounded-2xl border border-glass-border bg-glass backdrop-blur-md p-5 space-y-3 shadow-sm"
+              className="rounded-2xl border border-glass-border bg-glass backdrop-blur-md p-4 space-y-2.5 shadow-sm"
             >
               <div className="flex items-center gap-3">
                 <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent/12 text-accent">
@@ -74,7 +74,7 @@ export default function PartnersPage() {
       </section>
 
       {/* Partnership models */}
-      <section className="space-y-5">
+      <section className="space-y-4">
         <h2 className="text-title font-display font-bold text-text-primary">
           {t("modelsTitle")}
         </h2>
@@ -82,7 +82,7 @@ export default function PartnersPage() {
           {MODELS.map(({ Icon, titleKey, textKey }) => (
             <div
               key={titleKey}
-              className="rounded-2xl border border-glass-border bg-glass backdrop-blur-md p-5 space-y-3 shadow-sm"
+              className="rounded-2xl border border-glass-border bg-glass backdrop-blur-md p-4 space-y-2.5 shadow-sm"
             >
               <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent/12 text-accent">
                 <Icon className="h-5 w-5" aria-hidden />
@@ -99,11 +99,11 @@ export default function PartnersPage() {
       </section>
 
       {/* Features */}
-      <section className="space-y-5">
+      <section className="space-y-4">
         <h2 className="text-title font-display font-bold text-text-primary">
           {t("featuresTitle")}
         </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 gap-x-4 gap-y-2.5">
           {FEATURES.map((key) => (
             <div key={key} className="flex items-start gap-3 text-body text-text-secondary">
               <span className="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-possible-surface text-possible">
@@ -116,7 +116,7 @@ export default function PartnersPage() {
       </section>
 
       {/* CTA */}
-      <section className="rounded-[2rem] border border-glass-border bg-glass backdrop-blur-md p-8 sm:p-10 space-y-4 text-center shadow-lg">
+      <section className="rounded-[2rem] border border-glass-border bg-glass backdrop-blur-md p-6 sm:p-8 space-y-4 text-center shadow-lg" >
         <h2 className="text-title sm:text-display font-display font-bold text-text-primary">
           {t("ctaTitle")}
         </h2>

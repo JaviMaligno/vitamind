@@ -97,7 +97,7 @@ export default function DashboardPage() {
         {hasCity && (
           <Link
             href="/profile"
-            className="px-3 py-2 rounded-lg bg-glass border border-glass-border text-text-muted text-caption hover:bg-surface-elevated hover:text-text-secondary transition-colors whitespace-nowrap"
+            className="inline-flex min-h-[44px] items-center rounded-lg bg-glass border border-glass-border px-3 text-text-muted text-caption hover:bg-surface-elevated hover:text-text-secondary transition-colors whitespace-nowrap"
           >
             {t("editProfile")}
           </Link>
