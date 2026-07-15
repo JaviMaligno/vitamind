@@ -5,7 +5,7 @@ import { legacyLocaleRedirect } from "./i18n/legacy-locale-redirect";
 
 const intlMiddleware = createMiddleware(routing);
 
-export default function middleware(request: NextRequest) {
+export default function proxy(request: NextRequest) {
   // 301 legacy ?locale=xx URLs to the prefixed path, then hand off to next-intl.
   const legacyTarget = legacyLocaleRedirect(
     request.nextUrl.pathname,
