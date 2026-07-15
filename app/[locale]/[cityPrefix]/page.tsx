@@ -11,6 +11,7 @@ import {
   buildIndexAlternates, indexStaticParams,
 } from "@/lib/city-routes";
 import { cityYearProfile } from "@/lib/city-content";
+import { regionForFlag, REGION_ORDER } from "@/lib/continent";
 
 export function generateStaticParams() {
   return indexStaticParams();
@@ -89,9 +90,15 @@ export default async function CityIndexPage({ params }: { params: Promise<Params
       href: cityPathname(p.locale, base),
       flag: c.flag,
       band: bandForLat(c.lat),
+      region: regionForFlag(c.flag),
+      lat: c.lat,
+      lon: c.lon,
       datum,
     };
   }).sort((a, b) => a.name.localeCompare(b.name, p.locale));
+
+  // Regions present, in canonical order — feeds the region filter chips.
+  const presentRegions = REGION_ORDER.filter((r) => cities.some((c) => c.region === r));
 
   const bands = BANDS.map((band) => ({
     ...band,
@@ -124,16 +131,12 @@ export default async function CityIndexPage({ params }: { params: Promise<Params
         countLabel={t("indexCitiesLabel")}
       />
 
-      <div className="mt-6 sm:mt-8">
-        <CityIndexSearch
-          bands={bands.map((b) => ({ id: `band-${b.key}`, short: b.short }))}
-          placeholder={t("indexSearchPlaceholder")}
-          noResults={t("indexNoResults")}
-          clearLabel={t("indexClearSearch")}
-        />
-      </div>
+      <CityIndexSearch
+        regions={presentRegions}
+        cities={cities.map((c) => ({ name: c.name, href: c.href, flag: c.flag ?? "", lat: c.lat, lon: c.lon }))}
+      />
 
-      <div className="mt-8 space-y-8 sm:mt-10 sm:space-y-10">
+      <div className="mt-8 space-y-8 sm:space-y-10">
         {bands.map((band) => (
           <section key={band.key} id={`band-${band.key}`} data-band-section className="scroll-mt-28">
             <h2 className="font-display font-bold text-2xl sm:text-3xl md:text-4xl tracking-tight text-text-primary">
@@ -141,7 +144,7 @@ export default async function CityIndexPage({ params }: { params: Promise<Params
             </h2>
             <ul className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {band.cities.map((c) => (
-                <li key={c.base} data-city={c.name.toLowerCase()}>
+                <li key={c.base} data-city={c.name.toLowerCase()} data-continent={c.region ?? ""}>
                   <Link
                     href={c.href}
                     className="flex min-h-[56px] items-center gap-3 rounded-2xl bg-glass border border-glass-border backdrop-blur-md px-4 py-3 shadow-lg transition-colors hover:bg-surface-elevated focus-visible:outline focus-visible:outline-2 focus-visible:outline-sun"
