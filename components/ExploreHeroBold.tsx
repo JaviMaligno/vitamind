@@ -159,7 +159,7 @@ export default function ExploreHeroBold({
   // No-location: a poster with the search/GPS entry.
   if (!hasLocation) {
     return (
-      <section className="relative isolate flex flex-col justify-end overflow-hidden rounded-[2rem] sm:rounded-[2.5rem] min-h-[420px] sm:min-h-[500px]">
+      <section className="relative isolate flex flex-col overflow-hidden rounded-[2rem] sm:rounded-[2.5rem] min-h-[300px] sm:min-h-[380px]">
         {Sky}
         <div className="relative z-10 flex flex-col gap-5 p-6 sm:p-10 lg:p-14">
           <h1 className="font-display font-bold text-4xl sm:text-5xl md:text-6xl leading-[1.02] tracking-tight text-white [text-shadow:0_2px_24px_rgba(0,0,0,0.4)]">
@@ -197,7 +197,7 @@ export default function ExploreHeroBold({
   }
 
   return (
-    <section className="relative isolate flex flex-col justify-end overflow-hidden rounded-[2rem] sm:rounded-[2.5rem] min-h-[420px] sm:min-h-[520px]">
+    <section className="relative isolate flex flex-col overflow-hidden rounded-[2rem] sm:rounded-[2.5rem] min-h-[300px] sm:min-h-[380px]">
       {Sky}
       <div className="relative z-10 flex flex-col gap-4 p-6 sm:p-10 lg:p-14">
         {/* status pill */}
