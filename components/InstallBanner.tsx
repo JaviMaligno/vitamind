@@ -83,7 +83,7 @@ export default function InstallBanner() {
         <button
           onClick={dismiss}
           aria-label={t("modal.close")}
-          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-neutral-400 hover:text-white"
+          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md text-neutral-400 hover:text-white"
         >
           <X className="h-4 w-4" aria-hidden />
         </button>

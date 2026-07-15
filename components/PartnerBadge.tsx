@@ -1,6 +1,7 @@
 "use client";
 
 import { useLocale } from "next-intl";
+import { ArrowUpRight } from "lucide-react";
 import { activePartner, getPartnerUrl } from "@/lib/partners";
 
 /**
@@ -26,7 +27,7 @@ export default function PartnerBadge({ className = "" }: { className?: string })
       <span className="font-semibold">{activePartner.name}</span>
       <span className="text-text-faint">·</span>
       <span>{tagline}</span>
-      <span className="ml-0.5">↗</span>
+      <ArrowUpRight className="ml-0.5 h-3.5 w-3.5" aria-hidden />
     </a>
   );
 }

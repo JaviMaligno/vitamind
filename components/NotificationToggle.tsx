@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { useInstallPrompt } from "@/hooks/useInstallPrompt";
 import { isStandalone, setInstallBannerSeen } from "@/lib/install";
+import { Bell, BellOff, BellRing } from "lucide-react";
 import { useSolarPhase } from "@/hooks/useSolarPhase";
 import { PHASE_STYLE } from "@/lib/solar-phase";
 
@@ -225,7 +226,13 @@ export default function NotificationToggle({ lat, lon, tz, timezone, skinType, a
             : t("enableHint")
       }
     >
-      {status === "on" ? (labelOn ?? `🔔 ${t("on")}`) : status === "denied" ? `🚫 ${t("blocked")}` : (labelOff ?? `🔕 ${t("notify")}`)}
+      <span className="inline-flex items-center gap-1.5">
+        {status === "on"
+          ? (labelOn ?? (<><BellRing className="h-4 w-4" aria-hidden />{t("on")}</>))
+          : status === "denied"
+            ? (<><BellOff className="h-4 w-4" aria-hidden />{t("blocked")}</>)
+            : (labelOff ?? (<><Bell className="h-4 w-4" aria-hidden />{t("notify")}</>))}
+      </span>
     </button>
   );
 }

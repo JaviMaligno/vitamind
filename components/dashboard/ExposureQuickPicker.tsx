@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { RotateCcw } from "lucide-react";
 import { AREA_PRESETS } from "@/lib/vitd";
 
 interface Props {
@@ -37,10 +38,11 @@ export default function ExposureQuickPicker({ value, onChange, isOverride, onRes
           <button
             type="button"
             onClick={onReset}
-            className="text-caption text-text-faint hover:text-accent transition-colors cursor-pointer"
+            className="inline-flex items-center gap-1 text-caption text-text-faint hover:text-accent transition-colors cursor-pointer"
             title={t("exposureResetDefault")}
           >
-            ✕ {t("exposureResetDefault")}
+            <RotateCcw className="h-3.5 w-3.5" aria-hidden />
+            {t("exposureResetDefault")}
           </button>
         )}
       </div>

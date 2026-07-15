@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { BookOpen, ArrowRight } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import CitySearch from "@/components/CitySearch";
 import GpsErrorHint from "@/components/GpsErrorHint";
@@ -257,7 +258,7 @@ export default function ExploreHeroBold({
               disabled={gpsLoading}
               title={t("useMyLocation")}
               aria-label={t("useMyLocation")}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-white/20 bg-white/10 px-3 py-1.5 text-caption text-white/90 backdrop-blur-sm transition-colors hover:bg-white/20 disabled:cursor-not-allowed disabled:opacity-60"
+              className="inline-flex min-h-[44px] items-center gap-1.5 rounded-lg border border-white/20 bg-white/10 px-3 text-caption text-white/90 backdrop-blur-sm transition-colors hover:bg-white/20 disabled:cursor-not-allowed disabled:opacity-60"
             >
               <GpsPin className="h-3.5 w-3.5" />
               {gpsLoading ? t("locating") : t("useMyLocation")}
@@ -265,11 +266,11 @@ export default function ExploreHeroBold({
           )}
           <Link
             href={positive ? "/learn" : "/learn#supplement"}
-            className="inline-flex items-center gap-1.5 text-caption text-white/75 hover:text-white transition-colors"
+            className="inline-flex min-h-[44px] items-center gap-1.5 text-caption text-white/75 hover:text-white transition-colors"
           >
-            <span>📖</span>
+            <BookOpen className="h-4 w-4" aria-hidden />
             <span>{positive ? tc("learnMore") : td("noUvLearnTitle")}</span>
-            <span>→</span>
+            <ArrowRight className="h-4 w-4" aria-hidden />
           </Link>
         </div>
         {gpsSlow && !gpsError && <p className="max-w-[280px] animate-pulse text-caption text-white/60">{t("gpsEnableHint")}</p>}

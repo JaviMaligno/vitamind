@@ -1,5 +1,5 @@
 import type { LucideIcon } from "lucide-react";
-import { Sun, Pill, FlaskConical, Sunrise } from "lucide-react";
+import { Sun, Pill, FlaskConical, Sunrise, ArrowLeft } from "lucide-react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
@@ -126,8 +126,9 @@ export default async function LearnPage({ params }: { params: Promise<{ locale: 
 
       {/* Footer link */}
       <div className="border-t border-border-subtle pt-4">
-        <Link href="/dashboard" className="text-caption text-text-muted hover:text-text-secondary transition-colors">
-          ← {t("backToApp")}
+        <Link href="/dashboard" className="inline-flex min-h-[44px] items-center gap-1.5 text-caption text-text-muted hover:text-text-secondary transition-colors">
+          <ArrowLeft className="h-4 w-4" aria-hidden />
+          {t("backToApp")}
         </Link>
       </div>
     </main>
