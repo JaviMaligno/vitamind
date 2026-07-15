@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { Download } from "lucide-react";
 import { useInstallPrompt } from "@/hooks/useInstallPrompt";
 
 export default function InstallHelpButton() {
@@ -23,9 +24,9 @@ export default function InstallHelpButton() {
       onClick={() => { void trigger(); }}
       aria-label={label}
       title={label}
-      className="text-lg leading-none hover:opacity-80 transition-opacity"
+      className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-text-secondary hover:bg-glass hover:text-text-primary transition-colors"
     >
-      <span aria-hidden>📲</span>
+      <Download className="h-5 w-5" aria-hidden />
     </button>
   );
 }

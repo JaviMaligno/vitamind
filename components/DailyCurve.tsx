@@ -8,7 +8,6 @@ import type { SolarPoint, WeatherData } from "@/lib/types";
 interface Props {
   curve: SolarPoint[];
   threshold: number;
-  onThresholdChange: (v: number) => void;
   hoverTime: number | null;
   onHover: (h: number | null) => void;
   weather?: WeatherData | null;
@@ -78,7 +77,7 @@ function buildVisiblePath(
   return parts.join(" ");
 }
 
-export default function DailyCurve({ curve, threshold, onThresholdChange, hoverTime, onHover, weather, thresholdElevation = MIN_UVI_ELEVATION }: Props) {
+export default function DailyCurve({ curve, threshold, hoverTime, onHover, weather, thresholdElevation = MIN_UVI_ELEVATION }: Props) {
   const ref = useRef<SVGSVGElement>(null);
   const maxE = Math.max(55, ...curve.map((p) => Math.max(p.elevation, 0)));
   const minE = Math.max(-15, Math.min(-5, ...curve.map((p) => p.elevation)));
@@ -148,26 +147,10 @@ export default function DailyCurve({ curve, threshold, onThresholdChange, hoverT
         </g>
       ))}
       <line x1={PAD.l} y1={y(0)} x2={PAD.l + plotW} y2={y(0)} stroke="rgba(255,255,255,0.18)" strokeDasharray="3,3" />
+      {/* Threshold line. The control to change it lives in a titled tray outside
+          the chart (see VisualizationZone) — the old in-chart ▲/▼ widget was a
+          ~28×56px target that was impossible to discover or hit. */}
       <line x1={PAD.l} y1={y(threshold)} x2={PAD.l + plotW} y2={y(threshold)} stroke="#FF6D00" strokeWidth="1.5" strokeDasharray="6,3" opacity=".8" />
-      <foreignObject x={PAD.l + plotW - 30} y={y(threshold) - 28} width="28" height="56">
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 0, background: "rgba(0,0,0,0.7)", borderRadius: 4, padding: "2px 0" }}>
-          <button
-            onClick={() => onThresholdChange(Math.min(70, threshold + 5))}
-            style={{ background: "none", border: "none", color: "#FFB74D", fontSize: 10, cursor: "pointer", padding: "0 2px", lineHeight: 1 }}
-          >
-            ▲
-          </button>
-          <span style={{ color: "#FFB74D", fontSize: 9, fontWeight: 600, fontFamily: "'JetBrains Mono',monospace" }}>
-            {threshold}°
-          </span>
-          <button
-            onClick={() => onThresholdChange(Math.max(20, threshold - 5))}
-            style={{ background: "none", border: "none", color: "#FFB74D", fontSize: 10, cursor: "pointer", padding: "0 2px", lineHeight: 1 }}
-          >
-            ▼
-          </button>
-        </div>
-      </foreignObject>
       {aD && <path d={aD} fill="url(#vg3)" />}
       <path d={pathD} fill="none" stroke="#FFD54F" strokeWidth="2.5" strokeLinecap="round" />
       {hp && hoverTime !== null && (

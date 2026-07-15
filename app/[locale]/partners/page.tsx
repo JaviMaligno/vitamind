@@ -1,65 +1,72 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import type { LucideIcon } from "lucide-react";
+import { Target, FlaskConical, Globe, Users, Star, Link2, PenLine, Check, ArrowLeft, Mail } from "lucide-react";
 import { Link } from "@/i18n/navigation";
+import PosterHero from "@/components/PosterHero";
+import PhaseButton from "@/components/PhaseButton";
 
 const CONTACT_EMAIL = "javiecija96@gmail.com";
 
-const WHY_ITEMS = [
-  { icon: "🎯", titleKey: "why1Title", textKey: "why1Text" },
-  { icon: "🔬", titleKey: "why2Title", textKey: "why2Text" },
-  { icon: "🌍", titleKey: "why3Title", textKey: "why3Text" },
-  { icon: "📊", titleKey: "why4Title", textKey: "why4Text" },
+const WHY_ITEMS: { Icon: LucideIcon; titleKey: string; textKey: string }[] = [
+  { Icon: Target, titleKey: "why1Title", textKey: "why1Text" },
+  { Icon: FlaskConical, titleKey: "why2Title", textKey: "why2Text" },
+  { Icon: Globe, titleKey: "why3Title", textKey: "why3Text" },
+  { Icon: Users, titleKey: "why4Title", textKey: "why4Text" },
 ];
 
-const MODELS = [
-  { icon: "⭐", titleKey: "model1Title", textKey: "model1Text" },
-  { icon: "🔗", titleKey: "model2Title", textKey: "model2Text" },
-  { icon: "📝", titleKey: "model3Title", textKey: "model3Text" },
+const MODELS: { Icon: LucideIcon; titleKey: string; textKey: string }[] = [
+  { Icon: Star, titleKey: "model1Title", textKey: "model1Text" },
+  { Icon: Link2, titleKey: "model2Title", textKey: "model2Text" },
+  { Icon: PenLine, titleKey: "model3Title", textKey: "model3Text" },
 ];
 
-const FEATURES = [
-  "feat1", "feat2", "feat3", "feat4",
-  "feat5", "feat6", "feat7", "feat8",
-];
+const FEATURES = ["feat1", "feat2", "feat3", "feat4", "feat5", "feat6", "feat7", "feat8"];
 
 export default function PartnersPage() {
   const t = useTranslations("partners");
 
   return (
-    <div className="mx-auto max-w-[960px] px-4 pb-16 space-y-12">
-      {/* Hero */}
-      <section className="pt-4 space-y-4">
-        <h1 className="text-2xl font-bold text-text-primary leading-tight">
-          {t("pageTitle")}
-        </h1>
-        <p className="text-[15px] font-medium text-text-secondary">
-          {t("pageSubtitle")}
-        </p>
-        <p className="text-[13px] text-text-muted leading-relaxed">
+    <main className="mx-auto max-w-[1100px] px-4 py-6 sm:py-8 space-y-8 sm:space-y-12">
+      <PosterHero eyebrow={t("eyebrow")} title={t("pageTitle")} subtitle={t("pageSubtitle")} />
+
+      {/* Lede + inline CTA, so the primary action is visible above the fold
+          instead of only at the bottom of a long page. */}
+      <section className="grid gap-6 lg:grid-cols-[1fr_auto] lg:items-center">
+        <p className="text-body text-text-secondary leading-relaxed max-w-2xl">
           {t("heroDescription")}
         </p>
+        <PhaseButton
+          href={`mailto:${CONTACT_EMAIL}?subject=Partnership%20—%20Vitamina%20D%20Explorer`}
+          className="whitespace-nowrap"
+        >
+          <Mail className="h-4 w-4" aria-hidden />
+          {t("ctaEmail")}
+        </PhaseButton>
       </section>
 
       {/* Why partner */}
       <section className="space-y-4">
-        <h2 className="text-lg font-semibold text-text-primary">
+        <h2 className="text-title font-display font-bold text-text-primary">
           {t("whyTitle")}
         </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {WHY_ITEMS.map((item) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {WHY_ITEMS.map(({ Icon, titleKey, textKey }) => (
             <div
-              key={item.titleKey}
-              className="rounded-xl border border-border-default bg-surface-card p-4 space-y-2"
+              key={titleKey}
+              className="rounded-2xl border border-glass-border bg-glass backdrop-blur-md p-4 space-y-2.5 shadow-sm"
             >
-              <div className="flex items-center gap-2">
-                <span className="text-lg">{item.icon}</span>
-                <h3 className="text-[13px] font-semibold text-text-primary">
-                  {t(item.titleKey)}
+              <div className="flex items-center gap-3">
+                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent/12 text-accent">
+                  <Icon className="h-5 w-5" aria-hidden />
+                </span>
+                <h3 className="text-heading font-semibold text-text-primary">
+                  {t(titleKey)}
                 </h3>
               </div>
-              <p className="text-[12px] text-text-muted leading-relaxed">
-                {t(item.textKey)}
+              <p className="text-body text-text-muted leading-relaxed">
+                {t(textKey)}
               </p>
             </div>
           ))}
@@ -68,23 +75,23 @@ export default function PartnersPage() {
 
       {/* Partnership models */}
       <section className="space-y-4">
-        <h2 className="text-lg font-semibold text-text-primary">
+        <h2 className="text-title font-display font-bold text-text-primary">
           {t("modelsTitle")}
         </h2>
-        <div className="space-y-3">
-          {MODELS.map((model) => (
+        <div className="grid gap-4 sm:grid-cols-3">
+          {MODELS.map(({ Icon, titleKey, textKey }) => (
             <div
-              key={model.titleKey}
-              className="rounded-xl border border-border-default bg-surface-card p-5 space-y-2"
+              key={titleKey}
+              className="rounded-2xl border border-glass-border bg-glass backdrop-blur-md p-4 space-y-2.5 shadow-sm"
             >
-              <div className="flex items-center gap-2">
-                <span className="text-lg">{model.icon}</span>
-                <h3 className="text-[14px] font-semibold text-text-primary">
-                  {t(model.titleKey)}
-                </h3>
-              </div>
-              <p className="text-[12px] text-text-muted leading-relaxed">
-                {t(model.textKey)}
+              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent/12 text-accent">
+                <Icon className="h-5 w-5" aria-hidden />
+              </span>
+              <h3 className="text-heading font-semibold text-text-primary">
+                {t(titleKey)}
+              </h3>
+              <p className="text-body text-text-muted leading-relaxed">
+                {t(textKey)}
               </p>
             </div>
           ))}
@@ -93,16 +100,15 @@ export default function PartnersPage() {
 
       {/* Features */}
       <section className="space-y-4">
-        <h2 className="text-lg font-semibold text-text-primary">
+        <h2 className="text-title font-display font-bold text-text-primary">
           {t("featuresTitle")}
         </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+        <div className="grid grid-cols-2 gap-x-4 gap-y-2.5">
           {FEATURES.map((key) => (
-            <div
-              key={key}
-              className="flex items-start gap-2 text-[12px] text-text-secondary"
-            >
-              <span className="text-amber-500 mt-0.5">&#10003;</span>
+            <div key={key} className="flex items-start gap-3 text-body text-text-secondary">
+              <span className="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-possible-surface text-possible">
+                <Check className="h-3 w-3" strokeWidth={3} aria-hidden />
+              </span>
               <span>{t(key)}</span>
             </div>
           ))}
@@ -110,20 +116,21 @@ export default function PartnersPage() {
       </section>
 
       {/* CTA */}
-      <section className="rounded-2xl border border-amber-500/30 bg-gradient-to-br from-amber-500/5 to-amber-600/10 p-6 space-y-4 text-center">
-        <h2 className="text-xl font-bold text-text-primary">
+      <section className="rounded-[2rem] border border-glass-border bg-glass backdrop-blur-md p-6 sm:p-8 space-y-4 text-center shadow-lg" >
+        <h2 className="text-title sm:text-display font-display font-bold text-text-primary">
           {t("ctaTitle")}
         </h2>
-        <p className="text-[13px] text-text-muted max-w-lg mx-auto leading-relaxed">
+        <p className="text-body text-text-muted max-w-xl mx-auto leading-relaxed">
           {t("ctaText")}
         </p>
-        <a
+        <PhaseButton
           href={`mailto:${CONTACT_EMAIL}?subject=Partnership%20—%20Vitamina%20D%20Explorer`}
-          className="inline-block px-6 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-white font-semibold text-[14px] shadow-lg hover:shadow-xl hover:from-amber-400 hover:to-amber-500 transition-all"
+          className="px-8"
         >
+          <Mail className="h-4 w-4" aria-hidden />
           {t("ctaEmail")}
-        </a>
-        <p className="text-[11px] text-text-faint">
+        </PhaseButton>
+        <p className="text-caption text-text-faint">
           {t("ctaNote")}
         </p>
       </section>
@@ -132,11 +139,12 @@ export default function PartnersPage() {
       <div className="pt-2 border-t border-border-subtle">
         <Link
           href="/dashboard"
-          className="text-[11px] text-text-muted hover:text-text-secondary transition-colors"
+          className="inline-flex items-center gap-1.5 min-h-[44px] text-caption text-text-muted hover:text-text-secondary transition-colors"
         >
-          ← Try the app
+          <ArrowLeft className="h-4 w-4" aria-hidden />
+          {t("backToApp")}
         </Link>
       </div>
-    </div>
+    </main>
   );
 }

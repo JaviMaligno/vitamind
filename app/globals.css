@@ -1,6 +1,20 @@
 @import "tailwindcss";
 
 @theme {
+  /* Fuentes (ya cargadas por CDN en layout.tsx; aquí se cablean como tokens
+     para poder usar font-display / font-sans / font-mono en Tailwind). */
+  --font-display: "Playfair Display", Georgia, serif;
+  --font-sans: "DM Sans", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  /* Escala tipográfica por tamaño/peso (sustituye la jerarquía por opacidad).
+     Suelo de cuerpo 14px; nada estructural por debajo. */
+  --text-display: 2.25rem;      --text-display--line-height: 1.1;
+  --text-title: 1.375rem;       --text-title--line-height: 1.25;
+  --text-heading: 1.0625rem;    --text-heading--line-height: 1.3;
+  --text-body: 0.9375rem;       --text-body--line-height: 1.5;
+  --text-caption: 0.8125rem;    --text-caption--line-height: 1.4;
+
   --color-surface: #ffffff;
   --color-surface-alt: #f8f9fa;
   --color-surface-card: rgba(26, 26, 46, 0.03);
@@ -28,6 +42,59 @@
   --color-chart-bar-medium: rgba(255, 143, 0, 0.5);
   --color-chart-bar-slow: rgba(255, 109, 0, 0.3);
   --color-chart-bar-inactive: rgba(128, 128, 128, 0.1);
+
+  /* Color semántico */
+  --color-possible: #15803d;            /* verde: síntesis posible */
+  --color-possible-surface: #dcfce7;
+  --color-possible-border: #86efac;
+  --color-sun: #ea580c;                 /* naranja: sol / UV / marca */
+  --color-sun-strong: #c2410c;
+  --color-winter: #64748b;              /* frío: sin sol / invierno */
+
+  /* Superficies del sistema glass */
+  --color-glass: rgba(255, 255, 255, 0.86);      /* tarjeta clara sobre gradiente */
+  --color-glass-border: rgba(255, 255, 255, 0.6);
+  --color-window: #0e1330;                        /* ventana oscura de datos */
+  --color-window-border: rgba(255, 255, 255, 0.14);
+  /* Ventana de datos teñida por fase (fondo SÓLIDO oscuro → etiquetas claras
+     legibles y la viz de calor contrasta, pero con el matiz del momento del
+     día). Consumidos por PhaseWindow vía PHASE_STYLE. */
+  --window-dawn: #3f1c47;                           /* magenta/vino, con vida */
+  --window-day: #16305c;                            /* azul, más vivo */
+  --window-dusk: #2e1b4b;                           /* índigo/morado, intermedio */
+  --window-night: #0e1330;                          /* navy (= --color-window) */
+  /* CTA sólido por fase (fondo del botón, texto blanco). Colores LIMPIOS que
+     destacan sobre el tinte de página de cada fase, sin el scrim que
+     enturbiaba el gradiente. Validados ≥4.5:1 con blanco. night = violeta
+     brillante para destacar sobre navy (donde el gradiente se camuflaba). */
+  --cta-dawn: #c2367a;                              /* frambuesa profunda */
+  --cta-day: #1f5fd0;                               /* azul profundo */
+  --cta-dusk: #9b3d84;                              /* magenta/morado */
+  --cta-night: #6d4aff;                             /* violeta brillante */
+  /* Verde del dato protagonista ("possible") por fase, sobre el hero oscuro.
+     Neón (#4ade80) sólo en night; en las fases cálidas/claras un verde algo
+     más suave y desaturado que no grita contra el paisaje del gradiente. */
+  --stat-dawn: #8fe6a3;                             /* verde suave, tibio */
+  --stat-day: #6fd3a0;                              /* menta más apagada, menos eléctrica sobre el azul */
+  --stat-dusk: #9ae89a;                             /* verde-lima suave, cálido */
+  --stat-night: #5ace93;                            /* verde claro, menos neón sobre navy */
+  --color-on-window: #f4f1ff;                     /* texto sobre ventana */
+  --color-on-window-faint: rgba(255, 255, 255, 0.55);
+
+  /* Gradientes vibrantes por fase (hero y acentos). */
+  --grad-dawn: linear-gradient(165deg, #ffb07a 0%, #ff7a9c 55%, #c9457e 100%);
+  --grad-day: linear-gradient(165deg, #6fb7ef 0%, #a6d4f4 42%, #ffd7a8 100%);
+  --grad-dusk: linear-gradient(165deg, #ff7a45 0%, #e0457e 55%, #7a3a9e 100%);
+  --grad-night: radial-gradient(120% 90% at 75% -10%, #3a2f6b 0%, #141a3a 50%, #0a0e24 100%);
+
+  /* Fondo de página por fase: el color de la fase presente en TODA la página
+     (no solo cerca del hero) y bien distinto entre fases — rosado al amanecer,
+     dorado de día, coral al atardecer, navy de noche. Medio-saturado: se lee la
+     hora en el ambiente, pero el contenido va en glass cards, así que no cansa. */
+  --page-dawn: linear-gradient(180deg, #ffb3c4 0%, #ffcdd7 55%, #ffe2e7 100%);
+  --page-day: linear-gradient(180deg, #a9d6f5 0%, #cfe8fb 55%, #edf6fe 100%);
+  --page-dusk: linear-gradient(180deg, #ec9576 0%, #f4b89b 55%, #f9d6c2 100%);
+  --page-night: linear-gradient(180deg, #1c1f52 0%, #111440 45%, #080b22 100%);
 }
 
 .dark {
@@ -55,4 +122,44 @@
   --color-chart-bar-medium: rgba(255, 143, 0, 0.5);
   --color-chart-bar-slow: rgba(255, 109, 0, 0.3);
   --color-chart-bar-inactive: rgba(128, 128, 128, 0.1);
+
+  /* Softer, less-neon emerald for the dark theme (chips, any text-possible).
+     The old #4ade80 read as neon; #5fd39b keeps clear "green = possible"
+     meaning with lower saturation. Surface/border retinted to match. */
+  --color-possible: #5fd39b;
+  --color-possible-surface: rgba(95, 211, 155, 0.15);
+  --color-possible-border: rgba(95, 211, 155, 0.4);
+  --color-sun: #fb923c;
+  --color-sun-strong: #fdba74;
+  --color-winter: #94a3b8;
+  --color-glass: rgba(18, 22, 48, 0.72);
+  --color-glass-border: rgba(255, 255, 255, 0.12);
+  /* window/on-window son iguales en ambos temas (siempre oscura) */
+}
+
+/* Typographic quality pass — applies app-wide so every page benefits.
+   - Smooth DM Sans on both platforms and hint the browser to optimise legibility.
+   - `text-wrap: balance` evens out headline line breaks (no lone last word);
+     `pretty` avoids widows in body copy. Both no-op gracefully where unsupported.
+   - Enable kerning + common ligatures for the Playfair display face.
+   - Tabular, lining figures line up numeric data (mono is used for all figures). */
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+  h1, h2, h3 {
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+  .font-display {
+    font-feature-settings: "kern", "liga", "clig";
+    letter-spacing: -0.011em;
+  }
+  .font-mono {
+    font-variant-numeric: tabular-nums lining-nums;
+  }
 }

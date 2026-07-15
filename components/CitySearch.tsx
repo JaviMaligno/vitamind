@@ -2,7 +2,9 @@
 
 import { useState, useMemo, useCallback, useRef, useEffect } from "react";
 import { useTranslations, useLocale } from "next-intl";
+import { Search, Loader2, Star, Check } from "lucide-react";
 import { searchCities } from "@/lib/cities-api";
+import Flag from "@/components/ui/Flag";
 import type { City } from "@/lib/types";
 
 interface Props {
@@ -135,10 +137,10 @@ export default function CitySearch({ onSelect, onAddFav, favorites, allCities }:
         <input
           value={query} onChange={handleChange} onFocus={() => setOpen(true)}
           placeholder={t("placeholder")}
-          className="flex-1 px-3 py-2 rounded-l-lg bg-surface-input border border-border-default text-text-primary text-sm outline-none focus:border-amber-400/30"
+          className="flex-1 min-h-[44px] px-3 rounded-l-lg bg-surface-input border border-border-default text-text-primary text-sm outline-none focus:border-amber-400/30"
         />
-        <div className="px-3 py-2 rounded-r-lg bg-surface-elevated border border-border-default border-l-0 text-text-muted text-sm flex items-center">
-          {searching ? "⏳" : "🔍"}
+        <div className="px-3 min-h-[44px] rounded-r-lg bg-surface-elevated border border-border-default border-l-0 text-text-muted flex items-center">
+          {searching ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> : <Search className="h-4 w-4" aria-hidden />}
         </div>
       </div>
       {open && query.length >= 2 && (
@@ -160,7 +162,7 @@ export default function CitySearch({ onSelect, onAddFav, favorites, allCities }:
               >
                 {/* City info */}
                 <div className="flex-1 min-w-0">
-                  <div className="text-sm text-text-primary">{c.flag} {displayName(c)}</div>
+                  <div className="text-sm text-text-primary"><Flag flag={c.flag} className="text-sm" /> {displayName(c)}</div>
                   {(c as { _full?: string })._full && (
                     <div className="text-[10px] text-text-muted truncate max-w-[260px]">
                       {(c as { _full?: string })._full}
@@ -175,14 +177,17 @@ export default function CitySearch({ onSelect, onAddFav, favorites, allCities }:
                 {/* Favorite button */}
                 <button
                   onClick={(e) => { e.stopPropagation(); handleAddFav(c); }}
-                  className={`shrink-0 px-2.5 py-1.5 rounded-lg text-xs cursor-pointer transition-colors ${
+                  className={`inline-flex min-h-[44px] shrink-0 items-center gap-1 px-2.5 rounded-lg text-caption cursor-pointer transition-colors ${
                     isFav || wasJustAdded
                       ? "bg-amber-400/15 text-accent"
                       : "bg-surface-elevated text-text-muted hover:bg-surface-input"
                   }`}
                   title={t("addFavorite")}
+                  aria-label={t("addFavorite")}
                 >
-                  {wasJustAdded ? `✓ ${t("added")}` : isFav ? "★" : `☆ ${t("fav")}`}
+                  {wasJustAdded ? (<><Check className="h-3.5 w-3.5" aria-hidden /> {t("added")}</>)
+                    : isFav ? <Star className="h-3.5 w-3.5 fill-current" aria-hidden />
+                    : (<><Star className="h-3.5 w-3.5" aria-hidden /> {t("fav")}</>)}
                 </button>
               </div>
             );

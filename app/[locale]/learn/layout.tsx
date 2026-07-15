@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
-import { getMessages } from "next-intl/server";
+import { getMessages, setRequestLocale } from "next-intl/server";
 import { buildAlternates } from "@/i18n/metadata";
+import { routing } from "@/i18n/routing";
+
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
+}
 
 const FAQ_BLOCKS = [
   { id: "block1", questions: 7 },
@@ -49,7 +54,15 @@ type LearnMessages = {
   };
 };
 
-export default async function LearnLayout({ children }: { children: React.ReactNode }) {
+export default async function LearnLayout({
+  children,
+  params,
+}: {
+  children: React.ReactNode;
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
   const messages = (await getMessages()) as { learn?: LearnMessages };
   const learn = messages.learn ?? {};
 

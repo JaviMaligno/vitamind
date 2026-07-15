@@ -8,6 +8,7 @@ import { routing } from "@/i18n/routing";
 import { buildAlternates } from "@/i18n/metadata";
 import { SITE_URL, IS_PRODUCTION_DEPLOY } from "@/lib/site";
 import "../globals.css";
+import "flag-icons/css/flag-icons.min.css";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));

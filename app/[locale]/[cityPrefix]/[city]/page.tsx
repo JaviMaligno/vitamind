@@ -1,9 +1,13 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Link } from "@/i18n/navigation";
+import CityCta from "@/components/CityCta";
+import CityHeroBold from "@/components/CityHeroBold";
 import CityYearStrip from "@/components/CityYearStrip";
+import PhaseWindow from "@/components/PhaseWindow";
 import NotificationToggle from "@/components/NotificationToggle";
+import Card from "@/components/ui/Card";
+import A from "@/components/ui/A";
 import { BUILTIN_CITIES } from "@/lib/cities";
 import {
   cityYearProfile, citySeasonalWindows, contiguousMonthRange, viableDateBoundaries,
@@ -52,6 +56,7 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
     openGraph: { title, description, url: alternates.canonical, type: "article" },
   };
 }
+
 
 export default async function CityPage({ params }: { params: Promise<Params> }) {
   const p = await params;
@@ -103,6 +108,15 @@ export default async function CityPage({ params }: { params: Promise<Params> }) 
           ...verdictMonths(p.locale, possibleBand!.start - 1, possibleBand!.end - 1),
         });
 
+  // The hero's giant focal stat: same three-way state as `verdict` above, but
+  // rendered as the compact "N months of sun" / "sun all year" / "no solar
+  // synthesis" phrase already used for exactly this purpose on the index page.
+  const statPhrase = profile.allYear
+    ? t("indexAllYear")
+    : profile.neverPossible
+      ? t("indexNever")
+      : t("indexMonths", { count: profile.possibleMonths.length });
+
   const summerWindow = windows.find((w) => w.possible && w.minutesNeeded !== null);
 
   const faq = [
@@ -125,7 +139,7 @@ export default async function CityPage({ params }: { params: Promise<Params> }) 
   ];
 
   return (
-    <main className="mx-auto max-w-[960px] px-4 py-6">
+    <main className="mx-auto max-w-[1280px] px-4 py-6 sm:py-10">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -133,23 +147,29 @@ export default async function CityPage({ params }: { params: Promise<Params> }) 
         }}
       />
 
-      <h1 className="text-2xl font-bold">{t("title", labels)}</h1>
-      <p className="mt-2 text-base">{verdict}</p>
-      {!profile.allYear && !profile.neverPossible && impossibleBand && (
-        <p className="mt-1 text-sm opacity-80">
-          {t("impossibleRange", {
-            ...labels,
-            ...verdictMonths(p.locale, impossibleBand.start - 1, impossibleBand.end - 1),
-          })}
-        </p>
-      )}
-      {dateRange && (
-        <p className="mt-1 text-xs opacity-60">{t("exactWindow", { dateRange })}</p>
-      )}
-
-      <section className="mt-6">
-        <p className="text-sm">{t("notifyLead", labels)}</p>
-        <div className="mt-2">
+      {/* BOLD exploratory hero: full-bleed poster-scale sky, verdict as a giant
+          editorial statement rather than a small badge in a contained glass card.
+          See components/CityHeroBold.tsx. */}
+      <CityHeroBold
+        lat={city.lat}
+        lon={city.lon}
+        eyebrow={localizedCityName(p.locale, base)}
+        title={t("title", labels)}
+        tone={!profile.neverPossible ? "possible" : "winter"}
+        statPhrase={statPhrase}
+        verdict={verdict}
+        impossibleText={
+          !profile.allYear && !profile.neverPossible && impossibleBand
+            ? t("impossibleRange", {
+                ...labels,
+                ...verdictMonths(p.locale, impossibleBand.start - 1, impossibleBand.end - 1),
+              })
+            : null
+        }
+        exactWindowLabel={t("exactWindowLabel")}
+        dateRange={dateRange}
+        notifyLead={t("notifyLead", labels)}
+        notify={
           <NotificationToggle
             lat={city.lat}
             lon={city.lon}
@@ -161,90 +181,107 @@ export default async function CityPage({ params }: { params: Promise<Params> }) 
             labelOff={t("notifyOff")}
             labelOn={t("notifyOn")}
             prominent
+            onDark
           />
-        </div>
+        }
+      />
+
+      {/* Year profile: the page's signature data-graphic, promoted to a full-width
+          protagonist band instead of a card nested inside a card. */}
+      <section className="mt-10 sm:mt-16">
+        <h2 className="font-display text-2xl sm:text-4xl font-bold">{t("yearHeading", labels)}</h2>
+        <p className="mt-2 text-body text-text-muted max-w-2xl">{t("yearCaption")}</p>
+        <PhaseWindow lat={city.lat} lon={city.lon} className="mt-5 p-5 sm:mt-6 sm:p-8">
+          <CityYearStrip
+            hoursByDay={profile.hoursByDay}
+            monthLabels={labelsForChart}
+            caption={t("yearCaption")}
+            legend={{ low: t("yearLegendLow"), high: t("yearLegendHigh") }}
+            height={110}
+          />
+        </PhaseWindow>
       </section>
 
-      <section className="mt-8">
-        <h2 className="text-lg font-semibold">{t("yearHeading", labels)}</h2>
-        <div className="mt-3">
-          <CityYearStrip hoursByDay={profile.hoursByDay} monthLabels={labelsForChart} caption={t("yearCaption")} />
-        </div>
-      </section>
+      {/* Seasonal windows + supplement: two balanced columns (supplement drops
+          when the city synthesizes all year, and then seasons runs full-width). */}
+      <div className={`mt-10 sm:mt-16 grid gap-6 lg:gap-8 items-start ${profile.allYear ? "" : "lg:grid-cols-2"}`}>
+        <Card variant="glass" className="!p-6 sm:!p-8">
+          <h2 className="font-display text-title sm:text-2xl font-bold">{t("seasonHeading")}</h2>
+          <ul className="mt-4 space-y-3 text-body sm:text-heading">
+            {windows.map((w) => (
+              // These lines start with the month, so it must be capitalized —
+              // es/fr/ru/lt all yield a lowercase nominative from Intl.
+              <li key={w.doy} className="border-b border-border-subtle pb-3 last:border-0 last:pb-0">
+                {w.possible
+                  ? t("seasonWindow", {
+                      month: capFirst(monthName(p.locale, w.monthIndex)),
+                      start: fmtTime(w.windowStart!),
+                      end: fmtTime(w.windowEnd!),
+                      minutes: Math.round(w.minutesNeeded!),
+                    })
+                  : t("seasonImpossible", { month: capFirst(monthName(p.locale, w.monthIndex)) })}
+              </li>
+            ))}
+          </ul>
+          <p className="mt-4 text-caption text-text-muted">{t("seasonNote")}</p>
+        </Card>
 
-      <section className="mt-8">
-        <h2 className="text-lg font-semibold">{t("seasonHeading")}</h2>
-        <ul className="mt-3 space-y-1 text-sm">
-          {windows.map((w) => (
-            // These lines start with the month, so it must be capitalized —
-            // es/fr/ru/lt all yield a lowercase nominative from Intl.
-            <li key={w.doy}>
-              {w.possible
-                ? t("seasonWindow", {
-                    month: capFirst(monthName(p.locale, w.monthIndex)),
-                    start: fmtTime(w.windowStart!),
-                    end: fmtTime(w.windowEnd!),
-                    minutes: Math.round(w.minutesNeeded!),
-                  })
-                : t("seasonImpossible", { month: capFirst(monthName(p.locale, w.monthIndex)) })}
-            </li>
-          ))}
-        </ul>
-        <p className="mt-2 text-xs opacity-60">{t("seasonNote")}</p>
-      </section>
+        {!profile.allYear && (
+          <Card variant="glass" className="!p-6 sm:!p-8">
+            <h2 className="font-display text-title sm:text-2xl font-bold">{t("supplementHeading", labels)}</h2>
+            <p className="text-body mt-3 sm:text-heading">{t("supplementBody")}</p>
+            <A href="/learn#supplement" className="text-caption mt-3 inline-block">
+              {t("supplementMore")}
+            </A>
+          </Card>
+        )}
+      </div>
 
-      {!profile.allYear && (
-        <section className="mt-8">
-          <h2 className="text-lg font-semibold">{t("supplementHeading", labels)}</h2>
-          <p className="mt-2 text-sm">
-            <Link href="/learn#supplement" className="underline decoration-dotted">
-              {t("supplementBody")}
-            </Link>
-          </p>
-        </section>
-      )}
+      {/* Primary CTA — full-width, centered conversion band (the main action, so
+          it stands on its own instead of being tucked into a column). Adapts to
+          the live solar phase so it never clashes with the warm-phase page tints. */}
+      <div className="mt-10 sm:mt-14 flex justify-center">
+        <CityCta lat={city.lat} lon={city.lon} href="/dashboard" label={t("ctaLabel", labels)} />
+      </div>
 
-      <section className="mt-8">
-        <Link
-          href="/dashboard"
-          className="inline-block rounded bg-amber-400/15 px-4 py-2 text-sm font-semibold text-accent"
-        >
-          {t("ctaLabel", labels)}
-        </Link>
-      </section>
-
-      <section className="mt-10">
-        <h2 className="text-lg font-semibold">{t("faqHeading", labels)}</h2>
-        <dl className="mt-3 space-y-3 text-sm">
+      {/* FAQ — full-width, two columns on desktop. */}
+      <section className="mt-10 sm:mt-16">
+        <h2 className="font-display text-2xl sm:text-3xl font-bold">{t("faqHeading", labels)}</h2>
+        <dl className="mt-5 grid gap-5 sm:grid-cols-2 sm:gap-8">
           {faq.map((q) => (
             <div key={q.name}>
-              <dt className="font-medium">{q.name}</dt>
-              <dd className="opacity-80">{q.acceptedAnswer.text}</dd>
+              <dt className="font-semibold text-heading">{q.name}</dt>
+              <dd className="text-body text-text-muted mt-1">{q.acceptedAnswer.text}</dd>
             </div>
           ))}
         </dl>
       </section>
 
       {/* Cross-links to the nearest cities: turns the 438 pages into a crawlable
-          mesh and gives the reader somewhere to go. Static, so Google follows it. */}
-      <nav className="mt-10">
-        <h2 className="text-lg font-semibold">{t("nearbyHeading")}</h2>
-        <ul className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-sm">
+          mesh and gives the reader somewhere to go. Static, so Google follows it.
+          Wide footer strip — a border-top band, not another glass card, so not
+          every block on the page has an identical surface treatment. */}
+      <nav className="mt-10 sm:mt-16 pt-8 sm:pt-10 border-t border-border-default">
+        <h2 className="font-display text-title sm:text-2xl font-bold">{t("nearbyHeading")}</h2>
+        <ul className="mt-4 flex flex-wrap gap-2">
           {nearby.map((nb) => {
             const nbBase = baseSlug(nb.id);
             return (
               <li key={nb.id}>
-                <Link href={cityPathname(p.locale, nbBase)} className="underline decoration-dotted">
+                <A
+                  href={cityPathname(p.locale, nbBase)}
+                  className="inline-flex min-h-[44px] items-center rounded-full border border-border-default bg-glass px-4 text-body no-underline hover:bg-surface-elevated"
+                >
                   {localizedCityName(p.locale, nbBase)}
-                </Link>
+                </A>
               </li>
             );
           })}
         </ul>
-        <p className="mt-3 text-sm">
-          <Link href={indexPathname(p.locale)} className="font-medium text-accent underline decoration-dotted">
+        <p className="mt-5 text-body">
+          <A href={indexPathname(p.locale)} className="font-semibold">
             {t("allCitiesLink")} →
-          </Link>
+          </A>
         </p>
       </nav>
     </main>

@@ -2,7 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
+import { X, Share, SquarePlus } from "lucide-react";
 import { detectMobileOS, type InstallPlatform } from "@/lib/install";
+import PhaseButton from "@/components/PhaseButton";
 
 export type InstallModalMode = "banner" | "gating";
 
@@ -81,9 +83,9 @@ export default function InstallInstructionsModal({ open, mode, platform, isInApp
           <button
             onClick={onClose}
             aria-label={t("close")}
-            className="absolute top-3 right-3 w-8 h-8 rounded-full bg-surface-card hover:bg-surface-input flex items-center justify-center text-text-secondary"
+            className="absolute top-2 right-2 h-11 w-11 rounded-full bg-surface-card hover:bg-surface-input flex items-center justify-center text-text-secondary"
           >
-            ✕
+            <X className="h-4 w-4" aria-hidden />
           </button>
           <div className="w-14 h-14 mx-auto mb-3 rounded-2xl bg-gradient-to-br from-amber-400 to-amber-700 flex items-center justify-center text-white font-extrabold text-2xl font-[Playfair_Display,serif]">
             D
@@ -117,24 +119,21 @@ export default function InstallInstructionsModal({ open, mode, platform, isInApp
             <div className="flex items-center gap-3 py-3 border-b border-border-subtle text-sm">
               <div className="w-6 h-6 rounded-full bg-text-primary text-accent flex items-center justify-center font-bold text-xs flex-shrink-0">1</div>
               <div className="flex-1">{t("step1")}</div>
-              <div className="px-2 py-1 rounded-md bg-surface-card border border-border-subtle text-blue-400 text-base">⬆︎</div>
+              <div className="px-2 py-1 rounded-md bg-surface-card border border-border-subtle flex items-center"><Share className="h-4 w-4 text-blue-400" aria-hidden /></div>
             </div>
             <div className="flex items-center gap-3 py-3 text-sm">
               <div className="w-6 h-6 rounded-full bg-text-primary text-accent flex items-center justify-center font-bold text-xs flex-shrink-0">2</div>
               <div className="flex-1">{t("step2")}</div>
-              <div className="px-2 py-1 rounded-md bg-surface-card border border-border-subtle text-base">⊞</div>
+              <div className="px-2 py-1 rounded-md bg-surface-card border border-border-subtle flex items-center"><SquarePlus className="h-4 w-4" aria-hidden /></div>
             </div>
           </div>
         )}
 
         {variant === "in-app" && (
           <div className="px-6 pb-4">
-            <button
-              onClick={handleCopyUrl}
-              className="w-full py-2.5 rounded-lg bg-amber-400 hover:bg-amber-300 text-neutral-900 font-semibold text-sm transition-colors"
-            >
+            <PhaseButton onClick={handleCopyUrl} className="w-full">
               {copied ? t("linkCopied") : t("copyUrl")}
-            </button>
+            </PhaseButton>
           </div>
         )}
 

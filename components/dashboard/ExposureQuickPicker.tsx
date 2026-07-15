@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { RotateCcw } from "lucide-react";
 import { AREA_PRESETS } from "@/lib/vitd";
 
 interface Props {
@@ -28,36 +29,43 @@ export default function ExposureQuickPicker({ value, onChange, isOverride, onRes
   };
 
   return (
-    <div className="flex items-center gap-1.5 flex-wrap">
-      <span className="text-[9px] text-text-faint uppercase tracking-wider mr-0.5">
-        {t("exposureLabel")}
-      </span>
-      {AREA_PRESETS.map((p) => (
-        <button
-          type="button"
-          key={p.value}
-          onClick={() => onChange(p.value)}
-          aria-pressed={value === p.value}
-          className={`px-2 py-1 rounded-full text-[10px] transition-all cursor-pointer ${
-            value === p.value
-              ? "bg-amber-400/20 text-accent border border-amber-400/30 font-semibold"
-              : "bg-surface-elevated/50 text-text-muted border border-transparent hover:bg-surface-elevated hover:text-text-secondary"
-          }`}
-        >
-          {ICONS[p.value]} {shortLabels[p.value] ?? p.label}
-        </button>
-      ))}
-      {isOverride && (
-        <button
-          type="button"
-          onClick={onReset}
-          aria-label={t("exposureResetDefault")}
-          className="text-[9px] text-text-faint hover:text-accent transition-colors cursor-pointer ml-0.5"
-          title={t("exposureResetDefault")}
-        >
-          ✕
-        </button>
-      )}
+    <div className="flex h-full flex-col">
+      <div className="mb-3 flex items-center justify-between">
+        <span className="text-caption text-text-faint uppercase tracking-wider">
+          {t("exposureLabel")}
+        </span>
+        {isOverride && (
+          <button
+            type="button"
+            onClick={onReset}
+            className="inline-flex items-center gap-1 text-caption text-text-faint hover:text-accent transition-colors cursor-pointer"
+            title={t("exposureResetDefault")}
+          >
+            <RotateCcw className="h-3.5 w-3.5" aria-hidden />
+            {t("exposureResetDefault")}
+          </button>
+        )}
+      </div>
+      {/* 2×2 grid of larger option tiles — fills the card and reads better than
+          a single cramped row of pills. */}
+      <div className="grid flex-1 grid-cols-2 gap-2 sm:gap-3">
+        {AREA_PRESETS.map((p) => (
+          <button
+            type="button"
+            key={p.value}
+            onClick={() => onChange(p.value)}
+            aria-pressed={value === p.value}
+            className={`flex flex-col items-center justify-center gap-1.5 rounded-2xl px-3 py-4 text-center transition-all cursor-pointer ${
+              value === p.value
+                ? "bg-amber-400/20 text-accent border border-amber-400/40 font-semibold shadow-sm"
+                : "bg-surface-elevated/50 text-text-muted border border-transparent hover:bg-surface-elevated hover:text-text-secondary"
+            }`}
+          >
+            <span className="text-2xl leading-none" aria-hidden>{ICONS[p.value]}</span>
+            <span className="text-caption leading-tight">{shortLabels[p.value] ?? p.label}</span>
+          </button>
+        ))}
+      </div>
     </div>
   );
 }

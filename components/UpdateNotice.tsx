@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
+import { ArrowUpCircle } from "lucide-react";
 
 export default function UpdateNotice() {
   const t = useTranslations("update");
@@ -64,7 +65,7 @@ export default function UpdateNotice() {
       aria-live="polite"
       className="fixed left-2 right-2 top-2 z-50 mx-auto max-w-[480px] rounded-xl bg-amber-400 text-neutral-900 shadow-2xl flex items-center gap-3 px-3 py-2.5"
     >
-      <span className="text-lg" aria-hidden>⬆️</span>
+      <ArrowUpCircle className="h-5 w-5 shrink-0" aria-hidden />
       <span className="flex-1 text-xs font-semibold leading-tight">{t("available")}</span>
       <button
         type="button"

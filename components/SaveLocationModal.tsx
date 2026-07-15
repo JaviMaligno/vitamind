@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
+import { Check } from "lucide-react";
+import Flag from "@/components/ui/Flag";
 import type { City } from "@/lib/types";
 
 interface Props {
@@ -36,8 +38,9 @@ export default function SaveLocationModal({ lat, lon, cityName, cityFlag, onSave
   if (saved) {
     return (
       <div className="rounded-xl border border-green-500/20 bg-green-500/5 p-4 text-center">
-        <span className="text-green-400 text-sm font-medium">
-          ✓ {t("savedAs")} &quot;{name.trim() || `${lat.toFixed(2)}°, ${lon.toFixed(2)}°`}&quot;
+        <span className="inline-flex items-center gap-1.5 text-green-400 text-sm font-medium">
+          <Check className="h-4 w-4 shrink-0" aria-hidden />
+          {t("savedAs")} &quot;{name.trim() || `${lat.toFixed(2)}°, ${lon.toFixed(2)}°`}&quot;
         </span>
       </div>
     );
@@ -47,7 +50,7 @@ export default function SaveLocationModal({ lat, lon, cityName, cityFlag, onSave
     <div className="rounded-xl border border-amber-400/20 bg-surface p-4 space-y-3">
       {/* Show what we're saving */}
       <div className="text-sm text-text-secondary">
-        {t("savingLocation")} <span className="text-text-primary">{cityFlag} {lat.toFixed(2)}°, {lon.toFixed(2)}°</span>
+        {t("savingLocation")} <span className="text-text-primary"><Flag flag={cityFlag} className="text-sm" /> {lat.toFixed(2)}°, {lon.toFixed(2)}°</span>
       </div>
 
       {/* Name input */}

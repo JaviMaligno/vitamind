@@ -4,6 +4,9 @@ import { useState, useEffect, useCallback } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { useInstallPrompt } from "@/hooks/useInstallPrompt";
 import { isStandalone, setInstallBannerSeen } from "@/lib/install";
+import { Bell, BellOff, BellRing } from "lucide-react";
+import { useSolarPhase } from "@/hooks/useSolarPhase";
+import { PHASE_STYLE } from "@/lib/solar-phase";
 
 interface Props {
   lat: number;
@@ -18,6 +21,10 @@ interface Props {
   /** Render the off state as an inviting CTA (accent tint) instead of the subtle
    *  toggle look used on the profile page. */
   prominent?: boolean;
+  /** Use a light-on-dark palette — the toggle sits inside a dark hero panel (e.g.
+   *  the city page hero), where the theme's accent/muted tokens (tuned for the
+   *  light page surface) don't contrast. */
+  onDark?: boolean;
 }
 
 type Status = "loading" | "unsupported" | "denied" | "off" | "on";
@@ -31,12 +38,13 @@ function urlBase64ToUint8Array(base64String: string): Uint8Array {
   return arr;
 }
 
-export default function NotificationToggle({ lat, lon, tz, timezone, skinType, areaFraction, cityName, labelOff, labelOn, prominent }: Props) {
+export default function NotificationToggle({ lat, lon, tz, timezone, skinType, areaFraction, cityName, labelOff, labelOn, prominent, onDark }: Props) {
   const [status, setStatus] = useState<Status>("loading");
   const t = useTranslations("notifications");
   const tInstall = useTranslations("install");
   const locale = useLocale();
   const { platform, isInAppBrowser, openModal, trigger } = useInstallPrompt();
+  const phase = useSolarPhase(lat, lon) ?? "day";
 
   const showAndroidTipToast = useCallback(() => {
     setInstallBannerSeen();
@@ -50,12 +58,14 @@ export default function NotificationToggle({ lat, lon, tz, timezone, skinType, a
     text.className = "flex-1";
     const cta = document.createElement("button");
     cta.textContent = tInstall("banner.cta");
-    cta.className = "px-3 py-1 rounded-md bg-amber-400 text-text-primary font-bold text-xs";
+    // Phase-adaptive primary fill (matches PhaseButton / the app's one CTA colour).
+    cta.className = "px-3 py-1.5 rounded-md text-white font-semibold text-caption";
+    cta.style.background = PHASE_STYLE[phase].cta;
     cta.onclick = async () => { toast.remove(); await trigger(); };
     toast.append(text, cta);
     document.body.appendChild(toast);
     setTimeout(() => toast.remove(), 8000);
-  }, [tInstall, trigger]);
+  }, [tInstall, trigger, phase]);
 
   // Check permission on mount and when user returns to tab (e.g. after changing browser settings)
   useEffect(() => {
@@ -179,13 +189,13 @@ export default function NotificationToggle({ lat, lon, tz, timezone, skinType, a
 
   if (status === "loading") {
     return (
-      <span className="text-xs text-text-faint italic">{t("loading")}</span>
+      <span className={`text-xs italic ${onDark ? "text-white/70" : "text-text-faint"}`}>{t("loading")}</span>
     );
   }
 
   if (status === "unsupported") {
     return (
-      <span className="text-xs text-text-faint">{t("unsupported")}</span>
+      <span className={`text-xs ${onDark ? "text-white/70" : "text-text-faint"}`}>{t("unsupported")}</span>
     );
   }
 
@@ -195,11 +205,17 @@ export default function NotificationToggle({ lat, lon, tz, timezone, skinType, a
       disabled={status === "denied"}
       className={`min-h-[44px] px-4 py-2 rounded-lg text-sm cursor-pointer transition-colors ${
         status === "on"
-          ? "bg-amber-400/15 text-accent font-semibold"
+          ? onDark
+            ? "bg-amber-400/25 text-amber-100 font-semibold ring-1 ring-amber-300/40"
+            : "bg-amber-400/15 text-accent font-semibold"
           : status === "denied"
-            ? "bg-red-500/[0.08] text-red-400/40 opacity-50 cursor-not-allowed"
+            ? onDark
+              ? "bg-red-500/25 text-red-100 ring-1 ring-red-300/30 cursor-not-allowed"
+              : "bg-red-500/[0.08] text-red-500/70 cursor-not-allowed"
             : prominent
-              ? "bg-amber-400/20 text-accent font-semibold ring-1 ring-accent/30 hover:bg-amber-400/30"
+              ? onDark
+                ? "bg-amber-400/30 text-white font-semibold ring-1 ring-amber-200/50 hover:bg-amber-400/40"
+                : "bg-amber-400/20 text-accent font-semibold ring-1 ring-accent/30 hover:bg-amber-400/30"
               : "bg-surface-elevated text-text-muted hover:bg-surface-input"
       }`}
       title={
@@ -210,7 +226,13 @@ export default function NotificationToggle({ lat, lon, tz, timezone, skinType, a
             : t("enableHint")
       }
     >
-      {status === "on" ? (labelOn ?? `🔔 ${t("on")}`) : status === "denied" ? `🚫 ${t("blocked")}` : (labelOff ?? `🔕 ${t("notify")}`)}
+      <span className="inline-flex items-center gap-1.5">
+        {status === "on"
+          ? (labelOn ?? (<><BellRing className="h-4 w-4" aria-hidden />{t("on")}</>))
+          : status === "denied"
+            ? (<><BellOff className="h-4 w-4" aria-hidden />{t("blocked")}</>)
+            : (labelOff ?? (<><Bell className="h-4 w-4" aria-hidden />{t("notify")}</>))}
+      </span>
     </button>
   );
 }

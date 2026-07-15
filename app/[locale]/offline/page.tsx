@@ -1,42 +1,40 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+import { WifiOff, RefreshCw } from "lucide-react";
+
+/**
+ * Offline fallback (served by the service worker when a page fetch fails). It
+ * renders inside the normal app shell, so instead of the old full-screen navy
+ * takeover — which read as an accidental dark box between the light header and
+ * footer — it's a centred notice on the live phase background, in the system's
+ * dark "window" surface. Styling uses cached Tailwind tokens (the CSS is
+ * precached by the SW), so it holds up with no network.
+ */
 export default function OfflinePage() {
+  const t = useTranslations("offline");
+
   return (
-    <div style={{
-      minHeight: "100vh",
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      justifyContent: "center",
-      background: "linear-gradient(135deg, #0a0a1a 0%, #1a237e 100%)",
-      color: "#FFD54F",
-      fontFamily: "'DM Sans', sans-serif",
-      padding: "2rem",
-      textAlign: "center",
-    }}>
-      <div style={{ fontSize: "4rem", marginBottom: "1rem" }}>&#9788;</div>
-      <h1 style={{ fontSize: "1.5rem", fontWeight: 700, marginBottom: "0.5rem" }}>
-        Sin conexion
-      </h1>
-      <p style={{ color: "rgba(255,255,255,0.6)", maxWidth: "320px", lineHeight: 1.5 }}>
-        Vitamina D Explorer necesita conexion a internet para cargar datos meteorologicos y de ciudades.
-        Vuelve a intentarlo cuando tengas conexion.
-      </p>
-      <button
-        onClick={() => typeof window !== "undefined" && window.location.reload()}
-        style={{
-          marginTop: "1.5rem",
-          padding: "0.6rem 1.5rem",
-          background: "rgba(255,213,79,0.15)",
-          border: "1px solid rgba(255,213,79,0.3)",
-          borderRadius: "8px",
-          color: "#FFD54F",
-          fontSize: "0.9rem",
-          cursor: "pointer",
-        }}
-      >
-        Reintentar
-      </button>
-    </div>
+    <main className="mx-auto flex min-h-[60vh] max-w-[560px] items-center justify-center px-4 py-10">
+      <div className="w-full rounded-[2rem] border border-window-border bg-window px-6 py-10 text-center shadow-lg sm:px-10">
+        <span className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-white/10 text-on-window">
+          <WifiOff className="h-8 w-8" aria-hidden />
+        </span>
+        <h1 className="font-display text-title font-bold text-on-window">
+          {t("title")}
+        </h1>
+        <p className="mx-auto mt-3 max-w-sm text-body leading-relaxed text-on-window-faint">
+          {t("description")}
+        </p>
+        <button
+          type="button"
+          onClick={() => typeof window !== "undefined" && window.location.reload()}
+          className="mt-7 inline-flex min-h-[48px] items-center justify-center gap-2 rounded-xl bg-white/12 px-7 text-body font-semibold text-on-window transition-colors hover:bg-white/20"
+        >
+          <RefreshCw className="h-4 w-4" aria-hidden />
+          {t("retry")}
+        </button>
+      </div>
+    </main>
   );
 }

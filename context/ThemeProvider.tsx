@@ -1,14 +1,16 @@
 "use client";
-
 import { createContext, useContext, useEffect, useState, useCallback } from "react";
+import type { SolarPhase } from "@/lib/solar-phase";
 
-type Theme = "light" | "dark" | "system";
+type Theme = "auto" | "light" | "dark";
 
 interface ThemeContextValue {
   theme: Theme;
   resolved: "light" | "dark";
   setTheme: (t: Theme) => void;
-  toggle: () => void;
+  cycle: () => void;
+  autoPhase: SolarPhase | null;
+  setAutoPhase: (p: SolarPhase) => void;
 }
 
 const ThemeContext = createContext<ThemeContextValue | null>(null);
@@ -19,55 +21,43 @@ export function useTheme(): ThemeContextValue {
   return ctx;
 }
 
-function getSystemTheme(): "light" | "dark" {
-  if (typeof window === "undefined") return "dark";
-  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-}
-
-function getStoredTheme(): Theme {
-  if (typeof window === "undefined") return "system";
-  return (localStorage.getItem("vitamind:theme") as Theme) || "system";
+function getStored(): Theme {
+  if (typeof window === "undefined") return "auto";
+  const v = localStorage.getItem("vitamind:theme");
+  return v === "light" || v === "dark" ? v : "auto";
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setThemeState] = useState<Theme>(() => getStoredTheme());
-  const [resolved, setResolved] = useState<"light" | "dark">(() => {
-    const stored = getStoredTheme();
-    return stored === "system" ? getSystemTheme() : stored;
-  });
+  // Start from "auto" on both server and first client render so hydration
+  // matches; the stored preference is applied after mount (below).
+  const [theme, setThemeState] = useState<Theme>("auto");
+  const [autoPhase, setAutoPhase] = useState<SolarPhase | null>(null);
 
-  const applyTheme = useCallback((t: Theme) => {
-    const r = t === "system" ? getSystemTheme() : t;
-    setResolved(r);
-    document.documentElement.classList.toggle("dark", r === "dark");
+  useEffect(() => {
+    const stored = getStored();
+    if (stored !== "auto") setThemeState(stored);
   }, []);
+
+  const resolved: "light" | "dark" =
+    theme === "light" ? "light"
+    : theme === "dark" ? "dark"
+    : autoPhase === "night" ? "dark" : "light";
 
   const setTheme = useCallback((t: Theme) => {
     setThemeState(t);
     localStorage.setItem("vitamind:theme", t);
-    applyTheme(t);
-  }, [applyTheme]);
+  }, []);
 
-  const toggle = useCallback(() => {
-    setTheme(resolved === "dark" ? "light" : "dark");
-  }, [resolved, setTheme]);
+  const cycle = useCallback(() => {
+    setTheme(theme === "auto" ? "light" : theme === "light" ? "dark" : "auto");
+  }, [theme, setTheme]);
 
-  // Apply resolved theme to <html> on mount (DOM mutation, not setState)
   useEffect(() => {
     document.documentElement.classList.toggle("dark", resolved === "dark");
   }, [resolved]);
 
-  // Listen for system theme changes
-  useEffect(() => {
-    if (theme !== "system") return;
-    const mq = window.matchMedia("(prefers-color-scheme: dark)");
-    const handler = () => applyTheme("system");
-    mq.addEventListener("change", handler);
-    return () => mq.removeEventListener("change", handler);
-  }, [theme, applyTheme]);
-
   return (
-    <ThemeContext.Provider value={{ theme, resolved, setTheme, toggle }}>
+    <ThemeContext.Provider value={{ theme, resolved, setTheme, cycle, autoPhase, setAutoPhase }}>
       {children}
     </ThemeContext.Provider>
   );

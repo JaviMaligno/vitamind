@@ -7,13 +7,17 @@ export default function CityYearStrip({
   hoursByDay,
   monthLabels,
   caption,
+  legend,
+  height = 48,
 }: {
   hoursByDay: number[];
   monthLabels: string[];
   caption: string;
+  legend?: { low: string; high: string };
+  /** SVG height in px — same data/ramp, just a taller strip for a bigger treatment. */
+  height?: number;
 }) {
   const width = 365;
-  const height = 48;
 
   return (
     <figure style={{ margin: 0 }}>
@@ -32,19 +36,27 @@ export default function CityYearStrip({
         })}
       </svg>
       <div
+        className="text-on-window-faint"
         style={{
           display: "grid",
           gridTemplateColumns: `repeat(${monthLabels.length}, 1fr)`,
-          fontSize: 10,
-          opacity: 0.7,
+          fontSize: 12,
           marginTop: 4,
         }}
       >
-        {monthLabels.map((m) => (
-          <span key={m}>{m}</span>
+        {monthLabels.map((m, i) => (
+          <span key={`${m}-${i}`}>{m}</span>
         ))}
       </div>
-      <figcaption style={{ fontSize: 11, opacity: 0.6, marginTop: 4 }}>{caption}</figcaption>
+      {legend && (
+        <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 6 }}>
+          <span style={{ fontSize: 12 }} className="text-on-window-faint">{legend.low}</span>
+          <span style={{ flex: 1, height: 8, borderRadius: 99,
+            background: "linear-gradient(90deg, hsl(45,80%,15%), hsl(20,100%,65%))" }} />
+          <span style={{ fontSize: 12 }} className="text-on-window-faint">{legend.high}</span>
+        </div>
+      )}
+      <figcaption className="text-on-window-faint" style={{ fontSize: 12, marginTop: 4 }}>{caption}</figcaption>
     </figure>
   );
 }

@@ -6,15 +6,12 @@ import type { WeatherHour } from "@/lib/types";
 
 export interface ForecastDay {
   date: string;
-  dayName: string;
   peakUVI: number;
   avgCloud: number;
   windowStart: number;
   windowEnd: number;
   hours: WeatherHour[];
 }
-
-const DAY_NAMES_EN = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 const STALE_THRESHOLD = 30 * 60_000; // Re-fetch if data older than 30 minutes
 
@@ -28,7 +25,6 @@ function parseForecast(data: { hours: WeatherHour[] }): ForecastDay[] {
 
   const days: ForecastDay[] = [];
   for (const [dateStr, hours] of byDate) {
-    const d = new Date(dateStr + "T12:00:00");
     let peakUVI = 0;
     let windowStart = -1;
     let windowEnd = -1;
@@ -46,7 +42,6 @@ function parseForecast(data: { hours: WeatherHour[] }): ForecastDay[] {
 
     days.push({
       date: dateStr,
-      dayName: DAY_NAMES_EN[d.getDay()],
       peakUVI: Math.round(peakUVI * 10) / 10,
       avgCloud: Math.round(cloudSum / hours.length),
       windowStart,

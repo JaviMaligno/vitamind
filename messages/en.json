@@ -35,9 +35,9 @@
     "gpsDeniedHint": "In Chrome: click the lock icon in the address bar > Permissions > Location > Allow. Then reload the page."
   },
   "tabs": {
-    "dailyCurve": "📈 Daily Curve",
-    "worldMap": "🌍 World Map",
-    "heatmap": "📊 Latitude × Year"
+    "dailyCurve": "Daily Curve",
+    "worldMap": "World Map",
+    "heatmap": "Latitude × Year"
   },
   "viz": {
     "dailyCurveTitle": "DAILY CURVE",
@@ -50,11 +50,14 @@
   },
   "config": {
     "title": "Settings",
+    "eyebrow": "Personalize your vitamin D",
+    "subtitle": "Your city, your skin, and when we notify you — all in one place.",
     "searchCity": "Search city",
     "favorites": "Favorites",
     "edit": "✎ Edit",
     "done": "✓ Done",
     "solarProfile": "Solar profile",
+    "favoritesEmpty": "You haven't saved any cities yet. Tap one below to add it to your favorites.",
     "date": "Date",
     "animate": "▶ Animate",
     "pause": "⏸",
@@ -157,7 +160,7 @@
     "savedAs": "Saved as",
     "lat": "Lat",
     "lon": "Lon",
-    "learnMore": "Learn more about vitamin D and the sun →"
+    "learnMore": "Learn more about vitamin D and the sun"
   },
   "search": {
     "placeholder": "Search any city in the world...",
@@ -221,7 +224,10 @@
     "swimsuit": "swimsuit",
     "loading": "Loading your data...",
     "week": "Week",
+    "popularCities": "Popular cities",
     "month": "Month",
+    "calPrev": "Previous",
+    "calNext": "Next",
     "confirmedCount": "{count} confirmed",
     "favorableSummary": "{count} of {total} days with favorable conditions",
     "forecastWindow": "Window",
@@ -263,9 +269,14 @@
     "exposureResetDefault": "Reset to profile default"
   },
   "learn": {
+    "eyebrow": "Vitamin D guide",
     "pageTitle": "Vitamin D & the Sun",
     "pageSubtitle": "Science-backed answers to common questions",
     "sourcesLabel": "Sources",
+    "searchPlaceholder": "Search the FAQ…",
+    "searchNoResults": "No questions match",
+    "searchClear": "Clear search",
+    "recommended": "Recommended",
     "block1": {
       "title": "The Sun and Vitamin D",
       "subtitle": "Why solar angle, UV index, and glass all matter",
@@ -273,83 +284,170 @@
         "q": "Why does only UVB produce vitamin D, not UVA?",
         "a": "Ultraviolet radiation splits into UVA (315–400 nm) and UVB (280–315 nm). Only UVB in the narrow band of 290–315 nm carries enough energy to isomerise 7-dehydrocholesterol in the skin into pre-vitamin D3. UVA rays are longer-wavelength and lower-energy — they penetrate deeper (causing tanning and skin aging) but cannot trigger the photochemical reaction that starts vitamin D synthesis. This is also why tanning beds that emit mostly UVA do not produce vitamin D.",
         "sources": [
-          { "label": "MacLaughlin JA, Anderson RR, Holick MF (1982) — Spectral character of sunlight modulates photosynthesis of previtamin D3 and its photoisomers in human skin. Science 216(4549):1001-1003", "url": "https://pubmed.ncbi.nlm.nih.gov/6281884/" },
-          { "label": "Young AR et al. (2021) — A revised action spectrum for vitamin D synthesis by suberythemal UV. PNAS 118(40):e2015867118", "url": "https://www.pnas.org/doi/10.1073/pnas.2015867118" },
-          { "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/" }
+          {
+            "label": "MacLaughlin JA, Anderson RR, Holick MF (1982) — Spectral character of sunlight modulates photosynthesis of previtamin D3 and its photoisomers in human skin. Science 216(4549):1001-1003",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/6281884/"
+          },
+          {
+            "label": "Young AR et al. (2021) — A revised action spectrum for vitamin D synthesis by suberythemal UV. PNAS 118(40):e2015867118",
+            "url": "https://www.pnas.org/doi/10.1073/pnas.2015867118"
+          },
+          {
+            "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108",
+            "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/"
+          }
         ]
       },
       "q2": {
         "q": "Why does solar angle matter? What happens in winter?",
         "a": "The angle of the sun above the horizon determines how much atmosphere UVB must travel through before reaching your skin. At low angles — early morning, late afternoon, or any time in winter above roughly 35° latitude — UVB is almost entirely absorbed by the ozone layer and never reaches the surface. The 'shadow rule' captures this well: if your shadow is longer than your height, UVB is too weak for vitamin D synthesis. In winter at northern latitudes, this condition persists all day for months. Below UVI 3, even prolonged exposure produces negligible amounts.",
         "sources": [
-          { "label": "Webb AR, Kline L, Holick MF (1988) — Influence of season and latitude on the cutaneous synthesis of vitamin D3: exposure to winter sunlight in Boston and Edmonton will not promote vitamin D3 synthesis in human skin. JCEM 67(2):373-378", "url": "https://pubmed.ncbi.nlm.nih.gov/2839537/" },
-          { "label": "Engelsen O (2010) — The Relationship between Ultraviolet Radiation Exposure and Vitamin D Status. Nutrients 2(5):482-495", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3257661/" },
-          { "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/" }
+          {
+            "label": "Webb AR, Kline L, Holick MF (1988) — Influence of season and latitude on the cutaneous synthesis of vitamin D3: exposure to winter sunlight in Boston and Edmonton will not promote vitamin D3 synthesis in human skin. JCEM 67(2):373-378",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/2839537/"
+          },
+          {
+            "label": "Engelsen O (2010) — The Relationship between Ultraviolet Radiation Exposure and Vitamin D Status. Nutrients 2(5):482-495",
+            "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3257661/"
+          },
+          {
+            "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108",
+            "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/"
+          }
         ]
       },
       "q3": {
         "q": "Why doesn't it work through glass?",
         "a": "Standard window glass and car windshields block nearly all UVB while transmitting most UVA and visible light. This means you can get a tan sitting by a sunny window — UVA passes through — but you cannot synthesise vitamin D. Only special quartz glass, used in some medical UV devices, transmits UVB. The practical implication: that warm winter sun through your office window feels good but contributes nothing to your vitamin D levels.",
         "sources": [
-          { "label": "Tuchinda C, Srivannaboon S, Lim HW (2006) — Photoprotection by window glass, automobile glass, and sunglasses. J Am Acad Dermatol 54(5):845-854", "url": "https://pubmed.ncbi.nlm.nih.gov/16635665/" },
-          { "label": "Almutawa F et al. (2013) — Current status of photoprotection by window glass, automobile glass, window films, and sunglasses. Photodermatol Photoimmunol Photomed 29(2):65-72", "url": "https://onlinelibrary.wiley.com/doi/10.1111/phpp.12022" },
-          { "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/" }
+          {
+            "label": "Tuchinda C, Srivannaboon S, Lim HW (2006) — Photoprotection by window glass, automobile glass, and sunglasses. J Am Acad Dermatol 54(5):845-854",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/16635665/"
+          },
+          {
+            "label": "Almutawa F et al. (2013) — Current status of photoprotection by window glass, automobile glass, window films, and sunglasses. Photodermatol Photoimmunol Photomed 29(2):65-72",
+            "url": "https://onlinelibrary.wiley.com/doi/10.1111/phpp.12022"
+          },
+          {
+            "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108",
+            "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/"
+          }
         ]
       },
       "q4": {
         "q": "What does the UV index mean, and why does the app use 3 as the minimum?",
         "a": "The UV Index (UVI) is an international standard that measures the erythemally-weighted UV intensity at ground level. It runs from 0 (none) to 11+ (extreme). The app uses UVI ≥ 3 as the synthesis threshold because below that level UVB intensity is too low for meaningful vitamin D production, regardless of how long you stay outside. This threshold is consistent with the research of Holick and colleagues, and corresponds roughly to the sun being more than 30–35° above the horizon.",
         "sources": [
-          { "label": "WHO/WMO/UNEP/ICNIRP (2002) — Global Solar UV Index: A Practical Guide. World Health Organization", "url": "https://www.who.int/publications/i/item/9241590076" },
-          { "label": "Engelsen O (2010) — The Relationship between Ultraviolet Radiation Exposure and Vitamin D Status. Nutrients 2(5):482-495", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3257661/" },
-          { "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/" }
+          {
+            "label": "WHO/WMO/UNEP/ICNIRP (2002) — Global Solar UV Index: A Practical Guide. World Health Organization",
+            "url": "https://www.who.int/publications/i/item/9241590076"
+          },
+          {
+            "label": "Engelsen O (2010) — The Relationship between Ultraviolet Radiation Exposure and Vitamin D Status. Nutrients 2(5):482-495",
+            "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3257661/"
+          },
+          {
+            "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108",
+            "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/"
+          }
         ]
       },
       "q5": {
         "q": "Do clouds cancel UVB?",
         "a": "Not completely. Heavy overcast reduces UVB by 70–90%; thin or broken cloud cover by around 20–50%. Paradoxically, certain broken-cloud formations scatter UV and can briefly push ground-level UVB above clear-sky values. The app uses real UV data from Open-Meteo when available, so the minutes shown already account for current cloud conditions — no manual adjustment needed.",
         "sources": [
-          { "label": "Calbó J, Pagès D, González J-A (2005) — Empirical studies of cloud effects on UV radiation: A review. Reviews of Geophysics 43:RG2002", "url": "https://agupubs.onlinelibrary.wiley.com/doi/full/10.1029/2004RG000155" },
-          { "label": "Mims FM III, Frederick JE (1994) — Cumulus clouds and UV-B. Nature 371:291", "url": "https://www.nature.com/articles/371291a0" },
-          { "label": "WHO/WMO/UNEP/ICNIRP (2002) — Global Solar UV Index: A Practical Guide. World Health Organization", "url": "https://www.who.int/publications/i/item/9241590076" }
+          {
+            "label": "Calbó J, Pagès D, González J-A (2005) — Empirical studies of cloud effects on UV radiation: A review. Reviews of Geophysics 43:RG2002",
+            "url": "https://agupubs.onlinelibrary.wiley.com/doi/full/10.1029/2004RG000155"
+          },
+          {
+            "label": "Mims FM III, Frederick JE (1994) — Cumulus clouds and UV-B. Nature 371:291",
+            "url": "https://www.nature.com/articles/371291a0"
+          },
+          {
+            "label": "WHO/WMO/UNEP/ICNIRP (2002) — Global Solar UV Index: A Practical Guide. World Health Organization",
+            "url": "https://www.who.int/publications/i/item/9241590076"
+          }
         ]
       },
       "q6": {
         "q": "Do I need direct sunlight on my skin?",
         "a": "Yes. Vitamin D synthesis requires direct UVB exposure on bare skin. Clothing blocks most UVB, even thin fabrics. In the shade — under a tree or awning — diffuse UVB is minimal and insufficient for meaningful synthesis. Sunscreen SPF 30+ reduces synthesis by approximately 95%; the practical recommendation is to go without for the first 10–20 minutes (depending on your skin type) and apply it afterwards if you stay in the sun. Important: for other benefits such as nitric oxide release, circadian rhythm regulation, and serotonin production, direct sun is NOT required — being outdoors on a bright day already helps. But for vitamin D, bare skin exposed to direct sunlight is necessary.",
         "sources": [
-          { "label": "Matsuoka LY, Ide L, Wortsman J, MacLaughlin JA, Holick MF (1987) — Sunscreens suppress cutaneous vitamin D3 synthesis. JCEM 64(6):1165-1168", "url": "https://pubmed.ncbi.nlm.nih.gov/3033008/" },
-          { "label": "Matsuoka LY, Wortsman J, Hanifan N, Holick MF (1988) — Chronic sunscreen use decreases circulating concentrations of 25-OH-D. Arch Dermatol 124(12):1802-1804", "url": "https://pubmed.ncbi.nlm.nih.gov/3190255/" },
-          { "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/" }
+          {
+            "label": "Matsuoka LY, Ide L, Wortsman J, MacLaughlin JA, Holick MF (1987) — Sunscreens suppress cutaneous vitamin D3 synthesis. JCEM 64(6):1165-1168",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/3033008/"
+          },
+          {
+            "label": "Matsuoka LY, Wortsman J, Hanifan N, Holick MF (1988) — Chronic sunscreen use decreases circulating concentrations of 25-OH-D. Arch Dermatol 124(12):1802-1804",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/3190255/"
+          },
+          {
+            "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108",
+            "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/"
+          }
         ]
       },
       "q7": {
         "q": "Does body hair block UVB and reduce vitamin D synthesis?",
         "a": "Yes, but modestly. Body hair acts as a physical barrier to UVB radiation. Research by Galvez et al. (2015) quantified a 'Hair UV Protection Factor': sparse, fine body hair provides the equivalent of roughly SPF 1–3, while very dense, dark terminal hair can reach SPF 2–4+. A Monte Carlo simulation by Huang et al. (2020) showed that shaving the limbs increases UV transmission to follicular stem cells from roughly 5% to 20%, indicating significant attenuation by body hair — though this is measured at depth and does not translate directly into an equivalent UVB reduction at the skin surface. However, no clinical study has directly measured the impact of body hair on serum 25(OH)D levels. Major scientific reviews of vitamin D photosynthesis determinants — including Neville et al. (2021) — do not list body hair as a significant factor. In practice, the most heavily haired areas (chest, back) are usually covered by clothing anyway, and the effect on commonly exposed areas like forearms and lower legs is small (SPF 1–2 range). The app does not include a body hair adjustment because the effect is minor compared to skin type, UV index, body area exposed, and age — and is already partially captured by the body area parameter.",
         "sources": [
-          { "label": "Gálvez ÓD et al. (2015) — Human Hair as a Natural Sun Protection Agent: A Quantitative Study. Photochem Photobiol 91(4):966-970", "url": "https://pubmed.ncbi.nlm.nih.gov/25682789/" },
-          { "label": "Huang X, Protheroe MD, Al-Jumaily AM, Paul SP, Chalmers AN (2020) — Effect of hair removal on solar UV transmission into skin and implications for melanoma skin cancer development. J Opt Soc Am A 37(5):807-812", "url": "https://pubmed.ncbi.nlm.nih.gov/32400714/" },
-          { "label": "Neville JJ et al. (2021) — Physical Determinants of Vitamin D Photosynthesis: A Review. JBMR Plus 5(1):e10460", "url": "https://academic.oup.com/jbmrplus/article/5/1/e10460/7486276" }
+          {
+            "label": "Gálvez ÓD et al. (2015) — Human Hair as a Natural Sun Protection Agent: A Quantitative Study. Photochem Photobiol 91(4):966-970",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/25682789/"
+          },
+          {
+            "label": "Huang X, Protheroe MD, Al-Jumaily AM, Paul SP, Chalmers AN (2020) — Effect of hair removal on solar UV transmission into skin and implications for melanoma skin cancer development. J Opt Soc Am A 37(5):807-812",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/32400714/"
+          },
+          {
+            "label": "Neville JJ et al. (2021) — Physical Determinants of Vitamin D Photosynthesis: A Review. JBMR Plus 5(1):e10460",
+            "url": "https://academic.oup.com/jbmrplus/article/5/1/e10460/7486276"
+          }
         ]
       },
       "q8": {
         "q": "Is 10 minutes of sun in one go the same as 10 × 1 minute?",
         "a": "For vitamin D synthesis, in practice yes — as long as the UV index is similar in each segment. The skin integrates the total UVB dose following the Bunsen–Roscoe reciprocity law: the photoreaction depends on the product of intensity × time, not on how the time is split. In vivo studies confirm that equivalent rises in vitamin D3 are obtained with high irradiances over short periods or low irradiances over long periods. Three important caveats. First, the per-session ceiling: previtamin D3 reaches its cutaneous maximum at around one third of the Minimal Erythemal Dose (MED), and at 1 MED synthesis halts because UVB converts previtamin D3 into inert compounds (lumisterol and tachysterol). If a single long session exceeds that ceiling, extra minutes add no vitamin D, only burn risk — whereas ten 1-minute sessions never approach saturation. Second, the minimum UVI threshold: a measurable rise in serum 25-OH-D requires about 18–20 mJ/cm² of UVB, roughly UVI ≥ 3, so below that level no amount of accumulated minutes produces meaningful vitamin D. Third, thermal kinetics are slow: the conversion of previtamin D3 to vitamin D3 has a half-life of ~2.5 h at skin temperature and completes in ~8 h, so the vitamin D you generate during the day continues forming after exposure ends. Practical takeaway: repeated suberythemal exposures produce the same vitamin D with less DNA damage than a single long session — which is exactly the pattern medical guidelines (Holick 2007; Neville et al. review, JBMR Plus 2021) recommend.",
         "sources": [
-          { "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/" },
-          { "label": "Neville JJ et al. (2021) — Physical Determinants of Vitamin D Photosynthesis: A Review. JBMR Plus 5(1):e10460", "url": "https://academic.oup.com/jbmrplus/article/5/1/e10460/7486276" },
-          { "label": "Young AR et al. (2021) — A revised action spectrum for vitamin D synthesis by suberythemal UV. PNAS 118(40):e2015867118", "url": "https://www.pnas.org/doi/10.1073/pnas.2015867118" },
-          { "label": "Schindl A et al. (2022) — Bunsen-Roscoe reciprocity: Is it still valid? Indian J Ophthalmol", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9672781/" }
+          {
+            "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108",
+            "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/"
+          },
+          {
+            "label": "Neville JJ et al. (2021) — Physical Determinants of Vitamin D Photosynthesis: A Review. JBMR Plus 5(1):e10460",
+            "url": "https://academic.oup.com/jbmrplus/article/5/1/e10460/7486276"
+          },
+          {
+            "label": "Young AR et al. (2021) — A revised action spectrum for vitamin D synthesis by suberythemal UV. PNAS 118(40):e2015867118",
+            "url": "https://www.pnas.org/doi/10.1073/pnas.2015867118"
+          },
+          {
+            "label": "Schindl A et al. (2022) — Bunsen-Roscoe reciprocity: Is it still valid? Indian J Ophthalmol",
+            "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9672781/"
+          }
         ]
       },
       "q9": {
         "q": "Is it better to expose a little skin for a long time, or a lot of skin for a short time?",
         "a": "For the same amount of vitamin D, exposing more skin for less time is almost always better — more efficient and less harmful. The reason is that vitamin D production per patch of skin saturates: previtamin D3 photodegrades to inert lumisterol and tachysterol, so each area of skin has a ceiling no matter how long you stay out. That ceiling scales with exposed area, not with how tanned you are — roughly ~19,000 IU for the whole body at 1 MED, so ~1,900 IU for 10% of the body (face + hands) versus ~7,700 IU for 40% (swimsuit). With very little skin exposed you may be physically unable to reach a 2,000 IU target in a single session, whereas with more skin you get there in a few sub-erythemal minutes. The health argument follows the same logic: vitamin D per minute on an already-dosed patch falls (saturation), but DNA/erythema damage per minute stays roughly constant, so the vitamin-D-to-damage ratio is best at low per-patch doses. Sunburn depends on the local dose versus your Minimal Erythemal Dose (MED), independent of area — concentrating a dose on a small patch pushes it toward or past 1 MED (a burn), while spreading the same total over more skin keeps every patch well below its threshold (no burn). That is exactly why guidelines recommend ~¼–½ MED over a large body area, a few times a week. Two extras favour more skin: exposed skin releases nitric oxide under UVA that lowers blood pressure, and this scales with area, not with vitamin D; and concentrating exposure on one patch tans it, raising its MED and making it progressively less efficient over repeated sessions. The only case for 'little skin, long time' is practical — when clothing or context won't let you uncover more — and even then you'll often fail to reach the target in one go.",
         "sources": [
-          { "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/" },
-          { "label": "Neville JJ et al. (2021) — Physical Determinants of Vitamin D Photosynthesis: A Review. JBMR Plus 5(1):e10460", "url": "https://academic.oup.com/jbmrplus/article/5/1/e10460/7486276" },
-          { "label": "Liu D et al. (2014) — UVA irradiation of human skin vasodilates arterial vasculature and lowers blood pressure. J Invest Dermatol 134(7):1839-1846", "url": "https://pubmed.ncbi.nlm.nih.gov/24445737/" },
-          { "label": "Young AR et al. (2021) — A revised action spectrum for vitamin D synthesis by suberythemal UV. PNAS 118(40):e2015867118", "url": "https://www.pnas.org/doi/10.1073/pnas.2015867118" }
+          {
+            "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108",
+            "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/"
+          },
+          {
+            "label": "Neville JJ et al. (2021) — Physical Determinants of Vitamin D Photosynthesis: A Review. JBMR Plus 5(1):e10460",
+            "url": "https://academic.oup.com/jbmrplus/article/5/1/e10460/7486276"
+          },
+          {
+            "label": "Liu D et al. (2014) — UVA irradiation of human skin vasodilates arterial vasculature and lowers blood pressure. J Invest Dermatol 134(7):1839-1846",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/24445737/"
+          },
+          {
+            "label": "Young AR et al. (2021) — A revised action spectrum for vitamin D synthesis by suberythemal UV. PNAS 118(40):e2015867118",
+            "url": "https://www.pnas.org/doi/10.1073/pnas.2015867118"
+          }
         ]
       }
     },
@@ -360,45 +458,90 @@
         "q": "How much vitamin D can I produce in the sun compared to a pill?",
         "a": "A full-body exposure to 1 MED (Minimal Erythemal Dose — just before any reddening) produces around 10,000–25,000 IU of vitamin D. A standard supplement capsule contains 400–2,000 IU. A 15–20 minute midday session in summer with arms and legs exposed can easily exceed a week of typical supplementation. However, the sun has a built-in safety mechanism (photodegradation) that prevents overdose — a protection oral supplements lack.",
         "sources": [
-          { "label": "Holick MF (1995) — Environmental factors that influence the cutaneous production of vitamin D. Am J Clin Nutr 61(3 Suppl):638S-645S", "url": "https://pubmed.ncbi.nlm.nih.gov/7879731/" },
-          { "label": "Holick MF (2007) — Vitamin D Deficiency. NEJM 357:266-281", "url": "https://www.nejm.org/doi/full/10.1056/NEJMra070553" },
-          { "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/" }
+          {
+            "label": "Holick MF (1995) — Environmental factors that influence the cutaneous production of vitamin D. Am J Clin Nutr 61(3 Suppl):638S-645S",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/7879731/"
+          },
+          {
+            "label": "Holick MF (2007) — Vitamin D Deficiency. NEJM 357:266-281",
+            "url": "https://www.nejm.org/doi/full/10.1056/NEJMra070553"
+          },
+          {
+            "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108",
+            "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/"
+          }
         ]
       },
       "q2": {
         "q": "Can I overdose from the sun?",
         "a": "No. Solar synthesis is self-limiting. Once pre-vitamin D3 accumulates in the skin, continued UVB converts it into inert compounds — lumisterol and tachysterol — rather than allowing further build-up. This photodegradation ceiling means your body never produces toxic levels from sun exposure, no matter how long you stay outside. This is why the IOM Tolerable Upper Intake Level of 4,000 IU/day applies specifically to oral supplementation, not to sunlight.",
         "sources": [
-          { "label": "Holick MF, MacLaughlin JA, Doppelt SH (1981) — Regulation of Cutaneous Previtamin D3 Photosynthesis in Man. Science 211(4482):590-593", "url": "https://pubmed.ncbi.nlm.nih.gov/6256855/" },
-          { "label": "Institute of Medicine (2011) — Dietary Reference Intakes for Calcium and Vitamin D. National Academies Press", "url": "https://www.ncbi.nlm.nih.gov/books/NBK56070/" },
-          { "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/" }
+          {
+            "label": "Holick MF, MacLaughlin JA, Doppelt SH (1981) — Regulation of Cutaneous Previtamin D3 Photosynthesis in Man. Science 211(4482):590-593",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/6256855/"
+          },
+          {
+            "label": "Institute of Medicine (2011) — Dietary Reference Intakes for Calcium and Vitamin D. National Academies Press",
+            "url": "https://www.ncbi.nlm.nih.gov/books/NBK56070/"
+          },
+          {
+            "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108",
+            "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/"
+          }
         ]
       },
       "q3": {
         "q": "Is the sun better than supplementing?",
         "a": "Both have real advantages. Sun-produced D3 is bound to skin proteins and released slowly into the bloodstream, giving it a longer half-life than oral D3. Sun exposure also provides UVA-driven nitric oxide release, circadian light cues, and other benefits no pill can replicate. Oral D3, on the other hand, is controllable, dose-precise, and available year-round. The practical answer: use the sun when conditions allow, supplement when they don't — they complement each other.",
         "sources": [
-          { "label": "Haddad JG, Matsuoka LY, Hollis BW, Hu YZ, Wortsman J (1993) — Human plasma transport of vitamin D after its endogenous synthesis. J Clin Invest 91(6):2552-2555", "url": "https://pubmed.ncbi.nlm.nih.gov/8390483/" },
-          { "label": "Liu D, Fernandez BO, Hamilton A, Lang NN, Gallagher JMC, Newby DE, Feelisch M, Weller RB (2014) — UVA Irradiation of Human Skin Vasodilates Arterial Vasculature and Lowers Blood Pressure Independently of Nitric Oxide Synthase. J Invest Dermatol 134(7):1839-1846", "url": "https://pubmed.ncbi.nlm.nih.gov/24445737/" },
-          { "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/" }
+          {
+            "label": "Haddad JG, Matsuoka LY, Hollis BW, Hu YZ, Wortsman J (1993) — Human plasma transport of vitamin D after its endogenous synthesis. J Clin Invest 91(6):2552-2555",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/8390483/"
+          },
+          {
+            "label": "Liu D, Fernandez BO, Hamilton A, Lang NN, Gallagher JMC, Newby DE, Feelisch M, Weller RB (2014) — UVA Irradiation of Human Skin Vasodilates Arterial Vasculature and Lowers Blood Pressure Independently of Nitric Oxide Synthase. J Invest Dermatol 134(7):1839-1846",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/24445737/"
+          },
+          {
+            "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108",
+            "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/"
+          }
         ]
       },
       "q4": {
         "q": "D3 or D2 in supplements?",
         "a": "D3 (cholecalciferol) is significantly more effective than D2 (ergocalciferol) at raising and maintaining 25-OH-D blood levels — research suggests D3 is roughly 2–3× more potent per IU. D3 is also the form your skin produces. D2, derived from plant and fungal sources, is used in vegan supplements but underperforms D3 at equivalent doses. Look for 'cholecalciferol' on the label; vegan D3 from lichen is also available.",
         "sources": [
-          { "label": "Tripkovic L et al. (2012) — Comparison of vitamin D2 and vitamin D3 supplementation in raising serum 25-hydroxyvitamin D status: a systematic review and meta-analysis. Am J Clin Nutr 95(6):1357-1364", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3349454/" },
-          { "label": "Heaney RP, Recker RR, Grote J, Horst RL, Armas LAG (2011) — Vitamin D3 Is More Potent Than Vitamin D2 in Humans. JCEM 96(3):E447-E452", "url": "https://pubmed.ncbi.nlm.nih.gov/21177785/" },
-          { "label": "Holick MF (2007) — Vitamin D Deficiency. NEJM 357:266-281", "url": "https://www.nejm.org/doi/full/10.1056/NEJMra070553" }
+          {
+            "label": "Tripkovic L et al. (2012) — Comparison of vitamin D2 and vitamin D3 supplementation in raising serum 25-hydroxyvitamin D status: a systematic review and meta-analysis. Am J Clin Nutr 95(6):1357-1364",
+            "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3349454/"
+          },
+          {
+            "label": "Heaney RP, Recker RR, Grote J, Horst RL, Armas LAG (2011) — Vitamin D3 Is More Potent Than Vitamin D2 in Humans. JCEM 96(3):E447-E452",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/21177785/"
+          },
+          {
+            "label": "Holick MF (2007) — Vitamin D Deficiency. NEJM 357:266-281",
+            "url": "https://www.nejm.org/doi/full/10.1056/NEJMra070553"
+          }
         ]
       },
       "q5": {
         "q": "What blood levels of 25-OH-D are considered optimal?",
         "a": "Standard reference ranges for serum 25-hydroxyvitamin D: below 20 ng/mL (50 nmol/L) is deficient; 20–30 ng/mL is insufficient; 30–50 ng/mL is sufficient. The Endocrine Society considers 40–60 ng/mL optimal for non-skeletal benefits. Above 100 ng/mL (250 nmol/L) carries toxicity risk from supplementation. Most people in northern latitudes test below 20 ng/mL in winter without supplementation — a widespread but easily correctable deficiency.",
         "sources": [
-          { "label": "Holick MF et al. (2011) — Evaluation, Treatment, and Prevention of Vitamin D Deficiency: an Endocrine Society Clinical Practice Guideline. JCEM 96(7):1911-1930", "url": "https://pubmed.ncbi.nlm.nih.gov/21646368/" },
-          { "label": "Institute of Medicine (2011) — Dietary Reference Intakes for Calcium and Vitamin D. National Academies Press", "url": "https://www.ncbi.nlm.nih.gov/books/NBK56070/" },
-          { "label": "Holick MF (2007) — Vitamin D Deficiency. NEJM 357:266-281", "url": "https://www.nejm.org/doi/full/10.1056/NEJMra070553" }
+          {
+            "label": "Holick MF et al. (2011) — Evaluation, Treatment, and Prevention of Vitamin D Deficiency: an Endocrine Society Clinical Practice Guideline. JCEM 96(7):1911-1930",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/21646368/"
+          },
+          {
+            "label": "Institute of Medicine (2011) — Dietary Reference Intakes for Calcium and Vitamin D. National Academies Press",
+            "url": "https://www.ncbi.nlm.nih.gov/books/NBK56070/"
+          },
+          {
+            "label": "Holick MF (2007) — Vitamin D Deficiency. NEJM 357:266-281",
+            "url": "https://www.nejm.org/doi/full/10.1056/NEJMra070553"
+          }
         ]
       }
     },
@@ -409,54 +552,108 @@
         "q": "D3 or D2? How much to take?",
         "a": "Choose D3 (cholecalciferol) unless you're vegan, in which case lichen-derived vegan D3 is available. For most adults: 1,000–2,000 IU/day if you get regular sun; 2,000–4,000 IU/day if you have limited sun exposure. The Endocrine Society's upper intake limit is 4,000 IU/day for adults from supplements. Higher doses for correcting deficiency exist but should be guided by blood tests. Testing 25-OH-D before and after 3 months of supplementation is the best way to find your personal effective dose.",
         "sources": [
-          { "label": "Holick MF et al. (2011) — Evaluation, Treatment, and Prevention of Vitamin D Deficiency: an Endocrine Society Clinical Practice Guideline. JCEM 96(7):1911-1930", "url": "https://pubmed.ncbi.nlm.nih.gov/21646368/" },
-          { "label": "Institute of Medicine (2011) — Dietary Reference Intakes for Calcium and Vitamin D. National Academies Press", "url": "https://www.ncbi.nlm.nih.gov/books/NBK56070/" },
-          { "label": "Holick MF (2007) — Vitamin D Deficiency. NEJM 357:266-281", "url": "https://www.nejm.org/doi/full/10.1056/NEJMra070553" }
+          {
+            "label": "Holick MF et al. (2011) — Evaluation, Treatment, and Prevention of Vitamin D Deficiency: an Endocrine Society Clinical Practice Guideline. JCEM 96(7):1911-1930",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/21646368/"
+          },
+          {
+            "label": "Institute of Medicine (2011) — Dietary Reference Intakes for Calcium and Vitamin D. National Academies Press",
+            "url": "https://www.ncbi.nlm.nih.gov/books/NBK56070/"
+          },
+          {
+            "label": "Holick MF (2007) — Vitamin D Deficiency. NEJM 357:266-281",
+            "url": "https://www.nejm.org/doi/full/10.1056/NEJMra070553"
+          }
         ]
       },
       "q2": {
         "q": "What role does K2 play alongside D3?",
         "a": "Vitamin D3 increases calcium absorption from the gut. Vitamin K2 — particularly the MK-7 form — activates two proteins: osteocalcin, which helps fix calcium into bone, and matrix Gla protein, involved in regulating calcium in soft tissues. In observational studies, higher menaquinone (K2) intake has been associated with less arterial calcification, though intervention evidence is still limited. Natural K2 sources include natto, aged hard cheeses, and egg yolks. This is why many supplement protocols pair D3 with 100–200 mcg of MK-7, especially at higher D3 doses.",
         "sources": [
-          { "label": "Geleijnse JM et al. (2004) — Dietary intake of menaquinone is associated with a reduced risk of coronary heart disease: the Rotterdam Study. J Nutr 134(11):3100-3105", "url": "https://pubmed.ncbi.nlm.nih.gov/15514282/" },
-          { "label": "Knapen MH et al. (2013) — Three-year low-dose menaquinone-7 supplementation helps decrease bone loss in healthy postmenopausal women. Osteoporos Int 24(9):2499-2507", "url": "https://pubmed.ncbi.nlm.nih.gov/23525894/" },
-          { "label": "van Ballegooijen AJ et al. (2017) — The Synergistic Interplay between Vitamins D and K for Bone and Cardiovascular Health: A Narrative Review. Int J Endocrinol 2017:7454376", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5613455/" }
+          {
+            "label": "Geleijnse JM et al. (2004) — Dietary intake of menaquinone is associated with a reduced risk of coronary heart disease: the Rotterdam Study. J Nutr 134(11):3100-3105",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/15514282/"
+          },
+          {
+            "label": "Knapen MH et al. (2013) — Three-year low-dose menaquinone-7 supplementation helps decrease bone loss in healthy postmenopausal women. Osteoporos Int 24(9):2499-2507",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/23525894/"
+          },
+          {
+            "label": "van Ballegooijen AJ et al. (2017) — The Synergistic Interplay between Vitamins D and K for Bone and Cardiovascular Health: A Narrative Review. Int J Endocrinol 2017:7454376",
+            "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5613455/"
+          }
         ]
       },
       "q3": {
         "q": "What role does magnesium play?",
         "a": "Magnesium is a cofactor for both enzymes that convert vitamin D to its active forms (25-OH-D and then 1,25-OH-D). Without sufficient magnesium, supplemental D3 may not convert properly, and supplementation can push magnesium levels lower, worsening any existing deficiency. An estimated 50% of Western populations are magnesium-insufficient. Good dietary sources: pumpkin seeds, dark chocolate, spinach, almonds, avocado. Magnesium glycinate or malate supplements are well tolerated if dietary intake is low.",
         "sources": [
-          { "label": "Uwitonze AM, Razzaque MS (2018) — Role of Magnesium in Vitamin D Activation and Function. J Am Osteopath Assoc 118(3):181-189", "url": "https://pubmed.ncbi.nlm.nih.gov/29480918/" },
-          { "label": "Rosanoff A, Weaver CM, Rude RK (2012) — Suboptimal magnesium status in the United States: are the health consequences underestimated? Nutr Rev 70(3):153-164", "url": "https://pubmed.ncbi.nlm.nih.gov/22364157/" },
-          { "label": "NIH Office of Dietary Supplements — Magnesium: Health Professional Fact Sheet", "url": "https://ods.od.nih.gov/factsheets/Magnesium-HealthProfessional/" }
+          {
+            "label": "Uwitonze AM, Razzaque MS (2018) — Role of Magnesium in Vitamin D Activation and Function. J Am Osteopath Assoc 118(3):181-189",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/29480918/"
+          },
+          {
+            "label": "Rosanoff A, Weaver CM, Rude RK (2012) — Suboptimal magnesium status in the United States: are the health consequences underestimated? Nutr Rev 70(3):153-164",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/22364157/"
+          },
+          {
+            "label": "NIH Office of Dietary Supplements — Magnesium: Health Professional Fact Sheet",
+            "url": "https://ods.od.nih.gov/factsheets/Magnesium-HealthProfessional/"
+          }
         ]
       },
       "q4": {
         "q": "Why must vitamin D be taken with fat?",
         "a": "Vitamin D is fat-soluble. It requires dietary fat in the gut to form micelles — tiny fat-protein packages that carry the vitamin through the intestinal wall into the bloodstream. Studies show that taking D3 with a fat-containing meal increases absorption by 30–50% compared to taking it fasted. The practical rule: take it with your fattiest meal of the day. A tablespoon of olive oil, a handful of nuts, or a meal with salmon all provide sufficient fat. This applies equally to vitamins A, E, and K2.",
         "sources": [
-          { "label": "Mulligan GB, Licata A (2010) — Taking vitamin D with the largest meal improves absorption and results in higher serum levels of 25-hydroxyvitamin D. J Bone Miner Res 25(4):928-930", "url": "https://onlinelibrary.wiley.com/doi/10.1002/jbmr.67" },
-          { "label": "Dawson-Hughes B et al. (2015) — Dietary Fat Increases Vitamin D-3 Absorption. J Acad Nutr Diet 115(2):225-230", "url": "https://pubmed.ncbi.nlm.nih.gov/25441954/" },
-          { "label": "Holick MF (2007) — Vitamin D Deficiency. NEJM 357:266-281", "url": "https://www.nejm.org/doi/full/10.1056/NEJMra070553" }
+          {
+            "label": "Mulligan GB, Licata A (2010) — Taking vitamin D with the largest meal improves absorption and results in higher serum levels of 25-hydroxyvitamin D. J Bone Miner Res 25(4):928-930",
+            "url": "https://onlinelibrary.wiley.com/doi/10.1002/jbmr.67"
+          },
+          {
+            "label": "Dawson-Hughes B et al. (2015) — Dietary Fat Increases Vitamin D-3 Absorption. J Acad Nutr Diet 115(2):225-230",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/25441954/"
+          },
+          {
+            "label": "Holick MF (2007) — Vitamin D Deficiency. NEJM 357:266-281",
+            "url": "https://www.nejm.org/doi/full/10.1056/NEJMra070553"
+          }
         ]
       },
       "q5": {
         "q": "What foods naturally contain vitamin D?",
         "a": "Very few foods contain meaningful amounts: fatty fish (wild salmon 600–1,000 IU per 100 g; mackerel, sardines, herring), cod liver oil (~400 IU per teaspoon, also rich in vitamin A), egg yolks (~40 IU each, more if the hen had UV exposure), UV-exposed mushrooms (can provide 400+ IU per 100 g when dried gills-up in sunlight), and beef liver (small amounts). Fortified foods (milk, cereals, plant milks) add modest amounts depending on country. Diet alone realistically cannot reach the 1,000–4,000 IU range without supplementation.",
         "sources": [
-          { "label": "Lu Z et al. (2007) — An evaluation of the vitamin D3 content in fish: Is the vitamin D content adequate to satisfy the dietary requirement for vitamin D? J Steroid Biochem Mol Biol 103(3-5):642-644", "url": "https://pubmed.ncbi.nlm.nih.gov/17267210/" },
-          { "label": "Cardwell G et al. (2018) — A Review of Mushrooms as a Potential Source of Dietary Vitamin D. Nutrients 10(10):1498", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6213178/" },
-          { "label": "NIH Office of Dietary Supplements — Vitamin D: Health Professional Fact Sheet", "url": "https://ods.od.nih.gov/factsheets/VitaminD-HealthProfessional/" }
+          {
+            "label": "Lu Z et al. (2007) — An evaluation of the vitamin D3 content in fish: Is the vitamin D content adequate to satisfy the dietary requirement for vitamin D? J Steroid Biochem Mol Biol 103(3-5):642-644",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/17267210/"
+          },
+          {
+            "label": "Cardwell G et al. (2018) — A Review of Mushrooms as a Potential Source of Dietary Vitamin D. Nutrients 10(10):1498",
+            "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6213178/"
+          },
+          {
+            "label": "NIH Office of Dietary Supplements — Vitamin D: Health Professional Fact Sheet",
+            "url": "https://ods.od.nih.gov/factsheets/VitaminD-HealthProfessional/"
+          }
         ]
       },
       "q6": {
         "q": "What is the best time of day to take vitamin D?",
         "a": "With your largest meal of the day — primarily for the fat absorption benefit. Morning or midday (with breakfast or lunch) is generally preferred over evening because vitamin D may mildly increase alertness and some evidence suggests evening supplementation could slightly interfere with melatonin production. That said, consistency matters far more than timing: take it at whatever point in your day you will reliably remember.",
         "sources": [
-          { "label": "Mulligan GB, Licata A (2010) — Taking vitamin D with the largest meal improves absorption and results in higher serum levels of 25-hydroxyvitamin D. J Bone Miner Res 25(4):928-930", "url": "https://onlinelibrary.wiley.com/doi/10.1002/jbmr.67" },
-          { "label": "Abboud M (2022) — Vitamin D Supplementation and Sleep: A Systematic Review and Meta-Analysis of Intervention Studies. Nutrients 14(5):1076", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8912284/" },
-          { "label": "Holick MF (2007) — Vitamin D Deficiency. NEJM 357:266-281", "url": "https://www.nejm.org/doi/full/10.1056/NEJMra070553" }
+          {
+            "label": "Mulligan GB, Licata A (2010) — Taking vitamin D with the largest meal improves absorption and results in higher serum levels of 25-hydroxyvitamin D. J Bone Miner Res 25(4):928-930",
+            "url": "https://onlinelibrary.wiley.com/doi/10.1002/jbmr.67"
+          },
+          {
+            "label": "Abboud M (2022) — Vitamin D Supplementation and Sleep: A Systematic Review and Meta-Analysis of Intervention Studies. Nutrients 14(5):1076",
+            "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8912284/"
+          },
+          {
+            "label": "Holick MF (2007) — Vitamin D Deficiency. NEJM 357:266-281",
+            "url": "https://www.nejm.org/doi/full/10.1056/NEJMra070553"
+          }
         ]
       }
     },
@@ -467,45 +664,90 @@
         "q": "What is nitric oxide and what does it have to do with the sun?",
         "a": "Nitric oxide (NO) is a signalling molecule that dilates blood vessels, lowers blood pressure, and improves circulation. The skin stores large quantities of nitrite and nitrosothiol compounds that release NO into the bloodstream within minutes of UVA exposure. This is entirely independent of vitamin D synthesis — it happens through glass, in partial shade, and even in winter when UVB is absent. Research by Richard Weller's group at the University of Edinburgh suggests that UVA-driven NO release may explain the well-documented association between sun exposure and reduced cardiovascular mortality, beyond what vitamin D alone can account for.",
         "sources": [
-          { "label": "Liu D, Fernandez BO, Hamilton A, Lang NN, Gallagher JMC, Newby DE, Feelisch M, Weller RB (2014) — UVA Irradiation of Human Skin Vasodilates Arterial Vasculature and Lowers Blood Pressure Independently of Nitric Oxide Synthase. J Invest Dermatol 134(7):1839-1846", "url": "https://pubmed.ncbi.nlm.nih.gov/24445737/" },
-          { "label": "Lindqvist PG et al. (2016) — Avoidance of sun exposure as a risk factor for major causes of death: a competing risk analysis of the Melanoma in Southern Sweden cohort. J Intern Med 280(4):375-387", "url": "https://pubmed.ncbi.nlm.nih.gov/26992108/" },
-          { "label": "Weller RB (2016) — Sunlight Has Cardiovascular Benefits Independently of Vitamin D. Blood Purif 41(1-3):130-134", "url": "https://karger.com/bpu/article/41/1-3/130/328295/" }
+          {
+            "label": "Liu D, Fernandez BO, Hamilton A, Lang NN, Gallagher JMC, Newby DE, Feelisch M, Weller RB (2014) — UVA Irradiation of Human Skin Vasodilates Arterial Vasculature and Lowers Blood Pressure Independently of Nitric Oxide Synthase. J Invest Dermatol 134(7):1839-1846",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/24445737/"
+          },
+          {
+            "label": "Lindqvist PG et al. (2016) — Avoidance of sun exposure as a risk factor for major causes of death: a competing risk analysis of the Melanoma in Southern Sweden cohort. J Intern Med 280(4):375-387",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/26992108/"
+          },
+          {
+            "label": "Weller RB (2016) — Sunlight Has Cardiovascular Benefits Independently of Vitamin D. Blood Purif 41(1-3):130-134",
+            "url": "https://karger.com/bpu/article/41/1-3/130/328295/"
+          }
         ]
       },
       "q2": {
         "q": "How does sunlight affect circadian rhythms?",
         "a": "Light is the primary zeitgeber — 'time-giver' — for the human circadian clock. Morning sunlight rich in short-wavelength blue light (460–480 nm) signals the retinal ganglion cells, which in turn tell the suprachiasmatic nucleus (SCN) in the brain to suppress melatonin and trigger the cortisol awakening response. This anchors the 24-hour body clock. Insufficient morning light exposure delays sleep onset, disrupts hormone timing, and is associated with mood disorders and metabolic dysfunction. The ideal window is the first 30–60 minutes after waking, outdoors — even on overcast days, outdoor light is typically 10–50× brighter than indoor lighting.",
         "sources": [
-          { "label": "Berson DM, Dunn FA, Takao M (2002) — Phototransduction by retinal ganglion cells that set the circadian clock. Science 295(5557):1070-1073", "url": "https://pubmed.ncbi.nlm.nih.gov/11834835/" },
-          { "label": "Hattar S, Liao HW, Takao M, Berson DM, Yau KW (2002) — Melanopsin-containing retinal ganglion cells: architecture, projections, and intrinsic photosensitivity. Science 295(5557):1065-1070", "url": "https://pubmed.ncbi.nlm.nih.gov/11834834/" },
-          { "label": "Wright KP Jr et al. (2013) — Entrainment of the human circadian clock to the natural light-dark cycle. Curr Biol 23(16):1554-1558", "url": "https://pubmed.ncbi.nlm.nih.gov/23910656/" }
+          {
+            "label": "Berson DM, Dunn FA, Takao M (2002) — Phototransduction by retinal ganglion cells that set the circadian clock. Science 295(5557):1070-1073",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/11834835/"
+          },
+          {
+            "label": "Hattar S, Liao HW, Takao M, Berson DM, Yau KW (2002) — Melanopsin-containing retinal ganglion cells: architecture, projections, and intrinsic photosensitivity. Science 295(5557):1065-1070",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/11834834/"
+          },
+          {
+            "label": "Wright KP Jr et al. (2013) — Entrainment of the human circadian clock to the natural light-dark cycle. Curr Biol 23(16):1554-1558",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/23910656/"
+          }
         ]
       },
       "q3": {
         "q": "What is dawn light useful for if it doesn't produce vitamin D?",
         "a": "Dawn light has a completely different spectral profile from midday sun: it is rich in red and near-infrared wavelengths (600–1,000 nm), with little UVB and moderate blue light. This infrared light penetrates several centimetres into tissue and activates cytochrome c oxidase in mitochondria, improving ATP production and cellular energy. It also clears overnight melatonin more gently than high-intensity blue light, easing the transition to wakefulness. Red-light and near-infrared therapy devices (wavelengths 630–850 nm) replicate part of this spectrum for therapeutic use.",
         "sources": [
-          { "label": "Karu TI (2010) — Multiple roles of cytochrome c oxidase in mammalian cells under action of red and IR-A radiation. IUBMB Life 62(8):607-610", "url": "https://pubmed.ncbi.nlm.nih.gov/20681024/" },
-          { "label": "Hamblin MR (2017) — Mechanisms and Mitochondrial Redox Signaling in Photobiomodulation. Photochem Photobiol 94(2):199-212", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5844808/" },
-          { "label": "de Freitas LF, Hamblin MR (2016) — Proposed Mechanisms of Photobiomodulation or Low-Level Light Therapy. IEEE J Sel Top Quantum Electron 22(3):7000417", "url": "https://pubmed.ncbi.nlm.nih.gov/28070154/" }
+          {
+            "label": "Karu TI (2010) — Multiple roles of cytochrome c oxidase in mammalian cells under action of red and IR-A radiation. IUBMB Life 62(8):607-610",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/20681024/"
+          },
+          {
+            "label": "Hamblin MR (2017) — Mechanisms and Mitochondrial Redox Signaling in Photobiomodulation. Photochem Photobiol 94(2):199-212",
+            "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5844808/"
+          },
+          {
+            "label": "de Freitas LF, Hamblin MR (2016) — Proposed Mechanisms of Photobiomodulation or Low-Level Light Therapy. IEEE J Sel Top Quantum Electron 22(3):7000417",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/28070154/"
+          }
         ]
       },
       "q4": {
         "q": "Is there a relationship between sun and immunity beyond vitamin D?",
         "a": "Yes. UV exposure independently modulates immune function through mechanisms separate from vitamin D: it induces regulatory T cells and alters antigen-presenting cells in ways that suppress inflammatory responses. This is the basis for UV phototherapy used clinically in psoriasis, eczema, and vitiligo. Some researchers link this broader UV immunomodulation to the latitude gradient in autoimmune disease prevalence — multiple sclerosis, type 1 diabetes, and inflammatory bowel disease are all significantly more common at higher latitudes, a pattern only partially explained by vitamin D levels.",
         "sources": [
-          { "label": "Hart PH, Gorman S, Finlay-Jones JJ (2011) — Modulation of the immune system by UV radiation: more than just the effects of vitamin D? Nat Rev Immunol 11(9):584-596", "url": "https://www.nature.com/articles/nri3045" },
-          { "label": "Munger KL et al. (2006) — Serum 25-hydroxyvitamin D levels and risk of multiple sclerosis. JAMA 296(23):2832-2838", "url": "https://pubmed.ncbi.nlm.nih.gov/17179460/" },
-          { "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/" }
+          {
+            "label": "Hart PH, Gorman S, Finlay-Jones JJ (2011) — Modulation of the immune system by UV radiation: more than just the effects of vitamin D? Nat Rev Immunol 11(9):584-596",
+            "url": "https://www.nature.com/articles/nri3045"
+          },
+          {
+            "label": "Munger KL et al. (2006) — Serum 25-hydroxyvitamin D levels and risk of multiple sclerosis. JAMA 296(23):2832-2838",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/17179460/"
+          },
+          {
+            "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108",
+            "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/"
+          }
         ]
       },
       "q5": {
         "q": "Does sunlight affect mood? (serotonin and melatonin)",
         "a": "Strongly. Bright light stimulates serotonin synthesis via the raphe nuclei in the brainstem — this mechanism underpins light therapy as a first-line treatment for Seasonal Affective Disorder (SAD). Serotonin is also the precursor to melatonin: adequate daytime serotonin supports better melatonin production at night, improving sleep quality. Separately, high-lux outdoor light triggers dopamine release in the retina, which appears to slow myopia progression in children. Population studies consistently show associations between time outdoors, mood, and sleep quality that extend well beyond vitamin D status.",
         "sources": [
-          { "label": "Lambert GW, Reid C, Kaye DM, Jennings GL, Esler MD (2002) — Effect of sunlight and season on serotonin turnover in the brain. Lancet 360(9348):1840-1842", "url": "https://pubmed.ncbi.nlm.nih.gov/12480364/" },
-          { "label": "Golden RN et al. (2005) — The efficacy of light therapy in the treatment of mood disorders: a review and meta-analysis. Am J Psychiatry 162(4):656-662", "url": "https://pubmed.ncbi.nlm.nih.gov/15800134/" },
-          { "label": "Wu PC, Tsai CL, Wu HL, Yang YH, Kuo HK (2013) — Outdoor activity during class recess reduces myopia onset and progression in school children. Ophthalmology 120(5):1080-1085", "url": "https://pubmed.ncbi.nlm.nih.gov/23462271/" }
+          {
+            "label": "Lambert GW, Reid C, Kaye DM, Jennings GL, Esler MD (2002) — Effect of sunlight and season on serotonin turnover in the brain. Lancet 360(9348):1840-1842",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/12480364/"
+          },
+          {
+            "label": "Golden RN et al. (2005) — The efficacy of light therapy in the treatment of mood disorders: a review and meta-analysis. Am J Psychiatry 162(4):656-662",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/15800134/"
+          },
+          {
+            "label": "Wu PC, Tsai CL, Wu HL, Yang YH, Kuo HK (2013) — Outdoor activity during class recess reduces myopia onset and progression in school children. Ophthalmology 120(5):1080-1085",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/23462271/"
+          }
         ]
       }
     },
@@ -592,6 +834,7 @@
     "pageTitle": "Partner with Vitamina D Explorer",
     "pageSubtitle": "Reach health-conscious users at the exact moment they need your product",
     "heroDescription": "Vitamina D Explorer is a free, science-based solar vitamin D calculator used by people who actively care about their vitamin D levels. When our users can't synthesize vitamin D naturally, they see personalized supplement recommendations — that's where your brand comes in.",
+    "eyebrow": "For brands & partners",
     "whyTitle": "Why partner with us?",
     "why1Title": "Contextual relevance",
     "why1Text": "Your product appears exactly when users need it most — when they can't produce vitamin D naturally and are actively looking for supplementation advice.",
@@ -620,7 +863,8 @@
     "ctaTitle": "Let's talk",
     "ctaText": "Whether you're a supplement brand, health platform, or wellness company — we'd love to explore how Vitamina D Explorer can work for your audience.",
     "ctaEmail": "Contact us",
-    "ctaNote": "We respond within 48 hours. Partnership proposals welcome for brands of any size."
+    "ctaNote": "We respond within 48 hours. Partnership proposals welcome for brands of any size.",
+    "backToApp": "Try the app"
   },
   "install": {
     "banner": {
@@ -668,28 +912,70 @@
     "verdictNever": "In {city} the sun never gets high enough to synthesize vitamin D.",
     "impossibleRange": "From {startMonth} to {endMonth} synthesis isn't possible — this is when a supplement can help.",
     "exactWindow": "More precisely: {dateRange}.",
+    "exactWindowLabel": "Exact window",
     "yearHeading": "Year-round profile in {city}",
     "yearCaption": "Daily hours with enough sun to synthesize vitamin D across the year.",
+    "yearLegendLow": "0 h",
+    "yearLegendHigh": "10 h+",
     "seasonHeading": "Seasonal windows",
     "seasonWindow": "{month}: between {start} and {end}, about {minutes} min for 1000 IU.",
     "seasonImpossible": "{month}: synthesis isn't possible.",
     "seasonNote": "Estimated for Fitzpatrick type III skin, arms and face exposed, clear sky.",
     "supplementHeading": "When to supplement in {city}",
     "supplementBody": "During the months without solar synthesis, vitamin D comes only from food or a supplement. It is usually taken as D3, often with magnesium — which the body needs to activate it — and vitamin K (as K2), which contributes to the maintenance of normal bones.",
+    "supplementMore": "More about supplements →",
     "ctaLabel": "Calculate my window in {city}",
     "notifyLead": "{city}: we'll tell you the days you can make vitamin D.",
     "notifyOff": "🔔 Notify me",
     "notifyOn": "🔔 Subscribed",
     "faqHeading": "Frequently asked questions about vitamin D in {city}",
-  "nearbyHeading": "Nearby cities",
-  "indexTitle": "Vitamin D from the sun, city by city",
-  "indexDescription": "When you can synthesize vitamin D from the sun in 73 cities worldwide: possible months, seasonal windows, and when to supplement.",
-  "indexHeading": "Vitamin D from the sun, city by city",
-  "indexIntro": "Pick your city to see which months the sun lets you make vitamin D there, with each season's windows.",
-  "allCitiesLink": "Browse all cities",
-  "viewCityPage": "{city}: full page →",
+    "nearbyHeading": "Nearby cities",
+    "indexTitle": "Vitamin D from the sun, city by city",
+    "indexDescription": "When you can synthesize vitamin D from the sun in 73 cities worldwide: possible months, seasonal windows, and when to supplement.",
+    "indexHeading": "Vitamin D from the sun, city by city",
+    "indexIntro": "Pick your city to see which months the sun lets you make vitamin D there, with each season's windows.",
+    "indexEyebrow": "City directory",
+    "indexCitiesLabel": "cities",
+    "allCitiesLink": "Browse all cities",
+    "viewCityPage": "{city}: full page →",
+    "indexBandVeryHigh": "Extreme latitudes (55°+) — long winters with no useful sun",
+    "indexBandHigh": "High latitudes (45–55°)",
+    "indexBandMid": "Mid latitudes (35–45°)",
+    "indexBandSub": "Subtropical (23–35°)",
+    "indexBandTrop": "Tropics (<23°) — useful sun almost all year",
+    "indexMonths": "{count, plural, one {# month of sun} other {# months of sun}}",
+    "indexAllYear": "sun all year",
+    "indexNever": "no solar synthesis",
+    "indexSearchPlaceholder": "Search city…",
+    "indexNoResults": "No cities match",
+    "indexClearSearch": "Clear search",
+    "indexNearestDistance": "The nearest is {km} km away",
+    "indexNoneNearby": "None are truly nearby, but these are the closest",
+    "indexNearMe": "Near me",
+    "indexNearYou": "Nearest to you",
+    "indexNearMeLocating": "Locating…",
+    "indexNearMeDenied": "Location permission denied",
+    "indexNearMeUnavailable": "Location unavailable",
+    "indexShowAll": "Show all",
+    "regionAll": "All",
+    "regionEurope": "Europe",
+    "regionAmericas": "Americas",
+    "regionAsia": "Asia",
+    "regionAfrica": "Africa",
+    "regionOceania": "Oceania",
     "faqWinterQ": "Can I get vitamin D from the sun in winter in {city}?",
     "faqMinutesQ": "How many minutes of sun do I need in {city}?",
     "faqMinutesA": "In summer, about {minutes} minutes with arms and face exposed is enough for 1000 IU (Fitzpatrick type III skin, clear sky)."
+  },
+  "offline": {
+    "title": "You're offline",
+    "description": "Vitamin D Explorer needs an internet connection to load weather and city data. Try again once you're back online.",
+    "retry": "Retry"
+  },
+  "theme": {
+    "label": "Theme",
+    "auto": "Auto",
+    "light": "Light",
+    "dark": "Dark"
   }
 }

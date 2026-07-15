@@ -35,9 +35,9 @@
     "gpsDeniedHint": "В Chrome: нажмите на замок в адресной строке > Разрешения > Местоположение > Разрешить. Затем перезагрузите страницу."
   },
   "tabs": {
-    "dailyCurve": "📈 Дневная кривая",
-    "worldMap": "🌍 Карта мира",
-    "heatmap": "📊 Широта × Год"
+    "dailyCurve": "Дневная кривая",
+    "worldMap": "Карта мира",
+    "heatmap": "Широта × Год"
   },
   "viz": {
     "dailyCurveTitle": "ДНЕВНАЯ КРИВАЯ",
@@ -50,11 +50,14 @@
   },
   "config": {
     "title": "Настройки",
+    "eyebrow": "Настройте свой витамин D",
+    "subtitle": "Ваш город, тип кожи и когда вам напоминать — всё в одном месте.",
     "searchCity": "Найти город",
     "favorites": "Избранное",
     "edit": "✎ Редактировать",
     "done": "✓ Готово",
     "solarProfile": "Солнечный профиль",
+    "favoritesEmpty": "Вы ещё не сохранили ни одного города. Нажмите на любой ниже, чтобы добавить его в избранное.",
     "date": "Дата",
     "animate": "▶ Анимация",
     "pause": "⏸",
@@ -157,7 +160,7 @@
     "savedAs": "Сохранено как",
     "lat": "Шир",
     "lon": "Долг",
-    "learnMore": "Узнать больше о витамине D →"
+    "learnMore": "Узнать больше о витамине D"
   },
   "search": {
     "placeholder": "Поиск любого города в мире...",
@@ -221,7 +224,10 @@
     "swimsuit": "купальник",
     "loading": "Загрузка ваших данных...",
     "week": "Неделя",
+    "popularCities": "Популярные города",
     "month": "Месяц",
+    "calPrev": "Назад",
+    "calNext": "Вперёд",
     "confirmedCount": "{count} подтверждено",
     "favorableSummary": "{count} из {total} дней с благоприятными условиями",
     "forecastWindow": "Окно",
@@ -263,9 +269,14 @@
     "exposureResetDefault": "Вернуть по умолчанию из профиля"
   },
   "learn": {
+    "eyebrow": "Гид по витамину D",
     "pageTitle": "Витамин D и Солнце",
     "pageSubtitle": "Научно обоснованные ответы на распространённые вопросы",
     "sourcesLabel": "Источники",
+    "searchPlaceholder": "Поиск по вопросам…",
+    "searchNoResults": "Вопросов не найдено",
+    "searchClear": "Очистить поиск",
+    "recommended": "Рекомендуемый",
     "backToApp": "Вернуться в приложение",
     "learnMoreLink": "Узнать больше о витамине D →",
     "supplementLink": "Как правильно принимать добавки →",
@@ -276,83 +287,170 @@
         "q": "Почему только UVB синтезирует витамин D, а не UVA?",
         "a": "Ультрафиолетовое излучение делится на UVA (315–400 нм) и UVB (280–315 нм). Только UVB в узком диапазоне 290–315 нм несёт достаточно энергии для изомеризации 7-дегидрохолестерина в коже в превитамин D3. Лучи UVA имеют большую длину волны и меньшую энергию — они проникают глубже (вызывая загар и старение кожи), но не могут запустить фотохимическую реакцию, с которой начинается синтез витамина D. Именно поэтому солярии, излучающие преимущественно UVA, не производят витамин D.",
         "sources": [
-          { "label": "MacLaughlin JA, Anderson RR, Holick MF (1982) — Spectral character of sunlight modulates photosynthesis of previtamin D3 and its photoisomers in human skin. Science 216(4549):1001-1003", "url": "https://pubmed.ncbi.nlm.nih.gov/6281884/" },
-          { "label": "Young AR et al. (2021) — A revised action spectrum for vitamin D synthesis by suberythemal UV. PNAS 118(40):e2015867118", "url": "https://www.pnas.org/doi/10.1073/pnas.2015867118" },
-          { "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/" }
+          {
+            "label": "MacLaughlin JA, Anderson RR, Holick MF (1982) — Spectral character of sunlight modulates photosynthesis of previtamin D3 and its photoisomers in human skin. Science 216(4549):1001-1003",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/6281884/"
+          },
+          {
+            "label": "Young AR et al. (2021) — A revised action spectrum for vitamin D synthesis by suberythemal UV. PNAS 118(40):e2015867118",
+            "url": "https://www.pnas.org/doi/10.1073/pnas.2015867118"
+          },
+          {
+            "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108",
+            "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/"
+          }
         ]
       },
       "q2": {
         "q": "Почему важен угол падения солнца? Что происходит зимой?",
         "a": "Угол солнца над горизонтом определяет, через какой слой атмосферы должен пройти UVB, прежде чем достигнет вашей кожи. При малых углах — ранним утром, поздним вечером или в любое время зимой севернее примерно 35° широты — UVB практически полностью поглощается озоновым слоем и не достигает поверхности. Хорошо это иллюстрирует «правило тени»: если ваша тень длиннее вашего роста, UVB слишком слаб для синтеза витамина D. Зимой на северных широтах это условие сохраняется весь день на протяжении нескольких месяцев. При UVI ниже 3 даже длительное пребывание на солнце даёт ничтожно малое количество витамина D.",
         "sources": [
-          { "label": "Webb AR, Kline L, Holick MF (1988) — Influence of season and latitude on the cutaneous synthesis of vitamin D3: exposure to winter sunlight in Boston and Edmonton will not promote vitamin D3 synthesis in human skin. JCEM 67(2):373-378", "url": "https://pubmed.ncbi.nlm.nih.gov/2839537/" },
-          { "label": "Engelsen O (2010) — The Relationship between Ultraviolet Radiation Exposure and Vitamin D Status. Nutrients 2(5):482-495", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3257661/" },
-          { "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/" }
+          {
+            "label": "Webb AR, Kline L, Holick MF (1988) — Influence of season and latitude on the cutaneous synthesis of vitamin D3: exposure to winter sunlight in Boston and Edmonton will not promote vitamin D3 synthesis in human skin. JCEM 67(2):373-378",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/2839537/"
+          },
+          {
+            "label": "Engelsen O (2010) — The Relationship between Ultraviolet Radiation Exposure and Vitamin D Status. Nutrients 2(5):482-495",
+            "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3257661/"
+          },
+          {
+            "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108",
+            "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/"
+          }
         ]
       },
       "q3": {
         "q": "Почему через стекло синтез невозможен?",
         "a": "Стандартное оконное стекло и автомобильные лобовые стёкла блокируют почти весь UVB, пропуская большую часть UVA и видимого света. Это означает, что вы можете загореть, сидя у солнечного окна — UVA проходит сквозь него, — но синтезировать витамин D вы не сможете. Только специальное кварцевое стекло, используемое в некоторых медицинских UV-устройствах, пропускает UVB. Практический вывод: тёплое зимнее солнце через окно вашего офиса приятно, но ничего не даёт вашему уровню витамина D.",
         "sources": [
-          { "label": "Tuchinda C, Srivannaboon S, Lim HW (2006) — Photoprotection by window glass, automobile glass, and sunglasses. J Am Acad Dermatol 54(5):845-854", "url": "https://pubmed.ncbi.nlm.nih.gov/16635665/" },
-          { "label": "Almutawa F et al. (2013) — Current status of photoprotection by window glass, automobile glass, window films, and sunglasses. Photodermatol Photoimmunol Photomed 29(2):65-72", "url": "https://onlinelibrary.wiley.com/doi/10.1111/phpp.12022" },
-          { "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/" }
+          {
+            "label": "Tuchinda C, Srivannaboon S, Lim HW (2006) — Photoprotection by window glass, automobile glass, and sunglasses. J Am Acad Dermatol 54(5):845-854",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/16635665/"
+          },
+          {
+            "label": "Almutawa F et al. (2013) — Current status of photoprotection by window glass, automobile glass, window films, and sunglasses. Photodermatol Photoimmunol Photomed 29(2):65-72",
+            "url": "https://onlinelibrary.wiley.com/doi/10.1111/phpp.12022"
+          },
+          {
+            "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108",
+            "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/"
+          }
         ]
       },
       "q4": {
         "q": "Что означает UV-индекс и почему приложение использует 3 как минимальный порог?",
         "a": "UV-индекс (UVI) — международный стандарт, измеряющий эритемную интенсивность UV-излучения у поверхности земли. Он варьируется от 0 (отсутствие) до 11+ (экстремальный). Приложение использует UVI ≥ 3 как порог синтеза, поскольку ниже этого уровня интенсивность UVB слишком мала для значимого производства витамина D, независимо от того, сколько времени вы проводите на улице. Этот порог согласуется с исследованиями Holick и коллег и приблизительно соответствует положению солнца выше 30–35° над горизонтом.",
         "sources": [
-          { "label": "WHO/WMO/UNEP/ICNIRP (2002) — Global Solar UV Index: A Practical Guide. World Health Organization", "url": "https://www.who.int/publications/i/item/9241590076" },
-          { "label": "Engelsen O (2010) — The Relationship between Ultraviolet Radiation Exposure and Vitamin D Status. Nutrients 2(5):482-495", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3257661/" },
-          { "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/" }
+          {
+            "label": "WHO/WMO/UNEP/ICNIRP (2002) — Global Solar UV Index: A Practical Guide. World Health Organization",
+            "url": "https://www.who.int/publications/i/item/9241590076"
+          },
+          {
+            "label": "Engelsen O (2010) — The Relationship between Ultraviolet Radiation Exposure and Vitamin D Status. Nutrients 2(5):482-495",
+            "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3257661/"
+          },
+          {
+            "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108",
+            "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/"
+          }
         ]
       },
       "q5": {
         "q": "Облака полностью блокируют UVB?",
         "a": "Не полностью. Плотная облачность снижает UVB на 70–90%; тонкая или переменная облачность — примерно на 20–50%. Парадоксально, некоторые конфигурации разорванных облаков рассеивают UV и могут кратковременно повышать уровень UVB у земли выше значений при ясном небе. Приложение использует реальные UV-данные от Open-Meteo, когда они доступны, поэтому показанные минуты уже учитывают текущие облачные условия — ручная корректировка не нужна.",
         "sources": [
-          { "label": "Calbó J, Pagès D, González J-A (2005) — Empirical studies of cloud effects on UV radiation: A review. Reviews of Geophysics 43:RG2002", "url": "https://agupubs.onlinelibrary.wiley.com/doi/full/10.1029/2004RG000155" },
-          { "label": "Mims FM III, Frederick JE (1994) — Cumulus clouds and UV-B. Nature 371:291", "url": "https://www.nature.com/articles/371291a0" },
-          { "label": "WHO/WMO/UNEP/ICNIRP (2002) — Global Solar UV Index: A Practical Guide. World Health Organization", "url": "https://www.who.int/publications/i/item/9241590076" }
+          {
+            "label": "Calbó J, Pagès D, González J-A (2005) — Empirical studies of cloud effects on UV radiation: A review. Reviews of Geophysics 43:RG2002",
+            "url": "https://agupubs.onlinelibrary.wiley.com/doi/full/10.1029/2004RG000155"
+          },
+          {
+            "label": "Mims FM III, Frederick JE (1994) — Cumulus clouds and UV-B. Nature 371:291",
+            "url": "https://www.nature.com/articles/371291a0"
+          },
+          {
+            "label": "WHO/WMO/UNEP/ICNIRP (2002) — Global Solar UV Index: A Practical Guide. World Health Organization",
+            "url": "https://www.who.int/publications/i/item/9241590076"
+          }
         ]
       },
       "q6": {
         "q": "Нужен ли мне прямой солнечный свет на кожу?",
         "a": "Да. Для синтеза витамина D необходимо прямое воздействие UVB на открытую кожу. Одежда блокирует большую часть UVB, даже тонкие ткани. В тени — под деревом или навесом — рассеянное UVB-излучение минимально и недостаточно для значимого синтеза. Солнцезащитный крем SPF 30+ снижает синтез примерно на 95%; практическая рекомендация — первые 10–20 минут обходиться без крема (в зависимости от типа кожи), а затем нанести его. Важно: для других преимуществ — выработки оксида азота, регуляции циркадного ритма и производства серотонина — прямое солнце НЕ требуется, достаточно просто быть на улице в ясный день. Но для витамина D открытая кожа под прямыми солнечными лучами необходима.",
         "sources": [
-          { "label": "Matsuoka LY, Ide L, Wortsman J, MacLaughlin JA, Holick MF (1987) — Sunscreens suppress cutaneous vitamin D3 synthesis. JCEM 64(6):1165-1168", "url": "https://pubmed.ncbi.nlm.nih.gov/3033008/" },
-          { "label": "Matsuoka LY, Wortsman J, Hanifan N, Holick MF (1988) — Chronic sunscreen use decreases circulating concentrations of 25-OH-D. Arch Dermatol 124(12):1802-1804", "url": "https://pubmed.ncbi.nlm.nih.gov/3190255/" },
-          { "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/" }
+          {
+            "label": "Matsuoka LY, Ide L, Wortsman J, MacLaughlin JA, Holick MF (1987) — Sunscreens suppress cutaneous vitamin D3 synthesis. JCEM 64(6):1165-1168",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/3033008/"
+          },
+          {
+            "label": "Matsuoka LY, Wortsman J, Hanifan N, Holick MF (1988) — Chronic sunscreen use decreases circulating concentrations of 25-OH-D. Arch Dermatol 124(12):1802-1804",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/3190255/"
+          },
+          {
+            "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108",
+            "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/"
+          }
         ]
       },
       "q7": {
         "q": "Блокирует ли волосяной покров UVB и снижает ли синтез витамина D?",
         "a": "Да, но незначительно. Волосяной покров тела действует как физический барьер для UVB-излучения. Исследование Galvez и др. (2015) количественно оценило «фактор УФ-защиты волос»: редкие, тонкие волосы на теле эквивалентны примерно SPF 1–3, тогда как очень густые, тёмные терминальные волосы могут достигать SPF 2–4+. Симуляция методом Монте-Карло Huang и др. (2020) показала, что бритьё конечностей увеличивает прохождение UV к фолликулярным стволовым клеткам примерно с 5 % до 20 %, указывая на значимое ослабление волосяным покровом — хотя этот результат измерен в глубине и не переводится напрямую в эквивалентное снижение UVB на поверхности кожи. Однако ни одно клиническое исследование не измеряло непосредственно влияние волосяного покрова на уровень 25(OH)D в сыворотке крови. Основные научные обзоры факторов фотосинтеза витамина D — включая Neville и др. (2021) — не указывают волосяной покров как значимый фактор. На практике наиболее волосистые области (грудь, спина) обычно закрыты одеждой, а эффект на типично открытых участках — предплечьях и голенях — невелик (SPF 1–2). Приложение не включает корректировку на волосяной покров, поскольку эффект незначителен по сравнению с типом кожи, UV-индексом, площадью обнажённой кожи и возрастом — и уже частично учтён параметром площади тела.",
         "sources": [
-          { "label": "Gálvez ÓD et al. (2015) — Human Hair as a Natural Sun Protection Agent: A Quantitative Study. Photochem Photobiol 91(4):966-970", "url": "https://pubmed.ncbi.nlm.nih.gov/25682789/" },
-          { "label": "Huang X, Protheroe MD, Al-Jumaily AM, Paul SP, Chalmers AN (2020) — Effect of hair removal on solar UV transmission into skin and implications for melanoma skin cancer development. J Opt Soc Am A 37(5):807-812", "url": "https://pubmed.ncbi.nlm.nih.gov/32400714/" },
-          { "label": "Neville JJ et al. (2021) — Physical Determinants of Vitamin D Photosynthesis: A Review. JBMR Plus 5(1):e10460", "url": "https://academic.oup.com/jbmrplus/article/5/1/e10460/7486276" }
+          {
+            "label": "Gálvez ÓD et al. (2015) — Human Hair as a Natural Sun Protection Agent: A Quantitative Study. Photochem Photobiol 91(4):966-970",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/25682789/"
+          },
+          {
+            "label": "Huang X, Protheroe MD, Al-Jumaily AM, Paul SP, Chalmers AN (2020) — Effect of hair removal on solar UV transmission into skin and implications for melanoma skin cancer development. J Opt Soc Am A 37(5):807-812",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/32400714/"
+          },
+          {
+            "label": "Neville JJ et al. (2021) — Physical Determinants of Vitamin D Photosynthesis: A Review. JBMR Plus 5(1):e10460",
+            "url": "https://academic.oup.com/jbmrplus/article/5/1/e10460/7486276"
+          }
         ]
       },
       "q8": {
         "q": "10 минут на солнце подряд — это то же самое, что 10 раз по 1 минуте?",
         "a": "Для синтеза витамина D на практике да — при условии, что UV-индекс одинаков в каждом отрезке. Кожа интегрирует общую дозу UVB по закону взаимности Бунзена–Роско: фотореакция зависит от произведения интенсивность × время, а не от того, как это время распределено. Исследования in vivo подтверждают, что эквивалентные приросты витамина D3 достигаются как при высокой интенсивности за короткое время, так и при низкой интенсивности за длительное. Три важные оговорки. Во-первых, потолок за сеанс: превитамин D3 достигает максимума в коже примерно при одной трети минимальной эритемной дозы (МЭД), а при 1 МЭД синтез прекращается, потому что UVB превращает превитамин D3 в инертные соединения (люмистерол и тахистерол). Если одна длинная сессия превышает этот потолок, дополнительные минуты не добавляют витамина D, а только увеличивают риск ожога — тогда как десять сессий по минуте никогда не достигают насыщения. Во-вторых, минимальный порог UV-индекса: измеримый прирост сывороточного 25-OH-D требует около 18–20 мДж/см² UVB, что соответствует примерно УФИ ≥ 3, поэтому ниже этого уровня никакое накопление минут не даёт значимого витамина D. В-третьих, термическая кинетика медленная: превращение превитамина D3 в витамин D3 имеет период полупревращения ~2,5 ч при температуре кожи и завершается за ~8 ч, поэтому витамин D, образованный за день, продолжает формироваться после окончания экспозиции. Практический вывод: повторяющиеся субэритемные экспозиции производят то же количество витамина D с меньшим повреждением ДНК, чем одна длинная сессия — именно эту схему рекомендуют медицинские руководства (Holick 2007; обзор Neville и др., JBMR Plus 2021).",
         "sources": [
-          { "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/" },
-          { "label": "Neville JJ et al. (2021) — Physical Determinants of Vitamin D Photosynthesis: A Review. JBMR Plus 5(1):e10460", "url": "https://academic.oup.com/jbmrplus/article/5/1/e10460/7486276" },
-          { "label": "Young AR et al. (2021) — A revised action spectrum for vitamin D synthesis by suberythemal UV. PNAS 118(40):e2015867118", "url": "https://www.pnas.org/doi/10.1073/pnas.2015867118" },
-          { "label": "Schindl A et al. (2022) — Bunsen-Roscoe reciprocity: Is it still valid? Indian J Ophthalmol", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9672781/" }
+          {
+            "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108",
+            "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/"
+          },
+          {
+            "label": "Neville JJ et al. (2021) — Physical Determinants of Vitamin D Photosynthesis: A Review. JBMR Plus 5(1):e10460",
+            "url": "https://academic.oup.com/jbmrplus/article/5/1/e10460/7486276"
+          },
+          {
+            "label": "Young AR et al. (2021) — A revised action spectrum for vitamin D synthesis by suberythemal UV. PNAS 118(40):e2015867118",
+            "url": "https://www.pnas.org/doi/10.1073/pnas.2015867118"
+          },
+          {
+            "label": "Schindl A et al. (2022) — Bunsen-Roscoe reciprocity: Is it still valid? Indian J Ophthalmol",
+            "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9672781/"
+          }
         ]
       },
       "q9": {
         "q": "Что лучше — открывать мало кожи надолго или много кожи ненадолго?",
         "a": "Для одного и того же количества витамина D почти всегда лучше открывать больше кожи на меньшее время — это эффективнее и менее вредно. Причина в том, что выработка витамина D на каждом участке кожи выходит на насыщение: превитамин D3 фотодеградирует в инертные люмистерол и тахистерол, поэтому у каждого участка есть предел, сколько бы вы ни находились на солнце. Этот предел зависит от площади открытой кожи, а не от степени загара: примерно ~19 000 МЕ для всего тела при 1 МЭД, то есть ~1 900 МЕ для 10 % тела (лицо + кисти) против ~7 700 МЕ для 40 % (купальник). При очень малой площади открытой кожи достичь цели в 2 000 МЕ за один сеанс может быть физически невозможно, тогда как с большей площадью вы получаете это за несколько субэритемных минут. Аргумент о здоровье следует той же логике: витамин D за минуту на уже «набравшем дозу» участке падает (насыщение), а повреждение ДНК за минуту остаётся примерно постоянным, поэтому соотношение витамин-D/вред лучше всего при низких дозах на участок. Ожог зависит от локальной дозы относительно вашей Минимальной эритемной дозы (МЭД), независимо от площади: концентрация дозы на маленьком участке подводит его к 1 МЭД или превышает её (ожог), тогда как распределение той же суммарной дозы по большей коже удерживает каждый участок значительно ниже его порога (без ожога). Именно поэтому рекомендации советуют ~¼–½ МЭД на большую площадь тела, несколько раз в неделю. Два дополнительных плюса в пользу большей площади: открытая кожа под действием UVA выделяет оксид азота, снижающий артериальное давление, и это зависит от площади, а не от витамина D; а концентрация облучения на одном участке загорает его, повышая его МЭД и делая его всё менее эффективным при повторных сеансах. Единственный довод в пользу «мало кожи, долго» — практический: когда одежда или обстоятельства не позволяют открыть больше, — и даже тогда вы часто не достигнете цели за один раз.",
         "sources": [
-          { "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/" },
-          { "label": "Neville JJ et al. (2021) — Physical Determinants of Vitamin D Photosynthesis: A Review. JBMR Plus 5(1):e10460", "url": "https://academic.oup.com/jbmrplus/article/5/1/e10460/7486276" },
-          { "label": "Liu D et al. (2014) — UVA irradiation of human skin vasodilates arterial vasculature and lowers blood pressure. J Invest Dermatol 134(7):1839-1846", "url": "https://pubmed.ncbi.nlm.nih.gov/24445737/" },
-          { "label": "Young AR et al. (2021) — A revised action spectrum for vitamin D synthesis by suberythemal UV. PNAS 118(40):e2015867118", "url": "https://www.pnas.org/doi/10.1073/pnas.2015867118" }
+          {
+            "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108",
+            "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/"
+          },
+          {
+            "label": "Neville JJ et al. (2021) — Physical Determinants of Vitamin D Photosynthesis: A Review. JBMR Plus 5(1):e10460",
+            "url": "https://academic.oup.com/jbmrplus/article/5/1/e10460/7486276"
+          },
+          {
+            "label": "Liu D et al. (2014) — UVA irradiation of human skin vasodilates arterial vasculature and lowers blood pressure. J Invest Dermatol 134(7):1839-1846",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/24445737/"
+          },
+          {
+            "label": "Young AR et al. (2021) — A revised action spectrum for vitamin D synthesis by suberythemal UV. PNAS 118(40):e2015867118",
+            "url": "https://www.pnas.org/doi/10.1073/pnas.2015867118"
+          }
         ]
       }
     },
@@ -363,45 +461,90 @@
         "q": "Сколько витамина D я получу от солнца по сравнению с таблеткой?",
         "a": "Воздействие всего тела дозой 1 МЭД (минимальная эритемная доза — непосредственно перед покраснением кожи) производит около 10 000–25 000 МЕ витамина D. Стандартная капсула-добавка содержит 400–2 000 МЕ. Сеанс 15–20 минут в полдень летом с открытыми руками и ногами легко превышает недельную норму типичной добавки. Однако у солнца есть встроенный защитный механизм (фотодеградация), предотвращающий передозировку — защита, которой лишены пероральные добавки.",
         "sources": [
-          { "label": "Holick MF (1995) — Environmental factors that influence the cutaneous production of vitamin D. Am J Clin Nutr 61(3 Suppl):638S-645S", "url": "https://pubmed.ncbi.nlm.nih.gov/7879731/" },
-          { "label": "Holick MF (2007) — Vitamin D Deficiency. NEJM 357:266-281", "url": "https://www.nejm.org/doi/full/10.1056/NEJMra070553" },
-          { "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/" }
+          {
+            "label": "Holick MF (1995) — Environmental factors that influence the cutaneous production of vitamin D. Am J Clin Nutr 61(3 Suppl):638S-645S",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/7879731/"
+          },
+          {
+            "label": "Holick MF (2007) — Vitamin D Deficiency. NEJM 357:266-281",
+            "url": "https://www.nejm.org/doi/full/10.1056/NEJMra070553"
+          },
+          {
+            "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108",
+            "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/"
+          }
         ]
       },
       "q2": {
         "q": "Можно ли передозировать витамин D от солнца?",
         "a": "Нет. Солнечный синтез самоограничивается. Когда в коже накапливается превитамин D3, продолжающееся UVB-излучение превращает его в инертные соединения — люмистерол и тахистерол, — а не позволяет накапливаться дальше. Этот потолок фотодеградации означает, что организм никогда не производит токсичные уровни от солнечного воздействия, сколько бы времени вы ни проводили на улице. Именно поэтому допустимый верхний уровень потребления по IOM в 4 000 МЕ/день применяется исключительно к пероральным добавкам, а не к солнечному свету.",
         "sources": [
-          { "label": "Holick MF, MacLaughlin JA, Doppelt SH (1981) — Regulation of Cutaneous Previtamin D3 Photosynthesis in Man. Science 211(4482):590-593", "url": "https://pubmed.ncbi.nlm.nih.gov/6256855/" },
-          { "label": "Institute of Medicine (2011) — Dietary Reference Intakes for Calcium and Vitamin D. National Academies Press", "url": "https://www.ncbi.nlm.nih.gov/books/NBK56070/" },
-          { "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/" }
+          {
+            "label": "Holick MF, MacLaughlin JA, Doppelt SH (1981) — Regulation of Cutaneous Previtamin D3 Photosynthesis in Man. Science 211(4482):590-593",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/6256855/"
+          },
+          {
+            "label": "Institute of Medicine (2011) — Dietary Reference Intakes for Calcium and Vitamin D. National Academies Press",
+            "url": "https://www.ncbi.nlm.nih.gov/books/NBK56070/"
+          },
+          {
+            "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108",
+            "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/"
+          }
         ]
       },
       "q3": {
         "q": "Солнце лучше, чем добавки?",
         "a": "Оба варианта имеют реальные преимущества. D3, синтезированный на солнце, связан с белками кожи и медленно поступает в кровоток, что даёт ему более длительный период полувыведения по сравнению с пероральным D3. Солнечное облучение также обеспечивает выброс оксида азота под действием UVA, циркадные световые сигналы и другие преимущества, которые не может воспроизвести ни одна таблетка. Пероральный D3, с другой стороны, поддаётся контролю, точен по дозировке и доступен круглый год. Практический ответ: используйте солнце, когда позволяют условия, принимайте добавки, когда нет — они дополняют друг друга.",
         "sources": [
-          { "label": "Haddad JG, Matsuoka LY, Hollis BW, Hu YZ, Wortsman J (1993) — Human plasma transport of vitamin D after its endogenous synthesis. J Clin Invest 91(6):2552-2555", "url": "https://pubmed.ncbi.nlm.nih.gov/8390483/" },
-          { "label": "Liu D, Fernandez BO, Hamilton A, Lang NN, Gallagher JMC, Newby DE, Feelisch M, Weller RB (2014) — UVA Irradiation of Human Skin Vasodilates Arterial Vasculature and Lowers Blood Pressure Independently of Nitric Oxide Synthase. J Invest Dermatol 134(7):1839-1846", "url": "https://pubmed.ncbi.nlm.nih.gov/24445737/" },
-          { "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/" }
+          {
+            "label": "Haddad JG, Matsuoka LY, Hollis BW, Hu YZ, Wortsman J (1993) — Human plasma transport of vitamin D after its endogenous synthesis. J Clin Invest 91(6):2552-2555",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/8390483/"
+          },
+          {
+            "label": "Liu D, Fernandez BO, Hamilton A, Lang NN, Gallagher JMC, Newby DE, Feelisch M, Weller RB (2014) — UVA Irradiation of Human Skin Vasodilates Arterial Vasculature and Lowers Blood Pressure Independently of Nitric Oxide Synthase. J Invest Dermatol 134(7):1839-1846",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/24445737/"
+          },
+          {
+            "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108",
+            "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/"
+          }
         ]
       },
       "q4": {
         "q": "D3 или D2 в добавках?",
         "a": "D3 (холекальциферол) значительно эффективнее D2 (эргокальциферола) в повышении и поддержании уровня 25-OH-D в крови — исследования показывают, что D3 примерно в 2–3 раза эффективнее на единицу МЕ. D3 — это также та форма, которую производит ваша кожа. D2, получаемый из растительных и грибковых источников, используется в веганских добавках, но уступает D3 при эквивалентных дозах. Ищите «холекальциферол» на этикетке; также доступен веганский D3 из лишайника.",
         "sources": [
-          { "label": "Tripkovic L et al. (2012) — Comparison of vitamin D2 and vitamin D3 supplementation in raising serum 25-hydroxyvitamin D status: a systematic review and meta-analysis. Am J Clin Nutr 95(6):1357-1364", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3349454/" },
-          { "label": "Heaney RP, Recker RR, Grote J, Horst RL, Armas LAG (2011) — Vitamin D3 Is More Potent Than Vitamin D2 in Humans. JCEM 96(3):E447-E452", "url": "https://pubmed.ncbi.nlm.nih.gov/21177785/" },
-          { "label": "Holick MF (2007) — Vitamin D Deficiency. NEJM 357:266-281", "url": "https://www.nejm.org/doi/full/10.1056/NEJMra070553" }
+          {
+            "label": "Tripkovic L et al. (2012) — Comparison of vitamin D2 and vitamin D3 supplementation in raising serum 25-hydroxyvitamin D status: a systematic review and meta-analysis. Am J Clin Nutr 95(6):1357-1364",
+            "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3349454/"
+          },
+          {
+            "label": "Heaney RP, Recker RR, Grote J, Horst RL, Armas LAG (2011) — Vitamin D3 Is More Potent Than Vitamin D2 in Humans. JCEM 96(3):E447-E452",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/21177785/"
+          },
+          {
+            "label": "Holick MF (2007) — Vitamin D Deficiency. NEJM 357:266-281",
+            "url": "https://www.nejm.org/doi/full/10.1056/NEJMra070553"
+          }
         ]
       },
       "q5": {
         "q": "Какой уровень 25-OH-D в крови считается оптимальным?",
         "a": "Стандартные референсные значения для сывороточного 25-гидроксивитамина D: ниже 20 нг/мл (50 нмоль/л) — дефицит; 20–30 нг/мл — недостаточность; 30–50 нг/мл — норма. Эндокринологическое общество считает оптимальным для внескелетных эффектов уровень 40–60 нг/мл. Выше 100 нг/мл (250 нмоль/л) существует риск токсичности при приёме добавок. Большинство жителей северных широт зимой без добавок имеют уровень ниже 20 нг/мл — широко распространённый, но легко устранимый дефицит.",
         "sources": [
-          { "label": "Holick MF et al. (2011) — Evaluation, Treatment, and Prevention of Vitamin D Deficiency: an Endocrine Society Clinical Practice Guideline. JCEM 96(7):1911-1930", "url": "https://pubmed.ncbi.nlm.nih.gov/21646368/" },
-          { "label": "Institute of Medicine (2011) — Dietary Reference Intakes for Calcium and Vitamin D. National Academies Press", "url": "https://www.ncbi.nlm.nih.gov/books/NBK56070/" },
-          { "label": "Holick MF (2007) — Vitamin D Deficiency. NEJM 357:266-281", "url": "https://www.nejm.org/doi/full/10.1056/NEJMra070553" }
+          {
+            "label": "Holick MF et al. (2011) — Evaluation, Treatment, and Prevention of Vitamin D Deficiency: an Endocrine Society Clinical Practice Guideline. JCEM 96(7):1911-1930",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/21646368/"
+          },
+          {
+            "label": "Institute of Medicine (2011) — Dietary Reference Intakes for Calcium and Vitamin D. National Academies Press",
+            "url": "https://www.ncbi.nlm.nih.gov/books/NBK56070/"
+          },
+          {
+            "label": "Holick MF (2007) — Vitamin D Deficiency. NEJM 357:266-281",
+            "url": "https://www.nejm.org/doi/full/10.1056/NEJMra070553"
+          }
         ]
       }
     },
@@ -412,54 +555,108 @@
         "q": "D3 или D2? Сколько принимать?",
         "a": "Выбирайте D3 (холекальциферол), если только вы не веган — в этом случае доступен веганский D3 из лишайника. Для большинства взрослых: 1 000–2 000 МЕ/день при регулярном пребывании на солнце; 2 000–4 000 МЕ/день при ограниченном солнечном воздействии. Верхний предел Эндокринологического общества составляет 4 000 МЕ/день для взрослых из добавок. Более высокие дозы для коррекции дефицита существуют, но должны назначаться с учётом анализов крови. Тест 25-OH-D до и через 3 месяца приёма добавок — лучший способ найти вашу личную эффективную дозу.",
         "sources": [
-          { "label": "Holick MF et al. (2011) — Evaluation, Treatment, and Prevention of Vitamin D Deficiency: an Endocrine Society Clinical Practice Guideline. JCEM 96(7):1911-1930", "url": "https://pubmed.ncbi.nlm.nih.gov/21646368/" },
-          { "label": "Institute of Medicine (2011) — Dietary Reference Intakes for Calcium and Vitamin D. National Academies Press", "url": "https://www.ncbi.nlm.nih.gov/books/NBK56070/" },
-          { "label": "Holick MF (2007) — Vitamin D Deficiency. NEJM 357:266-281", "url": "https://www.nejm.org/doi/full/10.1056/NEJMra070553" }
+          {
+            "label": "Holick MF et al. (2011) — Evaluation, Treatment, and Prevention of Vitamin D Deficiency: an Endocrine Society Clinical Practice Guideline. JCEM 96(7):1911-1930",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/21646368/"
+          },
+          {
+            "label": "Institute of Medicine (2011) — Dietary Reference Intakes for Calcium and Vitamin D. National Academies Press",
+            "url": "https://www.ncbi.nlm.nih.gov/books/NBK56070/"
+          },
+          {
+            "label": "Holick MF (2007) — Vitamin D Deficiency. NEJM 357:266-281",
+            "url": "https://www.nejm.org/doi/full/10.1056/NEJMra070553"
+          }
         ]
       },
       "q2": {
         "q": "Какую роль играет K2 вместе с D3?",
         "a": "Витамин D3 усиливает всасывание кальция в кишечнике. Витамин K2 — особенно форма MK-7 — активирует два белка: остеокальцин, который помогает фиксировать кальций в костях, и матриксный Gla-белок, участвующий в регуляции кальция в мягких тканях. В наблюдательных исследованиях более высокое потребление менахинона (K2) связывали с меньшей кальцификацией артерий, хотя данные интервенционных исследований пока ограничены. Натуральные источники K2: натто, выдержанные твёрдые сыры, яичные желтки. Поэтому многие протоколы приёма добавок сочетают D3 со 100–200 мкг MK-7, особенно при высоких дозах D3.",
         "sources": [
-          { "label": "Geleijnse JM et al. (2004) — Dietary intake of menaquinone is associated with a reduced risk of coronary heart disease: the Rotterdam Study. J Nutr 134(11):3100-3105", "url": "https://pubmed.ncbi.nlm.nih.gov/15514282/" },
-          { "label": "Knapen MH et al. (2013) — Three-year low-dose menaquinone-7 supplementation helps decrease bone loss in healthy postmenopausal women. Osteoporos Int 24(9):2499-2507", "url": "https://pubmed.ncbi.nlm.nih.gov/23525894/" },
-          { "label": "van Ballegooijen AJ et al. (2017) — The Synergistic Interplay between Vitamins D and K for Bone and Cardiovascular Health: A Narrative Review. Int J Endocrinol 2017:7454376", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5613455/" }
+          {
+            "label": "Geleijnse JM et al. (2004) — Dietary intake of menaquinone is associated with a reduced risk of coronary heart disease: the Rotterdam Study. J Nutr 134(11):3100-3105",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/15514282/"
+          },
+          {
+            "label": "Knapen MH et al. (2013) — Three-year low-dose menaquinone-7 supplementation helps decrease bone loss in healthy postmenopausal women. Osteoporos Int 24(9):2499-2507",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/23525894/"
+          },
+          {
+            "label": "van Ballegooijen AJ et al. (2017) — The Synergistic Interplay between Vitamins D and K for Bone and Cardiovascular Health: A Narrative Review. Int J Endocrinol 2017:7454376",
+            "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5613455/"
+          }
         ]
       },
       "q3": {
         "q": "Какую роль играет магний?",
         "a": "Магний является кофактором обоих ферментов, превращающих витамин D в его активные формы (25-OH-D и затем 1,25-OH-D). Без достаточного количества магния добавочный D3 может не конвертироваться должным образом, а приём добавок способен снижать уровень магния, усугубляя имеющийся дефицит. По оценкам, 50% населения западных стран испытывают недостаточность магния. Хорошие пищевые источники: семена тыквы, тёмный шоколад, шпинат, миндаль, авокадо. Глицинат или малат магния в добавках хорошо переносятся при недостаточном поступлении с пищей.",
         "sources": [
-          { "label": "Uwitonze AM, Razzaque MS (2018) — Role of Magnesium in Vitamin D Activation and Function. J Am Osteopath Assoc 118(3):181-189", "url": "https://pubmed.ncbi.nlm.nih.gov/29480918/" },
-          { "label": "Rosanoff A, Weaver CM, Rude RK (2012) — Suboptimal magnesium status in the United States: are the health consequences underestimated? Nutr Rev 70(3):153-164", "url": "https://pubmed.ncbi.nlm.nih.gov/22364157/" },
-          { "label": "NIH Office of Dietary Supplements — Magnesium: Health Professional Fact Sheet", "url": "https://ods.od.nih.gov/factsheets/Magnesium-HealthProfessional/" }
+          {
+            "label": "Uwitonze AM, Razzaque MS (2018) — Role of Magnesium in Vitamin D Activation and Function. J Am Osteopath Assoc 118(3):181-189",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/29480918/"
+          },
+          {
+            "label": "Rosanoff A, Weaver CM, Rude RK (2012) — Suboptimal magnesium status in the United States: are the health consequences underestimated? Nutr Rev 70(3):153-164",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/22364157/"
+          },
+          {
+            "label": "NIH Office of Dietary Supplements — Magnesium: Health Professional Fact Sheet",
+            "url": "https://ods.od.nih.gov/factsheets/Magnesium-HealthProfessional/"
+          }
         ]
       },
       "q4": {
         "q": "Почему витамин D нужно принимать с жирной пищей?",
         "a": "Витамин D жирорастворим. Для всасывания ему требуются пищевые жиры в кишечнике для образования мицелл — крошечных жиро-белковых упаковок, переносящих витамин через стенку кишечника в кровоток. Исследования показывают, что приём D3 с едой, содержащей жиры, повышает усвоение на 30–50% по сравнению с приёмом натощак. Практическое правило: принимайте его с самым жирным приёмом пищи за день. Столовая ложка оливкового масла, горсть орехов или блюдо с лососем обеспечивают достаточное количество жира. Это в равной мере относится к витаминам A, E и K2.",
         "sources": [
-          { "label": "Mulligan GB, Licata A (2010) — Taking vitamin D with the largest meal improves absorption and results in higher serum levels of 25-hydroxyvitamin D. J Bone Miner Res 25(4):928-930", "url": "https://onlinelibrary.wiley.com/doi/10.1002/jbmr.67" },
-          { "label": "Dawson-Hughes B et al. (2015) — Dietary Fat Increases Vitamin D-3 Absorption. J Acad Nutr Diet 115(2):225-230", "url": "https://pubmed.ncbi.nlm.nih.gov/25441954/" },
-          { "label": "Holick MF (2007) — Vitamin D Deficiency. NEJM 357:266-281", "url": "https://www.nejm.org/doi/full/10.1056/NEJMra070553" }
+          {
+            "label": "Mulligan GB, Licata A (2010) — Taking vitamin D with the largest meal improves absorption and results in higher serum levels of 25-hydroxyvitamin D. J Bone Miner Res 25(4):928-930",
+            "url": "https://onlinelibrary.wiley.com/doi/10.1002/jbmr.67"
+          },
+          {
+            "label": "Dawson-Hughes B et al. (2015) — Dietary Fat Increases Vitamin D-3 Absorption. J Acad Nutr Diet 115(2):225-230",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/25441954/"
+          },
+          {
+            "label": "Holick MF (2007) — Vitamin D Deficiency. NEJM 357:266-281",
+            "url": "https://www.nejm.org/doi/full/10.1056/NEJMra070553"
+          }
         ]
       },
       "q5": {
         "q": "В каких продуктах питания естественным образом содержится витамин D?",
         "a": "Очень немногие продукты содержат значимое количество витамина D: жирная рыба (дикий лосось 600–1 000 МЕ на 100 г; скумбрия, сардины, сельдь), жир печени трески (~400 МЕ на чайную ложку, также богат витамином A), яичные желтки (~40 МЕ каждый, больше, если курица получала UV-облучение), грибы, подвергшиеся UV-воздействию (могут содержать 400+ МЕ на 100 г при сушке пластинками вверх на солнце), говяжья печень (небольшие количества). Обогащённые продукты (молоко, злаки, растительное молоко) добавляют умеренные количества в зависимости от страны. Только с помощью диеты реально невозможно достичь диапазона 1 000–4 000 МЕ без добавок.",
         "sources": [
-          { "label": "Lu Z et al. (2007) — An evaluation of the vitamin D3 content in fish: Is the vitamin D content adequate to satisfy the dietary requirement for vitamin D? J Steroid Biochem Mol Biol 103(3-5):642-644", "url": "https://pubmed.ncbi.nlm.nih.gov/17267210/" },
-          { "label": "Cardwell G et al. (2018) — A Review of Mushrooms as a Potential Source of Dietary Vitamin D. Nutrients 10(10):1498", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6213178/" },
-          { "label": "NIH Office of Dietary Supplements — Vitamin D: Health Professional Fact Sheet", "url": "https://ods.od.nih.gov/factsheets/VitaminD-HealthProfessional/" }
+          {
+            "label": "Lu Z et al. (2007) — An evaluation of the vitamin D3 content in fish: Is the vitamin D content adequate to satisfy the dietary requirement for vitamin D? J Steroid Biochem Mol Biol 103(3-5):642-644",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/17267210/"
+          },
+          {
+            "label": "Cardwell G et al. (2018) — A Review of Mushrooms as a Potential Source of Dietary Vitamin D. Nutrients 10(10):1498",
+            "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6213178/"
+          },
+          {
+            "label": "NIH Office of Dietary Supplements — Vitamin D: Health Professional Fact Sheet",
+            "url": "https://ods.od.nih.gov/factsheets/VitaminD-HealthProfessional/"
+          }
         ]
       },
       "q6": {
         "q": "Когда лучше всего принимать витамин D?",
         "a": "С основным приёмом пищи за день — прежде всего для улучшения жирового всасывания. Утром или в обед (с завтраком или обедом) обычно предпочтительнее, чем вечером, поскольку витамин D может умеренно повышать бодрость, а некоторые данные свидетельствуют о том, что вечерний приём добавок может незначительно влиять на выработку мелатонина. Тем не менее регулярность гораздо важнее времени приёма: принимайте его в тот момент дня, когда вы точно не забудете.",
         "sources": [
-          { "label": "Mulligan GB, Licata A (2010) — Taking vitamin D with the largest meal improves absorption and results in higher serum levels of 25-hydroxyvitamin D. J Bone Miner Res 25(4):928-930", "url": "https://onlinelibrary.wiley.com/doi/10.1002/jbmr.67" },
-          { "label": "Abboud M (2022) — Vitamin D Supplementation and Sleep: A Systematic Review and Meta-Analysis of Intervention Studies. Nutrients 14(5):1076", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8912284/" },
-          { "label": "Holick MF (2007) — Vitamin D Deficiency. NEJM 357:266-281", "url": "https://www.nejm.org/doi/full/10.1056/NEJMra070553" }
+          {
+            "label": "Mulligan GB, Licata A (2010) — Taking vitamin D with the largest meal improves absorption and results in higher serum levels of 25-hydroxyvitamin D. J Bone Miner Res 25(4):928-930",
+            "url": "https://onlinelibrary.wiley.com/doi/10.1002/jbmr.67"
+          },
+          {
+            "label": "Abboud M (2022) — Vitamin D Supplementation and Sleep: A Systematic Review and Meta-Analysis of Intervention Studies. Nutrients 14(5):1076",
+            "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8912284/"
+          },
+          {
+            "label": "Holick MF (2007) — Vitamin D Deficiency. NEJM 357:266-281",
+            "url": "https://www.nejm.org/doi/full/10.1056/NEJMra070553"
+          }
         ]
       }
     },
@@ -470,45 +667,90 @@
         "q": "Что такое оксид азота и при чём здесь солнце?",
         "a": "Оксид азота (NO) — сигнальная молекула, расширяющая кровеносные сосуды, снижающая артериальное давление и улучшающая кровообращение. Кожа хранит большие количества нитритных и нитрозотиольных соединений, которые высвобождают NO в кровоток в течение нескольких минут под воздействием UVA. Это полностью независимо от синтеза витамина D — происходит через стекло, в полутени и даже зимой, когда UVB отсутствует. Исследования группы Ричарда Уэллера из Эдинбургского университета позволяют предположить, что высвобождение NO под действием UVA может объяснять хорошо задокументированную связь между солнечным облучением и снижением сердечно-сосудистой смертности — в большей степени, чем это может объяснить один лишь витамин D.",
         "sources": [
-          { "label": "Liu D, Fernandez BO, Hamilton A, Lang NN, Gallagher JMC, Newby DE, Feelisch M, Weller RB (2014) — UVA Irradiation of Human Skin Vasodilates Arterial Vasculature and Lowers Blood Pressure Independently of Nitric Oxide Synthase. J Invest Dermatol 134(7):1839-1846", "url": "https://pubmed.ncbi.nlm.nih.gov/24445737/" },
-          { "label": "Lindqvist PG et al. (2016) — Avoidance of sun exposure as a risk factor for major causes of death: a competing risk analysis of the Melanoma in Southern Sweden cohort. J Intern Med 280(4):375-387", "url": "https://pubmed.ncbi.nlm.nih.gov/26992108/" },
-          { "label": "Weller RB (2016) — Sunlight Has Cardiovascular Benefits Independently of Vitamin D. Blood Purif 41(1-3):130-134", "url": "https://karger.com/bpu/article/41/1-3/130/328295/" }
+          {
+            "label": "Liu D, Fernandez BO, Hamilton A, Lang NN, Gallagher JMC, Newby DE, Feelisch M, Weller RB (2014) — UVA Irradiation of Human Skin Vasodilates Arterial Vasculature and Lowers Blood Pressure Independently of Nitric Oxide Synthase. J Invest Dermatol 134(7):1839-1846",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/24445737/"
+          },
+          {
+            "label": "Lindqvist PG et al. (2016) — Avoidance of sun exposure as a risk factor for major causes of death: a competing risk analysis of the Melanoma in Southern Sweden cohort. J Intern Med 280(4):375-387",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/26992108/"
+          },
+          {
+            "label": "Weller RB (2016) — Sunlight Has Cardiovascular Benefits Independently of Vitamin D. Blood Purif 41(1-3):130-134",
+            "url": "https://karger.com/bpu/article/41/1-3/130/328295/"
+          }
         ]
       },
       "q2": {
         "q": "Как солнечный свет влияет на циркадные ритмы?",
         "a": "Свет — главный «задатчик времени» (zeitgeber) для циркадных часов человека. Утренний солнечный свет, богатый коротковолновым синим светом (460–480 нм), посылает сигналы в ганглиозные клетки сетчатки, которые в свою очередь сообщают супрахиазматическому ядру (SCN) мозга подавить мелатонин и запустить кортизоловую реакцию пробуждения. Это закрепляет 24-часовые биологические часы. Недостаточное утреннее световое воздействие задерживает наступление сна, нарушает гормональный ритм и связано с расстройствами настроения и метаболическими нарушениями. Идеальное время — первые 30–60 минут после пробуждения на улице — даже в пасмурные дни наружный свет обычно в 10–50 раз ярче, чем внутреннее освещение.",
         "sources": [
-          { "label": "Berson DM, Dunn FA, Takao M (2002) — Phototransduction by retinal ganglion cells that set the circadian clock. Science 295(5557):1070-1073", "url": "https://pubmed.ncbi.nlm.nih.gov/11834835/" },
-          { "label": "Hattar S, Liao HW, Takao M, Berson DM, Yau KW (2002) — Melanopsin-containing retinal ganglion cells: architecture, projections, and intrinsic photosensitivity. Science 295(5557):1065-1070", "url": "https://pubmed.ncbi.nlm.nih.gov/11834834/" },
-          { "label": "Wright KP Jr et al. (2013) — Entrainment of the human circadian clock to the natural light-dark cycle. Curr Biol 23(16):1554-1558", "url": "https://pubmed.ncbi.nlm.nih.gov/23910656/" }
+          {
+            "label": "Berson DM, Dunn FA, Takao M (2002) — Phototransduction by retinal ganglion cells that set the circadian clock. Science 295(5557):1070-1073",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/11834835/"
+          },
+          {
+            "label": "Hattar S, Liao HW, Takao M, Berson DM, Yau KW (2002) — Melanopsin-containing retinal ganglion cells: architecture, projections, and intrinsic photosensitivity. Science 295(5557):1065-1070",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/11834834/"
+          },
+          {
+            "label": "Wright KP Jr et al. (2013) — Entrainment of the human circadian clock to the natural light-dark cycle. Curr Biol 23(16):1554-1558",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/23910656/"
+          }
         ]
       },
       "q3": {
         "q": "Чем полезен утренний свет, если он не производит витамин D?",
         "a": "Утренний свет имеет совершенно иной спектральный состав по сравнению с полуденным солнцем: он богат красными и ближними инфракрасными волнами (600–1 000 нм), содержит мало UVB и умеренное количество синего света. Этот инфракрасный свет проникает на несколько сантиметров в ткани и активирует цитохром c-оксидазу в митохондриях, улучшая выработку ATP и клеточную энергию. Он также более мягко рассеивает ночной мелатонин по сравнению с высокоинтенсивным синим светом, облегчая переход к бодрствованию. Устройства красного и ближнего инфракрасного света (длины волн 630–850 нм) воспроизводят часть этого спектра в терапевтических целях.",
         "sources": [
-          { "label": "Karu TI (2010) — Multiple roles of cytochrome c oxidase in mammalian cells under action of red and IR-A radiation. IUBMB Life 62(8):607-610", "url": "https://pubmed.ncbi.nlm.nih.gov/20681024/" },
-          { "label": "Hamblin MR (2017) — Mechanisms and Mitochondrial Redox Signaling in Photobiomodulation. Photochem Photobiol 94(2):199-212", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5844808/" },
-          { "label": "de Freitas LF, Hamblin MR (2016) — Proposed Mechanisms of Photobiomodulation or Low-Level Light Therapy. IEEE J Sel Top Quantum Electron 22(3):7000417", "url": "https://pubmed.ncbi.nlm.nih.gov/28070154/" }
+          {
+            "label": "Karu TI (2010) — Multiple roles of cytochrome c oxidase in mammalian cells under action of red and IR-A radiation. IUBMB Life 62(8):607-610",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/20681024/"
+          },
+          {
+            "label": "Hamblin MR (2017) — Mechanisms and Mitochondrial Redox Signaling in Photobiomodulation. Photochem Photobiol 94(2):199-212",
+            "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5844808/"
+          },
+          {
+            "label": "de Freitas LF, Hamblin MR (2016) — Proposed Mechanisms of Photobiomodulation or Low-Level Light Therapy. IEEE J Sel Top Quantum Electron 22(3):7000417",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/28070154/"
+          }
         ]
       },
       "q4": {
         "q": "Есть ли связь между солнцем и иммунитетом помимо витамина D?",
         "a": "Да. UV-облучение независимо модулирует иммунную функцию через механизмы, отдельные от витамина D: оно индуцирует регуляторные T-клетки и изменяет антигенпрезентирующие клетки таким образом, что подавляет воспалительные реакции. Это основа для UV-фототерапии, клинически применяемой при псориазе, экземе и витилиго. Некоторые исследователи связывают эту широкую UV-иммуномодуляцию с широтным градиентом распространённости аутоиммунных заболеваний — рассеянный склероз, сахарный диабет 1-го типа и воспалительные заболевания кишечника значительно чаще встречаются на высоких широтах, что лишь частично объясняется уровнями витамина D.",
         "sources": [
-          { "label": "Hart PH, Gorman S, Finlay-Jones JJ (2011) — Modulation of the immune system by UV radiation: more than just the effects of vitamin D? Nat Rev Immunol 11(9):584-596", "url": "https://www.nature.com/articles/nri3045" },
-          { "label": "Munger KL et al. (2006) — Serum 25-hydroxyvitamin D levels and risk of multiple sclerosis. JAMA 296(23):2832-2838", "url": "https://pubmed.ncbi.nlm.nih.gov/17179460/" },
-          { "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/" }
+          {
+            "label": "Hart PH, Gorman S, Finlay-Jones JJ (2011) — Modulation of the immune system by UV radiation: more than just the effects of vitamin D? Nat Rev Immunol 11(9):584-596",
+            "url": "https://www.nature.com/articles/nri3045"
+          },
+          {
+            "label": "Munger KL et al. (2006) — Serum 25-hydroxyvitamin D levels and risk of multiple sclerosis. JAMA 296(23):2832-2838",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/17179460/"
+          },
+          {
+            "label": "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108",
+            "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/"
+          }
         ]
       },
       "q5": {
         "q": "Влияет ли солнечный свет на настроение? (серотонин и мелатонин)",
         "a": "Существенно. Яркий свет стимулирует синтез серотонина через ядра шва в стволе мозга — этот механизм лежит в основе светотерапии как терапии первой линии при сезонном аффективном расстройстве (SAD). Серотонин также является предшественником мелатонина: достаточный дневной уровень серотонина обеспечивает лучшую выработку мелатонина ночью, улучшая качество сна. Отдельно от этого высокоинтенсивный наружный свет запускает выброс дофамина в сетчатке, что, по всей видимости, замедляет прогрессирование миопии у детей. Популяционные исследования неизменно демонстрируют связь между временем на улице, настроением и качеством сна, которая выходит далеко за рамки уровня витамина D.",
         "sources": [
-          { "label": "Lambert GW, Reid C, Kaye DM, Jennings GL, Esler MD (2002) — Effect of sunlight and season on serotonin turnover in the brain. Lancet 360(9348):1840-1842", "url": "https://pubmed.ncbi.nlm.nih.gov/12480364/" },
-          { "label": "Golden RN et al. (2005) — The efficacy of light therapy in the treatment of mood disorders: a review and meta-analysis. Am J Psychiatry 162(4):656-662", "url": "https://pubmed.ncbi.nlm.nih.gov/15800134/" },
-          { "label": "Wu PC, Tsai CL, Wu HL, Yang YH, Kuo HK (2013) — Outdoor activity during class recess reduces myopia onset and progression in school children. Ophthalmology 120(5):1080-1085", "url": "https://pubmed.ncbi.nlm.nih.gov/23462271/" }
+          {
+            "label": "Lambert GW, Reid C, Kaye DM, Jennings GL, Esler MD (2002) — Effect of sunlight and season on serotonin turnover in the brain. Lancet 360(9348):1840-1842",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/12480364/"
+          },
+          {
+            "label": "Golden RN et al. (2005) — The efficacy of light therapy in the treatment of mood disorders: a review and meta-analysis. Am J Psychiatry 162(4):656-662",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/15800134/"
+          },
+          {
+            "label": "Wu PC, Tsai CL, Wu HL, Yang YH, Kuo HK (2013) — Outdoor activity during class recess reduces myopia onset and progression in school children. Ophthalmology 120(5):1080-1085",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/23462271/"
+          }
         ]
       }
     }
@@ -592,6 +834,7 @@
     "pageTitle": "Станьте партнёром Vitamina D Explorer",
     "pageSubtitle": "Охватите пользователей, заботящихся о здоровье, именно тогда, когда им нужен ваш продукт",
     "heroDescription": "Vitamina D Explorer — бесплатный научный калькулятор витамина D от солнца, которым пользуются люди, активно следящие за уровнем витамина D. Когда наши пользователи не могут синтезировать витамин D естественным путём, они видят персонализированные рекомендации — здесь появляется ваш бренд.",
+    "eyebrow": "Для брендов и партнёров",
     "whyTitle": "Почему стоит сотрудничать с нами?",
     "why1Title": "Контекстная релевантность",
     "why1Text": "Ваш продукт появляется именно тогда, когда пользователям он нужен больше всего — когда они не могут производить витамин D и ищут советы по добавкам.",
@@ -620,7 +863,8 @@
     "ctaTitle": "Давайте поговорим",
     "ctaText": "Будь вы бренд добавок, платформа здоровья или велнес-компания — мы будем рады обсудить, как Vitamina D Explorer может работать для вашей аудитории.",
     "ctaEmail": "Связаться с нами",
-    "ctaNote": "Мы отвечаем в течение 48 часов. Предложения о партнёрстве приветствуются для брендов любого размера."
+    "ctaNote": "Мы отвечаем в течение 48 часов. Предложения о партнёрстве приветствуются для брендов любого размера.",
+    "backToApp": "Попробовать приложение"
   },
   "install": {
     "banner": {
@@ -668,28 +912,70 @@
     "verdictNever": "{city}: солнце никогда не поднимается достаточно высоко для синтеза витамина D.",
     "impossibleRange": "С {startMonth} по {endMonth} синтез невозможен — нужны добавки.",
     "exactWindow": "Точнее: {dateRange}.",
+    "exactWindowLabel": "Точное окно",
     "yearHeading": "Годовой профиль — {city}",
     "yearCaption": "Сколько часов в день солнце стоит достаточно высоко для синтеза витамина D — по месяцам года.",
+    "yearLegendLow": "0 ч",
+    "yearLegendHigh": "10 ч+",
     "seasonHeading": "Солнечные окна по сезонам",
     "seasonWindow": "{month}: с {start} до {end}, около {minutes} мин для 1000 МЕ.",
     "seasonImpossible": "{month}: синтез невозможен.",
     "seasonNote": "Оценка для III типа кожи по Фицпатрику: открытые руки и лицо, ясное небо.",
     "supplementHeading": "Когда принимать добавки — {city}",
     "supplementBody": "В месяцы без солнечного синтеза витамин D поступает только с пищей или из добавок. Его принимают в форме D3, часто вместе с магнием, необходимым организму для активации витамина D, и витамином K (в форме K2), который способствует поддержанию нормального состояния костей.",
+    "supplementMore": "Подробнее о добавках →",
     "ctaLabel": "Рассчитать моё окно — {city}",
     "notifyLead": "{city}: сообщим в дни, когда можно получить витамин D.",
     "notifyOff": "🔔 Уведомить меня",
     "notifyOn": "🔔 Подписка активна",
     "faqHeading": "Частые вопросы о витамине D — {city}",
-  "nearbyHeading": "Города поблизости",
-  "indexTitle": "Витамин D от солнца — по городам",
-  "indexDescription": "Когда можно получить витамин D от солнца в 73 городах мира: возможные месяцы, сезонные окна и когда принимать добавки.",
-  "indexHeading": "Витамин D от солнца — по городам",
-  "indexIntro": "Выберите свой город, чтобы увидеть, в какие месяцы солнце позволяет вырабатывать витамин D, с окнами для каждого сезона.",
-  "allCitiesLink": "Все города",
-  "viewCityPage": "{city}: полная страница →",
+    "nearbyHeading": "Города поблизости",
+    "indexTitle": "Витамин D от солнца — по городам",
+    "indexDescription": "Когда можно получить витамин D от солнца в 73 городах мира: возможные месяцы, сезонные окна и когда принимать добавки.",
+    "indexHeading": "Витамин D от солнца — по городам",
+    "indexIntro": "Выберите свой город, чтобы увидеть, в какие месяцы солнце позволяет вырабатывать витамин D, с окнами для каждого сезона.",
+    "indexEyebrow": "Каталог городов",
+    "indexCitiesLabel": "города",
+    "allCitiesLink": "Все города",
+    "viewCityPage": "{city}: полная страница →",
+    "indexBandVeryHigh": "Экстремальные широты (55°+) — долгие зимы без полезного солнца",
+    "indexBandHigh": "Высокие широты (45–55°)",
+    "indexBandMid": "Средние широты (35–45°)",
+    "indexBandSub": "Субтропики (23–35°)",
+    "indexBandTrop": "Тропики (<23°) — полезное солнце почти круглый год",
+    "indexMonths": "{count, plural, one {# солнечный месяц} few {# солнечных месяца} many {# солнечных месяцев} other {# солнечных месяца}}",
+    "indexAllYear": "солнце круглый год",
+    "indexNever": "без солнечного синтеза",
+    "indexSearchPlaceholder": "Поиск города…",
+    "indexNoResults": "Городов не найдено",
+    "indexClearSearch": "Очистить поиск",
+    "indexNearestDistance": "Ближайший — в {km} км",
+    "indexNoneNearby": "Поблизости нет ни одного, но вот ближайшие",
+    "indexNearMe": "Рядом",
+    "indexNearYou": "Ближайшие",
+    "indexNearMeLocating": "Определение…",
+    "indexNearMeDenied": "Доступ к геолокации запрещён",
+    "indexNearMeUnavailable": "Геолокация недоступна",
+    "indexShowAll": "Показать все",
+    "regionAll": "Все",
+    "regionEurope": "Европа",
+    "regionAmericas": "Америка",
+    "regionAsia": "Азия",
+    "regionAfrica": "Африка",
+    "regionOceania": "Океания",
     "faqWinterQ": "{city}: можно ли зимой получить витамин D от солнца?",
     "faqMinutesQ": "{city}: сколько минут на солнце нужно?",
     "faqMinutesA": "Летом около {minutes} минут с открытыми руками и лицом достаточно для 1000 МЕ (III тип кожи, ясное небо)."
+  },
+  "offline": {
+    "title": "Нет подключения",
+    "description": "Vitamin D Explorer нужно интернет-соединение для загрузки данных о погоде и городах. Повторите попытку, когда появится связь.",
+    "retry": "Повторить"
+  },
+  "theme": {
+    "label": "Тема",
+    "auto": "Авто",
+    "light": "Светлая",
+    "dark": "Тёмная"
   }
 }
