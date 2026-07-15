@@ -4,6 +4,8 @@ import { useState, useEffect, useCallback } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { useInstallPrompt } from "@/hooks/useInstallPrompt";
 import { isStandalone, setInstallBannerSeen } from "@/lib/install";
+import { useSolarPhase } from "@/hooks/useSolarPhase";
+import { PHASE_STYLE } from "@/lib/solar-phase";
 
 interface Props {
   lat: number;
@@ -41,6 +43,7 @@ export default function NotificationToggle({ lat, lon, tz, timezone, skinType, a
   const tInstall = useTranslations("install");
   const locale = useLocale();
   const { platform, isInAppBrowser, openModal, trigger } = useInstallPrompt();
+  const phase = useSolarPhase(lat, lon) ?? "day";
 
   const showAndroidTipToast = useCallback(() => {
     setInstallBannerSeen();
@@ -54,12 +57,14 @@ export default function NotificationToggle({ lat, lon, tz, timezone, skinType, a
     text.className = "flex-1";
     const cta = document.createElement("button");
     cta.textContent = tInstall("banner.cta");
-    cta.className = "px-3 py-1 rounded-md bg-amber-400 text-text-primary font-bold text-xs";
+    // Phase-adaptive primary fill (matches PhaseButton / the app's one CTA colour).
+    cta.className = "px-3 py-1.5 rounded-md text-white font-semibold text-caption";
+    cta.style.background = PHASE_STYLE[phase].cta;
     cta.onclick = async () => { toast.remove(); await trigger(); };
     toast.append(text, cta);
     document.body.appendChild(toast);
     setTimeout(() => toast.remove(), 8000);
-  }, [tInstall, trigger]);
+  }, [tInstall, trigger, phase]);
 
   // Check permission on mount and when user returns to tab (e.g. after changing browser settings)
   useEffect(() => {
