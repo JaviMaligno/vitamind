@@ -51,7 +51,7 @@ export default function CityHeroBold({
   const statColor = tone === "possible" ? PHASE_STYLE[phase].stat : "#cbd5e1";
 
   return (
-    <section className="relative isolate overflow-hidden rounded-[2rem] sm:rounded-[2.5rem] min-h-[440px] sm:min-h-[560px] lg:min-h-[600px]">
+    <section className="relative isolate flex flex-col justify-end overflow-hidden rounded-[2rem] sm:rounded-[2.5rem] min-h-[440px] sm:min-h-[560px] lg:min-h-[600px]">
       {/* the sky */}
       <div className="absolute inset-0" style={{ background: PHASE_STYLE[phase].grad }} suppressHydrationWarning aria-hidden />
 
@@ -110,7 +110,7 @@ export default function CityHeroBold({
       />
 
       {/* content, anchored to the bottom like a poster */}
-      <div className="relative z-10 flex h-full flex-col justify-end gap-5 p-6 sm:p-10 lg:p-14">
+      <div className="relative z-10 flex flex-col gap-5 p-6 sm:p-10 lg:p-14">
         <p className="text-caption sm:text-sm font-semibold uppercase tracking-[0.2em] text-white/80">
           {eyebrow}
         </p>

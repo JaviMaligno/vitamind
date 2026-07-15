@@ -72,7 +72,7 @@ export default function DayHeroBold({ nowStatus, cityName, cityFlag, targetIU, l
   const showData = ns.state === "good_now" || ns.state === "upcoming";
 
   return (
-    <section className="relative isolate overflow-hidden rounded-[2rem] sm:rounded-[2.5rem] min-h-[440px] sm:min-h-[540px]">
+    <section className="relative isolate flex flex-col justify-end overflow-hidden rounded-[2rem] sm:rounded-[2.5rem] min-h-[440px] sm:min-h-[540px]">
       {/* the sky */}
       <div className="absolute inset-0" style={{ background: PHASE_STYLE[phase].grad }} suppressHydrationWarning aria-hidden />
 
@@ -126,7 +126,7 @@ export default function DayHeroBold({ nowStatus, cityName, cityFlag, targetIU, l
       />
 
       {/* content, anchored to the bottom like a poster */}
-      <div className="relative z-10 flex h-full flex-col justify-end gap-4 p-6 sm:p-10 lg:p-14">
+      <div className="relative z-10 flex flex-col gap-4 p-6 sm:p-10 lg:p-14">
         {loading ? (
           <div className="animate-pulse space-y-4">
             <div className="h-6 w-40 rounded bg-white/20" />

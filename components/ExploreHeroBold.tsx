@@ -159,9 +159,9 @@ export default function ExploreHeroBold({
   // No-location: a poster with the search/GPS entry.
   if (!hasLocation) {
     return (
-      <section className="relative isolate overflow-hidden rounded-[2rem] sm:rounded-[2.5rem] min-h-[420px] sm:min-h-[500px]">
+      <section className="relative isolate flex flex-col justify-end overflow-hidden rounded-[2rem] sm:rounded-[2.5rem] min-h-[420px] sm:min-h-[500px]">
         {Sky}
-        <div className="relative z-10 flex h-full flex-col justify-end gap-5 p-6 sm:p-10 lg:p-14">
+        <div className="relative z-10 flex flex-col gap-5 p-6 sm:p-10 lg:p-14">
           <h1 className="font-display font-bold text-4xl sm:text-5xl md:text-6xl leading-[1.02] tracking-tight text-white [text-shadow:0_2px_24px_rgba(0,0,0,0.4)]">
             {t("whereAreYou")}
           </h1>
@@ -197,9 +197,9 @@ export default function ExploreHeroBold({
   }
 
   return (
-    <section className="relative isolate overflow-hidden rounded-[2rem] sm:rounded-[2.5rem] min-h-[420px] sm:min-h-[520px]">
+    <section className="relative isolate flex flex-col justify-end overflow-hidden rounded-[2rem] sm:rounded-[2.5rem] min-h-[420px] sm:min-h-[520px]">
       {Sky}
-      <div className="relative z-10 flex h-full flex-col justify-end gap-4 p-6 sm:p-10 lg:p-14">
+      <div className="relative z-10 flex flex-col gap-4 p-6 sm:p-10 lg:p-14">
         {/* status pill */}
         <div className="flex items-center gap-2">
           <span className="inline-block h-2.5 w-2.5 rounded-full" style={{ background: dot }} />
