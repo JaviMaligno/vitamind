@@ -75,9 +75,9 @@
      Neón (#4ade80) sólo en night; en las fases cálidas/claras un verde algo
      más suave y desaturado que no grita contra el paisaje del gradiente. */
   --stat-dawn: #8fe6a3;                             /* verde suave, tibio */
-  --stat-day: #63e0ab;                              /* menta, no compite con el azul */
+  --stat-day: #6fd3a0;                              /* menta más apagada, menos eléctrica sobre el azul */
   --stat-dusk: #9ae89a;                             /* verde-lima suave, cálido */
-  --stat-night: #4ade80;                            /* neón brillante sobre navy */
+  --stat-night: #5ace93;                            /* verde claro, menos neón sobre navy */
   --color-on-window: #f4f1ff;                     /* texto sobre ventana */
   --color-on-window-faint: rgba(255, 255, 255, 0.55);
 
