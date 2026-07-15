@@ -2,6 +2,7 @@
 
 import { useMemo } from "react";
 import { useTranslations } from "next-intl";
+import { Pill } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import PartnerBadge from "@/components/PartnerBadge";
 import { computeExposure, computeExposureFromCurve, type SkinType } from "@/lib/vitd";
@@ -41,11 +42,11 @@ export default function VitDEstimate({ weather, curve, skinType, areaFraction, a
   const isTheoretical = !weatherResult && !!curveResult;
 
   return (
-    <div className="bg-surface-card rounded-xl p-3.5 border border-border-subtle mt-2.5">
-      <div className="text-[10px] text-text-secondary font-semibold mb-2 uppercase tracking-wider">
+    <div className="bg-surface-card rounded-xl p-4 border border-border-subtle mt-2.5">
+      <div className="text-caption text-text-secondary font-semibold mb-2 uppercase tracking-wider">
         {t("title")}
         {isTheoretical && (
-          <span className="ml-2 text-[9px] text-accent/50 font-normal normal-case tracking-normal">
+          <span className="ml-2 text-caption text-accent/60 font-normal normal-case tracking-normal">
             {t("theoreticalHint")}
           </span>
         )}
@@ -53,11 +54,12 @@ export default function VitDEstimate({ weather, curve, skinType, areaFraction, a
 
       {!result && (
         <div>
-          <div className="text-xs text-red-500 font-semibold">
+          <div className="text-body text-red-500 font-semibold">
             {t("insufficientUV")}
           </div>
-          <div className="text-[11px] text-text-muted mt-2 leading-relaxed">
-            💊 <Link href="/learn#supplement" className="underline decoration-dotted hover:text-text-secondary transition-colors">{t("supplementAdvice")}</Link>
+          <div className="text-caption text-text-muted mt-2 leading-relaxed flex items-start gap-1.5">
+            <Pill className="h-4 w-4 shrink-0 text-accent mt-0.5" aria-hidden />
+            <Link href="/learn#supplement" className="underline decoration-dotted hover:text-text-secondary transition-colors">{t("supplementAdvice")}</Link>
           </div>
           <PartnerBadge className="mt-2" />
         </div>
@@ -70,18 +72,18 @@ export default function VitDEstimate({ weather, curve, skinType, areaFraction, a
               <span className="text-[28px] font-bold text-accent font-mono">
                 {fmtMin(result.minutesNeeded)}
               </span>
-              <span className="text-[11px] text-text-muted ml-1.5">
+              <span className="text-caption text-text-muted ml-1.5">
                 {t("forTargetIU", { iu: targetIU })}
               </span>
             </div>
-            <div className="text-[11px] text-text-muted leading-relaxed">
+            <div className="text-caption text-text-muted leading-relaxed">
               <div>{t("bestHour")} <strong className="text-accent">{result.bestHour}:00</strong> (UVI {result.bestUVI.toFixed(1)})</div>
               <div>{t("uvWindow")} <strong className="text-text-secondary">{result.windowStart}:00 – {result.windowEnd}:00</strong></div>
             </div>
           </div>
 
           {/* Hourly bar chart */}
-          <div className="text-[9px] text-text-faint mb-1">
+          <div className="text-caption text-text-faint mb-1.5">
             {t("hourlyTitleDynamic", { iu: targetIU })}
           </div>
           <div style={{ display: "flex", gap: 1, alignItems: "flex-end", height: 50 }}>
@@ -110,12 +112,12 @@ export default function VitDEstimate({ weather, curve, skinType, areaFraction, a
                             : "var(--color-chart-bar-slow)"
                         : "var(--color-chart-bar-inactive)",
                     }} />
-                    <span className="text-[7px] text-text-faint">{h.hour}</span>
+                    <span className="text-[10px] text-text-faint font-mono">{h.hour}</span>
                   </div>
                 );
               })}
           </div>
-          <div className="flex gap-2.5 mt-1.5 text-[8px] text-text-faint">
+          <div className="flex flex-wrap gap-x-3 gap-y-1 mt-2 text-caption text-text-faint">
             <span><span style={{ display: "inline-block", width: 8, height: 8, borderRadius: 2, background: "var(--color-chart-bar-fast)", marginRight: 3, verticalAlign: "middle" }} />{t("lte15")}</span>
             <span><span style={{ display: "inline-block", width: 8, height: 8, borderRadius: 2, background: "var(--color-chart-bar-medium)", marginRight: 3, verticalAlign: "middle" }} />{t("lte30")}</span>
             <span><span style={{ display: "inline-block", width: 8, height: 8, borderRadius: 2, background: "var(--color-chart-bar-slow)", marginRight: 3, verticalAlign: "middle" }} />{t("gt30")}</span>
@@ -123,13 +125,13 @@ export default function VitDEstimate({ weather, curve, skinType, areaFraction, a
 
           {/* Warning if target exceeds safe max */}
           {result.targetCapped && (
-            <div className="text-[10px] text-amber-500/80 mt-2 leading-relaxed">
+            <div className="text-caption text-amber-500/90 mt-2 leading-relaxed">
               {t("targetCappedWarning", { max: Math.round(result.maxIU) })}
             </div>
           )}
 
           {/* Disclaimer */}
-          <div className="text-[8px] text-text-faint mt-2 leading-relaxed">
+          <div className="text-caption text-text-faint mt-2 leading-relaxed">
             {isTheoretical ? t("disclaimerTheoretical") : t("disclaimerReal")}
           </div>
         </div>
