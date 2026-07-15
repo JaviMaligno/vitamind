@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useTranslations } from "next-intl";
+import { LogIn } from "lucide-react";
 import { getSupabase } from "@/lib/supabase";
 import type { User } from "@supabase/supabase-js";
 
@@ -94,10 +95,12 @@ export default function AuthButton({ onAuthChange }: Props) {
     return (
       <button
         onClick={() => setShowForm(true)}
-        className="inline-flex min-h-[44px] items-center rounded-lg bg-amber-400/[0.12] px-3.5 text-caption font-medium text-accent cursor-pointer border-none hover:bg-amber-400/20 transition-colors"
+        className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center gap-1.5 rounded-lg bg-amber-400/[0.12] px-3 sm:px-3.5 text-caption font-medium text-accent cursor-pointer border-none hover:bg-amber-400/20 transition-colors"
         title={t("loginHint")}
+        aria-label={t("login")}
       >
-        {t("login")}
+        <LogIn className="h-4 w-4 shrink-0 sm:hidden" aria-hidden />
+        <span className="hidden sm:inline">{t("login")}</span>
       </button>
     );
   }

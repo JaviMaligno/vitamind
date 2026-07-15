@@ -20,9 +20,9 @@ function TopBar() {
 
   return (
     <div className="mx-auto max-w-[1280px] mb-4 px-4 pt-5">
-      <div className="flex items-center justify-between gap-2">
+      <div className="flex items-center justify-between gap-3">
         <div className="flex items-baseline gap-2.5 min-w-0">
-          <span className="text-[26px] sm:text-[30px] font-extrabold tracking-tight font-[Playfair_Display,serif] bg-gradient-to-br from-amber-500 to-amber-700 bg-clip-text text-transparent [text-shadow:0_1px_2px_rgba(0,0,0,0.08)]">
+          <span className="whitespace-nowrap text-[22px] sm:text-[30px] font-extrabold tracking-tight font-[Playfair_Display,serif] bg-gradient-to-br from-amber-500 to-amber-700 bg-clip-text text-transparent [text-shadow:0_1px_2px_rgba(0,0,0,0.08)]">
             {t("app.title")}
           </span>
           {/* Subtitle is noise on the crowded mobile header — desktop only. */}
@@ -30,7 +30,7 @@ function TopBar() {
             {t("app.subtitle")}
           </span>
         </div>
-        <div className="flex items-center gap-1.5 sm:gap-2">
+        <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
           <InstallHelpButton />
           <ThemeToggle />
           <LanguageSelector />

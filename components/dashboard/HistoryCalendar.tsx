@@ -248,9 +248,11 @@ export default function HistoryCalendar({ records, onToggleOverride, onNavigate 
 
   return (
     <div className="rounded-2xl bg-glass border border-glass-border backdrop-blur-md p-4 shadow-lg" {...swipeHandlers}>
-      {/* Header */}
-      <div className="flex items-center justify-between mb-3 gap-2">
-        <div className="flex gap-1 rounded-xl bg-surface-elevated p-1">
+      {/* Header — two rows on mobile (tabs above, time nav below) so the
+          segmented control + arrows + label never overflow a 390px viewport;
+          single row from sm up. */}
+      <div className="flex flex-col gap-2 mb-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex gap-1 rounded-xl bg-surface-elevated p-1 self-start">
           <button
             onClick={() => setViewMode("week")}
             className={`min-h-[44px] px-4 rounded-lg text-caption font-semibold transition-colors ${
@@ -269,7 +271,7 @@ export default function HistoryCalendar({ records, onToggleOverride, onNavigate 
           </button>
         </div>
 
-        <div className="flex items-center gap-1">
+        <div className="flex items-center justify-between gap-1 sm:justify-end">
           <button
             onClick={goBack}
             disabled={!canGoBack}
