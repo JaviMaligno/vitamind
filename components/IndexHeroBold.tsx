@@ -34,7 +34,7 @@ export default function IndexHeroBold({
   const phase = useSolarPhase(app.lat, app.lon) ?? "day";
 
   return (
-    <section className="relative isolate overflow-hidden rounded-[2rem] sm:rounded-[2.5rem] min-h-[380px] sm:min-h-[460px] lg:min-h-[60vh]">
+    <section className="relative isolate flex flex-col justify-end overflow-hidden rounded-[2rem] sm:rounded-[2.5rem] min-h-[360px] sm:min-h-[440px] lg:min-h-[500px]">
       {/* the sky */}
       <div className="absolute inset-0" style={{ background: PHASE_STYLE[phase].grad }} suppressHydrationWarning aria-hidden />
 
@@ -91,8 +91,10 @@ export default function IndexHeroBold({
         aria-hidden
       />
 
-      {/* content, anchored to the bottom like a poster */}
-      <div className="relative z-10 flex h-full flex-col justify-end gap-5 p-6 sm:p-10 lg:p-14">
+      {/* content, anchored to the bottom like a poster (the section itself is the
+          flex-col justify-end container — a child h-full/justify-end wouldn't
+          resolve against the section's min-height, leaving a void below). */}
+      <div className="relative z-10 flex flex-col gap-5 p-6 sm:p-10 lg:p-14">
         <p className="text-caption sm:text-sm font-semibold uppercase tracking-[0.2em] text-white/70">
           {eyebrow}
         </p>
