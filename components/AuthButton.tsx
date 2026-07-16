@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { LogIn } from "lucide-react";
 import { getSupabase } from "@/lib/supabase";
+import { getPathname } from "@/i18n/navigation";
 import type { User } from "@supabase/supabase-js";
 
 interface Props {
@@ -15,11 +16,12 @@ export default function AuthButton({ onAuthChange }: Props) {
   const [showForm, setShowForm] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [mode, setMode] = useState<"login" | "signup" | "resend">("login");
+  const [mode, setMode] = useState<"login" | "signup" | "resend" | "forgot">("login");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const t = useTranslations("auth");
+  const locale = useLocale();
 
   const sb = getSupabase();
 
@@ -58,13 +60,21 @@ export default function AuthButton({ onAuthChange }: Props) {
       const { error: err } = await sb.auth.resend({ type: "signup", email, options: { emailRedirectTo: window.location.origin } });
       if (err) setError(err.message);
       else setMessage(t("emailResent"));
+    } else if (mode === "forgot") {
+      // Supabase generates the reset token + link and emails it via the
+      // configured SMTP (Resend). redirectTo lands on the localized
+      // /reset-password page, which swaps the recovery session for a new password.
+      const redirectTo = window.location.origin + getPathname({ href: "/reset-password", locale });
+      const { error: err } = await sb.auth.resetPasswordForEmail(email, { redirectTo });
+      if (err) setError(err.message);
+      else setMessage(t("resetSent"));
     } else {
       const { error: err } = await sb.auth.signInWithPassword({ email, password });
       if (err) setError(err.message);
       else setShowForm(false);
     }
     setLoading(false);
-  }, [sb, email, password, mode, t]);
+  }, [sb, email, password, mode, t, locale]);
 
   const handleLogout = useCallback(async () => {
     if (!sb) return;
@@ -109,7 +119,7 @@ export default function AuthButton({ onAuthChange }: Props) {
     <div className="p-3 rounded-lg bg-amber-400/[0.03] border border-amber-400/[0.08] max-w-[280px]">
       <div className="flex justify-between items-center mb-2">
         <span className="text-[11px] font-semibold text-accent">
-          {mode === "login" ? t("login") : mode === "signup" ? t("signup") : t("resendConfirmation")}
+          {mode === "login" ? t("login") : mode === "signup" ? t("signup") : mode === "forgot" ? t("resetTitle") : t("resendConfirmation")}
         </span>
         <button
           onClick={() => setShowForm(false)}
@@ -130,7 +140,7 @@ export default function AuthButton({ onAuthChange }: Props) {
           className="w-full px-2 py-1.5 rounded-md bg-surface-input border border-border-default text-text-primary text-[11px] outline-none"
           required
         />
-        {mode !== "resend" && (
+        {mode !== "resend" && mode !== "forgot" && (
           <input
             type="password"
             placeholder={t("password")}
@@ -149,11 +159,11 @@ export default function AuthButton({ onAuthChange }: Props) {
             disabled={loading}
             className="flex-1 px-2.5 py-1 rounded-md bg-amber-400/15 text-accent text-[10px] font-semibold cursor-pointer border-none"
           >
-            {loading ? "..." : mode === "login" ? t("enter") : mode === "signup" ? t("register") : t("resend")}
+            {loading ? "..." : mode === "login" ? t("enter") : mode === "signup" ? t("register") : mode === "forgot" ? t("sendResetLink") : t("resend")}
           </button>
         </div>
         <div className="flex flex-col gap-0.5">
-          {mode !== "resend" && (
+          {(mode === "login" || mode === "signup") && (
             <button
               type="button"
               onClick={() => { setMode(mode === "login" ? "signup" : "login"); setError(""); setMessage(""); }}
@@ -162,7 +172,16 @@ export default function AuthButton({ onAuthChange }: Props) {
               {mode === "login" ? t("noAccount") : t("hasAccount")}
             </button>
           )}
-          {mode === "resend" && (
+          {mode === "login" && (
+            <button
+              type="button"
+              onClick={() => { setMode("forgot"); setError(""); setMessage(""); }}
+              className="px-2.5 py-1 rounded-md bg-transparent text-text-muted text-[9px] text-center cursor-pointer border-none"
+            >
+              {t("forgotPassword")}
+            </button>
+          )}
+          {(mode === "resend" || mode === "forgot") && (
             <button
               type="button"
               onClick={() => { setMode("login"); setError(""); setMessage(""); }}

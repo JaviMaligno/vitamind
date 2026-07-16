@@ -120,7 +120,14 @@
     "syncHint": "Optional — sync preferences across devices",
     "loginHint": "Log in to sync your preferences across devices",
     "checkEmail": "Check your email to confirm your account",
-    "emailResent": "Confirmation email resent"
+    "emailResent": "Confirmation email resent",
+    "sendResetLink": "Send reset link",
+    "resetSent": "Check your email to reset your password.",
+    "resetTitle": "Reset password",
+    "newPassword": "New password",
+    "updatePassword": "Update password",
+    "passwordUpdated": "Password updated. Redirecting…",
+    "resetLinkInvalid": "The link has expired or is invalid. Request a new one."
   },
   "notifications": {
     "on": "Notifications ON",

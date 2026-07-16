@@ -120,7 +120,14 @@
     "syncHint": "Optionnel — synchronisez vos préférences entre appareils",
     "loginHint": "Connectez-vous pour synchroniser vos préférences entre appareils",
     "checkEmail": "Vérifiez votre email pour confirmer votre compte",
-    "emailResent": "Email de confirmation renvoyé"
+    "emailResent": "Email de confirmation renvoyé",
+    "sendResetLink": "Envoyer le lien",
+    "resetSent": "Consultez votre email pour réinitialiser le mot de passe.",
+    "resetTitle": "Réinitialiser le mot de passe",
+    "newPassword": "Nouveau mot de passe",
+    "updatePassword": "Mettre à jour le mot de passe",
+    "passwordUpdated": "Mot de passe mis à jour. Redirection…",
+    "resetLinkInvalid": "Le lien a expiré ou est invalide. Demandez-en un nouveau."
   },
   "notifications": {
     "on": "Notifications activées",

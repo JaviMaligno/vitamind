@@ -120,7 +120,14 @@
     "syncHint": "Nebūtina — sinchronizuokite nustatymus tarp įrenginių",
     "loginHint": "Prisijunkite, kad sinchronizuotumėte nustatymus tarp įrenginių",
     "checkEmail": "Patikrinkite el. paštą ir patvirtinkite paskyrą",
-    "emailResent": "Patvirtinimo el. laiškas išsiųstas iš naujo"
+    "emailResent": "Patvirtinimo el. laiškas išsiųstas iš naujo",
+    "sendResetLink": "Siųsti nuorodą",
+    "resetSent": "Patikrinkite el. paštą, kad atkurtumėte slaptažodį.",
+    "resetTitle": "Atkurti slaptažodį",
+    "newPassword": "Naujas slaptažodis",
+    "updatePassword": "Atnaujinti slaptažodį",
+    "passwordUpdated": "Slaptažodis atnaujintas. Nukreipiama…",
+    "resetLinkInvalid": "Nuoroda nebegalioja arba neteisinga. Paprašykite naujos."
   },
   "notifications": {
     "on": "Pranešimai ĮJ",
