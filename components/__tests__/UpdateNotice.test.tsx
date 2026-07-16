@@ -30,6 +30,7 @@ class FakeWorker extends EventTarget {
 class FakeRegistration extends EventTarget {
   installing: FakeWorker | null = null;
   waiting: FakeWorker | null = null;
+  update = vi.fn(() => Promise.resolve());
   // Simulate the browser finding a byte-different sw.js (new build SHA):
   // an installing worker appears, then transitions to "installed".
   pushUpdate() {
@@ -185,5 +186,49 @@ describe("UpdateNotice — clicking Reload actually updates the app", () => {
       container.dispatchEvent(new Event("controllerchange"));
     });
     expect(reloadSpy).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe("UpdateNotice — foreground resume checks for a new version", () => {
+  it("calls registration.update() when the app becomes visible again", async () => {
+    // Warm resume: the app was backgrounded and re-opened without a reload,
+    // so nothing else would trigger a SW update check.
+    installSWContainer({ id: "old-controller" });
+    render(<UpdateNotice />);
+    await flush();
+
+    expect(registration.update).not.toHaveBeenCalled();
+    await act(async () => {
+      document.dispatchEvent(new Event("visibilitychange"));
+    });
+    expect(registration.update).toHaveBeenCalledTimes(1);
+  });
+
+  it("does NOT check while the app is hidden (backgrounded)", async () => {
+    installSWContainer({ id: "old-controller" });
+    render(<UpdateNotice />);
+    await flush();
+
+    Object.defineProperty(document, "visibilityState", { configurable: true, get: () => "hidden" });
+    try {
+      await act(async () => {
+        document.dispatchEvent(new Event("visibilitychange"));
+      });
+      expect(registration.update).not.toHaveBeenCalled();
+    } finally {
+      delete (document as unknown as { visibilityState?: unknown }).visibilityState;
+    }
+  });
+
+  it("stops checking after unmount (listener cleaned up)", async () => {
+    installSWContainer({ id: "old-controller" });
+    const { unmount } = render(<UpdateNotice />);
+    await flush();
+
+    unmount();
+    await act(async () => {
+      document.dispatchEvent(new Event("visibilitychange"));
+    });
+    expect(registration.update).not.toHaveBeenCalled();
   });
 });
