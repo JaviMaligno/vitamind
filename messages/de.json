@@ -950,7 +950,7 @@
     "indexNearestDistance": "Die nächste liegt {km} km entfernt",
     "indexNoneNearby": "Keine liegt wirklich in der Nähe, aber das sind die nächstgelegenen",
     "indexNearMe": "In der Nähe",
-    "indexNearYou": "In deiner Nähe",
+    "indexNearYou": "Städte in deiner Nähe",
     "indexNearMeLocating": "Wird lokalisiert…",
     "indexNearMeDenied": "Standortzugriff verweigert",
     "indexNearMeUnavailable": "Standort nicht verfügbar",

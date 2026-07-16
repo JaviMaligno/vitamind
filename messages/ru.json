@@ -950,7 +950,7 @@
     "indexNearestDistance": "Ближайший — в {km} км",
     "indexNoneNearby": "Поблизости нет ни одного, но вот ближайшие",
     "indexNearMe": "Рядом",
-    "indexNearYou": "Ближайшие",
+    "indexNearYou": "Города рядом с вами",
     "indexNearMeLocating": "Определение…",
     "indexNearMeDenied": "Доступ к геолокации запрещён",
     "indexNearMeUnavailable": "Геолокация недоступна",

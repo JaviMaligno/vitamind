@@ -24,9 +24,10 @@ export default function GpsErrorHint({ error, hint }: Props) {
 
   return (
     <div className="relative inline-flex" ref={ref}>
-      {/* Contained red pill so the message stays legible on ANY phase background
-          (it used to be faint red text floating on the page tint). */}
-      <span className="inline-flex items-center gap-1.5 rounded-lg border border-red-500/25 bg-red-500/12 px-2.5 py-1.5 text-caption font-medium text-red-600 dark:text-red-300">
+      {/* Glass-frost pill (86% surface) so the message stays legible on ANY phase
+          gradient. A translucent red *fill* vibrated illegibly ("neon") on the
+          bright day phase; here red is only the border + text accent over frost. */}
+      <span className="inline-flex items-center gap-1.5 rounded-lg border border-red-500/35 bg-glass backdrop-blur-md px-2.5 py-1.5 text-caption font-medium text-red-600 dark:text-red-300">
         {error}
         {hint && (
           <button

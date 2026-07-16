@@ -17,17 +17,20 @@ export default function GpsButton() {
     : isActive
       ? "text-emerald-400"
       : isDenied
-        ? "text-red-400"
+        ? "text-red-600 dark:text-red-400"
         : "text-accent";
 
-  // Contained glass surface + border in every state so the icon keeps contrast
-  // on any phase page tint (it used to float on a near-invisible bg-surface-card).
+  // Contained glass surface in every state so the icon keeps contrast on any
+  // phase gradient (it used to float on a near-invisible bg-surface-card). The
+  // denied state keeps the glass frost and signals error with a red border +
+  // red icon only — a translucent red *fill* vibrated illegibly ("neon") on the
+  // bright day-phase gradient.
   const bgColor = gps.loading
     ? "bg-glass border border-glass-border"
     : isActive
       ? "bg-emerald-500/15 border border-emerald-500/30 hover:bg-emerald-500/25"
       : isDenied
-        ? "bg-red-500/15 border border-red-500/30 hover:bg-red-500/25"
+        ? "bg-glass border border-red-500/40 hover:bg-surface-elevated"
         : "bg-glass border border-glass-border hover:bg-surface-elevated";
 
   return (

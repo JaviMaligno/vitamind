@@ -950,7 +950,7 @@
     "indexNearestDistance": "The nearest is {km} km away",
     "indexNoneNearby": "None are truly nearby, but these are the closest",
     "indexNearMe": "Near me",
-    "indexNearYou": "Nearest to you",
+    "indexNearYou": "Cities near you",
     "indexNearMeLocating": "Locating…",
     "indexNearMeDenied": "Location permission denied",
     "indexNearMeUnavailable": "Location unavailable",
