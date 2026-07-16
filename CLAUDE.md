@@ -58,7 +58,7 @@ next-intl with `messages/{es,en,fr,de,ru,lt}.json`. `i18n/routing.ts` defines lo
 
 ### Tests
 
-Vitest (`vitest.config.ts`, jsdom): test files under `lib/__tests__`, `app/api/__tests__`, `components/__tests__`, `i18n/__tests__`, `messages/__tests__`, `app/__tests__`. API route tests mock `lib/push-store` and `global.fetch`. `tests/e2e/` is a standalone Playwright script (not `@playwright/test` specs).
+Vitest (`vitest.config.ts`, jsdom): test files under `lib/__tests__`, `app/api/__tests__`, `components/__tests__`, `i18n/__tests__`, `messages/__tests__`, `app/__tests__`. API route tests mock `lib/push-store` and `global.fetch`. `tests/e2e/` holds standalone Playwright scripts (not `@playwright/test` specs), excluded from the Vitest run — execute them directly with `node` (e.g. `node tests/e2e/sw-update.spec.mjs`, which drives the real service worker in Chromium).
 
 ### PWA
 
