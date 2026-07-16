@@ -29,6 +29,7 @@ npm run e2e         # Standalone Playwright install-awareness script (needs BASE
 
 Routes are locale-segmented via next-intl (`es` default without prefix; `en`, `fr`, `de`, `ru`, `lt` prefixed). `proxy.ts` at the repo root is the middleware entry point (Next 16 convention) handling locale detection/redirects; it excludes `/api`.
 
+- **`app/layout.tsx`** — Passthrough root layout (just returns `children`). The real `<html>`/`<body>`, metadata, and PWA manifest link live in `app/[locale]/layout.tsx` (required by the next-intl as-needed i18n, where the default locale has no URL prefix). Service worker registration is **not** here — it's done client-side in `components/UpdateNotice.tsx`.
 - **`app/[locale]/page.tsx`** — Home. Other screens: `dashboard/`, `explore/`, `learn/`, `profile/`, `partners/`, `offline/`, `reset-password/`.
 - **`app/[locale]/[cityPrefix]/[city]/page.tsx`** — SEO city pages with localized route prefixes AND slugs (`/vitamina-d/madrid` ↔ `/en/vitamin-d/madrid`). `lib/city-routes.ts` + `i18n/metadata.ts` build the hreflang alternates.
 - **`app/[locale]/error.tsx`, `app/[locale]/not-found.tsx`, `app/global-error.tsx`** — error boundaries; localized copy under the `errorPage`/`notFoundPage` message keys.
@@ -61,8 +62,11 @@ Vitest (`vitest.config.ts`, jsdom): test files under `lib/__tests__`, `app/api/_
 
 ### PWA
 
-- Service worker generated at build time: `scripts/build-sw.mjs` renders `scripts/sw.template.js` → `public/sw.js` (gitignored), cache name versioned by git SHA. Cache-first for static assets, network-only for `/api`, network-first for pages with `/offline` fallback. No auto-`skipWaiting`; `UpdateNotice.tsx` prompts the user.
-- Manifest at `public/manifest.json`; icons via `scripts/generate-icons.mjs`.
+- Service worker: `public/sw.js` is **generated at build time** by `scripts/build-sw.mjs` from `scripts/sw.template.js` (runs via the `predev`/`prebuild` npm hooks; `public/sw.js` is gitignored). The template's `__BUILD_VERSION__` placeholder is replaced with the git SHA (or `VERCEL_GIT_COMMIT_SHA` on Vercel), so `CACHE_NAME` changes on every deploy and invalidates the previous cache.
+- Fetch strategy: static assets (`_next/static`, icons, `.json`) cache-first; `/api/*` network-only (always fresh); pages network-first with cache fallback, then the `/offline` page.
+- Update flow: the new SW does **not** `skipWaiting` automatically — it stays in `waiting`. `components/UpdateNotice.tsx` registers the SW, detects a waiting worker (only when a controller already exists, so the notice never shows on a first install), and shows a "new version / Reload" banner. Tapping Reload posts `{type:'SKIP_WAITING'}` to the waiting worker; the SW calls `self.skipWaiting()`, and the resulting `controllerchange` triggers `window.location.reload()` onto the new version. Covered by `components/__tests__/UpdateNotice.test.tsx` (unit) and `tests/e2e/sw-update.spec.mjs` (real-SW Playwright).
+- Manifest at `public/manifest.json` for standalone mobile install.
+- Icons generated via `scripts/generate-icons.mjs` (SVG → PNG via Sharp).
 
 ## Key Technical Details
 
