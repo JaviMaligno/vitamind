@@ -120,7 +120,14 @@
     "syncHint": "Opcional — sincroniza preferencias entre dispositivos",
     "loginHint": "Inicia sesión para sincronizar tus preferencias entre dispositivos",
     "checkEmail": "Revisa tu email para confirmar la cuenta",
-    "emailResent": "Email de confirmación reenviado"
+    "emailResent": "Email de confirmación reenviado",
+    "sendResetLink": "Enviar enlace",
+    "resetSent": "Revisa tu email para restablecer la contraseña.",
+    "resetTitle": "Restablecer contraseña",
+    "newPassword": "Nueva contraseña",
+    "updatePassword": "Actualizar contraseña",
+    "passwordUpdated": "Contraseña actualizada. Redirigiendo…",
+    "resetLinkInvalid": "El enlace ha caducado o no es válido. Solicita otro."
   },
   "notifications": {
     "on": "Notificaciones ON",

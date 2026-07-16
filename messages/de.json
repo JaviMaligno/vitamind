@@ -120,7 +120,14 @@
     "syncHint": "Optional — Einstellungen zwischen Geräten synchronisieren",
     "loginHint": "Anmelden, um Einstellungen zwischen Geräten zu synchronisieren",
     "checkEmail": "Überprüfe deine E-Mail, um dein Konto zu bestätigen",
-    "emailResent": "Bestätigungs-E-Mail erneut gesendet"
+    "emailResent": "Bestätigungs-E-Mail erneut gesendet",
+    "sendResetLink": "Link senden",
+    "resetSent": "Prüfe deine E-Mail, um das Passwort zurückzusetzen.",
+    "resetTitle": "Passwort zurücksetzen",
+    "newPassword": "Neues Passwort",
+    "updatePassword": "Passwort aktualisieren",
+    "passwordUpdated": "Passwort aktualisiert. Weiterleitung…",
+    "resetLinkInvalid": "Der Link ist abgelaufen oder ungültig. Fordere einen neuen an."
   },
   "notifications": {
     "on": "Benachrichtigungen AN",
