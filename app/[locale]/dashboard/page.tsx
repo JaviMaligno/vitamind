@@ -20,7 +20,7 @@ import Card from "@/components/ui/Card";
 import Flag from "@/components/ui/Flag";
 import PhaseButton from "@/components/PhaseButton";
 import GpsErrorHint from "@/components/GpsErrorHint";
-import { BookOpen, ArrowRight, MapPin } from "lucide-react";
+import { BookOpen, ArrowRight, MapPin, UserRound } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 
 // Full-row navigation link ("noUvLearnTitle" prompt, "Learn more"): same glass
@@ -87,7 +87,7 @@ export default function DashboardPage() {
     <div className="mx-auto max-w-[1280px] px-4 py-6 sm:py-8 space-y-6 sm:space-y-8">
       {/* Quick actions */}
       <div className="flex items-center gap-2">
-        <div className="flex-1">
+        <div className="flex-1 min-w-0">
           <CitySearch
             onSelect={app.selectCity}
             onAddFav={app.toggleFav}
@@ -99,9 +99,12 @@ export default function DashboardPage() {
         {hasCity && (
           <Link
             href="/profile"
-            className="inline-flex min-h-[44px] items-center rounded-lg bg-glass border border-glass-border px-3 text-text-muted text-caption hover:bg-surface-elevated hover:text-text-secondary transition-colors whitespace-nowrap"
+            aria-label={t("editProfile")}
+            title={t("editProfile")}
+            className="inline-flex min-h-[44px] min-w-[44px] shrink-0 items-center justify-center gap-1.5 rounded-lg bg-glass border border-glass-border px-3 text-text-muted text-caption hover:bg-surface-elevated hover:text-text-secondary transition-colors whitespace-nowrap"
           >
-            {t("editProfile")}
+            <UserRound className="h-4 w-4 shrink-0 sm:hidden" aria-hidden />
+            <span className="hidden sm:inline">{t("editProfile")}</span>
           </Link>
         )}
       </div>

@@ -101,22 +101,23 @@ export default function AuthButton({ onAuthChange }: Props) {
     );
   }
 
-  if (!showForm) {
-    return (
+  return (
+    <div className="relative">
       <button
-        onClick={() => setShowForm(true)}
+        onClick={() => setShowForm((v) => !v)}
         className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center gap-1.5 rounded-lg bg-amber-400/[0.12] px-3 sm:px-3.5 text-caption font-medium text-accent cursor-pointer border-none hover:bg-amber-400/20 transition-colors"
         title={t("loginHint")}
         aria-label={t("login")}
+        aria-expanded={showForm}
       >
         <LogIn className="h-4 w-4 shrink-0 sm:hidden" aria-hidden />
         <span className="hidden sm:inline">{t("login")}</span>
       </button>
-    );
-  }
-
-  return (
-    <div className="p-3 rounded-lg bg-amber-400/[0.03] border border-amber-400/[0.08] max-w-[280px]">
+      {/* Floating dropdown anchored to the trigger and capped to the viewport
+          width — rendering the form inline used to widen the header past the
+          screen (86px of horizontal overflow, so the page bg "ran out" on scroll). */}
+      {showForm && (
+        <div className="absolute right-0 top-full z-50 mt-2 w-[min(288px,calc(100vw-1.5rem))] rounded-xl bg-glass backdrop-blur-md border border-glass-border p-3 shadow-xl">
       <div className="flex justify-between items-center mb-2">
         <span className="text-[11px] font-semibold text-accent">
           {mode === "login" ? t("login") : mode === "signup" ? t("signup") : mode === "forgot" ? t("resetTitle") : t("resendConfirmation")}
@@ -192,6 +193,8 @@ export default function AuthButton({ onAuthChange }: Props) {
           )}
         </div>
       </form>
+        </div>
+      )}
     </div>
   );
 }

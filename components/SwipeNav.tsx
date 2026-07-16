@@ -20,6 +20,17 @@ export default function SwipeNav({ children }: { children: React.ReactNode }) {
 
   const idx = TABS.indexOf(pathname);
 
+  // Direction of the last tab change, so the incoming screen slides in from the
+  // side you swiped toward (forward = from the right, back = from the left) —
+  // a natural, Android-like transition instead of an instant jump.
+  const prevIdxRef = useRef(idx);
+  const dirRef = useRef(0);
+  if (idx !== -1 && prevIdxRef.current !== -1 && idx !== prevIdxRef.current) {
+    dirRef.current = idx > prevIdxRef.current ? 1 : -1;
+  }
+  if (idx !== -1) prevIdxRef.current = idx;
+  const anim = idx === -1 ? "" : dirRef.current < 0 ? "animate-tab-in-left" : "animate-tab-in-right";
+
   const onTouchStart = useCallback((e: React.TouchEvent) => {
     // Bail if the gesture begins inside a horizontal scroller — let it scroll.
     let el = e.target as HTMLElement | null;
@@ -51,7 +62,9 @@ export default function SwipeNav({ children }: { children: React.ReactNode }) {
 
   return (
     <div onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
-      {children}
+      <div key={pathname} className={anim}>
+        {children}
+      </div>
     </div>
   );
 }

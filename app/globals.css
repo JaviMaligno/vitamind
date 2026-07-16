@@ -163,3 +163,22 @@
     font-variant-numeric: tabular-nums lining-nums;
   }
 }
+
+/* Tab-swipe transition: the incoming screen slides in from the side you swiped
+   toward (SwipeNav sets the direction). A short fade + translate reads as a
+   natural, Android-like page slide without the cost of a full carousel. The
+   parent (SolarBackground) is overflow-x-clip, so the transient translate never
+   creates a horizontal scrollbar. Disabled under reduced-motion. */
+@keyframes tab-in-right {
+  from { opacity: 0; transform: translate3d(28px, 0, 0); }
+  to   { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+@keyframes tab-in-left {
+  from { opacity: 0; transform: translate3d(-28px, 0, 0); }
+  to   { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+.animate-tab-in-right { animation: tab-in-right 0.28s cubic-bezier(0.22, 0.61, 0.36, 1) both; }
+.animate-tab-in-left  { animation: tab-in-left  0.28s cubic-bezier(0.22, 0.61, 0.36, 1) both; }
+@media (prefers-reduced-motion: reduce) {
+  .animate-tab-in-right, .animate-tab-in-left { animation: none; }
+}
