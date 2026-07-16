@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import {
-  CITY_PREFIX, baseSlug, localizedCitySlug, cityIdFromSlug,
+  baseSlug, localizedCitySlug, cityIdFromSlug,
   cityPathname, cityUrl, buildCityAlternates, cityStaticParams,
   indexPathname, indexUrl, buildIndexAlternates, indexStaticParams,
 } from "@/lib/city-routes";

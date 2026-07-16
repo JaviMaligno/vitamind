@@ -982,5 +982,15 @@
     "auto": "Auto",
     "light": "Claro",
     "dark": "Oscuro"
+  },
+  "errorPage": {
+    "title": "Algo ha salido mal",
+    "message": "Ha ocurrido un error inesperado. Tus datos están a salvo — prueba a recargar la página.",
+    "retry": "Reintentar"
+  },
+  "notFoundPage": {
+    "title": "Página no encontrada",
+    "message": "La página que buscas no existe o se ha movido.",
+    "home": "Volver al inicio"
   }
 }

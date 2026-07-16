@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useCallback, useMemo, useEffect } from "react";
+import { useState, useCallback, useMemo } from "react";
+import { useMounted } from "@/hooks/useMounted";
 import { useTranslations } from "next-intl";
 import { useApp } from "@/context/AppProvider";
 import CityPageLink from "@/components/CityPageLink";
@@ -72,8 +73,7 @@ export default function DashboardPage() {
   // Render a stable, data-free placeholder until mounted, then swap to the
   // real content. All hooks above still run unconditionally every render;
   // only the returned JSX branches on `mounted`.
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+  const mounted = useMounted();
 
   if (!mounted) {
     return (

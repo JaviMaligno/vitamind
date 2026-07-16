@@ -147,21 +147,30 @@ export default function NotificationToggle({ lat, lon, tz, timezone, skinType, a
       return;
     }
 
-    const reg = await navigator.serviceWorker.ready;
-    const sub = await reg.pushManager.subscribe({
-      userVisibleOnly: true,
-      applicationServerKey: urlBase64ToUint8Array(vapidKey) as BufferSource,
-    });
+    // Only flip to "on" once the server confirms the subscription is stored —
+    // otherwise the toggle lies and the user never receives a notification.
+    try {
+      const reg = await navigator.serviceWorker.ready;
+      const sub = await reg.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: urlBase64ToUint8Array(vapidKey) as BufferSource,
+      });
 
-    await fetch("/api/push/subscribe", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        subscription: sub.toJSON(),
-        lat, lon, tz, timezone, skinType, areaFraction, cityName, locale,
-      }),
-    });
-    setStatus("on");
+      const res = await fetch("/api/push/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          subscription: sub.toJSON(),
+          lat, lon, tz, timezone, skinType, areaFraction, cityName, locale,
+        }),
+      });
+      if (!res.ok) throw new Error(`subscribe endpoint returned ${res.status}`);
+      setStatus("on");
+    } catch (err) {
+      console.error("Push subscription failed:", err);
+      setStatus("off");
+      return;
+    }
 
     // Post-success: Android tip toast (only when native install API is available and not standalone)
     if (platform === "native" && !isStandalone()) {

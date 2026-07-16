@@ -13,8 +13,13 @@ const PRECACHE_URLS = [
 ];
 
 self.addEventListener("install", (event) => {
+  // Precache each URL independently: cache.addAll() is atomic, so a single
+  // transient non-200 (e.g. mid-deploy) would fail the whole install and
+  // wedge returning users on the previous service worker.
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(PRECACHE_URLS))
+    caches.open(CACHE_NAME).then((cache) =>
+      Promise.all(PRECACHE_URLS.map((url) => cache.add(url).catch(() => {})))
+    )
   );
   // No auto-skipWaiting: the new SW stays in 'waiting' until the user taps
   // "Reload" in UpdateNotice, which posts {type:'SKIP_WAITING'} below.

@@ -15,13 +15,14 @@ import NotificationToggle from "@/components/NotificationToggle";
 // That path does not exercise the labels, so to test the labels we force the
 // supported+off path by stubbing the push APIs.
 function stubPushSupported(subscribed = false) {
-  (globalThis as any).PushManager = function () {};
+  const g = globalThis as Record<string, unknown>;
+  g.PushManager = function () {};
   const sub = subscribed ? { endpoint: "x", unsubscribe: vi.fn() } : null;
   Object.defineProperty(navigator, "serviceWorker", {
     configurable: true,
     value: { ready: Promise.resolve({ pushManager: { getSubscription: () => Promise.resolve(sub) } }) },
   });
-  (globalThis as any).Notification = { permission: "default" };
+  g.Notification = { permission: "default" };
 }
 
 beforeEach(() => {

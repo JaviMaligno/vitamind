@@ -982,5 +982,15 @@
     "auto": "Auto",
     "light": "Clair",
     "dark": "Sombre"
+  },
+  "errorPage": {
+    "title": "Une erreur est survenue",
+    "message": "Une erreur inattendue s'est produite. Vos données sont en sécurité — essayez de recharger la page.",
+    "retry": "Réessayer"
+  },
+  "notFoundPage": {
+    "title": "Page introuvable",
+    "message": "La page que vous cherchez n'existe pas ou a été déplacée.",
+    "home": "Retour à l'accueil"
   }
 }

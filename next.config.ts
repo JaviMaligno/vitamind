@@ -4,15 +4,49 @@ import createNextIntlPlugin from "next-intl/plugin";
 const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 
 const isProductionDeploy = process.env.VERCEL_ENV === "production";
+const isDev = process.env.NODE_ENV === "development";
+
+// Every external origin the browser legitimately talks to. If a fetch/script/
+// style starts failing with a CSP violation in the console, the fix is to add
+// its origin here — never to remove the header.
+const csp = [
+  "default-src 'self'",
+  // Next.js requires inline bootstrap scripts; dev additionally needs eval for
+  // react-refresh. va.vercel-scripts.com serves @vercel/analytics in dev mode
+  // (prod loads it same-origin from /_vercel/insights).
+  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""} https://va.vercel-scripts.com`,
+  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+  "font-src 'self' https://fonts.gstatic.com",
+  "img-src 'self' data: blob:",
+  // supabase-js (auth/profiles), jsdelivr (world-atlas TopoJSON in WorldMap),
+  // nominatim (city geocoding fallback in CitySearch)
+  "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://cdn.jsdelivr.net https://nominatim.openstreetmap.org https://va.vercel-scripts.com",
+  "worker-src 'self'",
+  "manifest-src 'self'",
+  "object-src 'none'",
+  "base-uri 'self'",
+  "form-action 'self'",
+  "frame-ancestors 'none'",
+].join("; ");
+
+const securityHeaders = [
+  { key: "Content-Security-Policy", value: csp },
+  { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains" },
+  { key: "X-Content-Type-Options", value: "nosniff" },
+  { key: "X-Frame-Options", value: "DENY" },
+  { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+  { key: "Permissions-Policy", value: "geolocation=(self), camera=(), microphone=(), payment=()" },
+];
 
 const nextConfig: NextConfig = {
   serverExternalPackages: ["web-push"],
   async headers() {
-    if (isProductionDeploy) return [];
     return [
       {
         source: "/:path*",
-        headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
+        headers: isProductionDeploy
+          ? securityHeaders
+          : [...securityHeaders, { key: "X-Robots-Tag", value: "noindex, nofollow" }],
       },
     ];
   },

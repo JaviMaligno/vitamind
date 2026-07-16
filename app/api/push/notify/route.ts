@@ -34,8 +34,10 @@ function interpolate(template: string, vars: Record<string, string>): string {
 // Dynamic import to avoid build-time issues with web-push native modules
 async function getWebPush() {
   const webpush = (await import("web-push")).default;
+  // Push services use this contact on abuse/delivery issues; a fake address
+  // risks silent deliverability problems, so it must be a monitored inbox.
   webpush.setVapidDetails(
-    "mailto:vitamind@example.com",
+    process.env.VAPID_CONTACT ?? "mailto:vitamind@example.com",
     process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
     process.env.VAPID_PRIVATE_KEY!,
   );
@@ -47,8 +49,10 @@ export const dynamic = "force-dynamic";
 async function fetchUVI(lat: number, lon: number): Promise<{ hour: number; uvi: number }[]> {
   const today = new Date().toISOString().slice(0, 10);
   const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=uv_index&start_date=${today}&end_date=${today}&timezone=auto`;
-  const res = await fetch(url);
-  if (!res.ok) return [];
+  // Timeout so one stalled Open-Meteo call can't hang the whole cron run past
+  // the function limit (subscriptions are processed sequentially).
+  const res = await fetch(url, { signal: AbortSignal.timeout(8000) }).catch(() => null);
+  if (!res || !res.ok) return [];
   const data = await res.json();
   if (!data.hourly?.time) return [];
   return data.hourly.time.map((t: string, i: number) => ({
@@ -183,16 +187,27 @@ export async function GET(request: NextRequest) {
       if (result.error) errors.push(result.error);
     }
 
+    // Log the outcome so failed pushes are visible in Vercel function logs —
+    // the response body of a cron invocation is never read by anyone.
+    const summary = { sent, skipped, failed, total: subs.length, mode: force ? "force-test" : "cron" };
+    if (errors.length) {
+      console.error("[api/push/notify] run finished with errors:", JSON.stringify({ ...summary, errors }));
+    } else {
+      console.log("[api/push/notify] run finished:", JSON.stringify(summary));
+    }
+
+    // If every delivery attempt failed, something systemic is wrong (bad VAPID
+    // keys, Supabase down…). Return non-2xx so Vercel marks the cron run failed.
+    if (subs.length > 0 && failed === subs.length) {
+      return NextResponse.json({ ...summary, errors }, { status: 500 });
+    }
+
     return NextResponse.json({
-      sent,
-      skipped,
-      failed,
-      total: subs.length,
-      mode: force ? "force-test" : "cron",
+      ...summary,
       errors: errors.length ? errors : undefined,
     });
   } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : String(err);
-    return NextResponse.json({ error: "Notify failed", detail: message }, { status: 500 });
+    console.error("[api/push/notify] failed:", err);
+    return NextResponse.json({ error: "Notify failed" }, { status: 500 });
   }
 }

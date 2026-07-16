@@ -982,5 +982,15 @@
     "auto": "Auto",
     "light": "Hell",
     "dark": "Dunkel"
+  },
+  "errorPage": {
+    "title": "Etwas ist schiefgelaufen",
+    "message": "Ein unerwarteter Fehler ist aufgetreten. Ihre Daten sind sicher — laden Sie die Seite neu.",
+    "retry": "Erneut versuchen"
+  },
+  "notFoundPage": {
+    "title": "Seite nicht gefunden",
+    "message": "Die gesuchte Seite existiert nicht oder wurde verschoben.",
+    "home": "Zur Startseite"
   }
 }

@@ -1,5 +1,5 @@
 "use client";
-import { createContext, useContext, useEffect, useState, useCallback } from "react";
+import { createContext, useContext, useEffect, useState, useCallback, useSyncExternalStore } from "react";
 import type { SolarPhase } from "@/lib/solar-phase";
 
 type Theme = "auto" | "light" | "dark";
@@ -21,22 +21,41 @@ export function useTheme(): ThemeContextValue {
   return ctx;
 }
 
+// The theme preference lives in localStorage and is exposed through
+// useSyncExternalStore: the server (and hydration render) see "auto", and React
+// swaps in the stored value right after hydration without a mismatch. This
+// replaces the previous useState + set-state-in-effect pattern.
+let themeListeners: (() => void)[] = [];
+
+function subscribeTheme(cb: () => void) {
+  themeListeners = [...themeListeners, cb];
+  return () => {
+    themeListeners = themeListeners.filter((l) => l !== cb);
+  };
+}
+
 function getStored(): Theme {
   if (typeof window === "undefined") return "auto";
-  const v = localStorage.getItem("vitamind:theme");
-  return v === "light" || v === "dark" ? v : "auto";
+  try {
+    const v = localStorage.getItem("vitamind:theme");
+    return v === "light" || v === "dark" ? v : "auto";
+  } catch {
+    return "auto";
+  }
+}
+
+function setStored(t: Theme) {
+  try {
+    localStorage.setItem("vitamind:theme", t);
+  } catch {
+    // Storage unavailable (private mode, quota): theme just won't persist.
+  }
+  themeListeners.forEach((l) => l());
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  // Start from "auto" on both server and first client render so hydration
-  // matches; the stored preference is applied after mount (below).
-  const [theme, setThemeState] = useState<Theme>("auto");
+  const theme = useSyncExternalStore(subscribeTheme, getStored, (): Theme => "auto");
   const [autoPhase, setAutoPhase] = useState<SolarPhase | null>(null);
-
-  useEffect(() => {
-    const stored = getStored();
-    if (stored !== "auto") setThemeState(stored);
-  }, []);
 
   const resolved: "light" | "dark" =
     theme === "light" ? "light"
@@ -44,8 +63,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     : autoPhase === "night" ? "dark" : "light";
 
   const setTheme = useCallback((t: Theme) => {
-    setThemeState(t);
-    localStorage.setItem("vitamind:theme", t);
+    setStored(t);
   }, []);
 
   const cycle = useCallback(() => {

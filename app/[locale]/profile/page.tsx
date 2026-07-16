@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo } from "react";
+import { useMounted } from "@/hooks/useMounted";
 import { useTranslations } from "next-intl";
 import { Info, X, BookOpen, ArrowRight, Star, Plus } from "lucide-react";
 import { Link } from "@/i18n/navigation";
@@ -71,8 +72,7 @@ export default function ProfilePage() {
   // stable, data-free placeholder until mounted, then swap to the real
   // content. All hooks above still run unconditionally every render; only the
   // returned JSX branches on `mounted`.
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+  const mounted = useMounted();
 
   if (!mounted) {
     return (
