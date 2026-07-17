@@ -35,7 +35,12 @@ const securityHeaders = [
   { key: "X-Content-Type-Options", value: "nosniff" },
   { key: "X-Frame-Options", value: "DENY" },
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
-  { key: "Permissions-Policy", value: "geolocation=(self), camera=(), microphone=(), payment=()" },
+  // Only geolocation: adding empty-allowlist directives (camera=(), microphone=(),
+  // payment=()) makes Vercel's proxy fail at runtime with 500
+  // MIDDLEWARE_INVOCATION_FAILED ("failed to load env vars: EnvFileReadError") on
+  // every request. Verified by bisecting deploys on 2026-07-17; re-test on a
+  // throwaway deployment before extending this value.
+  { key: "Permissions-Policy", value: "geolocation=(self)" },
 ];
 
 const nextConfig: NextConfig = {
