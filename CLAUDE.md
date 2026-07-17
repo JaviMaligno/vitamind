@@ -87,7 +87,7 @@ Both environments live in the single Vercel project `vitamind` (scope `javieragu
 | **Production** | `master` | Production | https://getvitamind.app (alias: `vitamind-six.vercel.app`) | Stable, what users and partners see |
 | **Dev / staging** | `dev` | Preview | https://getvitamind-dev.vercel.app | Personal testing (e.g. push notifications). Not for partners. |
 
-The Preview environment has its **own** VAPID keys, `CRON_SECRET` and `PUSH_TEST_ALLOWED_ENDPOINT` (copied from the retired `vitamind-dev` project), so push subscriptions stay isolated between prod and dev — see "Push subscription isolation" below. The old standalone `vitamind-dev` project is deprecated and pending deletion.
+The Preview environment has its **own** VAPID keys, `CRON_SECRET` and `PUSH_TEST_ALLOWED_ENDPOINT` (copied from the retired `vitamind-dev` project), so push subscriptions stay isolated between prod and dev — see "Push subscription isolation" below. The old standalone `vitamind-dev` project was deleted on 2026-07-17.
 
 ## Deployment (via GitHub Actions)
 
