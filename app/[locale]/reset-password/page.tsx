@@ -19,6 +19,7 @@ export default function ResetPasswordPage() {
   const sb = getSupabase();
 
   const [password, setPassword] = useState("");
+  const [confirm, setConfirm] = useState("");
   // null = still checking for the recovery session, true = ready, false = invalid link
   const [ready, setReady] = useState<boolean | null>(null);
   const [error, setError] = useState("");
@@ -40,6 +41,12 @@ export default function ResetPasswordPage() {
     e.preventDefault();
     if (!sb) return;
     setError("");
+    // Typos here are costly: the user has just lost access, and a mistyped new
+    // password would lock them out again with no feedback until the next login.
+    if (password !== confirm) {
+      setError(t("passwordsDontMatch"));
+      return;
+    }
     setLoading(true);
     const { error: err } = await sb.auth.updateUser({ password });
     if (err) {
@@ -49,7 +56,7 @@ export default function ResetPasswordPage() {
       setTimeout(() => router.push("/dashboard"), 1500);
     }
     setLoading(false);
-  }, [sb, password, t, router]);
+  }, [sb, password, confirm, t, router]);
 
   return (
     <main className="mx-auto flex min-h-[60vh] max-w-[440px] items-center justify-center px-4 py-10">
@@ -73,6 +80,15 @@ export default function ResetPasswordPage() {
               required
               minLength={6}
               autoFocus
+              className="min-h-[44px] w-full rounded-xl bg-surface-input border border-border-default px-4 text-body text-text-primary outline-none focus-visible:ring-2 focus-visible:ring-sun"
+            />
+            <input
+              type="password"
+              placeholder={t("confirmPassword")}
+              value={confirm}
+              onChange={(e) => setConfirm(e.target.value)}
+              required
+              minLength={6}
               className="min-h-[44px] w-full rounded-xl bg-surface-input border border-border-default px-4 text-body text-text-primary outline-none focus-visible:ring-2 focus-visible:ring-sun"
             />
             {error && <p className="text-caption text-red-500">{error}</p>}

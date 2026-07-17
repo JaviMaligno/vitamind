@@ -127,7 +127,9 @@
     "newPassword": "Новый пароль",
     "updatePassword": "Обновить пароль",
     "passwordUpdated": "Пароль обновлён. Перенаправление…",
-    "resetLinkInvalid": "Ссылка недействительна или устарела. Запросите новую."
+    "resetLinkInvalid": "Ссылка недействительна или устарела. Запросите новую.",
+    "confirmPassword": "Подтвердите пароль",
+    "passwordsDontMatch": "Пароли не совпадают"
   },
   "notifications": {
     "on": "Уведомления ВКЛ",

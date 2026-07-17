@@ -127,7 +127,9 @@
     "newPassword": "Nueva contraseña",
     "updatePassword": "Actualizar contraseña",
     "passwordUpdated": "Contraseña actualizada. Redirigiendo…",
-    "resetLinkInvalid": "El enlace ha caducado o no es válido. Solicita otro."
+    "resetLinkInvalid": "El enlace ha caducado o no es válido. Solicita otro.",
+    "confirmPassword": "Confirmar contraseña",
+    "passwordsDontMatch": "Las contraseñas no coinciden"
   },
   "notifications": {
     "on": "Notificaciones ON",

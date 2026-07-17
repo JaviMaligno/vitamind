@@ -127,7 +127,9 @@
     "newPassword": "Neues Passwort",
     "updatePassword": "Passwort aktualisieren",
     "passwordUpdated": "Passwort aktualisiert. Weiterleitung…",
-    "resetLinkInvalid": "Der Link ist abgelaufen oder ungültig. Fordere einen neuen an."
+    "resetLinkInvalid": "Der Link ist abgelaufen oder ungültig. Fordere einen neuen an.",
+    "confirmPassword": "Passwort bestätigen",
+    "passwordsDontMatch": "Die Passwörter stimmen nicht überein"
   },
   "notifications": {
     "on": "Benachrichtigungen AN",

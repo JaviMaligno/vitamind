@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useTranslations, useLocale } from "next-intl";
-import { LogIn } from "lucide-react";
+import { LogIn, LogOut } from "lucide-react";
 import { getSupabase } from "@/lib/supabase";
 import { getPathname } from "@/i18n/navigation";
 import type { User } from "@supabase/supabase-js";
@@ -91,11 +91,16 @@ export default function AuthButton({ onAuthChange }: Props) {
         <span className="hidden sm:inline text-caption text-text-muted max-w-[140px] truncate">
           {user.email}
         </span>
+        {/* Icon-only below sm: the text button widened the header cluster enough
+            to shove the (nowrap) logo underneath it — see TopBar's truncate. */}
         <button
           onClick={handleLogout}
-          className="inline-flex min-h-[44px] items-center rounded-lg bg-surface-elevated px-3.5 text-caption text-text-secondary cursor-pointer border-none hover:bg-surface-input transition-colors"
+          title={t("logout")}
+          aria-label={t("logout")}
+          className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center gap-1.5 rounded-lg bg-surface-elevated px-3 sm:px-3.5 text-caption text-text-secondary cursor-pointer border-none hover:bg-surface-input transition-colors"
         >
-          {t("logout")}
+          <LogOut className="h-4 w-4 shrink-0 sm:hidden" aria-hidden />
+          <span className="hidden sm:inline">{t("logout")}</span>
         </button>
       </div>
     );
