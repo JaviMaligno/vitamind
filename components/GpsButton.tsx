@@ -34,7 +34,11 @@ export default function GpsButton() {
         : "bg-glass border border-glass-border hover:bg-surface-elevated";
 
   return (
-    <div className="flex flex-col items-start gap-1">
+    // The wrapper is exactly the button's size (shrink-0) so it never grows the
+    // surrounding flex row. The slow/error hints are absolutely positioned below
+    // the icon (decoupled from layout) so they stay visible without displacing
+    // the icon or squeezing the adjacent search field.
+    <div className="relative shrink-0">
       <button
         onClick={gps.enableGps}
         disabled={gps.loading}
@@ -78,21 +82,25 @@ export default function GpsButton() {
           </svg>
         )}
       </button>
-      {gps.slow && !gps.error && (
-        <p className="text-[10px] text-accent/60 max-w-[180px] leading-tight animate-pulse">
-          {t("gpsEnableHint")}
-        </p>
-      )}
-      {gps.error && (
-        <GpsErrorHint
-          error={t(gps.error)}
-          hint={
-            isDenied ? t("gpsDeniedHint")
-            : (gps.error === "gpsTimeout" || gps.error === "gpsUnavailable") ? t("gpsEnableHint")
-            : undefined
-          }
-        />
-      )}
+      {(gps.slow && !gps.error) || gps.error ? (
+        <div className="absolute top-full right-0 mt-2 z-40 w-max max-w-[240px]">
+          {gps.slow && !gps.error && (
+            <p className="text-[10px] text-accent/60 max-w-[180px] leading-tight animate-pulse">
+              {t("gpsEnableHint")}
+            </p>
+          )}
+          {gps.error && (
+            <GpsErrorHint
+              error={t(gps.error)}
+              hint={
+                isDenied ? t("gpsDeniedHint")
+                : (gps.error === "gpsTimeout" || gps.error === "gpsUnavailable") ? t("gpsEnableHint")
+                : undefined
+              }
+            />
+          )}
+        </div>
+      ) : null}
     </div>
   );
 }
