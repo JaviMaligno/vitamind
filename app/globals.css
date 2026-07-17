@@ -182,3 +182,20 @@
 @media (prefers-reduced-motion: reduce) {
   .animate-tab-in-right, .animate-tab-in-left { animation: none; }
 }
+
+/* Bottom-tab sliding highlight: the top-edge bar under the active tab slides
+   to its new slot (transition on the container's translate). During the move
+   the bar itself briefly stretches along the travel path, leaving a "trail"
+   synced with the slide (rubber-band). transform-origin (set inline per
+   direction) decides which side the trail lags behind. Same 0.34s + easing as
+   the container transform so head and trail stay in lockstep. */
+@keyframes tab-trail {
+  0%   { transform: scaleX(1); }
+  42%  { transform: scaleX(2.5); }
+  100% { transform: scaleX(1); }
+}
+.animate-tab-trail { animation: tab-trail 0.34s cubic-bezier(0.22, 0.61, 0.36, 1) both; }
+@media (prefers-reduced-motion: reduce) {
+  .animate-tab-trail { animation: none; }
+  .tab-indicator { transition: none !important; }
+}

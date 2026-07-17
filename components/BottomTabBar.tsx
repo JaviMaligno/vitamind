@@ -2,6 +2,7 @@
 
 import { usePathname, Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
+import { useEffect, useRef, useState } from "react";
 
 export default function BottomTabBar() {
   const pathname = usePathname();
@@ -13,9 +14,57 @@ export default function BottomTabBar() {
     { href: "/profile", label: t("profile"), icon: "user" },
   ];
 
+  const activeIdx = tabs.findIndex(
+    (tab) => pathname === tab.href || (tab.href === "/dashboard" && pathname === "/")
+  );
+
+  // Direction of the last tab change, so the sliding highlight's trail lags
+  // behind the head as it travels. 1 = moved right, -1 = left, 0 = idle/initial
+  // (no trail on first paint). Cleared after the slide so a settled bar has no
+  // leftover origin skew.
+  const prevIdx = useRef(activeIdx);
+  const [dir, setDir] = useState(0);
+  useEffect(() => {
+    if (activeIdx === -1) {
+      prevIdx.current = activeIdx;
+      return;
+    }
+    if (prevIdx.current !== -1 && prevIdx.current !== activeIdx) {
+      setDir(activeIdx > prevIdx.current ? 1 : -1);
+      prevIdx.current = activeIdx;
+      const id = setTimeout(() => setDir(0), 340);
+      return () => clearTimeout(id);
+    }
+    prevIdx.current = activeIdx;
+  }, [activeIdx]);
+
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 bg-surface/95 backdrop-blur-md border-t border-border-default pb-[env(safe-area-inset-bottom)]">
-      <div className="mx-auto max-w-[960px] flex">
+      <div className="relative mx-auto max-w-[960px] flex">
+        {activeIdx !== -1 && (
+          <span
+            aria-hidden
+            className="tab-indicator pointer-events-none absolute top-0 left-0 h-full"
+            style={{
+              width: `${100 / tabs.length}%`,
+              transform: `translateX(${activeIdx * 100}%)`,
+              transition: "transform 0.34s cubic-bezier(0.22, 0.61, 0.36, 1)",
+            }}
+          >
+            {/* Discreet downward wash → reinforces "you are here" when settled. */}
+            <span className="absolute inset-0 bg-gradient-to-b from-accent/10 to-transparent" />
+            {/* Top-edge bar with glow. Remounts (key) on each tab change so the
+                trail stretch replays; origin sits on the leading edge so the
+                stretch lags toward where it came from. */}
+            <span
+              key={activeIdx}
+              className={`absolute left-0 right-0 mx-auto -mt-px h-[2.5px] w-10 rounded-full bg-accent shadow-[0_0_10px_1px_var(--color-accent)] ${
+                dir !== 0 ? "animate-tab-trail" : ""
+              }`}
+              style={{ transformOrigin: dir === 1 ? "right center" : dir === -1 ? "left center" : "center" }}
+            />
+          </span>
+        )}
         {tabs.map((tab) => {
           const isActive = pathname === tab.href || (tab.href === "/dashboard" && pathname === "/");
           return (
