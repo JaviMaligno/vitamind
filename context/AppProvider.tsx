@@ -125,7 +125,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   // Sync favorites and custom locations to Supabase when they change
   useEffect(() => {
     if (prefs.authUser) {
-      updateProfile(prefs.authUser.id, { favorites: loc.favorites, customLocations: loc.customLocations });
+      // updateProfile throws on Supabase errors; without the catch that's an
+      // unhandled rejection that silently kills the sync.
+      updateProfile(prefs.authUser.id, { favorites: loc.favorites, customLocations: loc.customLocations })
+        .catch((err) => console.error("Profile sync failed:", err));
     }
   }, [loc.favorites, loc.customLocations, prefs.authUser]);
 

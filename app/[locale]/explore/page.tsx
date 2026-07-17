@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useMemo, useCallback, useEffect } from "react";
+import { useState, useMemo, useCallback } from "react";
+import { useMounted } from "@/hooks/useMounted";
 import { Sun, Pill, FlaskConical, Sunrise, ChevronLeft, ChevronRight, ArrowRight, ArrowUpRight, X } from "lucide-react";
 import { useTranslations, useLocale } from "next-intl";
 import { indexPath } from "@/lib/city-client-links";
@@ -93,8 +94,7 @@ export default function ExplorePage() {
   // cityName) — both can differ between server and first client render → React
   // #418. Render a stable, data-free placeholder until mounted, then swap to
   // the real content. All hooks above run unconditionally every render.
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+  const mounted = useMounted();
 
   if (!mounted) {
     return (

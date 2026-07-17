@@ -984,5 +984,15 @@
     "auto": "Auto",
     "light": "Šviesi",
     "dark": "Tamsi"
+  },
+  "errorPage": {
+    "title": "Kažkas nepavyko",
+    "message": "Įvyko netikėta klaida. Jūsų duomenys saugūs — pabandykite perkrauti puslapį.",
+    "retry": "Bandyti dar kartą"
+  },
+  "notFoundPage": {
+    "title": "Puslapis nerastas",
+    "message": "Ieškomas puslapis neegzistuoja arba buvo perkeltas.",
+    "home": "Grįžti į pradžią"
   }
 }

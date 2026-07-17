@@ -30,6 +30,12 @@ afterEach(() => {
   document.head.innerHTML = "";
 });
 
+/** The selector is a collapsed dropdown: open it, then pick a locale by its full name. */
+function selectLanguage(name: string) {
+  fireEvent.click(screen.getByRole("button", { expanded: false }));
+  fireEvent.click(screen.getByRole("option", { name }));
+}
+
 describe("LanguageSelector", () => {
   // The bug: on /vitamina-d/madrid, clicking EN used to navigate to
   // /en/vitamina-d/madrid -- Spanish route prefix under an English locale -- and 404.
@@ -41,10 +47,10 @@ describe("LanguageSelector", () => {
     });
     render(<LanguageSelector />);
 
-    fireEvent.click(screen.getByText("EN"));
+    selectLanguage("English");
     expect(replace).toHaveBeenCalledWith("/vitamin-d/madrid", { locale: "en" });
 
-    fireEvent.click(screen.getByText("LT"));
+    selectLanguage("Lietuvių");
     expect(replace).toHaveBeenCalledWith("/vitaminas-d/madridas", { locale: "lt" });
   });
 
@@ -52,7 +58,7 @@ describe("LanguageSelector", () => {
     withAlternates({ en: "https://getvitamind.app/en/vitamin-d/madrid" });
     render(<LanguageSelector />);
 
-    fireEvent.click(screen.getByText("EN"));
+    selectLanguage("English");
     const [target] = replace.mock.calls[0];
     expect(target).not.toContain("getvitamind.app");
     expect(target.startsWith("/")).toBe(true);
@@ -60,7 +66,7 @@ describe("LanguageSelector", () => {
 
   it("falls back to the current path when a page emits no alternates", () => {
     render(<LanguageSelector />);
-    fireEvent.click(screen.getByText("FR"));
+    selectLanguage("Français");
     expect(replace).toHaveBeenCalledWith("/vitamina-d/madrid", { locale: "fr" });
   });
 });

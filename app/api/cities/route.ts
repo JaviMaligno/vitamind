@@ -74,7 +74,8 @@ export async function GET(request: NextRequest) {
         .limit(limit);
 
       if (error) {
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        console.error("[api/cities] nearby query failed:", error.message);
+        return NextResponse.json({ error: "City search failed" }, { status: 500 });
       }
 
       return NextResponse.json(data ?? [], { headers });
@@ -101,7 +102,8 @@ export async function GET(request: NextRequest) {
         .limit(limit);
 
       if (error) {
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        console.error("[api/cities] name query failed:", error.message);
+        return NextResponse.json({ error: "City search failed" }, { status: 500 });
       }
 
       return NextResponse.json(data ?? [], { headers });
@@ -112,9 +114,9 @@ export async function GET(request: NextRequest) {
       { status: 400 }
     );
   } catch (err: unknown) {
-    const detail = err instanceof Error ? err.message : String(err);
+    console.error("[api/cities] failed:", err);
     return NextResponse.json(
-      { error: "Internal server error", detail },
+      { error: "Internal server error" },
       { status: 500 }
     );
   }

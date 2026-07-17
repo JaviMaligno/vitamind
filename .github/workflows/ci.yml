@@ -1,0 +1,38 @@
+# Quality gate: every push and PR must pass lint, typecheck, unit tests and a
+# production build. Deploys are manual (npx vercel --prod), so this workflow is
+# the only automated check standing between a change and production — keep all
+# four steps green before deploying.
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Unit tests
+        run: npm test
+
+      # prebuild generates public/sw.js; without git metadata build-sw.mjs
+      # falls back to a dev- cache version, which is fine for CI.
+      - name: Build
+        run: npm run build

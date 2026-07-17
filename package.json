@@ -9,8 +9,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "e2e": "node tests/e2e/install-awareness.spec.mjs"
   },
   "author": "JaviMaligno",
   "license": "MIT",

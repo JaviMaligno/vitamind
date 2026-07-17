@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useRef } from "react";
+import { useCallback, useRef, useState } from "react";
 import { usePathname, useRouter } from "@/i18n/navigation";
 
 /** Bottom-tab order — swiping left goes to the next, right to the previous. */
@@ -22,14 +22,17 @@ export default function SwipeNav({ children }: { children: React.ReactNode }) {
 
   // Direction of the last tab change, so the incoming screen slides in from the
   // side you swiped toward (forward = from the right, back = from the left) —
-  // a natural, Android-like transition instead of an instant jump.
-  const prevIdxRef = useRef(idx);
-  const dirRef = useRef(0);
-  if (idx !== -1 && prevIdxRef.current !== -1 && idx !== prevIdxRef.current) {
-    dirRef.current = idx > prevIdxRef.current ? 1 : -1;
+  // a natural, Android-like transition instead of an instant jump. Uses the
+  // "storing information from previous renders" state-adjust-during-render
+  // pattern (refs must not be read or written during render).
+  const [nav, setNav] = useState({ prevIdx: idx, dir: 0 });
+  if (idx !== -1 && idx !== nav.prevIdx) {
+    setNav({
+      prevIdx: idx,
+      dir: nav.prevIdx === -1 ? nav.dir : idx > nav.prevIdx ? 1 : -1,
+    });
   }
-  if (idx !== -1) prevIdxRef.current = idx;
-  const anim = idx === -1 ? "" : dirRef.current < 0 ? "animate-tab-in-left" : "animate-tab-in-right";
+  const anim = idx === -1 ? "" : nav.dir < 0 ? "animate-tab-in-left" : "animate-tab-in-right";
 
   const onTouchStart = useCallback((e: React.TouchEvent) => {
     // Bail if the gesture begins inside a horizontal scroller — let it scroll.
