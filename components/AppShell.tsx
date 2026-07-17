@@ -13,6 +13,7 @@ import InstallBanner from "@/components/InstallBanner";
 import InstallHelpButton from "@/components/InstallHelpButton";
 import UpdateNotice from "@/components/UpdateNotice";
 import PushLocaleSync from "@/components/PushLocaleSync";
+import SiteFooter from "@/components/SiteFooter";
 import { useTranslations } from "next-intl";
 
 function TopBar() {
@@ -50,7 +51,6 @@ function TopBar() {
 }
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
-  const t = useTranslations();
   return (
     <ThemeProvider>
       <AppProvider>
@@ -58,11 +58,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           <SolarBackground>
             <TopBar />
             <SwipeNav>{children}</SwipeNav>
-            <div className="mx-auto max-w-[960px] px-4 mt-6 mb-2 text-center text-[10px] text-text-faint">
-              <a href="https://javieraguilar.ai" target="_blank" rel="noopener" className="underline hover:text-text-secondary">
-                {t("app.builtBy")}
-              </a>
-            </div>
+            <SiteFooter />
             <BottomTabBar />
             <InstallBanner />
             <UpdateNotice />

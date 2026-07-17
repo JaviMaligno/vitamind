@@ -204,6 +204,13 @@
     "explore": "Исследовать",
     "profile": "Профиль"
   },
+  "footer": {
+    "appHeading": "Приложение",
+    "citiesHeading": "Витамин D по городам",
+    "learn": "Гид",
+    "partners": "Партнёрам",
+    "allCities": "Все города"
+  },
   "dashboard": {
     "goOutBetween": "Выйдите на улицу между {start} и {end}",
     "youNeed": "Вам нужно ~{minutes} мин. с {area} открытыми для синтеза {iu} МЕ",

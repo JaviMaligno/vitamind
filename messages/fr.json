@@ -204,6 +204,13 @@
     "explore": "Explorer",
     "profile": "Profil"
   },
+  "footer": {
+    "appHeading": "Application",
+    "citiesHeading": "Vitamine D par ville",
+    "learn": "Guide",
+    "partners": "Partenaires",
+    "allCities": "Toutes les villes"
+  },
   "dashboard": {
     "goOutBetween": "Sortez entre {start} et {end}",
     "youNeed": "Vous avez besoin de ~{minutes} min avec {area} exposés pour synthétiser {iu} UI",

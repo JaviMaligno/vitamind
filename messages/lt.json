@@ -204,6 +204,13 @@
     "explore": "Tyrinėti",
     "profile": "Profilis"
   },
+  "footer": {
+    "appHeading": "Programėlė",
+    "citiesHeading": "Vitaminas D pagal miestą",
+    "learn": "Gidas",
+    "partners": "Partneriams",
+    "allCities": "Visi miestai"
+  },
   "dashboard": {
     "goOutBetween": "Išeikite laukan tarp {start} ir {end}",
     "youNeed": "Jums reikia ~{minutes} min. su {area} atidengtu, kad sintezuotumėte {iu} TV",

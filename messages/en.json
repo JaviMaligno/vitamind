@@ -204,6 +204,13 @@
     "explore": "Explore",
     "profile": "Profile"
   },
+  "footer": {
+    "appHeading": "App",
+    "citiesHeading": "Vitamin D by city",
+    "learn": "Learn",
+    "partners": "Partners",
+    "allCities": "All cities"
+  },
   "dashboard": {
     "goOutBetween": "Go out between {start} and {end}",
     "youNeed": "You need ~{minutes} min with {area} exposed to synthesize {iu} IU",

@@ -299,11 +299,6 @@ export default function ExplorePage() {
           </Link>
         </div>
       </section>
-
-      {/* Footer */}
-      <div className="mx-auto max-w-[1280px] px-4 mt-4 text-caption text-text-faint leading-relaxed">
-        {t("app.footer")}
-      </div>
     </>
   );
 }
