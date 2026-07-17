@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useId } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { LogIn, LogOut } from "lucide-react";
 import { getSupabase } from "@/lib/supabase";
@@ -22,6 +22,8 @@ export default function AuthButton({ onAuthChange }: Props) {
   const [message, setMessage] = useState("");
   const t = useTranslations("auth");
   const locale = useLocale();
+  const emailId = useId();
+  const passwordId = useId();
 
   const sb = getSupabase();
 
@@ -137,25 +139,39 @@ export default function AuthButton({ onAuthChange }: Props) {
       <div className="text-[9px] text-text-muted mb-2 leading-relaxed">
         {t("syncHint")}
       </div>
+      {/* Visible labels rather than placeholder-only: a placeholder vanishes the
+          moment you type, leaving credential fields unidentifiable, and it's a
+          weak accessible name. The label carries the name now, so the redundant
+          placeholder is gone. Same keys as before — no new translations. */}
       <form onSubmit={handleSubmit} className="flex flex-col gap-1.5">
-        <input
-          type="email"
-          placeholder={t("email")}
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="w-full px-2 py-1.5 rounded-md bg-surface-input border border-border-default text-text-primary text-[11px] outline-none"
-          required
-        />
-        {mode !== "resend" && mode !== "forgot" && (
+        <div>
+          <label htmlFor={emailId} className="mb-0.5 block text-[9px] font-medium text-text-muted">
+            {t("email")}
+          </label>
           <input
-            type="password"
-            placeholder={t("password")}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            id={emailId}
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             className="w-full px-2 py-1.5 rounded-md bg-surface-input border border-border-default text-text-primary text-[11px] outline-none"
             required
-            minLength={6}
           />
+        </div>
+        {mode !== "resend" && mode !== "forgot" && (
+          <div>
+            <label htmlFor={passwordId} className="mb-0.5 block text-[9px] font-medium text-text-muted">
+              {t("password")}
+            </label>
+            <input
+              id={passwordId}
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full px-2 py-1.5 rounded-md bg-surface-input border border-border-default text-text-primary text-[11px] outline-none"
+              required
+              minLength={6}
+            />
+          </div>
         )}
         {error && <div className="text-[9px] text-red-500">{error}</div>}
         {message && <div className="text-[9px] text-green-500">{message}</div>}

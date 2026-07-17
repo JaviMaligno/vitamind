@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useId } from "react";
 import { useTranslations } from "next-intl";
 import { ChevronDown } from "lucide-react";
 import { AREA_PRESETS, type SkinType } from "@/lib/vitd";
@@ -17,6 +17,9 @@ interface Props {
 export default function SkinSelector({ skinType, areaFraction, age, onSkinChange, onAreaChange, onAgeChange }: Props) {
   const [showHelp, setShowHelp] = useState(false);
   const t = useTranslations("skin");
+  const typeId = useId();
+  const areaId = useId();
+  const ageId = useId();
 
   const skinLabels: Record<SkinType, string> = {
     1: t("type1"),
@@ -46,10 +49,14 @@ export default function SkinSelector({ skinType, areaFraction, age, onSkinChange
   return (
     <div className="mb-2">
       <div className="flex flex-wrap gap-x-3 gap-y-2 items-center">
-        <span className="text-caption text-text-faint uppercase tracking-wider">{t("type")}</span>
+        {/* These captions were bare <span>s: visible to the eye but never
+            announced, so the controls reached a screen reader unnamed. Same
+            pixels, now actually associated with their field. */}
+        <label htmlFor={typeId} className="text-caption text-text-faint uppercase tracking-wider">{t("type")}</label>
         <div className="flex items-center gap-1">
           <div className="relative">
             <select
+              id={typeId}
               value={skinType}
               onChange={(e) => onSkinChange(Number(e.target.value) as SkinType)}
               className="min-h-[44px] appearance-none rounded-lg bg-surface-input border border-border-default pl-3 pr-9 text-text-primary text-body cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-sun"
@@ -74,9 +81,10 @@ export default function SkinSelector({ skinType, areaFraction, age, onSkinChange
             }`}>?</span>
           </button>
         </div>
-        <span className="text-caption text-text-faint uppercase tracking-wider">{t("area")}</span>
+        <label htmlFor={areaId} className="text-caption text-text-faint uppercase tracking-wider">{t("area")}</label>
         <div className="relative">
           <select
+            id={areaId}
             value={areaFraction}
             onChange={(e) => onAreaChange(Number(e.target.value))}
             className="min-h-[44px] appearance-none rounded-lg bg-surface-input border border-border-default pl-3 pr-9 text-text-primary text-body cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-sun"
@@ -87,8 +95,9 @@ export default function SkinSelector({ skinType, areaFraction, age, onSkinChange
           </select>
           <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted" aria-hidden />
         </div>
-        <span className="text-caption text-text-faint uppercase tracking-wider">{t("age")}</span>
+        <label htmlFor={ageId} className="text-caption text-text-faint uppercase tracking-wider">{t("age")}</label>
         <input
+          id={ageId}
           type="number"
           min="1"
           max="120"

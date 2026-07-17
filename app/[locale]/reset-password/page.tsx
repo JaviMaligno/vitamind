@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useId } from "react";
 import { useTranslations } from "next-intl";
 import { KeyRound } from "lucide-react";
 import { getSupabase } from "@/lib/supabase";
@@ -17,6 +17,8 @@ export default function ResetPasswordPage() {
   const t = useTranslations("auth");
   const router = useRouter();
   const sb = getSupabase();
+  const passwordId = useId();
+  const confirmId = useId();
 
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
@@ -71,26 +73,40 @@ export default function ResetPasswordPage() {
         ) : ready === null ? (
           <p className="mt-4 text-body text-text-muted animate-pulse">…</p>
         ) : (
-          <form onSubmit={handleSubmit} className="mt-5 flex flex-col gap-3">
-            <input
-              type="password"
-              placeholder={t("newPassword")}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              minLength={6}
-              autoFocus
-              className="min-h-[44px] w-full rounded-xl bg-surface-input border border-border-default px-4 text-body text-text-primary outline-none focus-visible:ring-2 focus-visible:ring-sun"
-            />
-            <input
-              type="password"
-              placeholder={t("confirmPassword")}
-              value={confirm}
-              onChange={(e) => setConfirm(e.target.value)}
-              required
-              minLength={6}
-              className="min-h-[44px] w-full rounded-xl bg-surface-input border border-border-default px-4 text-body text-text-primary outline-none focus-visible:ring-2 focus-visible:ring-sun"
-            />
+          <form onSubmit={handleSubmit} className="mt-5 flex flex-col gap-3 text-left">
+            {/* Visible labels, not placeholders: once typed, two dot-filled boxes
+                are indistinguishable — exactly the pair where you must be able to
+                tell which is which. Labels are left-aligned against the centred
+                card so each one clearly belongs to the field under it. */}
+            <div>
+              <label htmlFor={passwordId} className="mb-1 block text-caption font-medium text-text-muted">
+                {t("newPassword")}
+              </label>
+              <input
+                id={passwordId}
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                minLength={6}
+                autoFocus
+                className="min-h-[44px] w-full rounded-xl bg-surface-input border border-border-default px-4 text-body text-text-primary outline-none focus-visible:ring-2 focus-visible:ring-sun"
+              />
+            </div>
+            <div>
+              <label htmlFor={confirmId} className="mb-1 block text-caption font-medium text-text-muted">
+                {t("confirmPassword")}
+              </label>
+              <input
+                id={confirmId}
+                type="password"
+                value={confirm}
+                onChange={(e) => setConfirm(e.target.value)}
+                required
+                minLength={6}
+                className="min-h-[44px] w-full rounded-xl bg-surface-input border border-border-default px-4 text-body text-text-primary outline-none focus-visible:ring-2 focus-visible:ring-sun"
+              />
+            </div>
             {error && <p className="text-caption text-red-500">{error}</p>}
             {message && <p className="text-caption text-possible">{message}</p>}
             <button
