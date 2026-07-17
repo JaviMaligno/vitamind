@@ -81,28 +81,27 @@ Severidad: 🔴 crítico · 🟠 alto · 🟡 medio · ⚪ bajo. "Estado" reflej
 
 ## 4. Acciones manuales pendientes (no automatizables desde el repo)
 
-1. **Aplicar `supabase/migrations/20260716_lock_down_anon_access.sql`** en el
-   proyecto Supabase compartido (SQL editor o `supabase db push`). Hasta
-   entonces, la fuga de datos de suscriptores sigue viva en producción.
-   La app no cambia de comportamiento: todo el acceso del servidor usa la
-   service role, que ignora RLS.
-2. **Configurar `VAPID_CONTACT`** (`mailto:` de un buzón monitorizado) en los
-   dos proyectos Vercel — con `printf '%s' | npx vercel env add …`, nunca `echo`.
-3. **Verificar el Root Directory** de ambos proyectos Vercel: la app ya no
-   vive en `vitamind/`; si algún proyecto conserva ese valor, limpiarlo.
-4. Al desplegar esta rama, comprobar en la consola del navegador que la CSP no
-   bloquea nada legítimo (si aparece un aviso de CSP, añadir el origen a la
-   lista en `next.config.ts` — no quitar la cabecera).
-5. **Migrar los proyectos a la cuenta personal de Vercel y vincular el repo**,
-   de forma que cada push a `master` con CI verde despliegue automáticamente
-   (deploy directo con CI en lugar del `npx vercel --prod` manual). Al migrar:
-   - Recrear todos los env vars en los proyectos nuevos con `printf '%s'`
-     (nunca `echo`) y pasar el detector de corrupción documentado en CLAUDE.md.
-   - Configurar el auto-deploy solo para `master` (production) y mantener
-     `vitamind-dev` como proyecto separado o como preview deploys.
-   - Actualizar la sección "Deployment" de CLAUDE.md y la regla de oro de este
-     documento cuando el flujo cambie: la disciplina "CI verde antes de
-     desplegar" pasa a estar garantizada por la plataforma, no por el humano.
+> Estado 2026-07-17: los puntos 1–4 están **hechos** (migración RLS aplicada y
+> verificada con `supabase db query`; `VAPID_CONTACT` configurado en Production
+> y Preview; Root Directory correcto; CSP desplegada y verificada sin
+> violaciones en consola — con una salvedad: las directivas de allowlist vacía
+> de `Permissions-Policy` rompen el middleware en Vercel, ver el comentario en
+> `next.config.ts`). El punto 5 evolucionó:
+
+5. **Migración a la cuenta personal de Vercel** — sigue pendiente, pero el
+   objetivo intermedio (deploy automático gated en CI) ya está cubierto por los
+   jobs `deploy-prod`/`deploy-dev` de `.github/workflows/ci.yml` (token
+   `VERCEL_TOKEN` como secret de Actions). El proyecto `vitamind-dev` fue
+   borrado; el entorno dev es la rama `dev` → getvitamind-dev.vercel.app
+   (entorno Preview con claves propias). Para la migración final:
+   - La integración Git nativa solo funciona en la cuenta personal (posee la
+     conexión GitHub `JaviMaligno`; un GitHub = una cuenta Vercel).
+   - Reutilizar el proyecto `vitamind` ya existente en esa cuenta; recrear env
+     vars con `printf '%s'` (nunca `echo`) y pasar el detector de corrupción
+     de CLAUDE.md; verificar la URL del deployment de punta a punta.
+   - `getvitamind.app` está en registrador externo ("Third Party"): mover el
+     dominio es remove/add + posible TXT de verificación. Los suscriptores
+     push sobreviven (mismo origen y mismas claves VAPID).
 
 ## 5. Mejoras recomendadas (no bloqueantes)
 
@@ -123,9 +122,10 @@ Severidad: 🔴 crítico · 🟠 alto · 🟡 medio · ⚪ bajo. "Estado" reflej
 ### Regla de oro
 
 **Nada llega a producción sin CI verde en ese commit.** CI = lint + typecheck
-+ tests + build (`.github/workflows/ci.yml`). Los deploys son manuales
-(`npx vercel --prod`), así que esta disciplina es del humano que despliega:
-GitHub no puede bloquear un `vercel deploy`.
++ tests + build (`.github/workflows/ci.yml`). Desde 2026-07-17 la plataforma
+lo garantiza: los jobs `deploy-prod` (push a `master`) y `deploy-dev` (push a
+`dev`) solo corren si el job `ci` termina verde. El `npx vercel --prod` manual
+sigue existiendo como fallback — si lo usas, la disciplina vuelve a ser tuya.
 
 ### Checklist de deploy a producción
 
