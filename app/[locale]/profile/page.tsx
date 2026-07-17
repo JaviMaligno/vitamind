@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useId } from "react";
 import { useMounted } from "@/hooks/useMounted";
 import { useTranslations } from "next-intl";
 import { Info, X, BookOpen, ArrowRight, Star, Plus } from "lucide-react";
@@ -49,6 +49,8 @@ function TipPanel({ open, text, href, learnMoreLabel, onClose }: TipPanelProps) 
 export default function ProfilePage() {
   const t = useTranslations("config");
   const tc = useTranslations("common");
+  const latId = useId();
+  const lonId = useId();
   const ts = useTranslations("skin");
   const app = useApp();
 
@@ -99,8 +101,11 @@ export default function ProfilePage() {
           />
           <GpsButton />
           <div className="flex gap-1.5 items-center">
-            <span className="text-caption text-text-faint">{tc("lat")}</span>
+            {/* Bare <span>s before: visible but never announced, so both
+                coordinate boxes reached a screen reader unnamed. Same pixels. */}
+            <label htmlFor={latId} className="text-caption text-text-faint">{tc("lat")}</label>
             <input
+              id={latId}
               value={app.lat}
               onChange={(e) => {
                 app.setLat(parseFloat(e.target.value) || 0);
@@ -109,8 +114,9 @@ export default function ProfilePage() {
               }}
               className="w-16 min-h-[44px] px-2 rounded-lg bg-surface-input border border-border-default text-text-primary text-caption font-mono outline-none focus-visible:ring-2 focus-visible:ring-sun"
             />
-            <span className="text-caption text-text-faint">{tc("lon")}</span>
+            <label htmlFor={lonId} className="text-caption text-text-faint">{tc("lon")}</label>
             <input
+              id={lonId}
               value={app.lon}
               onChange={(e) => {
                 app.setLon(parseFloat(e.target.value) || 0);
@@ -252,8 +258,11 @@ export default function ProfilePage() {
             </Chip>
           ))}
           <div className="flex items-center gap-1.5">
+            {/* No caption to associate here — the "IU" beside it is the unit and
+                the <h3> is a section heading, so name it directly instead. */}
             <input
               type="number"
+              aria-label={t("targetIU")}
               min={100}
               max={10000}
               step={100}

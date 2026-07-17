@@ -134,9 +134,13 @@ export default function CitySearch({ onSelect, onAddFav, favorites, allCities }:
   return (
     <div ref={ref} className="relative flex-[1_1_280px]">
       <div className="flex">
+        {/* Search keeps the placeholder+icon pattern (a visible label over a
+            search bar is noise, and the value is transient), but it still needs
+            a real accessible name — the placeholder alone is a weak one. */}
         <input
           value={query} onChange={handleChange} onFocus={() => setOpen(true)}
           placeholder={t("placeholder")}
+          aria-label={t("placeholder")}
           className="flex-1 min-h-[44px] px-3 rounded-l-lg bg-surface-input border border-border-default text-text-primary text-sm outline-none focus:border-amber-400/30"
         />
         <div className="px-3 min-h-[44px] rounded-r-lg bg-surface-elevated border border-border-default border-l-0 text-text-muted flex items-center">

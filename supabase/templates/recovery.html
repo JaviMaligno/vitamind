@@ -1,0 +1,96 @@
+<!--
+  Plantilla del email de recuperación de contraseña (Supabase Auth → recovery).
+  Pegar en: Supabase Dashboard → Authentication → Emails → Reset Password.
+  IMPRESCINDIBLE conservar {{ .ConfirmationURL }} (el enlace de reset).
+
+  IDIOMA POR USUARIO EN LOS 6 LOCALES, sin metadata ni tocar el signup:
+  Supabase Auth usa Go templates (admiten condicionales). `AuthButton` construye el
+  redirectTo con el locale ACTIVO (origin + getPathname({href:"/reset-password", locale})),
+  así que {{ .RedirectTo }} delata el idioma que el usuario está usando al pedir el reset
+  — más fiel que un locale guardado en el registro (se quedaría rancio si cambia de idioma)
+  y funciona con los usuarios ya existentes. Copy, marca y subtítulo salen de messages/*.json.
+
+    /reset-password (sin prefijo, prod o dev) -> es   |  /fr/ -> fr  |  /de/ -> de
+    /ru/ -> ru  |  /lt/ -> lt  |  cualquier otro (/en/, localhost, desconocido) -> en
+
+  Inglés es el `else`: para un locale no contemplado es mejor caída que el español, y si
+  el match fallara degrada con elegancia en vez de romper la plantilla (una plantilla rota
+  dejaría al usuario SIN email). Sólo se usan builtins de Go (`or`, `eq`) y declaración con
+  `:=` — nada de reasignación ni funciones de strings, que no están garantizadas.
+  Un único esqueleto HTML con `if` inline en cada texto: no seis copias que mantener.
+
+  HTML email-safe: tablas + estilos inline (los clientes ignoran <style>/CSS externo).
+-->
+{{ $es := or (eq .RedirectTo "https://getvitamind.app/reset-password") (eq .RedirectTo "https://vitamind-dev.vercel.app/reset-password") }}
+{{ $fr := or (eq .RedirectTo "https://getvitamind.app/fr/reset-password") (eq .RedirectTo "https://vitamind-dev.vercel.app/fr/reset-password") }}
+{{ $de := or (eq .RedirectTo "https://getvitamind.app/de/reset-password") (eq .RedirectTo "https://vitamind-dev.vercel.app/de/reset-password") }}
+{{ $ru := or (eq .RedirectTo "https://getvitamind.app/ru/reset-password") (eq .RedirectTo "https://vitamind-dev.vercel.app/ru/reset-password") }}
+{{ $lt := or (eq .RedirectTo "https://getvitamind.app/lt/reset-password") (eq .RedirectTo "https://vitamind-dev.vercel.app/lt/reset-password") }}
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f4f6fb;margin:0;padding:24px 0;">
+  <tr>
+    <td align="center">
+      <!-- Preheader oculto (texto de vista previa en la bandeja) -->
+      <div style="display:none;max-height:0;overflow:hidden;opacity:0;">{{ if $es }}Restablece la contraseña de tu cuenta de Vitamina D.{{ else if $fr }}Réinitialisez le mot de passe de votre compte Vitamine D.{{ else if $de }}Setze das Passwort deines Vitamin-D-Kontos zurück.{{ else if $ru }}Сбросьте пароль вашей учётной записи «Витамин D».{{ else if $lt }}Atkurkite savo Vitaminas D paskyros slaptažodį.{{ else }}Reset your Vitamin D account password.{{ end }}</div>
+
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:480px;background:#ffffff;border:1px solid #eceef4;border-radius:16px;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
+        <!-- Cabecera con marca (localizada, como en la app) -->
+        <tr>
+          <td style="padding:28px 32px 8px 32px;">
+            <span style="font-family:Georgia,'Times New Roman',serif;font-size:22px;font-weight:700;color:#b45309;letter-spacing:-0.01em;">{{ if $es }}Vitamina&nbsp;D{{ else if $fr }}Vitamine&nbsp;D{{ else if $ru }}Витамин&nbsp;D{{ else if $lt }}Vitaminas&nbsp;D{{ else }}Vitamin&nbsp;D{{ end }}</span>
+          </td>
+        </tr>
+
+        <!-- Cuerpo -->
+        <tr>
+          <td style="padding:8px 32px 4px 32px;">
+            <h1 style="margin:12px 0 8px 0;font-size:21px;line-height:1.3;color:#1a1d29;font-weight:700;">{{ if $es }}Restablece tu contraseña{{ else if $fr }}Réinitialisez votre mot de passe{{ else if $de }}Setze dein Passwort zurück{{ else if $ru }}Сбросьте пароль{{ else if $lt }}Atkurkite slaptažodį{{ else }}Reset your password{{ end }}</h1>
+            <p style="margin:0 0 20px 0;font-size:15px;line-height:1.6;color:#4a4f5e;">
+              {{ if $es }}Recibimos una solicitud para restablecer la contraseña de tu cuenta. Pulsa el botón para elegir una nueva. Si no fuiste tú, ignora este correo — tu contraseña no cambiará.{{ else if $fr }}Nous avons reçu une demande de réinitialisation du mot de passe de votre compte. Cliquez sur le bouton pour en choisir un nouveau. Si vous n'êtes pas à l'origine de cette demande, ignorez cet e-mail — votre mot de passe restera inchangé.{{ else if $de }}Wir haben eine Anfrage erhalten, das Passwort deines Kontos zurückzusetzen. Klicke auf den Button, um ein neues zu wählen. Falls du das nicht warst, ignoriere diese E-Mail — dein Passwort bleibt unverändert.{{ else if $ru }}Мы получили запрос на сброс пароля вашей учётной записи. Нажмите кнопку, чтобы задать новый. Если это были не вы, просто проигнорируйте это письмо — пароль останется прежним.{{ else if $lt }}Gavome prašymą atkurti jūsų paskyros slaptažodį. Paspauskite mygtuką ir pasirinkite naują. Jei tai buvote ne jūs, tiesiog ignoruokite šį laišką — slaptažodis nepasikeis.{{ else }}We received a request to reset your account password. Use the button below to choose a new one. If this wasn't you, just ignore this email — your password won't change.{{ end }}
+            </p>
+          </td>
+        </tr>
+
+        <!-- Botón CTA -->
+        <tr>
+          <td style="padding:0 32px 8px 32px;">
+            <table role="presentation" cellpadding="0" cellspacing="0">
+              <tr>
+                <td style="border-radius:10px;background:#d97706;">
+                  <a href="{{ .ConfirmationURL }}" target="_blank"
+                     style="display:inline-block;padding:13px 26px;font-size:15px;font-weight:700;color:#ffffff;text-decoration:none;border-radius:10px;">
+                    {{ if $es }}Restablecer contraseña{{ else if $fr }}Réinitialiser le mot de passe{{ else if $de }}Passwort zurücksetzen{{ else if $ru }}Сбросить пароль{{ else if $lt }}Atkurti slaptažodį{{ else }}Reset password{{ end }}
+                  </a>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- Enlace de reserva -->
+        <tr>
+          <td style="padding:16px 32px 8px 32px;">
+            <p style="margin:0 0 6px 0;font-size:12px;line-height:1.5;color:#8a90a0;">
+              {{ if $es }}Si el botón no funciona, copia y pega este enlace en tu navegador:{{ else if $fr }}Si le bouton ne fonctionne pas, copiez et collez ce lien dans votre navigateur :{{ else if $de }}Falls der Button nicht funktioniert, kopiere diesen Link in deinen Browser:{{ else if $ru }}Если кнопка не работает, скопируйте и вставьте эту ссылку в браузер:{{ else if $lt }}Jei mygtukas neveikia, nukopijuokite šią nuorodą į naršyklę:{{ else }}If the button doesn't work, copy and paste this link into your browser:{{ end }}
+            </p>
+            <p style="margin:0;font-size:12px;line-height:1.5;word-break:break-all;">
+              <a href="{{ .ConfirmationURL }}" target="_blank" style="color:#b45309;text-decoration:underline;">{{ .ConfirmationURL }}</a>
+            </p>
+          </td>
+        </tr>
+
+        <!-- Separador -->
+        <tr><td style="padding:20px 32px 0 32px;"><div style="border-top:1px solid #eceef4;"></div></td></tr>
+
+        <!-- Pie (marca + subtítulo, localizados como en la app) -->
+        <tr>
+          <td style="padding:16px 32px 28px 32px;">
+            <p style="margin:0;font-size:12px;line-height:1.6;color:#9aa0b0;">
+              {{ if $es }}Vitamina&nbsp;D{{ else if $fr }}Vitamine&nbsp;D{{ else if $ru }}Витамин&nbsp;D{{ else if $lt }}Vitaminas&nbsp;D{{ else }}Vitamin&nbsp;D{{ end }} · <a href="https://getvitamind.app" target="_blank" style="color:#9aa0b0;text-decoration:underline;">getvitamind.app</a><br>
+              {{ if $es }}Explorador Solar Global{{ else if $fr }}Explorateur Solaire Global{{ else if $de }}Globaler Solar-Explorer{{ else if $ru }}Глобальный солнечный обозреватель{{ else if $lt }}Globalus saulės tyrinėtojas{{ else }}Global Solar Explorer{{ end }}
+            </p>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>

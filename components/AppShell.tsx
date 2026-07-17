@@ -25,8 +25,12 @@ function TopBar() {
         <div className="flex items-baseline gap-2.5 min-w-0">
           {/* Darker amber in light themes (dawn/day/dusk) so the logo keeps
               contrast on the warm pink/coral and bright page tints; brighter
-              amber in dark (night) so it reads on navy. */}
-          <span className="whitespace-nowrap text-[22px] sm:text-[30px] font-extrabold tracking-tight font-[Playfair_Display,serif] bg-gradient-to-br from-amber-600 to-amber-800 dark:from-amber-400 dark:to-amber-600 bg-clip-text text-transparent [text-shadow:0_1px_2px_rgba(0,0,0,0.12)]">
+              amber in dark (night) so it reads on navy.
+              `truncate` is load-bearing: the action cluster is shrink-0, so a
+              nowrap logo with the flex default (min-width:auto) refused to
+              shrink and spilled *underneath* the icons. overflow-hidden drops
+              the automatic minimum to 0, so it ellipsises instead of colliding. */}
+          <span className="truncate text-[22px] sm:text-[30px] font-extrabold tracking-tight font-[Playfair_Display,serif] bg-gradient-to-br from-amber-600 to-amber-800 dark:from-amber-400 dark:to-amber-600 bg-clip-text text-transparent [text-shadow:0_1px_2px_rgba(0,0,0,0.12)]">
             {t("app.title")}
           </span>
           {/* Subtitle is noise on the crowded mobile header — desktop only. */}

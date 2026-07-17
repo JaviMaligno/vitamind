@@ -127,7 +127,9 @@
     "newPassword": "Naujas slaptažodis",
     "updatePassword": "Atnaujinti slaptažodį",
     "passwordUpdated": "Slaptažodis atnaujintas. Nukreipiama…",
-    "resetLinkInvalid": "Nuoroda nebegalioja arba neteisinga. Paprašykite naujos."
+    "resetLinkInvalid": "Nuoroda nebegalioja arba neteisinga. Paprašykite naujos.",
+    "confirmPassword": "Patvirtinkite slaptažodį",
+    "passwordsDontMatch": "Slaptažodžiai nesutampa"
   },
   "notifications": {
     "on": "Pranešimai ĮJ",

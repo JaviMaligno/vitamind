@@ -127,7 +127,9 @@
     "newPassword": "Nouveau mot de passe",
     "updatePassword": "Mettre à jour le mot de passe",
     "passwordUpdated": "Mot de passe mis à jour. Redirection…",
-    "resetLinkInvalid": "Le lien a expiré ou est invalide. Demandez-en un nouveau."
+    "resetLinkInvalid": "Le lien a expiré ou est invalide. Demandez-en un nouveau.",
+    "confirmPassword": "Confirmer le mot de passe",
+    "passwordsDontMatch": "Les mots de passe ne correspondent pas"
   },
   "notifications": {
     "on": "Notifications activées",

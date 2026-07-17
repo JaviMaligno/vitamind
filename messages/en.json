@@ -127,7 +127,9 @@
     "newPassword": "New password",
     "updatePassword": "Update password",
     "passwordUpdated": "Password updated. Redirecting…",
-    "resetLinkInvalid": "The link has expired or is invalid. Request a new one."
+    "resetLinkInvalid": "The link has expired or is invalid. Request a new one.",
+    "confirmPassword": "Confirm password",
+    "passwordsDontMatch": "Passwords don't match"
   },
   "notifications": {
     "on": "Notifications ON",
