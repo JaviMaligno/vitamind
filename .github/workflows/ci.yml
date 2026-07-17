@@ -1,12 +1,16 @@
-# Quality gate: every push and PR must pass lint, typecheck, unit tests and a
-# production build. Deploys are manual (npx vercel --prod), so this workflow is
-# the only automated check standing between a change and production — keep all
-# four steps green before deploying.
+# Quality gate + deploys: every push and PR must pass lint, typecheck, unit
+# tests and a production build. On green CI, pushes to master deploy to
+# production and pushes to dev deploy to the stable dev preview — so a red CI
+# never reaches a deploy (better than Vercel's native Git integration, which
+# deploys regardless of checks).
+#
+# Secrets required: VERCEL_TOKEN (Vercel account token, scope
+# javieraguilar-6355s-projects). The org/project IDs below are not secrets.
 name: CI
 
 on:
   push:
-    branches: [master]
+    branches: [master, dev]
   pull_request:
 
 jobs:
@@ -36,3 +40,39 @@ jobs:
       # falls back to a dev- cache version, which is fine for CI.
       - name: Build
         run: npm run build
+
+  # Production deploy: only after the full quality gate, only on master pushes.
+  # Builds remotely on Vercel (same as npx vercel --prod locally).
+  deploy-prod:
+    needs: ci
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy to Vercel (production)
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: team_oI08l1QRpySHg7Wm7CEShc5y
+          VERCEL_PROJECT_ID: prj_3kIX7Anjxormcb5UlF8qsLOpnsoN
+        run: npx vercel@latest deploy --prod --yes --token "$VERCEL_TOKEN"
+
+  # Dev deploy: pushes to the dev branch produce a Preview deployment (Preview
+  # environment variables: its own VAPID keys and CRON_SECRET, isolated push
+  # subscriptions) aliased to a stable URL so push-notification testing has a
+  # fixed origin. This replaces the old vitamind-dev Vercel project.
+  deploy-dev:
+    needs: ci
+    if: github.event_name == 'push' && github.ref == 'refs/heads/dev'
+    runs-on: ubuntu-latest
+    environment: dev
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy to Vercel (dev preview + stable alias)
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: team_oI08l1QRpySHg7Wm7CEShc5y
+          VERCEL_PROJECT_ID: prj_3kIX7Anjxormcb5UlF8qsLOpnsoN
+        run: |
+          url=$(npx vercel@latest deploy --yes --token "$VERCEL_TOKEN")
+          npx vercel@latest alias set "$url" getvitamind-dev.vercel.app --token "$VERCEL_TOKEN"

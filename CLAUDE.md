@@ -80,46 +80,46 @@ Vitest (`vitest.config.ts`, jsdom): test files under `lib/__tests__`, `app/api/_
 
 ## Environments
 
-There are **two Vercel projects**, both in scope `javieraguilar-6355s-projects`. The repo is **not** linked to either — deploys are manual via CLI.
+Both environments live in the single Vercel project `vitamind` (scope `javieraguilar-6355s-projects`), separated by Vercel environment:
 
-| Env | Vercel project | Public URL | Purpose |
-|---|---|---|---|
-| **Production** | `vitamind` | https://getvitamind.app (alias: `vitamind-six.vercel.app`) | Stable, what users and partners see |
-| **Dev / staging** | `vitamind-dev` | https://vitamind-dev.vercel.app | Personal testing (e.g. push notifications). Not for partners. |
+| Env | Git branch | Vercel environment | Public URL | Purpose |
+|---|---|---|---|---|
+| **Production** | `master` | Production | https://getvitamind.app (alias: `vitamind-six.vercel.app`) | Stable, what users and partners see |
+| **Dev / staging** | `dev` | Preview | https://getvitamind-dev.vercel.app | Personal testing (e.g. push notifications). Not for partners. |
 
-Each project has its own VAPID keys, `CRON_SECRET`, and Supabase env vars (the Supabase project is shared, but `push_subscriptions` are isolated per project — see "Push subscription isolation" below).
+The Preview environment has its **own** VAPID keys, `CRON_SECRET` and `PUSH_TEST_ALLOWED_ENDPOINT` (copied from the retired `vitamind-dev` project), so push subscriptions stay isolated between prod and dev — see "Push subscription isolation" below. The old standalone `vitamind-dev` project is deprecated and pending deletion.
 
-## Deployment (Vercel)
+## Deployment (via GitHub Actions)
 
-The default `.vercel/project.json` link points to the **prod** project (`vitamind`).
+Deploys are automated in `.github/workflows/ci.yml` and **gated on green CI** (lint + typecheck + test + build):
 
-> **Planned change:** the projects will be migrated to the personal Vercel
-> account with the repo linked, so pushes to `master` with green CI deploy
-> automatically. Until that happens, deploys are manual as described below —
-> when the migration lands, update this section and
-> `docs/PRODUCTION_READINESS.md` (§4.5 has the migration checklist).
+- Push to `master` → `deploy-prod` job → production deploy of the `vitamind` project → getvitamind.app.
+- Push to `dev` → `deploy-dev` job → Preview deploy aliased to the stable https://getvitamind-dev.vercel.app.
 
-**Before any production deploy:** CI must be green on the commit being deployed (lint + typecheck + test + build), and any new `supabase/migrations/*.sql` must already be applied to the Supabase project (see "Supabase migrations" below).
+Both jobs use the `VERCEL_TOKEN` repo secret (GitHub → repo Settings → Secrets → Actions); the org/project IDs are inline in the workflow (not secrets). If a deploy job fails with an auth error, the token expired — create a new one at vercel.com/account/settings/tokens and update the secret.
 
-### Deploy to production
+**Before merging anything that includes a `supabase/migrations/*.sql`:** apply the migration to the shared Supabase project **first** (see "Supabase migrations" below) — the deploy on merge is automatic, so the DB must be ready before the code lands.
+
+> **Planned (bigger) change:** migrate the project to the personal Vercel
+> account (`js-projects-98e2a0d2`, GitHub `JaviMaligno` login) to stop using the
+> work-email account for personal projects. `getvitamind.app` is registered at a
+> third-party registrar (not Vercel), so the move is: recreate env vars in the
+> personal project (printf discipline!), verify the deployment URL end-to-end,
+> then move the domain. Push subscribers survive because the origin and VAPID
+> keys stay the same. Native Git integration works there (that account owns the
+> `JaviMaligno` GitHub connection).
+
+### Manual deploy (fallback)
+
+The CLI link (`.vercel/project.json`) points to the `vitamind` project:
 
 ```bash
-npx vercel --prod --yes      # deploys to vitamind → getvitamind.app
+npx vercel --prod --yes      # manual production deploy → getvitamind.app
 ```
 
-### Deploy to dev (vitamind-dev)
+Note: after a `vercel rollback`, new deploys do **not** take the production domain automatically — promote with `npx vercel promote <deployment-url>`.
 
-The CLI link must be swapped temporarily because there's only one `.vercel/` per working dir:
-
-```bash
-npx vercel link --project vitamind-dev --yes   # relink to dev
-npx vercel --prod --yes                        # deploys to vitamind-dev → vitamind-dev.vercel.app
-npx vercel link --project vitamind --yes       # relink back to prod (so future default deploys go to prod)
-```
-
-`--prod` here means "production deployment of the dev project" — i.e. the deployment that gets the canonical alias `vitamind-dev.vercel.app`. It does **not** affect prod.
-
-### Vercel project settings (both projects)
+### Vercel project settings
 
 - **Framework Preset:** Next.js (auto-detected on first deploy via `npx vercel --name <project>`; do **not** create the project with `vercel project add` because that creates it with preset "Other" and routes 404)
 - **Root Directory:** repo root (the app is no longer in a `vitamind/` subdirectory — if a project still has Root Directory set to `vitamind`, clear it)
@@ -134,7 +134,7 @@ npx vercel link --project vitamind --yes       # relink back to prod (so future 
 
 ### Cron jobs
 
-`vercel.json` defines a daily cron `0 8 * * *` UTC hitting `/api/push/notify`. Because `vercel.json` is committed, **both projects** schedule it. To silence the dev cron without touching `vercel.json`, disable the schedule from the `vitamind-dev` project's dashboard.
+`vercel.json` defines a daily cron `0 8 * * *` UTC hitting `/api/push/notify`. Crons only run on **Production** deployments, so the `dev` branch preview never schedules it — dev push testing is manual via curl (below).
 
 The endpoint authorizes via `Authorization: Bearer $CRON_SECRET` header only (set automatically by Vercel cron). The `?secret=` query-string variant was removed because it leaks the secret to logs/history; pass the secret in the header.
 
@@ -146,20 +146,20 @@ The endpoint authorizes via `Authorization: Bearer $CRON_SECRET` header only (se
 # Prod (cron behaviour: only sends if UV ≥ 3 and a synthesis window exists)
 curl -H "Authorization: Bearer $CRON_SECRET_PROD" https://getvitamind.app/api/push/notify
 
-# Dev — same as above, runs against the dev project
-curl -H "Authorization: Bearer $CRON_SECRET_DEV" https://vitamind-dev.vercel.app/api/push/notify
+# Dev — same as above, runs against the dev-branch preview (Preview env CRON_SECRET)
+curl -H "Authorization: Bearer $CRON_SECRET_DEV" https://getvitamind-dev.vercel.app/api/push/notify
 ```
 
 ### Force-test mode (`?force=true`)
 
 For verifying push delivery end-to-end (without waiting for UV ≥ 3 or a synthesis window), `/api/push/notify` accepts `?force=true`. To prevent broadcasting test pushes to all real subscribers, the flag is gated by an env var:
 
-- `PUSH_TEST_ALLOWED_ENDPOINT` — set in **vitamind-dev only** (and **never in prod**) to a single subscription endpoint. When `force=true`, only that endpoint receives the push. Without the env var, the request returns 400.
+- `PUSH_TEST_ALLOWED_ENDPOINT` — set in the **Preview environment only** (and **never in Production**) to a single subscription endpoint. When `force=true`, only that endpoint receives the push. Without the env var, the request returns 400. ⚠️ The current Preview value was copied from the retired vitamind-dev project and points at a subscription on the old origin — re-subscribe on https://getvitamind-dev.vercel.app and update it before force-testing.
 
 ```bash
-# After subscribing on https://vitamind-dev.vercel.app and setting PUSH_TEST_ALLOWED_ENDPOINT
+# After subscribing on https://getvitamind-dev.vercel.app and setting PUSH_TEST_ALLOWED_ENDPOINT
 curl -H "Authorization: Bearer $CRON_SECRET_DEV" \
-  "https://vitamind-dev.vercel.app/api/push/notify?force=true"
+  "https://getvitamind-dev.vercel.app/api/push/notify?force=true"
 ```
 
 The push payload uses a fixed test body (`[Test HH:MM:SS] Push activo para <city>`); no attacker-controlled fields, even if `CRON_SECRET` leaks.
@@ -168,12 +168,12 @@ The push payload uses a fixed test body (`[Test HH:MM:SS] Push activo para <city
 
 See `.env.example` for the full list with comments. Summary:
 
-- `NEXT_PUBLIC_VAPID_PUBLIC_KEY` / `VAPID_PRIVATE_KEY` — Web Push VAPID keys (generate with `node scripts/generate-vapid.mjs`). **Each project must have its own pair** — pushes are isolated by public key.
+- `NEXT_PUBLIC_VAPID_PUBLIC_KEY` / `VAPID_PRIVATE_KEY` — Web Push VAPID keys (generate with `node scripts/generate-vapid.mjs`). **Production and Preview must each have their own pair** — pushes are isolated by public key.
 - `VAPID_CONTACT` — `mailto:` contact push services can use (must be a monitored inbox).
-- `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY` — Supabase client credentials (same values in both projects)
-- `SUPABASE_SERVICE_ROLE_KEY` — Server-side Supabase operations, keep secret (same value in both projects)
-- `CRON_SECRET` — Shared secret to authorize the Vercel cron endpoint. **Each project must have its own** so dev's secret can't be used to trigger prod.
-- `PUSH_TEST_ALLOWED_ENDPOINT` — **vitamind-dev only.** Single subscription endpoint allowed to receive `?force=true` test pushes. Must NOT be set in prod (its absence is what keeps prod safe from `force=true`).
+- `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY` — Supabase client credentials (same values in both environments)
+- `SUPABASE_SERVICE_ROLE_KEY` — Server-side Supabase operations, keep secret (same value in both environments)
+- `CRON_SECRET` — Shared secret to authorize the Vercel cron endpoint. **Production and Preview must each have their own** so dev's secret can't be used to trigger prod.
+- `PUSH_TEST_ALLOWED_ENDPOINT` — **Preview environment only.** Single subscription endpoint allowed to receive `?force=true` test pushes. Must NOT be set in Production (its absence is what keeps prod safe from `force=true`).
 
 **Gotcha:** when adding env vars via CLI, always pipe with `printf '%s'` — never `echo`. `echo` appends a literal `\n` (bytes `5c 6e`) that Vercel stores inside the value, silently corrupting any secret that's pasted that way. Two known incidents on prod (`vitamind`):
 
