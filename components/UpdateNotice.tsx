@@ -12,6 +12,8 @@ export default function UpdateNotice() {
     if (typeof window === "undefined" || !("serviceWorker" in navigator)) return;
 
     let refreshing = false;
+    let registration: ServiceWorkerRegistration | null = null;
+
     const onControllerChange = () => {
       if (refreshing) return;
       refreshing = true;
@@ -19,10 +21,25 @@ export default function UpdateNotice() {
     };
     navigator.serviceWorker.addEventListener("controllerchange", onControllerChange);
 
+    // When the app returns to the foreground, ask the browser to check for a
+    // new service worker. A "warm" resume (the OS kept the app in memory and
+    // the user just re-opens it) triggers no navigation and therefore no
+    // automatic update check, so a long-lived install could otherwise sit on a
+    // stale version indefinitely. This is event-driven — no background
+    // polling; it fires a single conditional request only at the moment the
+    // user re-opens the app, exactly when a new version matters.
+    const onVisibilityChange = () => {
+      if (document.visibilityState === "visible" && registration) {
+        registration.update().catch(() => {});
+      }
+    };
+    document.addEventListener("visibilitychange", onVisibilityChange);
+
     const register = () => {
       navigator.serviceWorker
         .register("/sw.js")
         .then((reg) => {
+          registration = reg;
           // SW already waiting from a previous tab/session.
           if (reg.waiting && navigator.serviceWorker.controller) {
             setWaitingWorker(reg.waiting);
@@ -50,6 +67,7 @@ export default function UpdateNotice() {
 
     return () => {
       navigator.serviceWorker.removeEventListener("controllerchange", onControllerChange);
+      document.removeEventListener("visibilitychange", onVisibilityChange);
     };
   }, []);
 
