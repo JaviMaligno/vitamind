@@ -88,6 +88,12 @@ Each project has its own VAPID keys, `CRON_SECRET`, and Supabase env vars (the S
 
 The default `.vercel/project.json` link points to the **prod** project (`vitamind`).
 
+> **Planned change:** the projects will be migrated to the personal Vercel
+> account with the repo linked, so pushes to `master` with green CI deploy
+> automatically. Until that happens, deploys are manual as described below —
+> when the migration lands, update this section and
+> `docs/PRODUCTION_READINESS.md` (§4.5 has the migration checklist).
+
 **Before any production deploy:** CI must be green on the commit being deployed (lint + typecheck + test + build), and any new `supabase/migrations/*.sql` must already be applied to the Supabase project (see "Supabase migrations" below).
 
 ### Deploy to production

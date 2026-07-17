@@ -93,6 +93,16 @@ Severidad: 🔴 crítico · 🟠 alto · 🟡 medio · ⚪ bajo. "Estado" reflej
 4. Al desplegar esta rama, comprobar en la consola del navegador que la CSP no
    bloquea nada legítimo (si aparece un aviso de CSP, añadir el origen a la
    lista en `next.config.ts` — no quitar la cabecera).
+5. **Migrar los proyectos a la cuenta personal de Vercel y vincular el repo**,
+   de forma que cada push a `master` con CI verde despliegue automáticamente
+   (deploy directo con CI en lugar del `npx vercel --prod` manual). Al migrar:
+   - Recrear todos los env vars en los proyectos nuevos con `printf '%s'`
+     (nunca `echo`) y pasar el detector de corrupción documentado en CLAUDE.md.
+   - Configurar el auto-deploy solo para `master` (production) y mantener
+     `vitamind-dev` como proyecto separado o como preview deploys.
+   - Actualizar la sección "Deployment" de CLAUDE.md y la regla de oro de este
+     documento cuando el flujo cambie: la disciplina "CI verde antes de
+     desplegar" pasa a estar garantizada por la plataforma, no por el humano.
 
 ## 5. Mejoras recomendadas (no bloqueantes)
 
