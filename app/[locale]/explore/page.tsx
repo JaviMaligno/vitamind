@@ -14,7 +14,6 @@ import { ozoneDU } from "@/lib/uv-model";
 import ExploreHeroBold from "@/components/ExploreHeroBold";
 import VisualizationZone from "@/components/VisualizationZone";
 import CitySearch from "@/components/CitySearch";
-import GpsButton from "@/components/GpsButton";
 import { Link } from "@/i18n/navigation";
 import type { City } from "@/lib/types";
 import { useWeather } from "@/hooks/useWeather";
@@ -151,7 +150,6 @@ export default function ExplorePage() {
               {app.cityName}
             </button>
           )}
-          <GpsButton />
         </div>
       )}
 

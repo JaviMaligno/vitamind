@@ -95,7 +95,7 @@ export default function DashboardPage() {
             allCities={app.allCities}
           />
         </div>
-        <GpsButton />
+        {hasCity && <GpsButton />}
         {hasCity && (
           <Link
             href="/profile"
