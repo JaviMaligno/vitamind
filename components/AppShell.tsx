@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/context/ThemeProvider";
 import InstallProvider from "@/context/InstallProvider";
 import SolarBackground from "@/components/SolarBackground";
 import BottomTabBar from "@/components/BottomTabBar";
+import SiteNav from "@/components/SiteNav";
 import SwipeNav from "@/components/SwipeNav";
 import LanguageSelector from "@/components/LanguageSelector";
 import AuthButton from "@/components/AuthButton";
@@ -40,6 +41,7 @@ function TopBar() {
           </span>
         </div>
         <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
+          <SiteNav />
           <InstallHelpButton />
           <ThemeToggle />
           <LanguageSelector />

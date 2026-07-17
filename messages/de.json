@@ -202,7 +202,10 @@
   "nav": {
     "myDay": "Mein Tag",
     "explore": "Entdecken",
-    "profile": "Profil"
+    "profile": "Profil",
+    "menu": "Menü",
+    "close": "Schließen",
+    "cities": "Städte"
   },
   "footer": {
     "appHeading": "App",

@@ -202,7 +202,10 @@
   "nav": {
     "myDay": "Mano diena",
     "explore": "Tyrinėti",
-    "profile": "Profilis"
+    "profile": "Profilis",
+    "menu": "Meniu",
+    "close": "Uždaryti",
+    "cities": "Miestai"
   },
   "footer": {
     "appHeading": "Programėlė",
