@@ -890,7 +890,9 @@
       "inAppBrowser": "Abre primero en Safari",
       "copyUrl": "Copiar enlace",
       "linkCopied": "Enlace copiado",
-      "close": "Cerrar"
+      "close": "Cerrar",
+      "inAppBrowserIos": "Abre primero en Safari",
+      "inAppBrowserAndroid": "Abre primero en Chrome"
     },
     "installed": {
       "toast": "¡Instalada! Abre VitaminD desde tu pantalla de inicio ☀️"

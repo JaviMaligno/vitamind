@@ -890,7 +890,9 @@
       "inAppBrowser": "Pirmiausia atidarykite Safari",
       "copyUrl": "Kopijuoti nuorodą",
       "linkCopied": "Nuoroda nukopijuota",
-      "close": "Uždaryti"
+      "close": "Uždaryti",
+      "inAppBrowserIos": "Pirmiausia atidarykite Safari",
+      "inAppBrowserAndroid": "Pirmiausia atidarykite Chrome"
     },
     "installed": {
       "toast": "Įdiegta! Atidarykite VitaminD iš pradžios ekrano ☀️"

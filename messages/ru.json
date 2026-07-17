@@ -890,7 +890,9 @@
       "inAppBrowser": "Сначала откройте в Safari",
       "copyUrl": "Скопировать ссылку",
       "linkCopied": "Ссылка скопирована",
-      "close": "Закрыть"
+      "close": "Закрыть",
+      "inAppBrowserIos": "Сначала откройте в Safari",
+      "inAppBrowserAndroid": "Сначала откройте в Chrome"
     },
     "installed": {
       "toast": "Установлено! Откройте VitaminD с главного экрана ☀️"

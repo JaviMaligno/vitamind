@@ -890,7 +890,9 @@
       "inAppBrowser": "Open in Safari first",
       "copyUrl": "Copy link",
       "linkCopied": "Link copied",
-      "close": "Close"
+      "close": "Close",
+      "inAppBrowserIos": "Open in Safari first",
+      "inAppBrowserAndroid": "Open in Chrome first"
     },
     "installed": {
       "toast": "Installed! Open VitaminD from your home screen ☀️"
