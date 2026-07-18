@@ -31,6 +31,7 @@ interface Props {
   gpsLoading?: boolean;
   gpsSlow?: boolean;
   gpsError?: "gpsDenied" | "gpsTimeout" | "gpsUnavailable" | "gpsGenericError" | "gpsNotSupported" | null;
+  onDismissGpsError?: () => void;
 }
 
 function formatCountdown(totalMinutes: number): string {
@@ -76,6 +77,7 @@ export default function ExploreHeroBold({
   gpsLoading,
   gpsSlow,
   gpsError,
+  onDismissGpsError,
 }: Props) {
   const t = useTranslations("hero");
   const tc = useTranslations("common");
@@ -182,6 +184,7 @@ export default function ExploreHeroBold({
                   <GpsErrorHint
                     error={t(gpsError)}
                     hint={gpsError === "gpsDenied" ? t("gpsDeniedHint") : gpsError === "gpsTimeout" || gpsError === "gpsUnavailable" ? t("gpsEnableHint") : undefined}
+                    onDismiss={onDismissGpsError}
                   />
                 </div>
               )}
@@ -278,6 +281,7 @@ export default function ExploreHeroBold({
           <GpsErrorHint
             error={t(gpsError)}
             hint={gpsError === "gpsDenied" ? t("gpsDeniedHint") : gpsError === "gpsTimeout" || gpsError === "gpsUnavailable" ? t("gpsEnableHint") : undefined}
+            onDismiss={onDismissGpsError}
           />
         )}
       </div>

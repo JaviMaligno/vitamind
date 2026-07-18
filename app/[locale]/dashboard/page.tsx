@@ -135,6 +135,7 @@ export default function DashboardPage() {
                   : (app.gps.error === "gpsTimeout" || app.gps.error === "gpsUnavailable") ? tHero("gpsEnableHint")
                   : undefined
                 }
+                onDismiss={app.gps.clearError}
               />
             )}
           </div>

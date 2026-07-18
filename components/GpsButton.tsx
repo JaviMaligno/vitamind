@@ -1,5 +1,6 @@
 "use client";
 
+import { useLayoutEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useApp } from "@/context/AppProvider";
 import GpsErrorHint from "@/components/GpsErrorHint";
@@ -10,7 +11,30 @@ export default function GpsButton() {
   const { gps, cityId } = app;
 
   const isActive = cityId.startsWith("gps:");
-  const isDenied = gps.error === "gpsDenied";
+  // permissionDenied covers the silent auto-request on mount: no error pill is
+  // shown for it, but the icon still signals that GPS is blocked.
+  const isDenied = gps.error === "gpsDenied" || gps.permissionDenied;
+
+  const showHint = (gps.slow && !gps.error) || Boolean(gps.error);
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const hintRef = useRef<HTMLDivElement>(null);
+  const [shift, setShift] = useState(0);
+
+  // The hint hangs below the button, right-aligned to it — but the button can
+  // sit near either screen edge (left on Profile, right on Dashboard), so an
+  // edge-anchored popover can run off-screen. Clamp it to the viewport by
+  // shifting it relative to the button.
+  useLayoutEffect(() => {
+    if (!showHint || !wrapRef.current || !hintRef.current) {
+      setShift(0);
+      return;
+    }
+    const btn = wrapRef.current.getBoundingClientRect();
+    const hint = hintRef.current.getBoundingClientRect();
+    let left = btn.right - hint.width;
+    left = Math.max(12, Math.min(left, window.innerWidth - hint.width - 12));
+    setShift(left - btn.left);
+  }, [showHint, gps.error, gps.slow]);
 
   const iconColor = gps.loading
     ? "text-text-muted"
@@ -38,7 +62,7 @@ export default function GpsButton() {
     // surrounding flex row. The slow/error hints are absolutely positioned below
     // the icon (decoupled from layout) so they stay visible without displacing
     // the icon or squeezing the adjacent search field.
-    <div className="relative shrink-0">
+    <div className="relative shrink-0" ref={wrapRef}>
       <button
         onClick={gps.enableGps}
         disabled={gps.loading}
@@ -82,8 +106,12 @@ export default function GpsButton() {
           </svg>
         )}
       </button>
-      {(gps.slow && !gps.error) || gps.error ? (
-        <div className="absolute top-full right-0 mt-2 z-40 w-max max-w-[240px]">
+      {showHint ? (
+        <div
+          ref={hintRef}
+          className="absolute top-full mt-2 z-40 w-max max-w-[min(240px,calc(100vw-24px))]"
+          style={{ left: shift }}
+        >
           {gps.slow && !gps.error && (
             <p className="text-[10px] text-accent/60 max-w-[180px] leading-tight animate-pulse">
               {t("gpsEnableHint")}
@@ -93,10 +121,11 @@ export default function GpsButton() {
             <GpsErrorHint
               error={t(gps.error)}
               hint={
-                isDenied ? t("gpsDeniedHint")
+                gps.error === "gpsDenied" ? t("gpsDeniedHint")
                 : (gps.error === "gpsTimeout" || gps.error === "gpsUnavailable") ? t("gpsEnableHint")
                 : undefined
               }
+              onDismiss={gps.clearError}
             />
           )}
         </div>

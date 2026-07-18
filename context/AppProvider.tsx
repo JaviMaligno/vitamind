@@ -62,6 +62,7 @@ interface AppContextValue {
     permissionDenied: boolean;
     enableGps: () => void;
     disableGps: () => void;
+    clearError: () => void;
   };
   // Computed
   hasLocation: boolean;
@@ -150,7 +151,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     permissionDenied: gps.permissionDenied,
     enableGps: gps.enableGps,
     disableGps: gps.disableGps,
-  }), [gps.lat, gps.lon, gps.loading, gps.slow, gps.error, gps.permissionDenied, gps.enableGps, gps.disableGps]);
+    clearError: gps.clearError,
+  }), [gps.lat, gps.lon, gps.loading, gps.slow, gps.error, gps.permissionDenied, gps.enableGps, gps.disableGps, gps.clearError]);
 
   const value = useMemo<AppContextValue>(() => ({
     skinType: prefs.skinType,

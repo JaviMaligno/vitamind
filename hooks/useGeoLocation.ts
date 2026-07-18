@@ -31,9 +31,14 @@ export function useGeoLocation() {
     }
   }, []);
 
-  const requestLocation = useCallback(async () => {
+  // silent: don't surface errors or the "slow" hint. Used by the auto-request
+  // on mount (re-enabling GPS from a previous session) — if that fails (e.g.
+  // permission revoked), an unsolicited error pill would appear on every page
+  // load. Errors are only shown for requests the user explicitly initiated.
+  const requestLocation = useCallback(async (opts?: { silent?: boolean }) => {
+    const silent = opts?.silent === true;
     if (!navigator.geolocation) {
-      setError("gpsNotSupported");
+      if (!silent) setError("gpsNotSupported");
       return;
     }
 
@@ -56,14 +61,16 @@ export function useGeoLocation() {
       // Permissions API not supported — use default delay
     }
 
-    slowTimer.current = setTimeout(() => setSlow(true), hintDelay);
+    if (!silent) {
+      slowTimer.current = setTimeout(() => setSlow(true), hintDelay);
+    }
 
     // Global safety timeout: if no position after 20s, give up
     globalTimer.current = setTimeout(() => {
       cleanup();
       setLoading(false);
       setSlow(false);
-      setError("gpsTimeout");
+      if (!silent) setError("gpsTimeout");
     }, GLOBAL_TIMEOUT);
 
     watchId.current = navigator.geolocation.watchPosition(
@@ -83,7 +90,7 @@ export function useGeoLocation() {
           setLoading(false);
           setSlow(false);
           setPermissionDenied(true);
-          setError("gpsDenied");
+          if (!silent) setError("gpsDenied");
         }
         // TIMEOUT and POSITION_UNAVAILABLE are transient —
         // watchPosition keeps retrying, global timer handles the hard limit
@@ -104,6 +111,12 @@ export function useGeoLocation() {
     }
     requestLocation();
   }, [requestLocation]);
+
+  // Dismiss a visible error without touching the GPS state (× on the pill).
+  const clearError = useCallback(() => {
+    setError(null);
+    setSlow(false);
+  }, []);
 
   const disableGps = useCallback(() => {
     cleanup();
@@ -130,9 +143,9 @@ export function useGeoLocation() {
     } catch {
       // localStorage unavailable
     }
-    if (shouldRun) queueMicrotask(() => requestLocation());
+    if (shouldRun) queueMicrotask(() => requestLocation({ silent: true }));
     return cleanup;
   }, [requestLocation, cleanup]);
 
-  return { lat, lon, loading, slow, error, permissionDenied, requestLocation, enableGps, disableGps };
+  return { lat, lon, loading, slow, error, permissionDenied, requestLocation, enableGps, disableGps, clearError };
 }
