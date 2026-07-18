@@ -1,6 +1,6 @@
 "use client";
 
-import { useLayoutEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
 import { useApp } from "@/context/AppProvider";
 import GpsErrorHint from "@/components/GpsErrorHint";
@@ -18,22 +18,29 @@ export default function GpsButton() {
   const showHint = (gps.slow && !gps.error) || Boolean(gps.error);
   const wrapRef = useRef<HTMLDivElement>(null);
   const hintRef = useRef<HTMLDivElement>(null);
-  const [shift, setShift] = useState(0);
 
   // The hint hangs below the button, right-aligned to it — but the button can
   // sit near either screen edge (left on Profile, right on Dashboard), so an
   // edge-anchored popover can run off-screen. Clamp it to the viewport by
-  // shifting it relative to the button.
+  // shifting it relative to the button. Written straight to the DOM node (it
+  // unmounts when hidden) — no state, no extra re-render.
   useLayoutEffect(() => {
-    if (!showHint || !wrapRef.current || !hintRef.current) {
-      setShift(0);
-      return;
-    }
-    const btn = wrapRef.current.getBoundingClientRect();
-    const hint = hintRef.current.getBoundingClientRect();
-    let left = btn.right - hint.width;
-    left = Math.max(12, Math.min(left, window.innerWidth - hint.width - 12));
-    setShift(left - btn.left);
+    if (!showHint) return;
+
+    const clampHint = () => {
+      if (!wrapRef.current || !hintRef.current) return;
+      const btn = wrapRef.current.getBoundingClientRect();
+      const hint = hintRef.current.getBoundingClientRect();
+      let left = btn.right - hint.width;
+      left = Math.max(12, Math.min(left, window.innerWidth - hint.width - 12));
+      hintRef.current.style.left = `${left - btn.left}px`;
+    };
+
+    clampHint();
+    // Re-clamp while visible: rotating the phone / resizing moves the button
+    // and changes the available width.
+    window.addEventListener("resize", clampHint);
+    return () => window.removeEventListener("resize", clampHint);
   }, [showHint, gps.error, gps.slow]);
 
   const iconColor = gps.loading
@@ -110,7 +117,7 @@ export default function GpsButton() {
         <div
           ref={hintRef}
           className="absolute top-full mt-2 z-40 w-max max-w-[min(240px,calc(100vw-24px))]"
-          style={{ left: shift }}
+          style={{ left: 0 }}
         >
           {gps.slow && !gps.error && (
             <p className="text-[10px] text-accent/60 max-w-[180px] leading-tight animate-pulse">
