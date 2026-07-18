@@ -127,6 +127,7 @@ export default function ExplorePage() {
           gpsLoading={app.gps.loading}
           gpsSlow={app.gps.slow}
           gpsError={app.gps.error}
+          onDismissGpsError={app.gps.clearError}
         />
       </div>
 

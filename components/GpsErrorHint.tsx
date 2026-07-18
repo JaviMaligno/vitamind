@@ -1,13 +1,16 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
+import { useTranslations } from "next-intl";
 
 interface Props {
   error: string;
   hint?: string;
+  onDismiss?: () => void;
 }
 
-export default function GpsErrorHint({ error, hint }: Props) {
+export default function GpsErrorHint({ error, hint, onDismiss }: Props) {
+  const tNav = useTranslations("nav");
   const [open, setOpen] = useState(false);
   const [pos, setPos] = useState<{ left: number; top: number; width: number } | null>(null);
   const ref = useRef<HTMLDivElement>(null);
@@ -55,6 +58,15 @@ export default function GpsErrorHint({ error, hint }: Props) {
             aria-label="Info"
           >
             ?
+          </button>
+        )}
+        {onDismiss && (
+          <button
+            onClick={onDismiss}
+            className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-caption font-bold text-red-600/70 dark:text-red-200/70 hover:bg-red-500/20 hover:text-red-600 dark:hover:text-red-200 transition-colors"
+            aria-label={tNav("close")}
+          >
+            ×
           </button>
         )}
       </span>
