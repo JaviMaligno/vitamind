@@ -106,6 +106,11 @@ Both jobs use the `VERCEL_TOKEN` repo secret (GitHub → repo Settings → Secre
 > until Search Console shows traction on solar queries — full plan in
 > `docs/plans/2026-07-19-sunrise-seo-pages.md`.
 
+> **Planned (next) work:** MCP tool optimization (yearly vitamin D tool to stop
+> per-date call cascades), account value ladder + OAuth 2.1 for personal MCP
+> tools, and the "connect your AI" marketing push — full plan in
+> `docs/plans/2026-07-19-mcp-evolution-account-marketing.md`.
+
 > **Planned (bigger) change:** migrate the project to the personal Vercel
 > account (`js-projects-98e2a0d2`, GitHub `JaviMaligno` login) to stop using the
 > work-email account for personal projects. `getvitamind.app` is registered at a
