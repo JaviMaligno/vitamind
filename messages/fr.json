@@ -935,7 +935,11 @@
     "shorter": "{minutes} min de moins qu'hier",
     "same": "Comme hier",
     "polarDay": "Soleil de minuit : le soleil ne se couche pas aujourd'hui",
-    "polarNight": "Nuit polaire : le soleil ne se lève pas aujourd'hui"
+    "polarNight": "Nuit polaire : le soleil ne se lève pas aujourd'hui",
+    "monthlyHeading": "Lever et coucher du soleil par mois {atCity}",
+    "monthlyCaption": "Comment le lever, le coucher du soleil et la durée du jour évoluent au fil de l'année.",
+    "month": "Mois",
+    "monthlyNote": "Valeurs indicatives pour le milieu de chaque mois (le 15)."
   },
   "cityPage": {
     "title": "Vitamine D du soleil {atCity}",

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { getSunTimes } from "../sun-times";
+import { getSunTimes, monthlySunTimes } from "../sun-times";
 
 const MADRID = { lat: 40.4168, lon: -3.7038, tz: "Europe/Madrid" };
 
@@ -63,5 +63,41 @@ describe("getSunTimes", () => {
     const st = getSunTimes(MADRID.lat, MADRID.lon, new Date(2026, 8, 15), MADRID.tz);
     expect(st.solarNoon).toBeGreaterThan(st.sunrise!);
     expect(st.solarNoon).toBeLessThan(st.sunset!);
+  });
+});
+
+describe("monthlySunTimes", () => {
+  it("Madrid: 12 ordered entries, June days longer than December, no polar months", () => {
+    const months = monthlySunTimes(MADRID.lat, MADRID.lon, MADRID.tz);
+    expect(months).toHaveLength(12);
+    expect(months.map((m) => m.monthIndex)).toEqual([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]);
+    const june = months[5];
+    const december = months[11];
+    expect(june.sunrise).toBeLessThan(december.sunrise!);
+    expect(june.sunset).toBeGreaterThan(december.sunset!);
+    expect(june.dayLengthMin).toBeGreaterThan(december.dayLengthMin);
+    for (const m of months) expect(m.polar).toBeNull();
+  });
+
+  it("Madrid entries reflect DST: June sunset after 21:00 local, December before 19:00", () => {
+    const months = monthlySunTimes(MADRID.lat, MADRID.lon, MADRID.tz);
+    expect(months[5].sunset).toBeGreaterThan(21);
+    expect(months[11].sunset).toBeLessThan(19);
+  });
+
+  it("Svalbard: polar day in June, polar night in December", () => {
+    const months = monthlySunTimes(78.22, 15.65, undefined, 1);
+    const june = months[5];
+    expect(june.polar).toBe("day");
+    expect(june.sunrise).toBeNull();
+    expect(june.dayLengthMin).toBe(1440);
+    const december = months[11];
+    expect(december.polar).toBe("night");
+    expect(december.dayLengthMin).toBe(0);
+  });
+
+  it("southern hemisphere: June days shorter than December days", () => {
+    const months = monthlySunTimes(-33.87, 151.21, "Australia/Sydney");
+    expect(months[5].dayLengthMin).toBeLessThan(months[11].dayLengthMin);
   });
 });

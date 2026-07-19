@@ -935,7 +935,11 @@
     "shorter": "{minutes} min shorter than yesterday",
     "same": "Same as yesterday",
     "polarDay": "Midnight sun: the sun does not set today",
-    "polarNight": "Polar night: the sun does not rise today"
+    "polarNight": "Polar night: the sun does not rise today",
+    "monthlyHeading": "Sunrise and sunset by month in {city}",
+    "monthlyCaption": "How sunrise, sunset and day length change over the year.",
+    "month": "Month",
+    "monthlyNote": "Approximate values for mid-month (the 15th)."
   },
   "cityPage": {
     "title": "Vitamin D from the sun in {city}",

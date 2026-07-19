@@ -935,7 +935,11 @@
     "shorter": "{minutes} min trumpiau nei vakar",
     "same": "Kaip vakar",
     "polarDay": "Poliarinė diena: šiandien saulė nenusileidžia",
-    "polarNight": "Poliarinė naktis: šiandien saulė nepateka"
+    "polarNight": "Poliarinė naktis: šiandien saulė nepateka",
+    "monthlyHeading": "Saulėtekis ir saulėlydis pagal mėnesį: {city}",
+    "monthlyCaption": "Kaip per metus keičiasi saulėtekis, saulėlydis ir dienos trukmė.",
+    "month": "Mėnuo",
+    "monthlyNote": "Orientacinės reikšmės kiekvieno mėnesio viduriui (15 d.)."
   },
   "cityPage": {
     "title": "Vitaminas D iš saulės: {city}",

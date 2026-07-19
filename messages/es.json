@@ -935,7 +935,11 @@
     "shorter": "{minutes} min menos que ayer",
     "same": "Como ayer",
     "polarDay": "Sol de medianoche: hoy el sol no se pone",
-    "polarNight": "Noche polar: hoy el sol no sale"
+    "polarNight": "Noche polar: hoy el sol no sale",
+    "monthlyHeading": "Amanecer y atardecer por mes en {city}",
+    "monthlyCaption": "Cómo cambian el amanecer, el atardecer y la duración del día a lo largo del año.",
+    "month": "Mes",
+    "monthlyNote": "Valores orientativos para mediados de cada mes (día 15)."
   },
   "cityPage": {
     "title": "Vitamina D del sol en {city}",

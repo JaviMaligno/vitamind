@@ -935,7 +935,11 @@
     "shorter": "{minutes} Min. kürzer als gestern",
     "same": "Wie gestern",
     "polarDay": "Mitternachtssonne: Die Sonne geht heute nicht unter",
-    "polarNight": "Polarnacht: Die Sonne geht heute nicht auf"
+    "polarNight": "Polarnacht: Die Sonne geht heute nicht auf",
+    "monthlyHeading": "Sonnenaufgang und Sonnenuntergang nach Monat in {city}",
+    "monthlyCaption": "Wie sich Sonnenaufgang, Sonnenuntergang und Tageslänge im Laufe des Jahres verändern.",
+    "month": "Monat",
+    "monthlyNote": "Richtwerte für die Monatsmitte (jeweils der 15.)."
   },
   "cityPage": {
     "title": "Vitamin D durch Sonne in {city}",
