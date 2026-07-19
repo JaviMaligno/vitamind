@@ -1,5 +1,7 @@
 import { describe, it, expect } from "vitest";
-import { searchCity, sunTimesTool, vitaminDWindowTool, currentStatusTool } from "../mcp-tools";
+import {
+  searchCity, sunTimesTool, vitaminDWindowTool, vitaminDYearTool, currentStatusTool,
+} from "../mcp-tools";
 
 describe("searchCity", () => {
   it("finds a city by its Spanish base name", () => {
@@ -70,6 +72,37 @@ describe("vitaminDWindowTool", () => {
     expect(r.profile.skinType).toBe(6);
     expect(r.profile.exposedSkinFraction).toBe(1);
     expect(r.profile.targetIU).toBe(10000);
+  });
+});
+
+describe("vitaminDYearTool", () => {
+  it("answers the London months question in one call", () => {
+    const r = vitaminDYearTool({ lat: 51.51, lon: -0.13, timezone: "Europe/London", elevationM: 11 });
+    expect(r.allYear).toBe(false);
+    expect(r.impossibleMonths).toContain(12);
+    expect(r.impossibleMonths).toContain(1);
+    expect(r.possibleMonths).toContain(6);
+    expect(r.byMonth).toHaveLength(12);
+    const june = r.byMonth[5];
+    expect(june.synthesisPossible).toBe(true);
+    expect(june.window).not.toBeNull();
+    expect(june.minutesNeededAtBestHour).toBeGreaterThan(0);
+    expect(r.byMonth[11].synthesisPossible).toBe(false);
+    expect(r.exactViableSpan).not.toBeNull();
+  });
+
+  it("reports all-year synthesis at the equator with no seasonal span", () => {
+    const r = vitaminDYearTool({ lat: 1.35, lon: 103.82, timezone: "Asia/Singapore" });
+    expect(r.allYear).toBe(true);
+    expect(r.possibleMonths).toHaveLength(12);
+    expect(r.exactViableSpan).toBeNull();
+  });
+
+  it("personal profile changes the minutes, not the possible months", () => {
+    const fair = vitaminDYearTool({ lat: 40.42, lon: -3.7, timezone: "Europe/Madrid", skinType: 1 });
+    const dark = vitaminDYearTool({ lat: 40.42, lon: -3.7, timezone: "Europe/Madrid", skinType: 6 });
+    expect(fair.possibleMonths).toEqual(dark.possibleMonths);
+    expect(fair.byMonth[5].minutesNeededAtBestHour!).toBeLessThan(dark.byMonth[5].minutesNeededAtBestHour!);
   });
 });
 

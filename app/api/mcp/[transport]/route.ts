@@ -1,6 +1,8 @@
 import { createMcpHandler } from "mcp-handler";
 import { z } from "zod";
-import { searchCity, sunTimesTool, vitaminDWindowTool, currentStatusTool } from "@/lib/mcp-tools";
+import {
+  searchCity, sunTimesTool, vitaminDWindowTool, vitaminDYearTool, currentStatusTool,
+} from "@/lib/mcp-tools";
 
 /**
  * Remote MCP server: lets users connect the app to Claude, ChatGPT or any MCP
@@ -13,6 +15,17 @@ import { searchCity, sunTimesTool, vitaminDWindowTool, currentStatusTool } from 
 const json = (value: unknown) => ({
   content: [{ type: "text" as const, text: JSON.stringify(value, null, 2) }],
 });
+
+/** Usage log: tool name + duration only — never arguments (they carry the
+ *  caller's location). Enough to spot which tools get used and which cascade. */
+async function timed<T>(tool: string, run: () => T | Promise<T>): Promise<T> {
+  const t0 = Date.now();
+  try {
+    return await run();
+  } finally {
+    console.log(`[api/mcp] ${tool} ${Date.now() - t0}ms`);
+  }
+}
 
 const LAT = z.number().min(-90).max(90).describe("Latitude in decimal degrees");
 const LON = z.number().min(-180).max(180).describe("Longitude in decimal degrees");
@@ -40,28 +53,35 @@ const handler = createMcpHandler(
       "search_city",
       "Find a city in the app's database by name (any of the app's six languages works) and get its coordinates, IANA timezone and elevation — feed those into the other tools.",
       { query: z.string().min(1).max(80).describe("City name, e.g. 'Madrid', 'London', 'Nueva York'") },
-      async ({ query }) => json({ results: searchCity(query) }),
+      async ({ query }) => timed("search_city", () => json({ results: searchCity(query) })),
     );
 
     server.tool(
       "get_sun_times",
       "Sunrise, sunset, solar noon, civil dawn/dusk, evening golden hour and day length (with day-over-day trend) for a location and date. Handles midnight sun and polar night.",
       { lat: LAT, lon: LON, date: DATE, timezone: TZ },
-      async (args) => json(sunTimesTool(args)),
+      async (args) => timed("get_sun_times", () => json(sunTimesTool(args))),
     );
 
     server.tool(
       "get_vitamin_d_window",
-      "The daily solar vitamin D synthesis window for a location, date and personal profile: when UV is strong enough (index ≥ 3), the best hour, and the clear-sky minutes of sun needed to reach the target IU. Returns synthesisPossible=false in winter/at high latitudes when the sun never gets high enough.",
+      "The solar vitamin D synthesis window for ONE specific day at a location, for a personal profile: when UV is strong enough (index ≥ 3), the best hour, and the clear-sky minutes of sun needed to reach the target IU. Returns synthesisPossible=false when the sun never gets high enough that day. Only for single-day questions — for months, seasons or 'when during the year', call get_vitamin_d_year instead of calling this once per date.",
       { lat: LAT, lon: LON, date: DATE, timezone: TZ, ...PROFILE },
-      async (args) => json(vitaminDWindowTool(args)),
+      async (args) => timed("get_vitamin_d_window", () => json(vitaminDWindowTool(args))),
+    );
+
+    server.tool(
+      "get_vitamin_d_year",
+      "The WHOLE YEAR of solar vitamin D for a location in a single call: which months synthesis is possible, the exact first/last viable days of the season, and per-month windows with the minutes needed for a personal profile. Use this for any question about months, seasons, winter/summer or 'when during the year can I…' — never probe individual dates with get_vitamin_d_window for that.",
+      { lat: LAT, lon: LON, timezone: TZ, ...PROFILE },
+      async (args) => timed("get_vitamin_d_year", () => json(vitaminDYearTool(args))),
     );
 
     server.tool(
       "get_current_status",
       "Whether RIGHT NOW is a good moment for vitamin D synthesis at a location, using live Open-Meteo UV/cloud data when reachable (clear-sky model otherwise): current UV index, minutes needed now, and when today's window opens or closes.",
       { lat: LAT, lon: LON, timezone: TZ, ...PROFILE },
-      async (args) => json(await currentStatusTool(args)),
+      async (args) => timed("get_current_status", async () => json(await currentStatusTool(args))),
     );
   },
   {
