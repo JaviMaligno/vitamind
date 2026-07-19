@@ -6,9 +6,17 @@ que viene después, en tres bloques independientes.
 
 ## Bloque A — Optimización de las herramientas MCP
 
-> **Estado 2026-07-19:** `get_vitamin_d_year`, descripciones anti-cascada y el
-> log de uso implementados. Queda pendiente la auditoría fina de respuestas con
-> más sesiones reales de uso.
+> **Estado 2026-07-19 (2ª pasada):** auditoría EN VIVO ejecutada con 3 agentes
+> simulando usuarios (15 preguntas contra el servidor real). Resultado: 12/15
+> OK con el mínimo de llamadas; 2 bugs corregidos (criterios contradictorios en
+> la herramienta anual → unificados con `viableDays`/`partialMonth` + `summary`
+> comparativo; horas sin zero-pad) y 3 gaps cubiertos (`estimate_sun_session`
+> con IU estimadas + minutos-hasta-quemadura, `atTime` en la ventana diaria,
+> `nextWindow` al estar cerrada, hora dorada matutina, hint de coordenadas en
+> `search_city` vacío, nulls explicados). Deferred conscientemente:
+> `compare_locations` (2 llamadas + summary bastan), previsión semanal
+> (requiere multi-día de Open-Meteo), y ampliar la base de ciudades (Alicante
+> no está; el hint de lat/lon lo mitiga).
 
 Feedback real de la primera sesión de uso (2026-07-19): preguntar "¿qué meses
 hay vitamina D en Londres?" provocó una cascada de llamadas a

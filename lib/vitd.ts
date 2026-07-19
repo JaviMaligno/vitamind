@@ -108,6 +108,17 @@ export function maxSessionIU(
 }
 
 /**
+ * Minutes of exposure to reach 1 MED (erythema onset) at a given UVI — the
+ * same med/uvi approximation minutesForVitD already uses internally as its
+ * safety cap, exposed for "how long before I burn" answers. Returns null when
+ * UV is negligible (no practical erythema risk to time).
+ */
+export function erythemaMinutes(uvi: number, skinType: SkinType): number | null {
+  if (uvi <= 0.1) return null;
+  return MED[skinType] / uvi;
+}
+
+/**
  * Minutes needed to synthesize target IU of vitamin D.
  *
  * Uses a saturating exponential model that accounts for photodegradation:
