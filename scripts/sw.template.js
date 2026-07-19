@@ -26,8 +26,15 @@ self.addEventListener("install", (event) => {
 });
 
 self.addEventListener("message", (event) => {
-  if (event.data && event.data.type === "SKIP_WAITING") {
+  if (!event.data) return;
+  if (event.data.type === "SKIP_WAITING") {
     self.skipWaiting();
+  } else if (event.data.type === "GET_VERSION" && event.ports && event.ports[0]) {
+    // Version handshake for UpdateNotice.tsx: it compares this build version
+    // with the page's own NEXT_PUBLIC_BUILD_VERSION to decide between showing
+    // the reload notice (page is stale) and activating silently (the
+    // network-first page fetch already delivered this same build).
+    event.ports[0].postMessage({ version: "__BUILD_VERSION__" });
   }
 });
 

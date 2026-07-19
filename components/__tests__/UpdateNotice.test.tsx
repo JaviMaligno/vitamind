@@ -12,13 +12,40 @@ import UpdateNotice from "@/components/UpdateNotice";
 //   navigator.serviceWorker  (EventTarget + .controller + .register)
 //   ServiceWorkerRegistration (EventTarget + .installing/.waiting)
 //   ServiceWorker            (EventTarget + .state + .postMessage)
+//   MessageChannel           (paired ports for the GET_VERSION handshake)
+
+class FakePort {
+  other!: FakePort;
+  onmessage: ((event: { data: unknown }) => void) | null = null;
+  postMessage(data: unknown) {
+    queueMicrotask(() => this.other.onmessage?.({ data }));
+  }
+}
+
+class FakeMessageChannel {
+  port1 = new FakePort();
+  port2 = new FakePort();
+  constructor() {
+    this.port1.other = this.port2;
+    this.port2.other = this.port1;
+  }
+}
 
 class FakeWorker extends EventTarget {
   state: string;
-  postMessage = vi.fn();
-  constructor(state = "installing") {
+  // The build version this fake sw.js reports via the GET_VERSION handshake;
+  // null simulates a pre-handshake worker that never answers.
+  version: string | null;
+  postMessage = vi.fn((data: unknown, ports?: FakePort[]) => {
+    const msg = data as { type?: string } | null;
+    if (msg?.type === "GET_VERSION" && ports?.[0] && this.version !== null) {
+      ports[0].postMessage({ version: this.version });
+    }
+  });
+  constructor(state = "installing", version: string | null = "sw-build") {
     super();
     this.state = state;
+    this.version = version;
   }
   // Drive the install lifecycle the way the browser does.
   setState(next: string) {
@@ -63,6 +90,8 @@ function installSWContainer(controller: unknown) {
 
 beforeEach(() => {
   vi.clearAllMocks();
+  // jsdom has no MessageChannel; the handshake tests need the paired-port fake.
+  vi.stubGlobal("MessageChannel", FakeMessageChannel);
   reloadSpy = vi.fn();
   originalLocation = window.location;
   // jsdom's location.reload throws "Not implemented"; swap the whole object.
@@ -73,6 +102,8 @@ beforeEach(() => {
 });
 
 afterEach(() => {
+  vi.unstubAllEnvs();
+  vi.unstubAllGlobals();
   Object.defineProperty(window, "location", {
     configurable: true,
     value: originalLocation,
@@ -80,10 +111,11 @@ afterEach(() => {
 });
 
 async function flush() {
-  // Let the register() promise .then() run and React commit.
+  // Let the register() promise .then(), the GET_VERSION handshake microtasks
+  // and React commits all run (the setTimeout(0) drains queued microtasks).
   await act(async () => {
-    await Promise.resolve();
-    await Promise.resolve();
+    await new Promise((r) => setTimeout(r, 0));
+    await new Promise((r) => setTimeout(r, 0));
   });
 }
 
@@ -230,5 +262,94 @@ describe("UpdateNotice — foreground resume checks for a new version", () => {
       document.dispatchEvent(new Event("visibilitychange"));
     });
     expect(registration.update).not.toHaveBeenCalled();
+  });
+});
+
+describe("UpdateNotice — build-version handshake", () => {
+  // Pages are network-first, so a page that was just (re)loaded online is
+  // often the same build as the waiting SW. The notice must only appear when
+  // the running page is actually stale.
+
+  it("activates silently (no notice, no reload) when the waiting SW is the same build as the page", async () => {
+    vi.stubEnv("NEXT_PUBLIC_BUILD_VERSION", "abc12345");
+    installSWContainer({ id: "old-controller" });
+    render(<UpdateNotice />);
+    await flush();
+
+    const worker = registration.pushUpdate();
+    worker.version = "abc12345";
+    await act(async () => {
+      worker.setState("installed");
+    });
+    await flush();
+
+    expect(screen.queryByText("update.available")).toBeNull();
+    expect(worker.postMessage).toHaveBeenCalledWith({ type: "SKIP_WAITING" });
+
+    // The silent activation's controllerchange must NOT reload — the page
+    // already runs this build.
+    await act(async () => {
+      container.dispatchEvent(new Event("controllerchange"));
+    });
+    expect(reloadSpy).not.toHaveBeenCalled();
+
+    // ...but a later controllerchange (a genuinely new SW taking over, e.g.
+    // triggered from another tab) still reloads.
+    await act(async () => {
+      container.dispatchEvent(new Event("controllerchange"));
+    });
+    expect(reloadSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it("shows the notice when the waiting SW is a different build than the page", async () => {
+    vi.stubEnv("NEXT_PUBLIC_BUILD_VERSION", "abc12345");
+    installSWContainer({ id: "old-controller" });
+    render(<UpdateNotice />);
+    await flush();
+
+    const worker = registration.pushUpdate();
+    worker.version = "def67890";
+    await act(async () => {
+      worker.setState("installed");
+    });
+    await flush();
+
+    expect(await screen.findByText("update.available")).toBeTruthy();
+    // No silent activation: taking over must stay a user decision here.
+    expect(worker.postMessage).not.toHaveBeenCalledWith({ type: "SKIP_WAITING" });
+  });
+
+  it("falls back to the notice when the waiting SW never answers GET_VERSION", async () => {
+    vi.stubEnv("NEXT_PUBLIC_BUILD_VERSION", "abc12345");
+    installSWContainer({ id: "old-controller" });
+    render(<UpdateNotice />);
+    await flush();
+
+    const worker = registration.pushUpdate();
+    worker.version = null; // pre-handshake worker: ignores GET_VERSION
+    await act(async () => {
+      worker.setState("installed");
+    });
+
+    // The 1s handshake timeout must elapse before the fallback fires.
+    expect(await screen.findByText("update.available", {}, { timeout: 2500 })).toBeTruthy();
+    expect(worker.postMessage).not.toHaveBeenCalledWith({ type: "SKIP_WAITING" });
+  });
+
+  it("skips the handshake and shows the notice when the page has no build version", async () => {
+    // A page built before this handshake existed is stale by definition.
+    vi.stubEnv("NEXT_PUBLIC_BUILD_VERSION", "");
+    installSWContainer({ id: "old-controller" });
+    render(<UpdateNotice />);
+    await flush();
+
+    const worker = registration.pushUpdate();
+    worker.version = "abc12345";
+    await act(async () => {
+      worker.setState("installed");
+    });
+
+    expect(await screen.findByText("update.available")).toBeTruthy();
+    expect(worker.postMessage).not.toHaveBeenCalledWith({ type: "GET_VERSION" }, expect.anything());
   });
 });
