@@ -2,7 +2,7 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { AuthInfo } from "@modelcontextprotocol/sdk/server/auth/types.js";
 import { z } from "zod";
 import {
-  searchCity, sunTimesTool, vitaminDWindowTool, vitaminDYearTool, currentStatusTool,
+  searchCity, sunTimesTool, vitaminDWindowTool, vitaminDYearTool, currentStatusTool, estimateSunSessionTool,
 } from "@/lib/mcp-tools";
 import { getOAuthDb, verifyAccessToken, type OAuthScope } from "@/lib/oauth";
 import {
@@ -88,26 +88,41 @@ export function initMcpServer(server: McpServer) {
       "search_city",
       "Find a city in the app's database by name (any of the app's six languages works) and get its coordinates, IANA timezone and elevation — feed those into the other tools.",
       { query: z.string().min(1).max(80).describe("City name, e.g. 'Madrid', 'London', 'Nueva York'") },
-      async ({ query }) => timed("search_city", () => json({ results: searchCity(query) })),
+      async ({ query }) =>
+        timed("search_city", () => {
+          const results = searchCity(query);
+          return json(
+            results.length > 0
+              ? { results }
+              : {
+                  results,
+                  hint: "Not in the built-in DB (~80 major cities). Every other tool accepts raw lat/lon (plus an IANA timezone) directly — use coordinates you know, or the nearest listed city.",
+                },
+          );
+        }),
     );
 
     server.tool(
       "get_sun_times",
-      "Sunrise, sunset, solar noon, civil dawn/dusk, evening golden hour and day length (with day-over-day trend) for a location and date. Handles midnight sun and polar night.",
+      "Sunrise, sunset, solar noon, civil dawn/dusk, morning AND evening golden hour, and day length (with day-over-day trend) for a location and date. Handles midnight sun and polar night. Pure sun times — for vitamin D questions use the vitamin_d tools instead.",
       { lat: LAT, lon: LON, date: DATE, timezone: TZ },
       async (args) => timed("get_sun_times", () => json(sunTimesTool(args))),
     );
 
     server.tool(
       "get_vitamin_d_window",
-      "The solar vitamin D synthesis window for ONE specific day at a location, for a personal profile: when UV is strong enough (index ≥ 3), the best hour, and the clear-sky minutes of sun needed to reach the target IU. Returns synthesisPossible=false when the sun never gets high enough that day. Only for single-day questions — for months, seasons or 'when during the year', call get_vitamin_d_year instead of calling this once per date.",
-      { lat: LAT, lon: LON, date: DATE, timezone: TZ, ...PROFILE },
+      "The solar vitamin D synthesis window for ONE specific day at a location, for a personal profile: when UV is strong enough (index ≥ 3), the best hour, the clear-sky minutes needed to reach the target IU, and (with atTime) the minutes at the specific hour the user plans to go out. Returns synthesisPossible=false when the sun never gets high enough that day. Only for single-day questions — for months, seasons or 'when during the year', call get_vitamin_d_year instead of calling this once per date.",
+      {
+        lat: LAT, lon: LON, date: DATE, timezone: TZ, ...PROFILE,
+        atTime: z.string().regex(/^\d{1,2}:\d{2}$/).optional()
+          .describe("Local HH:MM the user plans to go out — adds minutesNeeded and UV at that exact time"),
+      },
       async (args) => timed("get_vitamin_d_window", () => json(vitaminDWindowTool(args))),
     );
 
     server.tool(
       "get_vitamin_d_year",
-      "The WHOLE YEAR of solar vitamin D for a location in a single call: which months synthesis is possible, the exact first/last viable days of the season, and per-month windows with the minutes needed for a personal profile. Use this for any question about months, seasons, winter/summer or 'when during the year can I…' — never probe individual dates with get_vitamin_d_window for that.",
+      "The WHOLE YEAR of solar vitamin D for a location in a single call. monthsWithSun lists every month with at least one viable day (season edges count as partial months, see byMonth[].viableDays); solidMonths lists months where most days work; exactViableSpan gives the exact season boundaries; summary carries per-year aggregates for comparing places. Use this for any question about months, seasons, winter/summer or 'when during the year can I…' — never probe individual dates with get_vitamin_d_window for that.",
       { lat: LAT, lon: LON, timezone: TZ, ...PROFILE },
       async (args) => timed("get_vitamin_d_year", () => json(vitaminDYearTool(args))),
     );
@@ -117,6 +132,22 @@ export function initMcpServer(server: McpServer) {
       "Whether RIGHT NOW is a good moment for vitamin D synthesis at a location, using live Open-Meteo UV/cloud data when reachable (clear-sky model otherwise): current UV index, minutes needed now, and when today's window opens or closes.",
       { lat: LAT, lon: LON, timezone: TZ, ...PROFILE },
       async (args) => timed("get_current_status", async () => json(await currentStatusTool(args))),
+    );
+
+    server.tool(
+      "estimate_sun_session",
+      "Estimate a sun session's outcome: 'I was (or will be) out N minutes — how much vitamin D did I make?' plus 'how long before I'd burn?' for the profile. Takes a start time (defaults to the day's best hour) and session minutes; returns estimated IU (with the physiological cap), average UV and clear-sky minutes-to-sunburn. Use for any 'how much did I get / can I get in X minutes' or 'how long without burning' question.",
+      {
+        lat: LAT, lon: LON, date: DATE, timezone: TZ,
+        skinType: PROFILE.skinType,
+        exposedSkinFraction: PROFILE.exposedSkinFraction,
+        age: PROFILE.age,
+        elevationM: PROFILE.elevationM,
+        startTime: z.string().regex(/^\d{1,2}:\d{2}$/).optional()
+          .describe("Local HH:MM the session starts; defaults to the day's best hour"),
+        minutes: z.number().min(1).max(600).describe("Session length in minutes"),
+      },
+      async (args) => timed("estimate_sun_session", () => json(estimateSunSessionTool(args))),
     );
 
     // ------------------------------------------------------------------

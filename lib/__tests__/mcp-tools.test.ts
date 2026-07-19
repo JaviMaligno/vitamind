@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import {
   searchCity, sunTimesTool, vitaminDWindowTool, vitaminDYearTool, currentStatusTool,
+  estimateSunSessionTool,
 } from "../mcp-tools";
 
 describe("searchCity", () => {
@@ -79,9 +80,9 @@ describe("vitaminDYearTool", () => {
   it("answers the London months question in one call", () => {
     const r = vitaminDYearTool({ lat: 51.51, lon: -0.13, timezone: "Europe/London", elevationM: 11 });
     expect(r.allYear).toBe(false);
-    expect(r.impossibleMonths).toContain(12);
-    expect(r.impossibleMonths).toContain(1);
-    expect(r.possibleMonths).toContain(6);
+    expect(r.monthsWithSun).toContain(6);
+    expect(r.monthsWithSun).not.toContain(12);
+    expect(r.monthsWithSun).not.toContain(1);
     expect(r.byMonth).toHaveLength(12);
     const june = r.byMonth[5];
     expect(june.synthesisPossible).toBe(true);
@@ -89,20 +90,80 @@ describe("vitaminDYearTool", () => {
     expect(june.minutesNeededAtBestHour).toBeGreaterThan(0);
     expect(r.byMonth[11].synthesisPossible).toBe(false);
     expect(r.exactViableSpan).not.toBeNull();
+    expect(r.summary.viableDaysPerYear).toBeGreaterThan(100);
+  });
+
+  it("season-edge months are coherent: in the span, flagged partial, not contradictory", () => {
+    // Audit finding: London's season starts 03-24 yet March used to be listed
+    // as impossible. Now March must appear in monthsWithSun as a partial month
+    // with a sampled window, while a solid month like June is not partial.
+    const r = vitaminDYearTool({ lat: 51.51, lon: -0.13, timezone: "Europe/London", elevationM: 11 });
+    const spanStartMonth = Number(r.exactViableSpan!.firstDay.split("-")[0]);
+    expect(r.monthsWithSun).toContain(spanStartMonth);
+    const edge = r.byMonth[spanStartMonth - 1];
+    expect(edge.synthesisPossible).toBe(true);
+    expect(edge.partialMonth).toBe(true);
+    expect(edge.viableDays).toBeGreaterThan(0);
+    expect(edge.window).not.toBeNull();
+    expect(r.byMonth[5].partialMonth).toBe(false);
   });
 
   it("reports all-year synthesis at the equator with no seasonal span", () => {
     const r = vitaminDYearTool({ lat: 1.35, lon: 103.82, timezone: "Asia/Singapore" });
     expect(r.allYear).toBe(true);
-    expect(r.possibleMonths).toHaveLength(12);
+    expect(r.monthsWithSun).toHaveLength(12);
     expect(r.exactViableSpan).toBeNull();
+    expect(r.summary.seasonLengthDays).toBe(365);
   });
 
-  it("personal profile changes the minutes, not the possible months", () => {
+  it("personal profile changes the minutes, not the viable months", () => {
     const fair = vitaminDYearTool({ lat: 40.42, lon: -3.7, timezone: "Europe/Madrid", skinType: 1 });
     const dark = vitaminDYearTool({ lat: 40.42, lon: -3.7, timezone: "Europe/Madrid", skinType: 6 });
-    expect(fair.possibleMonths).toEqual(dark.possibleMonths);
+    expect(fair.monthsWithSun).toEqual(dark.monthsWithSun);
     expect(fair.byMonth[5].minutesNeededAtBestHour!).toBeLessThan(dark.byMonth[5].minutesNeededAtBestHour!);
+  });
+});
+
+describe("estimateSunSessionTool", () => {
+  it("estimates IU and sunburn time for a midday summer session in Madrid", () => {
+    const r = estimateSunSessionTool({
+      lat: 40.42, lon: -3.7, date: "2026-07-19", timezone: "Europe/Madrid",
+      startTime: "12:00", minutes: 30, skinType: 2, exposedSkinFraction: 0.25, elevationM: 660,
+    });
+    expect(r.averageUVIndex).toBeGreaterThan(5);
+    expect(r.estimatedIU).toBeGreaterThan(1000);
+    expect(r.estimatedIU).toBeLessThanOrEqual(r.maxSessionIU);
+    expect(r.sunburn.minutesToSunburn).toBeGreaterThan(5);
+    expect(r.sunburn.minutesToSunburn).toBeLessThan(90);
+    expect(r.note).toContain("Not medical advice");
+  });
+
+  it("fair skin burns sooner than dark skin at the same UV", () => {
+    const base = { lat: 40.42, lon: -3.7, date: "2026-07-19", timezone: "Europe/Madrid", startTime: "14:00", minutes: 20 };
+    const fair = estimateSunSessionTool({ ...base, skinType: 1 });
+    const dark = estimateSunSessionTool({ ...base, skinType: 6 });
+    expect(fair.sunburn.minutesToSunburn!).toBeLessThan(dark.sunburn.minutesToSunburn!);
+  });
+
+  it("a night session yields nothing, with an explanatory note", () => {
+    const r = estimateSunSessionTool({
+      lat: 40.42, lon: -3.7, date: "2026-07-19", timezone: "Europe/Madrid", startTime: "23:00", minutes: 30,
+    });
+    expect(r.estimatedIU).toBe(0);
+    expect(r).toHaveProperty("lowUvNote");
+    expect(r.sunburn.minutesToSunburn).toBeNull();
+  });
+
+  it("get_vitamin_d_window atTime answers the exact-hour question", () => {
+    const r = vitaminDWindowTool({
+      lat: 59.91, lon: 10.75, date: "2026-07-20", timezone: "Europe/Oslo",
+      skinType: 1, targetIU: 2000, atTime: "12:00",
+    });
+    if (r.synthesisPossible === true) {
+      expect(r.atTime).toBeDefined();
+      expect(r.atTime!.minutesNeeded).toBeGreaterThan(0);
+      expect(r.atTime!.uvIndex).toBeGreaterThan(0);
+    }
   });
 });
 
