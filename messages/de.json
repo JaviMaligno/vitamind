@@ -986,6 +986,22 @@
     "dayByDay": "Tag für Tag ansehen",
     "twilightNote": "Morgen- und Abenddämmerung bezeichnen die bürgerliche Dämmerung: Die Sonne steht weniger als 6° unter dem Horizont, und es ist noch brauchbar hell."
   },
+  "oauth": {
+    "title": "{client} verbinden",
+    "subtitle": "mit deinem Vitamin-D-Konto",
+    "scopeProfileRead": "Dein Profil lesen: Hauttyp, Alter, Tagesziel und deine aktuelle Stadt",
+    "scopeHistoryRead": "Deinen Sonnenverlauf lesen",
+    "scopeHistoryWrite": "Sonnentage in deinen Verlauf eintragen",
+    "scopeUnknown": "Unbekannte Berechtigung",
+    "loginFirst": "Melde dich an, um fortzufahren",
+    "approve": "{client} erlauben",
+    "approving": "Verbinde…",
+    "deny": "Abbrechen",
+    "genericError": "Die Verbindung konnte nicht hergestellt werden. Bitte versuche es erneut.",
+    "revokeNote": "Du kannst die Verbindung jederzeit in deiner KI-App trennen.",
+    "invalidTitle": "Ungültige Anfrage",
+    "invalidBody": "Diese Verbindungsanfrage ist ungültig oder abgelaufen. Versuche es erneut aus deiner KI-App."
+  },
   "cityPage": {
     "title": "Vitamin D durch Sonne in {city}",
     "metaDescription": "Wann du in {city} Vitamin D durch die Sonne bilden kannst: mögliche Monate, saisonale Zeitfenster und wann du supplementieren solltest.",

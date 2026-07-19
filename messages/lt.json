@@ -986,6 +986,22 @@
     "dayByDay": "Pagal dienas",
     "twilightNote": "Aušra ir sutemos žymi civilines prieblandas: saulė yra mažiau nei 6° žemiau horizonto, lauke dar pakankamai šviesu."
   },
+  "oauth": {
+    "title": "Prijungti {client}",
+    "subtitle": "prie jūsų Vitamin D paskyros",
+    "scopeProfileRead": "Skaityti jūsų profilį: odos tipą, amžių, dienos tikslą ir dabartinį miestą",
+    "scopeHistoryRead": "Skaityti jūsų saulės dienų istoriją",
+    "scopeHistoryWrite": "Įrašyti saulės dienas į jūsų istoriją",
+    "scopeUnknown": "Nežinomas leidimas",
+    "loginFirst": "Prisijunkite, kad tęstumėte",
+    "approve": "Leisti {client}",
+    "approving": "Jungiama…",
+    "deny": "Atšaukti",
+    "genericError": "Nepavyko užbaigti prisijungimo. Bandykite dar kartą.",
+    "revokeNote": "Bet kada galite atjungti savo DI programoje.",
+    "invalidTitle": "Netinkama užklausa",
+    "invalidBody": "Ši prisijungimo užklausa netinkama arba pasibaigusi. Bandykite dar kartą iš savo DI programos."
+  },
   "cityPage": {
     "title": "Vitaminas D iš saulės: {city}",
     "metaDescription": "{city}: kada saulėje galite pasigaminti vitamino D — tinkami mėnesiai, paros saulės langai ir kada verta rinktis papildus (D3, K2, magnis).",

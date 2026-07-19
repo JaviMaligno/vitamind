@@ -1,20 +1,53 @@
-import { createMcpHandler } from "mcp-handler";
+import { createMcpHandler, withMcpAuth } from "mcp-handler";
+import type { AuthInfo } from "@modelcontextprotocol/sdk/server/auth/types.js";
 import { z } from "zod";
 import {
   searchCity, sunTimesTool, vitaminDWindowTool, vitaminDYearTool, currentStatusTool,
 } from "@/lib/mcp-tools";
+import { getOAuthDb, verifyAccessToken, type OAuthScope } from "@/lib/oauth";
+import {
+  getProfileStore, myProfileTool, myCitiesTool, myHistoryTool, logSunSessionTool,
+} from "@/lib/mcp-personal";
 
 /**
  * Remote MCP server: lets users connect the app to Claude, ChatGPT or any MCP
  * client and ask "when can I make vitamin D today?" in natural language.
  * Streamable HTTP endpoint at /api/mcp/mcp (stateless — no Redis, so the SSE
- * transport is not offered). All tools are public read-only calculations; no
- * auth, no user data, no secrets involved.
+ * transport is not offered).
+ *
+ * Two tiers: the public calculation tools work with no auth at all (that must
+ * never regress), while the get_my_* / log_* tools require an OAuth 2.1 token
+ * from this app's authorization server (see lib/oauth.ts) and answer only for
+ * the token's own user.
  */
 
 const json = (value: unknown) => ({
   content: [{ type: "text" as const, text: JSON.stringify(value, null, 2) }],
 });
+
+type ToolResult = ReturnType<typeof json>;
+
+/** Wraps a personal tool: requires a verified token with the given scope. */
+function personal<A>(
+  tool: string,
+  scope: OAuthScope,
+  run: (userId: string, args: A) => Promise<ToolResult>,
+) {
+  return async (args: A, extra: { authInfo?: AuthInfo }): Promise<ToolResult> => {
+    const auth = extra.authInfo;
+    const userId = (auth?.extra as { userId?: string } | undefined)?.userId;
+    if (!userId) {
+      return json({
+        error: "authentication_required",
+        hint: "This tool needs the user's Vitamin D account. Reconnect the MCP server using OAuth (the connector will offer a login) to enable personal tools.",
+      });
+    }
+    if (!auth!.scopes.includes(scope)) {
+      return json({ error: "insufficient_scope", requiredScope: scope });
+    }
+    return timed(tool, () => run(userId, args));
+  };
+}
 
 /** Usage log: tool name + duration only — never arguments (they carry the
  *  caller's location). Enough to spot which tools get used and which cascade. */
@@ -83,6 +116,49 @@ const handler = createMcpHandler(
       { lat: LAT, lon: LON, timezone: TZ, ...PROFILE },
       async (args) => timed("get_current_status", async () => json(await currentStatusTool(args))),
     );
+
+    // ------------------------------------------------------------------
+    // Personal tools (OAuth). Registered unconditionally so clients can
+    // discover them; without a token they return authentication_required.
+
+    const store = () => {
+      const s = getProfileStore();
+      if (!s) throw new Error("profile store unavailable");
+      return s;
+    };
+
+    server.tool(
+      "get_my_profile",
+      "The signed-in user's saved Vitamin D profile: skin type, exposed-skin default, age, target IU and their current city. Requires connecting with OAuth (scope profile:read). Call this FIRST for any personal question, then pass its values to the public tools instead of asking the user.",
+      {},
+      personal("get_my_profile", "profile:read", async (userId) => json(await myProfileTool(store(), userId))),
+    );
+
+    server.tool(
+      "get_my_cities",
+      "The signed-in user's current city and favorite cities with coordinates and timezones, ready to feed into the public tools. Requires OAuth (scope profile:read).",
+      {},
+      personal("get_my_cities", "profile:read", async (userId) => json(await myCitiesTool(store(), userId))),
+    );
+
+    server.tool(
+      "get_my_history",
+      "The signed-in user's sun history from the app's calendar: which recent days had viable sun, which they confirmed going outside, and their current streak. Requires OAuth (scope history:read).",
+      { days: z.number().int().min(1).max(365).optional().describe("How many recent days to return; default 30") },
+      personal("get_my_history", "history:read", async (userId, args: { days?: number }) =>
+        json(await myHistoryTool(store(), userId, args))),
+    );
+
+    server.tool(
+      "log_sun_session",
+      "Marks a day as sun-confirmed in the signed-in user's history calendar — use when the user says they went (or will have gone) outside for their sun. Defaults to today. Requires OAuth (scope history:write).",
+      {
+        date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional().describe("Day to confirm, YYYY-MM-DD; defaults to today"),
+        minutes: z.number().min(1).max(600).optional().describe("Minutes the user reports having spent in the sun (acknowledged, not stored)"),
+      },
+      personal("log_sun_session", "history:write", async (userId, args: { date?: string; minutes?: number }) =>
+        json(await logSunSessionTool(store(), userId, args))),
+    );
   },
   {
     serverInfo: { name: "vitamind-explorer", version: "1.0.0" },
@@ -94,4 +170,26 @@ const handler = createMcpHandler(
   },
 );
 
-export { handler as GET, handler as POST, handler as DELETE };
+/**
+ * Bearer verification: our own opaque tokens only (vd_at_…), looked up hashed.
+ * `required: false` keeps the public tools anonymous — a missing/invalid token
+ * just means no authInfo, and only the personal tools care.
+ */
+async function verifyToken(_req: Request, bearer?: string): Promise<AuthInfo | undefined> {
+  if (!bearer) return undefined;
+  const db = getOAuthDb();
+  if (!db) return undefined;
+  const verified = await verifyAccessToken(db, bearer);
+  if (!verified) return undefined;
+  return {
+    token: bearer,
+    clientId: verified.clientId,
+    scopes: verified.scopes,
+    expiresAt: Math.floor(verified.expiresAt / 1000),
+    extra: { userId: verified.userId },
+  };
+}
+
+const authHandler = withMcpAuth(handler, verifyToken, { required: false });
+
+export { authHandler as GET, authHandler as POST, authHandler as DELETE };
