@@ -986,6 +986,22 @@
     "dayByDay": "Ver día a día",
     "twilightNote": "Alba y anochecer marcan el crepúsculo civil: el sol está a menos de 6° bajo el horizonte y todavía hay luz útil al aire libre."
   },
+  "oauth": {
+    "title": "Conectar {client}",
+    "subtitle": "con tu cuenta de Vitamina D",
+    "scopeProfileRead": "Leer tu perfil: tipo de piel, edad, objetivo diario y tu ciudad actual",
+    "scopeHistoryRead": "Leer tu historial de días de sol",
+    "scopeHistoryWrite": "Apuntar días de sol en tu historial",
+    "scopeUnknown": "Permiso desconocido",
+    "loginFirst": "Inicia sesión para continuar",
+    "approve": "Permitir a {client}",
+    "approving": "Conectando…",
+    "deny": "Cancelar",
+    "genericError": "No se pudo completar la conexión. Inténtalo de nuevo.",
+    "revokeNote": "Puedes desconectarlo cuando quieras desde tu aplicación de IA.",
+    "invalidTitle": "Solicitud no válida",
+    "invalidBody": "Esta solicitud de conexión no es válida o ha caducado. Vuelve a intentarlo desde tu aplicación de IA."
+  },
   "cityPage": {
     "title": "Vitamina D del sol en {city}",
     "metaDescription": "Cuándo puedes sintetizar vitamina D con el sol en {city}: meses posibles, ventanas por estación y cuándo suplementar.",

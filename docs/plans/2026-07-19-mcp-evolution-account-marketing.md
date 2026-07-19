@@ -32,6 +32,24 @@ herramienta de perfil anual.
 - **Observabilidad ligera:** log de nombre de herramienta + duración (sin args
   con coordenadas exactas, por privacidad) en los logs de función de Vercel,
   para saber qué se usa y qué cascadea.
+- **Auditoría preguntas habituales → herramientas candidatas** (anotado
+  2026-07-19, sin prioridad aún; validar contra los logs de uso antes de
+  construir):
+  - "¿Dónde mejor, Madrid o Alicante?" / "¿a qué ciudad me mudo por sol?" →
+    `compare_locations` (2-5 lugares, misma métrica anual en paralelo).
+  - "¿Qué día de esta semana me conviene salir?" → `get_week_forecast`
+    (Open-Meteo multi-día + minutos por día; hoy el cliente encadena
+    get_current_status + suposiciones).
+  - "He estado 20 min al sol, ¿cuánta vitamina D he hecho?" →
+    `estimate_session_iu` (`iuForMinutes` ya existe en `lib/vitd.ts`).
+  - "¿Cuánto puedo estar sin quemarme?" → `get_safe_sun_time` (tiempo a 1 MED
+    por fototipo; misma física ya implementada — coordinar copy con el futuro
+    "sol seguro" de la app).
+  - "¿Cuándo es la hora dorada para fotos esta semana?" → cubierto por
+    `get_sun_times` con fecha; evaluar si hace falta variante multi-día.
+  - Regla general: una pregunta habitual = una llamada; si los logs muestran
+    >2 llamadas por pregunta, falta una herramienta o sobra ambigüedad en las
+    descripciones.
 
 ## Bloque B — Cuenta de usuario: escalera de valor + OAuth del MCP
 
@@ -52,6 +70,16 @@ herramienta de perfil anual.
    de la cuenta no debe prometer "todo gratis para siempre".
 
 ### B2. OAuth 2.1 para el MCP (técnica — la pieza grande)
+
+> **Estado 2026-07-19: núcleo implementado.** AS completo (authorize/token/
+> register + well-knowns, PKCE S256 obligatorio, códigos single-use, tokens
+> hasheados con rotación de refresh), consentimiento en `/oauth-consent`
+> (6 idiomas, login Supabase reutilizando AuthButton), verificación con
+> `withMcpAuth (required:false)` y 4 herramientas personales. Migración:
+> `supabase/migrations/20260719_mcp_oauth.sql` — **aplicar antes de desplegar**.
+> Pendiente: prueba end-to-end con el conector real, UI de revocación en el
+> perfil, rate limit del token endpoint, y limpieza periódica de filas
+> caducadas.
 
 Los conectores de Claude/ChatGPT autentican vía OAuth 2.1. Arquitectura:
 

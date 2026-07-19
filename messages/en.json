@@ -986,6 +986,22 @@
     "dayByDay": "See day by day",
     "twilightNote": "Dawn and dusk mark civil twilight: the sun sits less than 6° below the horizon and there is still usable outdoor light."
   },
+  "oauth": {
+    "title": "Connect {client}",
+    "subtitle": "to your Vitamin D account",
+    "scopeProfileRead": "Read your profile: skin type, age, daily target and your current city",
+    "scopeHistoryRead": "Read your sun history",
+    "scopeHistoryWrite": "Log sun days into your history",
+    "scopeUnknown": "Unknown permission",
+    "loginFirst": "Sign in to continue",
+    "approve": "Allow {client}",
+    "approving": "Connecting…",
+    "deny": "Cancel",
+    "genericError": "The connection could not be completed. Please try again.",
+    "revokeNote": "You can disconnect it anytime from your AI app.",
+    "invalidTitle": "Invalid request",
+    "invalidBody": "This connection request is invalid or has expired. Try again from your AI app."
+  },
   "cityPage": {
     "title": "Vitamin D from the sun in {city}",
     "metaDescription": "When you can synthesize vitamin D from the sun in {city}: possible months, seasonal windows, and when to supplement.",
