@@ -1054,6 +1054,26 @@
     "privacyText": "La URL pública no usa cuenta ni guarda nada tuyo. Con la URL de cuenta, el acceso usa OAuth con permisos explícitos que apruebas tú; los tokens caducan solos y tus datos no se comparten con terceros.",
     "memoryTip": "Consejo: incluso sin cuenta, dile una vez a tu asistente tu tipo de piel y tu ciudad — su memoria hará el resto."
   },
+  "sunrisePage": {
+    "eyebrow": "El sol mes a mes",
+    "metaTitle": "Amanecer y atardecer en {city} en {month}: horas exactas",
+    "metaDescription": "A qué hora amanece y anochece en {city} en {month}: tabla día a día con alba, anochecer, hora dorada y duración del día.",
+    "title": "Amanecer y atardecer en {city} en {month}",
+    "intro": "El 1 de {month} en {city} el sol sale a las {firstSunrise} y se pone a las {firstSunset}; el día {lastDay} sale a las {lastSunrise} y se pone a las {lastSunset}. A lo largo del mes el día {trend, select, longer {se alarga {minutes} minutos} shorter {se acorta {minutes} minutos} other {apenas cambia}}.",
+    "tableHeading": "Día a día",
+    "tableCaption": "Todas las horas en hora local de {city}. Alba y anochecer marcan el crepúsculo civil.",
+    "vitdHeading": "¿Y la vitamina D en {month}?",
+    "vitdPossible": "En {month}, la ventana típica de síntesis en {city} va de {start} a {end}: con piel media y camiseta bastan ~{minutes} min en el mejor momento.",
+    "vitdImpossible": "En {month} el sol no sube lo suficiente en {city} para sintetizar vitamina D: es época de cuidar la dieta o valorar la suplementación.",
+    "vitdCta": "Ver la guía de vitamina D de {city}",
+    "monthsHeading": "Otros meses en {city}",
+    "nearbyHeading": "El amanecer en otras ciudades",
+    "faqSunriseQ": "¿A qué hora amanece en {city} en {month}?",
+    "faqSunriseA": "El 1 de {month} amanece a las {first} y el día {lastDay} a las {last}, siempre en hora local.",
+    "faqDayQ": "¿Cuánto dura el día en {city} en {month}?",
+    "faqDayA": "En torno a {dayLength} a mitad de mes.",
+    "note": "Valores astronómicos orientativos: pueden variar uno o dos minutos según el año."
+  },
   "cityPage": {
     "title": "Vitamina D del sol en {city}",
     "metaDescription": "Cuándo puedes sintetizar vitamina D con el sol en {city}: meses posibles, ventanas por estación y cuándo suplementar.",

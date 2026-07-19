@@ -1054,6 +1054,26 @@
     "privacyText": "The public URL uses no account and stores nothing about you. With the account URL, access uses OAuth with explicit permissions you approve; tokens expire on their own and your data is never shared with third parties.",
     "memoryTip": "Tip: even without an account, tell your assistant your skin type and city once — its memory does the rest."
   },
+  "sunrisePage": {
+    "eyebrow": "The sun, month by month",
+    "metaTitle": "Sunrise and sunset in {city} in {month}: exact times",
+    "metaDescription": "What time the sun rises and sets in {city} in {month}: a day-by-day table with dawn, dusk, golden hour and day length.",
+    "title": "Sunrise and sunset in {city} in {month}",
+    "intro": "On {month} 1 in {city} the sun rises at {firstSunrise} and sets at {firstSunset}; on day {lastDay} it rises at {lastSunrise} and sets at {lastSunset}. Over the month the day {trend, select, longer {grows {minutes} minutes longer} shorter {gets {minutes} minutes shorter} other {barely changes}}.",
+    "tableHeading": "Day by day",
+    "tableCaption": "All times are local to {city}. Dawn and dusk mark civil twilight.",
+    "vitdHeading": "What about vitamin D in {month}?",
+    "vitdPossible": "In {month}, the typical synthesis window in {city} runs from {start} to {end}: with medium skin and a t-shirt, ~{minutes} min at the best moment is enough.",
+    "vitdImpossible": "In {month} the sun doesn't climb high enough in {city} for vitamin D synthesis: the season to mind your diet or consider supplementation.",
+    "vitdCta": "See the {city} vitamin D guide",
+    "monthsHeading": "Other months in {city}",
+    "nearbyHeading": "Sunrise in other cities",
+    "faqSunriseQ": "What time does the sun rise in {city} in {month}?",
+    "faqSunriseA": "On {month} 1 it rises at {first} and on day {lastDay} at {last}, always in local time.",
+    "faqDayQ": "How long is the day in {city} in {month}?",
+    "faqDayA": "Around {dayLength} at mid-month.",
+    "note": "Approximate astronomical values: they can shift a minute or two from year to year."
+  },
   "cityPage": {
     "title": "Vitamin D from the sun in {city}",
     "metaDescription": "When you can synthesize vitamin D from the sun in {city}: possible months, seasonal windows, and when to supplement.",

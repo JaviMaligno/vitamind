@@ -5,6 +5,7 @@ import { getPathname } from "@/i18n/navigation";
 import { buildLanguageAlternates } from "@/i18n/metadata";
 import { BUILTIN_CITIES } from "@/lib/cities";
 import { baseSlug, cityUrl, buildCityAlternates } from "@/lib/city-routes";
+import { SUNRISE_CITIES, sunUrl, buildSunAlternates } from "@/lib/sun-routes";
 
 const PAGES = [
   { path: "/", changeFrequency: "weekly" as const, priority: 1 },
@@ -42,5 +43,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
     }));
   });
 
-  return [...staticEntries, ...cityEntries];
+  // Sunrise/sunset month pages: starter batch × 12 months × 6 locales.
+  const sunEntries = SUNRISE_CITIES.flatMap((base) =>
+    Array.from({ length: 12 }, (_, monthIndex) =>
+      routing.locales.map((locale) => ({
+        url: sunUrl(locale, base, monthIndex),
+        lastModified: now,
+        changeFrequency: "yearly" as const,
+        priority: 0.6,
+        alternates: { languages: buildSunAlternates(locale, base, monthIndex).languages },
+      })),
+    ).flat(),
+  );
+
+  return [...staticEntries, ...cityEntries, ...sunEntries];
 }
