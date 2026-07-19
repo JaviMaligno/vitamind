@@ -69,7 +69,9 @@ export default function WorldMap({ lat, lon, doy, onSelect, favorites, allCities
     ctx.scale(dpr, dpr);
     const path = d3.geoPath(proj, ctx);
 
-    ctx.fillStyle = "#090e2a"; ctx.fillRect(0, 0, W, H);
+    // Transparent background: the map sits inside PhaseWindow, whose solid
+    // phase-tinted fill shows through — so the ocean matches the moment of day.
+    ctx.clearRect(0, 0, W, H);
     ctx.strokeStyle = "rgba(255,255,255,0.04)"; ctx.lineWidth = 0.5;
     ctx.beginPath(); path(d3.geoGraticule().step([30, 20])()); ctx.stroke();
     ctx.strokeStyle = "rgba(255,255,255,0.1)"; ctx.lineWidth = 0.8;
@@ -297,9 +299,9 @@ export default function WorldMap({ lat, lon, doy, onSelect, favorites, allCities
         </div>
       )}
       <div style={{ position: "absolute", top: 10, right: 10, display: "flex", flexDirection: "column", gap: 3, zIndex: 5 }}>
-        <button onClick={zoomIn} style={{ width: 32, height: 32, borderRadius: 6, border: "1px solid rgba(255,255,255,0.1)", background: "rgba(10,14,42,0.9)", color: "#e0e0e0", cursor: "pointer", fontSize: 16, display: "flex", alignItems: "center", justifyContent: "center" }}>+</button>
-        <button onClick={zoomOut} style={{ width: 32, height: 32, borderRadius: 6, border: "1px solid rgba(255,255,255,0.1)", background: "rgba(10,14,42,0.9)", color: "#e0e0e0", cursor: "pointer", fontSize: 16, display: "flex", alignItems: "center", justifyContent: "center" }}>{"\u2212"}</button>
-        <button onClick={resetV} style={{ width: 32, height: 32, borderRadius: 6, border: "1px solid rgba(255,255,255,0.1)", background: "rgba(10,14,42,0.9)", color: "#e0e0e0", cursor: "pointer", fontSize: 16, display: "flex", alignItems: "center", justifyContent: "center" }}>{"\u27F2"}</button>
+        <button onClick={zoomIn} style={{ width: 32, height: 32, borderRadius: 6, border: "1px solid rgba(255,255,255,0.1)", background: "rgba(0,0,0,0.45)", color: "#e0e0e0", cursor: "pointer", fontSize: 16, display: "flex", alignItems: "center", justifyContent: "center" }}>+</button>
+        <button onClick={zoomOut} style={{ width: 32, height: 32, borderRadius: 6, border: "1px solid rgba(255,255,255,0.1)", background: "rgba(0,0,0,0.45)", color: "#e0e0e0", cursor: "pointer", fontSize: 16, display: "flex", alignItems: "center", justifyContent: "center" }}>{"\u2212"}</button>
+        <button onClick={resetV} style={{ width: 32, height: 32, borderRadius: 6, border: "1px solid rgba(255,255,255,0.1)", background: "rgba(0,0,0,0.45)", color: "#e0e0e0", cursor: "pointer", fontSize: 16, display: "flex", alignItems: "center", justifyContent: "center" }}>{"\u27F2"}</button>
       </div>
       <div style={{ position: "absolute", bottom: 8, left: 12, fontSize: 9, color: "rgba(255,255,255,0.25)", pointerEvents: "none", zIndex: 2, background: "rgba(0,0,0,0.4)", padding: "3px 8px", borderRadius: 4 }}>
         {scrubMode ? "Arrastrar: explorar \u00B7 Scroll/Pinch: zoom" : "Arrastrar: mover \u00B7 Scroll/Pinch: zoom \u00B7 Clic/Tap: seleccionar"}

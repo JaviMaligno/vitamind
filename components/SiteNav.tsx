@@ -16,8 +16,8 @@ const inlineLinkClass =
   "text-caption font-medium text-text-secondary hover:text-text-primary transition-colors";
 
 /**
- * Secondary site navigation for the pages outside the bottom tab bar (Learn,
- * Partners, city index). Responsive: inline text links on wide desktop, a
+ * Secondary site navigation for the pages outside the bottom tab bar
+ * (Partners, city index). Responsive: inline text links on wide desktop, a
  * single menu button opening a drawer below `lg` — the mobile/tablet header is
  * already tight, so text links there would crowd the logo. Deterministic on
  * the server (no mounted gate): the button and the desktop links are in the
@@ -52,8 +52,8 @@ export default function SiteNav() {
     };
   }, [open]);
 
+  // Learn/Guide is a primary bottom tab now, so it's not repeated here.
   const secondary = [
-    { href: "/learn", label: t("footer.learn") },
     { href: "/partners", label: t("footer.partners") },
   ];
 

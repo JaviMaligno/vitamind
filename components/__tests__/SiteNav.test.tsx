@@ -28,9 +28,10 @@ describe("SiteNav", () => {
     render(<SiteNav />);
     // Desktop nav is CSS-hidden below lg but present in the DOM.
     const nav = screen.getByRole("navigation", { name: "nav.menu" });
-    expect(within(nav).getByRole("link", { name: "footer.learn" }).getAttribute("href")).toBe("/learn");
     expect(within(nav).getByRole("link", { name: "footer.partners" }).getAttribute("href")).toBe("/partners");
     expect(within(nav).getByRole("link", { name: "nav.cities" }).getAttribute("href")).toBe("/vitamin-d");
+    // Learn is a primary bottom tab now — no longer duplicated here.
+    expect(within(nav).queryByRole("link", { name: "footer.learn" })).toBeNull();
     expect(screen.queryByRole("dialog")).toBeNull();
   });
 
@@ -39,8 +40,8 @@ describe("SiteNav", () => {
     fireEvent.click(screen.getByRole("button", { name: "nav.menu" }));
 
     const dialog = screen.getByRole("dialog", { name: "nav.menu" });
-    expect(within(dialog).getByRole("link", { name: "footer.learn" }).getAttribute("href")).toBe("/learn");
     expect(within(dialog).getByRole("link", { name: "footer.partners" }).getAttribute("href")).toBe("/partners");
+    expect(within(dialog).queryByRole("link", { name: "footer.learn" })).toBeNull();
     // Locale-local city shortcuts from CITY_SLUGS (SEO + human quick access).
     expect(within(dialog).getByRole("link", { name: "cities.madrid" }).getAttribute("href")).toBe("/vitamin-d/madrid");
     expect(within(dialog).getByRole("link", { name: "cities.nueva-york" }).getAttribute("href")).toBe("/vitamin-d/new-york");
@@ -59,7 +60,7 @@ describe("SiteNav", () => {
     render(<SiteNav />);
     fireEvent.click(screen.getByRole("button", { name: "nav.menu" }));
     const dialog = screen.getByRole("dialog");
-    fireEvent.click(within(dialog).getByRole("link", { name: "footer.learn" }));
+    fireEvent.click(within(dialog).getByRole("link", { name: "footer.partners" }));
     expect(screen.queryByRole("dialog")).toBeNull();
   });
 });

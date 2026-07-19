@@ -17,11 +17,13 @@ export default function PhaseWindow({
   lat,
   lon,
   className = "",
+  testId,
   children,
 }: {
   lat: number;
   lon: number;
   className?: string;
+  testId?: string;
   children: ReactNode;
 }) {
   const phase = useSolarPhase(lat, lon) ?? "night";
@@ -29,6 +31,7 @@ export default function PhaseWindow({
     <div
       className={`rounded-2xl border border-window-border text-on-window shadow-lg ${className}`}
       style={{ background: PHASE_STYLE[phase].window }}
+      data-testid={testId}
       suppressHydrationWarning
     >
       {children}

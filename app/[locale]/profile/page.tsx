@@ -3,7 +3,7 @@
 import { useState, useMemo, useId } from "react";
 import { useMounted } from "@/hooks/useMounted";
 import { useTranslations } from "next-intl";
-import { Info, X, BookOpen, ArrowRight, Star, Plus } from "lucide-react";
+import { Info, X, Star, Plus } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { useApp } from "@/context/AppProvider";
 import { useCityDisplayName } from "@/hooks/useCityDisplayName";
@@ -18,12 +18,6 @@ import Button from "@/components/ui/Button";
 import Chip from "@/components/ui/Chip";
 import Flag from "@/components/ui/Flag";
 import ProfileHeroBold from "@/components/ProfileHeroBold";
-
-// Same full-row nav-link treatment as the dashboard's "Learn more" row: glass
-// surface, accent-coloured chevron, no underline (a nav row, not inline text,
-// so <A> — which is always underlined — doesn't fit here).
-const navRowClasses =
-  "flex items-center justify-between rounded-2xl bg-glass border border-glass-border backdrop-blur-md px-4 py-3 shadow-lg hover:bg-surface-elevated transition-colors";
 
 const sectionHeading = "font-display font-bold text-xl sm:text-2xl text-text-primary";
 
@@ -299,15 +293,6 @@ export default function ProfilePage() {
         />
       </Card>
 
-      {/* Learn more — moved to the bottom; an educational deep-dive belongs
-          after the settings, not ahead of them. */}
-      <Link href="/learn" className={navRowClasses}>
-        <div className="flex items-center gap-2">
-          <BookOpen className="h-4 w-4 text-text-muted" aria-hidden />
-          <span className="text-caption font-medium text-text-secondary">{tc("learnMore")}</span>
-        </div>
-        <ArrowRight className="h-4 w-4 text-sun-strong" aria-hidden />
-      </Link>
     </div>
   );
 }

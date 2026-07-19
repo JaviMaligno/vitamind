@@ -205,7 +205,8 @@
     "profile": "Profile",
     "menu": "Menu",
     "close": "Close",
-    "cities": "Cities"
+    "cities": "Cities",
+    "learn": "Learn"
   },
   "footer": {
     "appHeading": "App",
@@ -919,9 +920,8 @@
     "reload": "Reload"
   },
   "explore": {
-    "faqHeading": "Frequently asked questions",
-    "faqSubheading": "Dive into the science behind the app",
-    "faqCta": "See all questions"
+    "title": "Explore",
+    "subtitle": "Travel the planet and the calendar: where and when vitamin D synthesis is possible"
   },
   "cityPage": {
     "title": "Vitamin D from the sun in {city}",

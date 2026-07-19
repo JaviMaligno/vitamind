@@ -205,7 +205,8 @@
     "profile": "Profilis",
     "menu": "Meniu",
     "close": "Uždaryti",
-    "cities": "Miestai"
+    "cities": "Miestai",
+    "learn": "Gidas"
   },
   "footer": {
     "appHeading": "Programėlė",
@@ -919,9 +920,8 @@
     "reload": "Įkelti iš naujo"
   },
   "explore": {
-    "faqHeading": "Dažnai užduodami klausimai",
-    "faqSubheading": "Įsigilinkite į mokslą, slypintį už programos",
-    "faqCta": "Žiūrėti visus klausimus"
+    "title": "Tyrinėti",
+    "subtitle": "Keliaukite po planetą ir kalendorių: kur ir kada įmanoma vitamino D sintezė"
   },
   "cityPage": {
     "title": "Vitaminas D iš saulės: {city}",

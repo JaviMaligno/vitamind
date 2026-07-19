@@ -4,10 +4,10 @@ import { useCallback, useRef, useState } from "react";
 import { usePathname, useRouter } from "@/i18n/navigation";
 
 /** Bottom-tab order — swiping left goes to the next, right to the previous. */
-const TABS = ["/dashboard", "/explore", "/profile"];
+const TABS = ["/dashboard", "/explore", "/learn", "/profile"];
 
 /**
- * Enables swiping left/right between the three main tab screens on touch
+ * Enables swiping left/right between the four main tab screens on touch
  * devices (in addition to tapping the bottom bar). Only fires on the tab routes,
  * only for a clearly HORIZONTAL gesture, and never when the swipe starts inside a
  * horizontally-scrollable element (the forecast row, region chips, the viz map),

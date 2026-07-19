@@ -205,7 +205,8 @@
     "profile": "Perfil",
     "menu": "Menú",
     "close": "Cerrar",
-    "cities": "Ciudades"
+    "cities": "Ciudades",
+    "learn": "Guía"
   },
   "footer": {
     "appHeading": "Aplicación",
@@ -919,9 +920,8 @@
     "reload": "Recargar"
   },
   "explore": {
-    "faqHeading": "Preguntas frecuentes",
-    "faqSubheading": "Profundiza en la ciencia detrás de la app",
-    "faqCta": "Ver todas las preguntas"
+    "title": "Explorar",
+    "subtitle": "Viaja por el planeta y el calendario: dónde y cuándo se puede sintetizar vitamina D"
   },
   "cityPage": {
     "title": "Vitamina D del sol en {city}",
