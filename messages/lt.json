@@ -979,7 +979,12 @@
     "faqLongestA": "Ilgiausia diena: {maxMonth}, apie {maxHours} val. šviesos. Trumpiausia diena: {minMonth}, apie {minHours} val.",
     "faqGoldenQ": "Kada yra auksinė valanda ({city})?",
     "faqGoldenA": "Tai maždaug paskutinė valanda prieš saulėlydį: birželį ji prasideda apie {juneGolden}, o gruodį – apie {decGolden}.",
-    "faqMore": "Daugiau apie saulę, šviesą ir sveikatą — gide"
+    "faqMore": "Daugiau apie saulę, šviesą ir sveikatą — gide",
+    "day": "Diena",
+    "dawn": "Aušra",
+    "dusk": "Sutemos",
+    "dayByDay": "Pagal dienas",
+    "twilightNote": "Aušra ir sutemos žymi civilines prieblandas: saulė yra mažiau nei 6° žemiau horizonto, lauke dar pakankamai šviesu."
   },
   "cityPage": {
     "title": "Vitaminas D iš saulės: {city}",

@@ -7,6 +7,7 @@ import CityYearStrip from "@/components/CityYearStrip";
 import PhaseWindow from "@/components/PhaseWindow";
 import NotificationToggle from "@/components/NotificationToggle";
 import SunTimesPanel from "@/components/SunTimesPanel";
+import MonthlySunTable from "@/components/MonthlySunTable";
 import Card from "@/components/ui/Card";
 import A from "@/components/ui/A";
 import { BUILTIN_CITIES } from "@/lib/cities";
@@ -27,13 +28,6 @@ export function generateStaticParams() {
 }
 
 type Params = { locale: string; cityPrefix: string; city: string };
-
-/** "9 h 05 min" — same formatting as the live panel's day-length stat. */
-function fmtDayLen(min: number): string {
-  const h = Math.floor(min / 60);
-  const m = Math.round(min - h * 60);
-  return `${h} h ${String(m).padStart(2, "0")} min`;
-}
 
 /** Resolves (locale, prefix, slug) → the City, or null when the route is bogus. */
 function resolveCity({ locale, cityPrefix, city }: Params) {
@@ -316,28 +310,27 @@ export default async function CityPage({ params }: { params: Promise<Params> }) 
       <section className="mt-10 sm:mt-16">
         <h2 className="font-display text-2xl sm:text-3xl font-bold">{tSun("monthlyHeading", labels)}</h2>
         <p className="mt-2 text-body text-text-muted max-w-2xl">{tSun("monthlyCaption")}</p>
-        <Card variant="glass" className="mt-5 !p-0 overflow-x-auto">
-          <table className="w-full text-body">
-            <thead>
-              <tr className="text-left text-caption uppercase tracking-wider text-text-muted">
-                <th className="px-3 py-3 sm:px-6 font-medium">{tSun("month")}</th>
-                <th className="px-3 py-3 sm:px-6 font-medium">{tSun("sunrise")}</th>
-                <th className="px-3 py-3 sm:px-6 font-medium">{tSun("sunset")}</th>
-                <th className="hidden sm:table-cell px-3 py-3 sm:px-6 font-medium">{tSun("dayLength")}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {monthly.map((m) => (
-                <tr key={m.monthIndex} className="border-t border-border-subtle">
-                  <td className="px-3 py-2.5 sm:px-6 font-medium">{capFirst(monthName(p.locale, m.monthIndex))}</td>
-                  <td className="px-3 py-2.5 sm:px-6 font-mono">{m.sunrise !== null ? fmtTime(m.sunrise) : "—"}</td>
-                  <td className="px-3 py-2.5 sm:px-6 font-mono">{m.sunset !== null ? fmtTime(m.sunset) : "—"}</td>
-                  <td className="hidden sm:table-cell px-3 py-2.5 sm:px-6 whitespace-nowrap">{fmtDayLen(m.dayLengthMin)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </Card>
+        <div className="mt-5">
+          <MonthlySunTable
+            monthly={monthly}
+            monthNames={monthly.map((m) => capFirst(monthName(p.locale, m.monthIndex)))}
+            lat={city.lat}
+            lon={city.lon}
+            tz={city.tz}
+            timezone={city.timezone}
+            labels={{
+              month: tSun("month"),
+              sunrise: tSun("sunrise"),
+              sunset: tSun("sunset"),
+              dayLength: tSun("dayLength"),
+              day: tSun("day"),
+              dawn: tSun("dawn"),
+              dusk: tSun("dusk"),
+              dayByDay: tSun("dayByDay"),
+              twilightNote: tSun("twilightNote"),
+            }}
+          />
+        </div>
         <p className="mt-3 text-caption text-text-muted">{tSun("monthlyNote")}</p>
       </section>
 

@@ -979,7 +979,12 @@
     "faqLongestA": "Jour le plus long : {maxMonth}, avec environ {maxHours} h de lumière du jour. Jour le plus court : {minMonth}, avec environ {minHours} h.",
     "faqGoldenQ": "Quand a lieu l'heure dorée {atCity} ?",
     "faqGoldenA": "C'est à peu près la dernière heure avant le coucher du soleil : en juin, elle commence vers {juneGolden} et en décembre vers {decGolden}.",
-    "faqMore": "En savoir plus sur le soleil, la lumière et la santé dans le guide"
+    "faqMore": "En savoir plus sur le soleil, la lumière et la santé dans le guide",
+    "day": "Jour",
+    "dawn": "Aube",
+    "dusk": "Crépuscule",
+    "dayByDay": "Voir jour par jour",
+    "twilightNote": "L'aube et le crépuscule correspondent au crépuscule civil : le soleil est à moins de 6° sous l'horizon et la lumière reste utilisable en extérieur."
   },
   "cityPage": {
     "title": "Vitamine D du soleil {atCity}",

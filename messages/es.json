@@ -979,7 +979,12 @@
     "faqLongestA": "Día más largo: {maxMonth}, con unas {maxHours} h de luz. Día más corto: {minMonth}, con unas {minHours} h.",
     "faqGoldenQ": "¿Cuándo es la hora dorada en {city}?",
     "faqGoldenA": "Es la franja aproximada de una hora antes de la puesta de sol: en junio empieza hacia las {juneGolden} y en diciembre hacia las {decGolden}.",
-    "faqMore": "Más sobre el sol, la luz y la salud en la guía"
+    "faqMore": "Más sobre el sol, la luz y la salud en la guía",
+    "day": "Día",
+    "dawn": "Alba",
+    "dusk": "Anochecer",
+    "dayByDay": "Ver día a día",
+    "twilightNote": "Alba y anochecer marcan el crepúsculo civil: el sol está a menos de 6° bajo el horizonte y todavía hay luz útil al aire libre."
   },
   "cityPage": {
     "title": "Vitamina D del sol en {city}",
