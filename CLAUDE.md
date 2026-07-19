@@ -37,6 +37,7 @@ Routes are locale-segmented via next-intl (`es` default without prefix; `en`, `f
 - **`app/api/cities/route.ts`** — Server-side city search against Supabase (localized RPCs with fallbacks).
 - **`app/api/push/subscribe/route.ts`** — Push subscription CRUD (validates/clamps all input).
 - **`app/api/push/notify/route.ts`** — Cron-triggered (daily 8 AM UTC via Vercel cron) push broadcaster. Auth: `Authorization: Bearer $CRON_SECRET`. Logs a run summary; returns 500 if every delivery fails so Vercel marks the cron run failed.
+- **`app/api/mcp/[transport]/route.ts`** — Remote MCP server (`mcp-handler`, stateless Streamable HTTP at `/api/mcp/mcp`; no Redis, so no SSE transport). Exposes four public read-only tools (`search_city`, `get_sun_times`, `get_vitamin_d_window`, `get_current_status`) so users can connect the app to Claude/ChatGPT as a custom connector. Tool logic lives in `lib/mcp-tools.ts` (pure, unit-tested in `lib/__tests__/mcp-tools.test.ts`); no auth by design — everything it serves is public calculation. Connector URL: `https://getvitamind.app/api/mcp/mcp` (dev: `https://getvitamind-dev.vercel.app/api/mcp/mcp`).
 
 State lives in `context/` providers (`AppProvider`, `ThemeProvider`, `InstallProvider`) and `hooks/` — there is no single-page monolith.
 
@@ -104,6 +105,11 @@ Both jobs use the `VERCEL_TOKEN` repo secret (GitHub → repo Settings → Secre
 > sunrise/sunset by city+month (`/amanecer/madrid/julio`). Approved but parked
 > until Search Console shows traction on solar queries — full plan in
 > `docs/plans/2026-07-19-sunrise-seo-pages.md`.
+
+> **Planned (next) work:** MCP tool optimization (yearly vitamin D tool to stop
+> per-date call cascades), account value ladder + OAuth 2.1 for personal MCP
+> tools, and the "connect your AI" marketing push — full plan in
+> `docs/plans/2026-07-19-mcp-evolution-account-marketing.md`.
 
 > **Planned (bigger) change:** migrate the project to the personal Vercel
 > account (`js-projects-98e2a0d2`, GitHub `JaviMaligno` login) to stop using the
