@@ -923,6 +923,20 @@
     "title": "Tyrinėti",
     "subtitle": "Keliaukite po planetą ir kalendorių: kur ir kada įmanoma vitamino D sintezė"
   },
+  "sunTimes": {
+    "heading": "Saulė šiandien",
+    "cityHeading": "Saulė šiandien: {city}",
+    "cityCaption": "Šiandienos saulėtekis, saulėlydis, auksinė valanda ir dienos trukmė.",
+    "sunrise": "Saulėtekis",
+    "sunset": "Saulėlydis",
+    "goldenHour": "Auksinė valanda",
+    "dayLength": "Dienos trukmė",
+    "longer": "{minutes} min ilgiau nei vakar",
+    "shorter": "{minutes} min trumpiau nei vakar",
+    "same": "Kaip vakar",
+    "polarDay": "Poliarinė diena: šiandien saulė nenusileidžia",
+    "polarNight": "Poliarinė naktis: šiandien saulė nepateka"
+  },
   "cityPage": {
     "title": "Vitaminas D iš saulės: {city}",
     "metaDescription": "{city}: kada saulėje galite pasigaminti vitamino D — tinkami mėnesiai, paros saulės langai ir kada verta rinktis papildus (D3, K2, magnis).",

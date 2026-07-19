@@ -923,6 +923,20 @@
     "title": "Explorar",
     "subtitle": "Viaja por el planeta y el calendario: dónde y cuándo se puede sintetizar vitamina D"
   },
+  "sunTimes": {
+    "heading": "El sol hoy",
+    "cityHeading": "El sol hoy en {city}",
+    "cityCaption": "Amanecer, atardecer, hora dorada y duración del día de hoy.",
+    "sunrise": "Amanecer",
+    "sunset": "Atardecer",
+    "goldenHour": "Hora dorada",
+    "dayLength": "Duración del día",
+    "longer": "{minutes} min más que ayer",
+    "shorter": "{minutes} min menos que ayer",
+    "same": "Como ayer",
+    "polarDay": "Sol de medianoche: hoy el sol no se pone",
+    "polarNight": "Noche polar: hoy el sol no sale"
+  },
   "cityPage": {
     "title": "Vitamina D del sol en {city}",
     "metaDescription": "Cuándo puedes sintetizar vitamina D con el sol en {city}: meses posibles, ventanas por estación y cuándo suplementar.",

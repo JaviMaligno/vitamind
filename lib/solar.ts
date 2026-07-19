@@ -19,12 +19,16 @@ export function vitDHrs(lat: number, doy: number, thr: number): number {
   return (2 * Math.acos(cosH) * 12) / Math.PI;
 }
 
+/** Equation of time in minutes: how far solar noon drifts from clock noon. */
+export function equationOfTime(doy: number): number {
+  const B = ((360 / 365) * (doy - 81)) * RAD;
+  return 9.87 * Math.sin(2 * B) - 7.53 * Math.cos(B) - 1.5 * Math.sin(B);
+}
+
 export function solarElev(lat: number, lon: number, doy: number, utcH: number): number {
   const d = declination(doy) * RAD;
   const lr = lat * RAD;
-  const B = ((360 / 365) * (doy - 81)) * RAD;
-  const EoT = 9.87 * Math.sin(2 * B) - 7.53 * Math.cos(B) - 1.5 * Math.sin(B);
-  const ha = ((utcH - (12 - lon / 15 - EoT / 60)) * 15) * RAD;
+  const ha = ((utcH - (12 - lon / 15 - equationOfTime(doy) / 60)) * 15) * RAD;
   const sinElev = Math.sin(lr) * Math.sin(d) + Math.cos(lr) * Math.cos(d) * Math.cos(ha);
   return Math.asin(Math.max(-1, Math.min(1, sinElev))) * 180 / Math.PI;
 }

@@ -11,6 +11,7 @@ import { useHistory } from "@/hooks/useHistory";
 import { useForecast } from "@/hooks/useForecast";
 import { useNowStatus } from "@/hooks/useNowStatus";
 import DayHeroBold from "@/components/dashboard/DayHeroBold";
+import SunTimesPanel from "@/components/SunTimesPanel";
 import ForecastRow from "@/components/dashboard/ForecastRow";
 import HistoryCalendar from "@/components/dashboard/HistoryCalendar";
 import ExposureQuickPicker from "@/components/dashboard/ExposureQuickPicker";
@@ -34,6 +35,7 @@ export default function DashboardPage() {
   const t = useTranslations("dashboard");
   const tHero = useTranslations("hero");
   const tCity = useTranslations("cityPage");
+  const tSun = useTranslations("sunTimes");
   const app = useApp();
   const getCityDisplayName = useCityDisplayName();
   const cityName = getCityDisplayName(app.cityId, app.cityName);
@@ -169,6 +171,15 @@ export default function DashboardPage() {
         loading={loading}
         lat={app.lat}
         lon={app.lon}
+      />
+
+      {/* Today's sun times: sunrise/sunset/golden hour/day length at a glance. */}
+      <SunTimesPanel
+        lat={app.lat}
+        lon={app.lon}
+        tz={app.tz}
+        timezone={app.timezone}
+        title={tSun("heading")}
       />
 
       {/* Exposure + notify: balanced 2-col below the hero. */}

@@ -6,6 +6,7 @@ import CityHeroBold from "@/components/CityHeroBold";
 import CityYearStrip from "@/components/CityYearStrip";
 import PhaseWindow from "@/components/PhaseWindow";
 import NotificationToggle from "@/components/NotificationToggle";
+import SunTimesPanel from "@/components/SunTimesPanel";
 import Card from "@/components/ui/Card";
 import A from "@/components/ui/A";
 import { BUILTIN_CITIES } from "@/lib/cities";
@@ -66,6 +67,7 @@ export default async function CityPage({ params }: { params: Promise<Params> }) 
 
   const base = baseSlug(city.id);
   const t = await getTranslations({ locale: p.locale, namespace: "cityPage" });
+  const tSun = await getTranslations({ locale: p.locale, namespace: "sunTimes" });
 
   // Every value a cityPage template may reference. Each locale uses the subset it
   // needs — ICU ignores extras but throws on a missing one, so pass the superset.
@@ -185,6 +187,17 @@ export default async function CityPage({ params }: { params: Promise<Params> }) 
           />
         }
       />
+
+      {/* Today's sun: sunrise, sunset, golden hour and day length — the broad-
+          appeal daily numbers, computed client-side so the static page never
+          shows a stale "today". */}
+      <section className="mt-10 sm:mt-16">
+        <h2 className="font-display text-2xl sm:text-3xl font-bold">{tSun("cityHeading", labels)}</h2>
+        <p className="mt-2 text-body text-text-muted max-w-2xl">{tSun("cityCaption")}</p>
+        <div className="mt-5">
+          <SunTimesPanel lat={city.lat} lon={city.lon} tz={city.tz} timezone={city.timezone} />
+        </div>
+      </section>
 
       {/* Year profile: the page's signature data-graphic, promoted to a full-width
           protagonist band instead of a card nested inside a card. */}

@@ -1,7 +1,25 @@
 import type { NextConfig } from "next";
+import { execSync } from "node:child_process";
 import createNextIntlPlugin from "next-intl/plugin";
 
 const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
+
+// Build version baked into the client bundle for the SW-update handshake in
+// components/UpdateNotice.tsx. Must resolve to the same value that
+// scripts/build-sw.mjs stamps into public/sw.js (keep both in sync). A drift
+// degrades gracefully: on mismatch the client just shows the update notice.
+function resolveBuildVersion(): string {
+  if (process.env.VERCEL_GIT_COMMIT_SHA) {
+    return process.env.VERCEL_GIT_COMMIT_SHA.slice(0, 8);
+  }
+  try {
+    return execSync("git rev-parse --short=8 HEAD", { stdio: ["ignore", "pipe", "ignore"] })
+      .toString()
+      .trim();
+  } catch {
+    return "unknown";
+  }
+}
 
 const isProductionDeploy = process.env.VERCEL_ENV === "production";
 const isDev = process.env.NODE_ENV === "development";
@@ -45,6 +63,9 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   serverExternalPackages: ["web-push"],
+  env: {
+    NEXT_PUBLIC_BUILD_VERSION: resolveBuildVersion(),
+  },
   async headers() {
     return [
       {

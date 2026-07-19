@@ -11,6 +11,8 @@ import { dirname, join } from "node:path";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = join(__dirname, "..");
 
+// Keep in sync with resolveBuildVersion() in next.config.ts — UpdateNotice.tsx
+// compares the two values to decide whether the page is stale.
 function resolveVersion() {
   if (process.env.VERCEL_GIT_COMMIT_SHA) {
     return process.env.VERCEL_GIT_COMMIT_SHA.slice(0, 8);

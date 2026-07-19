@@ -13,6 +13,9 @@
 //   A1. first install → SW controls the page, NO "update available"
 //   A2. new deploy (byte-different sw.js) → new SW parks in 'waiting',
 //       "update available" is advertised while the old SW still controls
+//   A2b. the waiting SW answers the GET_VERSION handshake with its build
+//       version (what UpdateNotice.tsx compares against the page's own
+//       NEXT_PUBLIC_BUILD_VERSION to decide notice vs silent activation)
 //   A3. posting {type:'SKIP_WAITING'} (what the Reload button does) →
 //       new SW activates → controllerchange fires (the page-reload trigger)
 //   A4. the activated SW owns the new-version cache; the old cache is purged
@@ -51,6 +54,7 @@ if (!CACHE_LINE) {
 }
 const V1_CACHE = CACHE_LINE[1];
 const V2_CACHE = `${V1_CACHE}-next`;
+const V1_VERSION = V1_CACHE.replace(/^vitamind-/, "");
 const SW_V1 = REAL_SW;
 // A genuine byte change to the real SW — exactly what a new deploy produces.
 const SW_V2 = REAL_SW.replace(V1_CACHE, V2_CACHE);
@@ -171,6 +175,27 @@ async function run() {
       }));
       record("A2: new deploy → update advertised, old SW still controls", false, JSON.stringify(s));
     }
+
+    // The GET_VERSION handshake: UpdateNotice.tsx asks the waiting worker for
+    // its build version to decide between showing the notice and silently
+    // activating. The waiting worker must answer with the stamped version.
+    // (SW_V2 only differs from SW_V1 in CACHE_NAME, so it reports V1's version.)
+    const reported = await page.evaluate(
+      () =>
+        new Promise((resolve) => {
+          const w = window.__reg.waiting;
+          if (!w) return resolve(null);
+          const ch = new MessageChannel();
+          const t = setTimeout(() => resolve(null), 3000);
+          ch.port1.onmessage = (e) => {
+            clearTimeout(t);
+            resolve(e.data && e.data.version ? e.data.version : null);
+          };
+          w.postMessage({ type: "GET_VERSION" }, [ch.port2]);
+        }),
+    );
+    record("A2b: waiting SW answers GET_VERSION with its build version", reported === V1_VERSION,
+      `version=${reported} expected=${V1_VERSION}`);
 
     // The Reload button's action: tell the waiting SW to take over. Read the
     // waiting worker and post in a single evaluate to avoid cross-eval races.
