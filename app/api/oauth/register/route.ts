@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getOAuthDb, registerClient, OAuthError } from "@/lib/oauth";
+import { rateLimit, clientIp } from "@/lib/rate-limit";
 
 /** RFC 7591 dynamic client registration — open, public clients only (PKCE). */
 export async function POST(request: NextRequest) {
+  if (!rateLimit(`register:${clientIp(request)}`, 10, 60 * 60 * 1000)) {
+    return NextResponse.json({ error: "rate_limited" }, { status: 429 });
+  }
   const db = getOAuthDb();
   if (!db) return NextResponse.json({ error: "temporarily_unavailable" }, { status: 503 });
 

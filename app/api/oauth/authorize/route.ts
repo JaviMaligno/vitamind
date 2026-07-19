@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getOAuthDb, validateAuthorizeRequest, OAuthError } from "@/lib/oauth";
+import { rateLimit, clientIp } from "@/lib/rate-limit";
 
 /**
  * OAuth 2.1 authorization endpoint. Validates the request and hands the user
@@ -10,6 +11,9 @@ import { getOAuthDb, validateAuthorizeRequest, OAuthError } from "@/lib/oauth";
  * problems return 400 here; only post-validation errors go back via redirect.
  */
 export async function GET(request: NextRequest) {
+  if (!rateLimit(`authorize:${clientIp(request)}`, 60, 10 * 60 * 1000)) {
+    return new NextResponse("rate limited", { status: 429 });
+  }
   const db = getOAuthDb();
   if (!db) return new NextResponse("temporarily unavailable", { status: 503 });
 

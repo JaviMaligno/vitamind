@@ -999,9 +999,16 @@
     "approving": "Connecting…",
     "deny": "Cancel",
     "genericError": "The connection could not be completed. Please try again.",
-    "revokeNote": "You can disconnect it anytime from your AI app.",
+    "revokeNote": "You can revoke access anytime from your profile in the app.",
     "invalidTitle": "Invalid request",
-    "invalidBody": "This connection request is invalid or has expired. Try again from your AI app."
+    "invalidBody": "This connection request is invalid or has expired. Try again from your AI app.",
+    "connectionsHeading": "AI connections",
+    "connectionsIntro": "Assistants with access to your account through the connector. Revoke access anytime.",
+    "connectedSince": "Connected since {date}",
+    "lastUsed": "last used {date}",
+    "revoke": "Revoke",
+    "revoking": "Revoking…",
+    "unknownClient": "Unknown client"
   },
   "connect": {
     "eyebrow": "Connect your AI",

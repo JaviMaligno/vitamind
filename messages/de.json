@@ -999,9 +999,16 @@
     "approving": "Verbinde…",
     "deny": "Abbrechen",
     "genericError": "Die Verbindung konnte nicht hergestellt werden. Bitte versuche es erneut.",
-    "revokeNote": "Du kannst die Verbindung jederzeit in deiner KI-App trennen.",
+    "revokeNote": "Du kannst den Zugriff jederzeit in deinem Profil in der App widerrufen.",
     "invalidTitle": "Ungültige Anfrage",
-    "invalidBody": "Diese Verbindungsanfrage ist ungültig oder abgelaufen. Versuche es erneut aus deiner KI-App."
+    "invalidBody": "Diese Verbindungsanfrage ist ungültig oder abgelaufen. Versuche es erneut aus deiner KI-App.",
+    "connectionsHeading": "KI-Verbindungen",
+    "connectionsIntro": "Assistenten mit Zugriff auf dein Konto über den Connector. Du kannst den Zugriff jederzeit widerrufen.",
+    "connectedSince": "Verbunden seit {date}",
+    "lastUsed": "zuletzt genutzt am {date}",
+    "revoke": "Widerrufen",
+    "revoking": "Wird widerrufen…",
+    "unknownClient": "Unbekannter Client"
   },
   "connect": {
     "eyebrow": "KI verbinden",
