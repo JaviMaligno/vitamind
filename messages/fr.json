@@ -999,9 +999,16 @@
     "approving": "Connexion…",
     "deny": "Annuler",
     "genericError": "La connexion n'a pas pu être établie. Veuillez réessayer.",
-    "revokeNote": "Vous pouvez le déconnecter à tout moment depuis votre application d'IA.",
+    "revokeNote": "Vous pouvez révoquer l'accès à tout moment depuis votre profil dans l'application.",
     "invalidTitle": "Requête non valide",
-    "invalidBody": "Cette demande de connexion n'est pas valide ou a expiré. Réessayez depuis votre application d'IA."
+    "invalidBody": "Cette demande de connexion n'est pas valide ou a expiré. Réessayez depuis votre application d'IA.",
+    "connectionsHeading": "Connexions d'IA",
+    "connectionsIntro": "Assistants ayant accès à votre compte via le connecteur. Révoquez l'accès à tout moment.",
+    "connectedSince": "Connecté depuis le {date}",
+    "lastUsed": "dernière utilisation le {date}",
+    "revoke": "Révoquer",
+    "revoking": "Révocation…",
+    "unknownClient": "Client inconnu"
   },
   "connect": {
     "eyebrow": "Connectez votre IA",

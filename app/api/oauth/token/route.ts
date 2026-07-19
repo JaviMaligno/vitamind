@@ -1,10 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getOAuthDb, exchangeAuthCode, refreshTokens, OAuthError } from "@/lib/oauth";
+import { rateLimit, clientIp } from "@/lib/rate-limit";
 
 /** OAuth 2.1 token endpoint: authorization_code (PKCE) + refresh_token grants. */
 export async function POST(request: NextRequest) {
+  if (!rateLimit(`token:${clientIp(request)}`, 60, 10 * 60 * 1000)) {
+    return NextResponse.json({ error: "rate_limited" }, { status: 429 });
+  }
   const db = getOAuthDb();
   if (!db) return NextResponse.json({ error: "temporarily_unavailable" }, { status: 503 });
+
+  // Lazy housekeeping: every token call sweeps expired codes/tokens. Cheap
+  // (two indexed deletes), and it keeps the tables bounded without a cron.
+  void db.cleanupExpired().catch(() => {});
 
   let form: URLSearchParams;
   const contentType = request.headers.get("content-type") ?? "";

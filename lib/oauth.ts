@@ -48,6 +48,14 @@ export interface OAuthTokenRow {
   revoked: boolean;
 }
 
+export interface ConnectionInfo {
+  clientId: string;
+  clientName: string;
+  scope: string;
+  createdAt: string;
+  lastUsedAt: string | null;
+}
+
 export interface OAuthDb {
   insertClient(row: Omit<OAuthClientRow, "client_id">): Promise<OAuthClientRow>;
   getClient(clientId: string): Promise<OAuthClientRow | null>;
@@ -59,6 +67,12 @@ export interface OAuthDb {
   getTokenByRefreshHash(hash: string): Promise<OAuthTokenRow | null>;
   revokeToken(tokenHash: string): Promise<void>;
   touchToken(tokenHash: string): Promise<void>;
+  /** Live (unrevoked, refresh-valid) connections for the revocation UI. */
+  listConnections(userId: string): Promise<ConnectionInfo[]>;
+  /** Revoke every live token a client holds for a user; returns how many. */
+  revokeClientTokens(userId: string, clientId: string): Promise<number>;
+  /** Best-effort purge of expired codes/tokens; called fire-and-forget. */
+  cleanupExpired(): Promise<void>;
 }
 
 // ---------------------------------------------------------------------------
@@ -302,6 +316,62 @@ class SupabaseOAuthDb implements OAuthDb {
 
   async touchToken(tokenHash: string): Promise<void> {
     await this.sb.from("oauth_tokens").update({ last_used_at: new Date().toISOString() }).eq("token_hash", tokenHash);
+  }
+
+  async listConnections(userId: string): Promise<ConnectionInfo[]> {
+    const { data, error } = await this.sb
+      .from("oauth_tokens")
+      .select("client_id, scope, created_at, last_used_at")
+      .eq("user_id", userId)
+      .eq("revoked", false)
+      .gt("refresh_expires_at", new Date().toISOString());
+    if (error) throw new Error(`oauth_tokens list failed: ${error.message}`);
+    const rows = (data ?? []) as { client_id: string; scope: string; created_at: string; last_used_at: string | null }[];
+    if (rows.length === 0) return [];
+
+    // One connection per client: oldest created_at, newest last_used_at.
+    const byClient = new Map<string, ConnectionInfo>();
+    for (const r of rows) {
+      const prev = byClient.get(r.client_id);
+      if (!prev) {
+        byClient.set(r.client_id, {
+          clientId: r.client_id, clientName: "", scope: r.scope,
+          createdAt: r.created_at, lastUsedAt: r.last_used_at,
+        });
+      } else {
+        if (r.created_at < prev.createdAt) prev.createdAt = r.created_at;
+        if (r.last_used_at && (!prev.lastUsedAt || r.last_used_at > prev.lastUsedAt)) prev.lastUsedAt = r.last_used_at;
+      }
+    }
+
+    const { data: clients, error: cErr } = await this.sb
+      .from("oauth_clients")
+      .select("client_id, client_name")
+      .in("client_id", [...byClient.keys()]);
+    if (cErr) throw new Error(`oauth_clients list failed: ${cErr.message}`);
+    for (const c of (clients ?? []) as { client_id: string; client_name: string }[]) {
+      const conn = byClient.get(c.client_id);
+      if (conn) conn.clientName = c.client_name;
+    }
+    return [...byClient.values()];
+  }
+
+  async revokeClientTokens(userId: string, clientId: string): Promise<number> {
+    const { data, error } = await this.sb
+      .from("oauth_tokens")
+      .update({ revoked: true })
+      .eq("user_id", userId)
+      .eq("client_id", clientId)
+      .eq("revoked", false)
+      .select("token_hash");
+    if (error) throw new Error(`oauth_tokens revoke failed: ${error.message}`);
+    return data?.length ?? 0;
+  }
+
+  async cleanupExpired(): Promise<void> {
+    const now = new Date().toISOString();
+    await this.sb.from("oauth_codes").delete().lt("expires_at", now);
+    await this.sb.from("oauth_tokens").delete().lt("refresh_expires_at", now);
   }
 }
 

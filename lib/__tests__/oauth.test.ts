@@ -34,6 +34,40 @@ function memoryDb(): OAuthDb {
       if (t) t.revoked = true;
     },
     async touchToken() {},
+    async listConnections(userId) {
+      const now = Date.now();
+      const live = [...tokens.values()].filter(
+        (t) => t.user_id === userId && !t.revoked && new Date(t.refresh_expires_at).getTime() > now,
+      );
+      const byClient = new Map<string, { clientId: string; clientName: string; scope: string; createdAt: string; lastUsedAt: string | null }>();
+      for (const t of live) {
+        if (!byClient.has(t.client_id)) {
+          byClient.set(t.client_id, {
+            clientId: t.client_id,
+            clientName: clients.get(t.client_id)?.client_name ?? "",
+            scope: t.scope,
+            createdAt: new Date(0).toISOString(),
+            lastUsedAt: null,
+          });
+        }
+      }
+      return [...byClient.values()];
+    },
+    async revokeClientTokens(userId, clientId) {
+      let n = 0;
+      for (const t of tokens.values()) {
+        if (t.user_id === userId && t.client_id === clientId && !t.revoked) {
+          t.revoked = true;
+          n += 1;
+        }
+      }
+      return n;
+    },
+    async cleanupExpired() {
+      const now = Date.now();
+      for (const [k, c] of codes) if (new Date(c.expires_at).getTime() < now) codes.delete(k);
+      for (const [k, t] of tokens) if (new Date(t.refresh_expires_at).getTime() < now) tokens.delete(k);
+    },
   };
 }
 
@@ -128,6 +162,23 @@ describe("access tokens", () => {
 
     expect(await verifyAccessToken(db, "vd_at_forged")).toBeNull();
     expect(await verifyAccessToken(db, "some-supabase-jwt")).toBeNull();
+  });
+
+  it("connections list shows the client and revocation kills its tokens", async () => {
+    const db = memoryDb();
+    const { client, code } = await setupClientAndCode(db);
+    const tokens = await exchangeAuthCode(db, {
+      code, codeVerifier: VERIFIER, clientId: client.client_id, redirectUri: REDIRECT,
+    });
+
+    const conns = await db.listConnections("user-1");
+    expect(conns).toHaveLength(1);
+    expect(conns[0].clientName).toBe("Claude");
+
+    const revoked = await db.revokeClientTokens("user-1", client.client_id);
+    expect(revoked).toBe(1);
+    expect(await verifyAccessToken(db, tokens.access_token)).toBeNull();
+    expect(await db.listConnections("user-1")).toHaveLength(0);
   });
 
   it("refresh rotates the pair and kills the old access token", async () => {

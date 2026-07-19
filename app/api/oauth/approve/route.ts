@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import {
   getOAuthDb, validateAuthorizeRequest, createAuthCode, userIdFromSupabaseJwt, OAuthError,
 } from "@/lib/oauth";
+import { rateLimit, clientIp } from "@/lib/rate-limit";
 
 /**
  * Called by the consent page after the user clicks "allow". Proves the user
@@ -10,6 +11,9 @@ import {
  * redirect URL for the page to navigate to.
  */
 export async function POST(request: NextRequest) {
+  if (!rateLimit(`approve:${clientIp(request)}`, 20, 10 * 60 * 1000)) {
+    return NextResponse.json({ error: "rate_limited" }, { status: 429 });
+  }
   const db = getOAuthDb();
   if (!db) return NextResponse.json({ error: "temporarily_unavailable" }, { status: 503 });
 
