@@ -93,9 +93,11 @@ export default function SunTimesPanel({ lat, lon, tz, timezone, title }: Props) 
               <span className="flex items-center gap-1.5 text-caption uppercase tracking-wider text-text-muted">
                 <Sun className="h-4 w-4 shrink-0" aria-hidden /> {t("goldenHour")}
               </span>
-              <span className="mt-1 block font-mono text-xl font-semibold text-text-primary">
+              {/* Compact range (no spaces around the dash): it must fit one line
+                  in a 2-col grid on a 390px viewport. */}
+              <span className="mt-1 block font-mono text-xl font-semibold text-text-primary whitespace-nowrap">
                 {st.goldenEveningStart !== null && st.sunset !== null
-                  ? `${fmtTime(st.goldenEveningStart)} – ${fmtTime(st.sunset)}`
+                  ? `${fmtTime(st.goldenEveningStart)}–${fmtTime(st.sunset)}`
                   : "—"}
               </span>
             </div>
