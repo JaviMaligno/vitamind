@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { Info, X, BookOpen, ArrowRight, Star, Plus } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { useApp } from "@/context/AppProvider";
+import { useCityDisplayName } from "@/hooks/useCityDisplayName";
 import { TARGET_IU_PRESETS, maxSessionIU } from "@/lib/vitd";
 import CitySearch from "@/components/CitySearch";
 import SkinSelector from "@/components/SkinSelector";
@@ -53,6 +54,7 @@ export default function ProfilePage() {
   const lonId = useId();
   const ts = useTranslations("skin");
   const app = useApp();
+  const getCityDisplayName = useCityDisplayName();
 
   const [savingLocation, setSavingLocation] = useState(false);
   const [openTip, setOpenTip] = useState<string | null>(null);
@@ -175,7 +177,7 @@ export default function ProfilePage() {
                   >
                     <Plus className="h-4 w-4 text-accent" aria-hidden />
                     <Flag flag={c.flag} className="text-lg" />
-                    {c.name}
+                    {getCityDisplayName(c.id, c.name)}
                   </button>
                 ))}
               </div>
@@ -190,7 +192,7 @@ export default function ProfilePage() {
               return (
                 <div key={fid} className="flex items-center gap-1">
                   <Chip active={isSel} onClick={() => app.selectCity(c)}>
-                    <Flag flag={c.flag} className="text-base" /> {c.name}
+                    <Flag flag={c.flag} className="text-base" /> {getCityDisplayName(c.id, c.name)}
                   </Chip>
                   {app.editingFavs && (
                     <button

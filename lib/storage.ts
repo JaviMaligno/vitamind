@@ -26,8 +26,44 @@ function setItem(key: string, value: unknown): void {
   } catch { /* storage full — silently ignore */ }
 }
 
+// One-time cleanup of the legacy auto-seeded favorites. The original prototype
+// (docs/original_claude_ouput/vitamin-d-global-v5.jsx) shipped a hardcoded
+// DEFAULT_FAVS list that got persisted to localStorage for early users. The app
+// now starts with no favorites (DEFAULT_FAVORITE_IDS = []), but those early
+// users were left with 10 cities they never chose. Clear them once — but ONLY
+// when the stored set is EXACTLY that old default, so anyone who has since
+// curated their own list is left untouched.
+const LEGACY_DEFAULT_FAVORITE_IDS = [
+  "builtin:londres", "builtin:madrid", "builtin:estocolmo", "builtin:nueva-york",
+  "builtin:tokio", "builtin:nairobi", "builtin:sidney", "builtin:bogota",
+  "builtin:reikiavik", "builtin:ciudad-del-cabo",
+];
+const LEGACY_FAV_MIGRATION_KEY = "vitamind:legacyFavMigration";
+
+function migrateLegacyFavorites(): void {
+  if (typeof window === "undefined") return;
+  try {
+    if (localStorage.getItem(LEGACY_FAV_MIGRATION_KEY)) return;
+    const raw = localStorage.getItem(KEYS.favorites);
+    if (raw) {
+      const stored = JSON.parse(raw);
+      const isExactLegacyDefault =
+        Array.isArray(stored) &&
+        stored.length === LEGACY_DEFAULT_FAVORITE_IDS.length &&
+        LEGACY_DEFAULT_FAVORITE_IDS.every((id) => stored.includes(id));
+      if (isExactLegacyDefault) {
+        localStorage.setItem(KEYS.favorites, JSON.stringify([]));
+      }
+    }
+    // Mark done regardless, so a user who later re-creates exactly these 10 on
+    // purpose is never second-guessed by this migration.
+    localStorage.setItem(LEGACY_FAV_MIGRATION_KEY, "1");
+  } catch { /* ignore corrupt storage */ }
+}
+
 // Favorites
 export function loadFavorites(): string[] {
+  migrateLegacyFavorites();
   return getItem<string[]>(KEYS.favorites, DEFAULT_FAVORITE_IDS);
 }
 
