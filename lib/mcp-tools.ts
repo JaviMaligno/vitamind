@@ -3,11 +3,12 @@ import { CITY_SLUGS } from "./city-slugs";
 import { getSunTimes } from "./sun-times";
 import { getCurve, dayOfYear, fmtTime, dateFromDoy } from "./solar";
 import {
-  computeExposureFromCurve, getCurrentStatus, maxSessionIU, MIN_UVI, type SkinType,
+  computeExposureFromCurve, getCurrentStatus, maxSessionIU, MIN_UVI,
+  iuForMinutes, erythemaMinutes, minutesForVitD, estimateUVFromElevation, type SkinType,
 } from "./vitd";
 import { ozoneDU } from "./uv-model";
-import { cityYearProfile, viableDateBoundaries } from "./city-content";
-import type { WeatherHour } from "./types";
+import { cityYearProfile, viableDateBoundaries, MIN_VIABLE_HOURS } from "./city-content";
+import type { SolarPoint, WeatherHour } from "./types";
 
 /**
  * Pure tool implementations behind the MCP endpoint (`app/api/mcp`). Each maps
@@ -84,9 +85,44 @@ function parseDate(date?: string): Date {
 
 const t = (h: number | null) => (h !== null ? fmtTime(h) : null);
 
+/** "11:00" with zero-padded hours, for whole-hour window bounds. */
+const hh = (hour: number) => `${String(hour).padStart(2, "0")}:00`;
+
+const fmtDayLen = (min: number) => `${Math.floor(min / 60)} h ${String(Math.round(min % 60)).padStart(2, "0")} min`;
+
+/** Clear-sky UV at a local hour, from the day's elevation curve. */
+function uvAtLocalHour(curve: SolarPoint[], localHour: number, ctx: { ozoneDu?: number; elevationM?: number }): number {
+  let best = curve[0];
+  for (const p of curve) {
+    if (Math.abs(p.localHours - localHour) < Math.abs(best.localHours - localHour)) best = p;
+  }
+  return estimateUVFromElevation(best.elevation, ctx);
+}
+
+/** "HH:MM" → decimal local hours, or null when malformed. */
+function parseLocalTime(s: string | undefined): number | null {
+  if (!s) return null;
+  const m = /^(\d{1,2}):(\d{2})$/.exec(s.trim());
+  if (!m) return null;
+  const h = Number(m[1]);
+  const min = Number(m[2]);
+  if (h > 23 || min > 59) return null;
+  return h + min / 60;
+}
+
 export function sunTimesTool(args: SunTimesArgs) {
   const date = parseDate(args.date);
   const st = getSunTimes(args.lat, args.lon, date, args.timezone, 0);
+
+  // Explain nulls so they read as physics, not missing data (audit finding).
+  const notes: string[] = [];
+  if (st.civilDawn === null && st.polar === null) {
+    notes.push("No civil dawn/dusk: at this latitude and date the sun never dips 6° below the horizon (no full darkness).");
+  }
+  if (st.goldenMorningEnd === null && st.sunrise !== null) {
+    notes.push("No distinct golden hour: the sun never climbs 6° above the horizon, so the whole day has golden-hour light.");
+  }
+
   return {
     date: date.toISOString().slice(0, 10),
     timesIn: args.timezone ?? "UTC",
@@ -96,11 +132,16 @@ export function sunTimesTool(args: SunTimesArgs) {
     solarNoon: t(st.solarNoon),
     civilDawn: t(st.civilDawn),
     civilDusk: t(st.civilDusk),
+    goldenHourMorning: st.sunrise !== null && st.goldenMorningEnd !== null
+      ? { start: t(st.sunrise), end: t(st.goldenMorningEnd) }
+      : null,
     goldenHourEvening: st.goldenEveningStart !== null && st.sunset !== null
       ? { start: t(st.goldenEveningStart), end: t(st.sunset) }
       : null,
+    dayLength: fmtDayLen(st.dayLengthMin),
     dayLengthMinutes: Math.round(st.dayLengthMin),
     dayLengthChangeVsYesterdayMinutes: Math.round(st.dayLengthDeltaMin),
+    ...(notes.length ? { notes } : {}),
   };
 }
 
@@ -119,6 +160,8 @@ export interface VitDArgs {
   age?: number;
   targetIU?: number;
   elevationM?: number;
+  /** Local "HH:MM" the user actually plans to go out (window tool only). */
+  atTime?: string;
 }
 
 function normalizeProfile(args: VitDArgs) {
@@ -151,13 +194,29 @@ export function vitaminDWindowTool(args: VitDArgs) {
       reason: `Clear-sky UV never reaches index ${MIN_UVI} that day at this location; the skin cannot produce meaningful vitamin D. Diet or supplementation are the alternatives.`,
     };
   }
+  // "How long AT the time I'll actually go out" (audit finding: users rarely
+  // go out exactly at the best hour).
+  const atHour = parseLocalTime(args.atTime);
+  let atTime: { time: string; uvIndex: number; minutesNeeded: number | null; note?: string } | undefined;
+  if (atHour !== null) {
+    const uvi = uvAtLocalHour(curve, atHour, ctx);
+    const mins = minutesForVitD(uvi, skinType, area, targetIU, age);
+    atTime = {
+      time: args.atTime!,
+      uvIndex: Math.round(uvi * 10) / 10,
+      minutesNeeded: mins !== null ? Math.round(mins) : null,
+      ...(mins === null ? { note: `UV below ${MIN_UVI} at that time — no meaningful synthesis; aim for the window instead.` } : {}),
+    };
+  }
+
   return {
     ...base,
     synthesisPossible: true as const,
-    window: { start: `${result.windowStart}:00`, end: `${result.windowEnd}:00` },
-    bestHour: `${result.bestHour}:00`,
+    window: { start: hh(result.windowStart), end: hh(result.windowEnd) },
+    bestHour: hh(result.bestHour),
     peakClearSkyUVIndex: Math.round(result.bestUVI * 10) / 10,
     minutesNeededAtBestHour: Math.round(result.minutesNeeded),
+    ...(atTime ? { atTime } : {}),
     maxSessionIU: Math.round(result.maxIU),
     targetCapped: result.targetCapped,
   };
@@ -184,35 +243,137 @@ export function vitaminDYearTool(args: Omit<VitDArgs, "date">) {
     ? null
     : viableDateBoundaries(profile.hoursByDay);
 
+  // ONE criterion everywhere (audit fix): a day is viable when it offers at
+  // least MIN_VIABLE_HOURS of usable sun — the same floor the exact span uses.
+  // Months are then described by their count of viable days, so season-edge
+  // months read as "partial" instead of contradicting the span.
+  const viable = profile.hoursByDay.map((h) => h >= MIN_VIABLE_HOURS);
+
   const byMonth = Array.from({ length: 12 }, (_, m) => {
-    const doy = dayOfYear(new Date(2026, m, 15));
-    const curve = getCurve(args.lat, args.lon, doy, 0, args.timezone);
-    const exposure = computeExposureFromCurve(curve, skinType, area, targetIU, age, {
-      ozoneDu: ozoneDU(args.lat, args.lon, doy),
-      elevationM,
-    });
-    return exposure
-      ? {
-          month: m + 1,
-          synthesisPossible: true,
-          window: { start: `${exposure.windowStart}:00`, end: `${exposure.windowEnd}:00` },
-          minutesNeededAtBestHour: Math.round(exposure.minutesNeeded),
-        }
-      : { month: m + 1, synthesisPossible: false, window: null, minutesNeededAtBestHour: null };
+    const startDoy = dayOfYear(new Date(2026, m, 1));
+    const daysInMonth = new Date(2026, m + 1, 0).getDate();
+    const doys = Array.from({ length: daysInMonth }, (_, i) => startDoy + i);
+    const viableDoys = doys.filter((d) => viable[d - 1]);
+
+    // Sample a representative viable day (the 15th when it qualifies, else the
+    // middle of the month's viable stretch) for the window and minutes.
+    const mid = startDoy + 14;
+    const sampleDoy = viableDoys.length === 0
+      ? null
+      : viableDoys.includes(mid) ? mid : viableDoys[Math.floor(viableDoys.length / 2)];
+
+    let window: { start: string; end: string } | null = null;
+    let minutesNeededAtBestHour: number | null = null;
+    if (sampleDoy !== null) {
+      const curve = getCurve(args.lat, args.lon, sampleDoy, 0, args.timezone);
+      const exposure = computeExposureFromCurve(curve, skinType, area, targetIU, age, {
+        ozoneDu: ozoneDU(args.lat, args.lon, sampleDoy),
+        elevationM,
+      });
+      if (exposure) {
+        window = { start: hh(exposure.windowStart), end: hh(exposure.windowEnd) };
+        minutesNeededAtBestHour = Math.round(exposure.minutesNeeded);
+      }
+    }
+
+    return {
+      month: m + 1,
+      synthesisPossible: viableDoys.length > 0,
+      viableDays: viableDoys.length,
+      partialMonth: viableDoys.length > 0 && viableDoys.length < daysInMonth,
+      window,
+      minutesNeededAtBestHour,
+    };
   });
+
+  const viableDaysPerYear = viable.filter(Boolean).length;
+  const monthsWithSun = byMonth.filter((m) => m.synthesisPossible).map((m) => m.month);
+  const sampled = byMonth.filter((m) => m.minutesNeededAtBestHour !== null);
+  const bestMonth = sampled.length
+    ? sampled.reduce((a, b) => (b.minutesNeededAtBestHour! < a.minutesNeededAtBestHour! ? b : a)).month
+    : null;
 
   return {
     timesIn: args.timezone ?? "UTC",
     profile: { skinType, exposedSkinFraction: area, age, targetIU },
     allYear: profile.allYear,
     neverPossible: profile.neverPossible,
-    possibleMonths: profile.possibleMonths,
-    impossibleMonths: profile.impossibleMonths,
+    /** Months with at least one viable day — season-edge months included. */
+    monthsWithSun,
+    /** Months where most days are viable (the headline claim the app uses). */
+    solidMonths: profile.possibleMonths,
     exactViableSpan: bounds
       ? { firstDay: monthDay(bounds.startDoy), lastDay: monthDay(bounds.endDoy), format: "MM-DD, any year" }
       : null,
+    summary: {
+      viableDaysPerYear,
+      seasonLengthDays: profile.allYear ? 365 : viableDaysPerYear,
+      bestMonth,
+      minutesAtBestMonth: bestMonth ? byMonth[bestMonth - 1].minutesNeededAtBestHour : null,
+    },
     byMonth,
     note: DISCLAIMER,
+  };
+}
+
+// ---------------------------------------------------------------------------
+// estimate_sun_session
+
+const ERYTHEMA_NOTE =
+  "Sunburn time is a clear-sky erythema estimate for unprotected skin; sunscreen, shade and clouds change it completely. Not medical advice.";
+
+export interface SessionArgs extends Omit<VitDArgs, "atTime" | "targetIU"> {
+  /** Local "HH:MM" the session starts (defaults to the day's best hour). */
+  startTime?: string;
+  /** Session length in minutes. */
+  minutes: number;
+}
+
+/**
+ * The inverse question ("I was out N minutes — how much vitamin D did I
+ * make?") plus the safety one ("how long before I burn?"), both from the same
+ * models the app uses (audit finding: assistants were doing this math by hand).
+ */
+export function estimateSunSessionTool(args: SessionArgs) {
+  const date = parseDate(args.date);
+  const doy = dayOfYear(date);
+  const { skinType, area, age, elevationM } = normalizeProfile({ ...args, targetIU: undefined });
+  const minutes = Math.min(600, Math.max(1, Math.round(args.minutes)));
+  const curve = getCurve(args.lat, args.lon, doy, 0, args.timezone);
+  const ctx = { ozoneDu: ozoneDU(args.lat, args.lon, doy), elevationM };
+
+  // Default to the day's best hour when no start time is given.
+  let startHour = parseLocalTime(args.startTime);
+  if (startHour === null) {
+    const exposure = computeExposureFromCurve(curve, skinType, area, 1000, age, ctx);
+    startHour = exposure ? exposure.bestHour : 12;
+  }
+
+  // UV averaged over the session (start / middle / end samples), so a session
+  // straddling the afternoon decline isn't rated at its starting intensity.
+  const samples = [startHour, startHour + minutes / 120, startHour + minutes / 60]
+    .map((h) => uvAtLocalHour(curve, Math.min(24, h), ctx));
+  const uvi = samples.reduce((a, b) => a + b, 0) / samples.length;
+
+  const estimatedIU = Math.round(iuForMinutes(minutes, uvi, skinType, area, age));
+  const burn = erythemaMinutes(uvi, skinType);
+  const burnMinutes = burn !== null && burn <= 600 ? Math.round(burn) : null;
+
+  return {
+    date: date.toISOString().slice(0, 10),
+    timesIn: args.timezone ?? "UTC",
+    profile: { skinType, exposedSkinFraction: area, age },
+    session: { start: args.startTime ?? hh(Math.round(startHour)), minutes },
+    averageUVIndex: Math.round(uvi * 10) / 10,
+    estimatedIU,
+    ...(uvi < MIN_UVI ? { lowUvNote: `UV below ${MIN_UVI} during this session — vitamin D synthesis is negligible.` } : {}),
+    maxSessionIU: Math.round(maxSessionIU(area, age)),
+    sunburn: {
+      minutesToSunburn: burnMinutes,
+      sessionExceedsIt: burnMinutes !== null ? minutes >= burnMinutes : false,
+      ...(burnMinutes === null ? { note: "UV too low for a practical sunburn-time estimate." } : {}),
+    },
+    note: `${DISCLAIMER} ${ERYTHEMA_NOTE}`,
   };
 }
 
@@ -259,6 +420,22 @@ export async function currentStatusTool(args: VitDArgs, fetcher: WeatherFetcher 
     hours ? { hours } : null, curve, skinType, area, targetIU, age, now, args.timezone, ctx,
   );
 
+  // Window over for today (or none at all): point at tomorrow's clear-sky
+  // window so the assistant can answer "when's my next chance" without guessing.
+  let nextWindow: { date: string; start: string; end: string } | null = null;
+  if (status.state === "window_closed" || status.state === "no_synthesis") {
+    const tomorrowDoy = doy >= 365 ? 1 : doy + 1;
+    const tomorrowCurve = getCurve(args.lat, args.lon, tomorrowDoy, 0, args.timezone);
+    const exposure = computeExposureFromCurve(tomorrowCurve, skinType, area, targetIU, age, {
+      ozoneDu: ozoneDU(args.lat, args.lon, tomorrowDoy),
+      elevationM,
+    });
+    if (exposure) {
+      const tomorrow = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+      nextWindow = { date: tomorrow.toISOString().slice(0, 10), start: hh(exposure.windowStart), end: hh(exposure.windowEnd) };
+    }
+  }
+
   return {
     timesIn: args.timezone ?? "UTC",
     uvSource: hours ? "open-meteo forecast (includes clouds)" : "clear-sky model (no cloud data)",
@@ -266,10 +443,11 @@ export async function currentStatusTool(args: VitDArgs, fetcher: WeatherFetcher 
     state: status.state,
     currentUVIndex: Math.round(status.effectiveUVI * 10) / 10,
     minutesNeededNow: status.minutesNeeded !== null ? Math.round(status.minutesNeeded) : null,
-    window: status.window ? { start: `${status.window.start}:00`, end: `${status.window.end}:00` } : null,
-    bestHour: status.bestHour !== null ? `${status.bestHour}:00` : null,
+    window: status.window ? { start: hh(status.window.start), end: hh(status.window.end) } : null,
+    bestHour: status.bestHour !== null ? hh(status.bestHour) : null,
     minutesUntilWindow: status.minutesUntilWindow,
     windowClosesInMinutes: status.windowClosesIn,
+    ...(nextWindow ? { nextWindow } : {}),
     cloudCoverPercent: status.cloudCover,
     maxSessionIU: Math.round(maxSessionIU(area, age)),
     note: DISCLAIMER,
