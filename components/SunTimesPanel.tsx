@@ -69,9 +69,19 @@ export default function SunTimesPanel({ lat, lon, tz, timezone, title, date }: P
       }
     }
     compute();
-    // Refresh once a minute so the dot moves and an overnight tab rolls to the new day.
+    // Refresh once a minute so the dot moves and an overnight tab rolls to the
+    // new day. Timers freeze while a PWA is backgrounded, so also recompute on
+    // visibilitychange — otherwise a warm resume shows the sun where it was
+    // hours ago (same failure mode as useSolarPhase).
     const id = setInterval(compute, 60_000);
-    return () => clearInterval(id);
+    const onVisible = () => {
+      if (document.visibilityState === "visible") compute();
+    };
+    document.addEventListener("visibilitychange", onVisible);
+    return () => {
+      clearInterval(id);
+      document.removeEventListener("visibilitychange", onVisible);
+    };
   }, [lat, lon, tz, timezone, dateMs]);
 
   const delta = st ? Math.round(st.dayLengthDeltaMin) : 0;
