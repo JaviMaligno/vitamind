@@ -6,6 +6,8 @@ import CityHeroBold from "@/components/CityHeroBold";
 import CityYearStrip from "@/components/CityYearStrip";
 import PhaseWindow from "@/components/PhaseWindow";
 import NotificationToggle from "@/components/NotificationToggle";
+import SunTimesPanel from "@/components/SunTimesPanel";
+import MonthlySunTable from "@/components/MonthlySunTable";
 import Card from "@/components/ui/Card";
 import A from "@/components/ui/A";
 import { BUILTIN_CITIES } from "@/lib/cities";
@@ -19,6 +21,7 @@ import {
 import { nearbyCities } from "@/lib/city-nearby";
 import { capFirst, cityLabels, monthLabels, monthName, verdictMonths } from "@/lib/city-copy";
 import { fmtTime, dateFromDoy } from "@/lib/solar";
+import { getSunTimes, monthlySunTimes } from "@/lib/sun-times";
 
 export function generateStaticParams() {
   return cityStaticParams();
@@ -66,6 +69,7 @@ export default async function CityPage({ params }: { params: Promise<Params> }) 
 
   const base = baseSlug(city.id);
   const t = await getTranslations({ locale: p.locale, namespace: "cityPage" });
+  const tSun = await getTranslations({ locale: p.locale, namespace: "sunTimes" });
 
   // Every value a cityPage template may reference. Each locale uses the subset it
   // needs — ICU ignores extras but throws on a missing one, so pass the superset.
@@ -119,6 +123,17 @@ export default async function CityPage({ params }: { params: Promise<Params> }) 
 
   const summerWindow = windows.find((w) => w.possible && w.minutesNeeded !== null);
 
+  // Month-by-month sun values feed both the static table below and the sun FAQs.
+  // June/December are the FAQ's fixed anchor months (named literally in each
+  // translation, correctly declined); longest/shortest month varies by hemisphere.
+  const monthly = monthlySunTimes(city.lat, city.lon, city.timezone, city.tz);
+  const june = monthly[5];
+  const dec = monthly[11];
+  const longest = monthly.reduce((a, b) => (b.dayLengthMin > a.dayLengthMin ? b : a));
+  const shortest = monthly.reduce((a, b) => (b.dayLengthMin < a.dayLengthMin ? b : a));
+  const juneGolden = getSunTimes(city.lat, city.lon, new Date(2026, 5, 15), city.timezone, city.tz).goldenEveningStart;
+  const decGolden = getSunTimes(city.lat, city.lon, new Date(2026, 11, 15), city.timezone, city.tz).goldenEveningStart;
+
   const faq = [
     {
       "@type": "Question",
@@ -133,6 +148,46 @@ export default async function CityPage({ params }: { params: Promise<Params> }) 
             "@type": "Answer",
             // A number, not a string: lt selects an ICU plural form on it.
             text: t("faqMinutesA", { ...labels, minutes: Math.round(summerWindow.minutesNeeded!) }),
+          },
+        }]
+      : []),
+    // Sunrise/sunset FAQs: the high-volume questions the monthly table answers,
+    // surfaced as FAQPage entries too. Skipped for (hypothetical) polar cities.
+    ...(june.sunrise !== null && june.sunset !== null && dec.sunrise !== null && dec.sunset !== null
+      ? [{
+          "@type": "Question",
+          name: tSun("faqTimesQ", labels),
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: tSun("faqTimesA", {
+              juneSunrise: fmtTime(june.sunrise),
+              juneSunset: fmtTime(june.sunset),
+              decSunrise: fmtTime(dec.sunrise),
+              decSunset: fmtTime(dec.sunset),
+            }),
+          },
+        }]
+      : []),
+    {
+      "@type": "Question",
+      name: tSun("faqLongestQ", labels),
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: tSun("faqLongestA", {
+          maxMonth: monthName(p.locale, longest.monthIndex),
+          maxHours: Math.round(longest.dayLengthMin / 60),
+          minMonth: monthName(p.locale, shortest.monthIndex),
+          minHours: Math.round(shortest.dayLengthMin / 60),
+        }),
+      },
+    },
+    ...(juneGolden !== null && decGolden !== null
+      ? [{
+          "@type": "Question",
+          name: tSun("faqGoldenQ", labels),
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: tSun("faqGoldenA", { juneGolden: fmtTime(juneGolden), decGolden: fmtTime(decGolden) }),
           },
         }]
       : []),
@@ -186,6 +241,17 @@ export default async function CityPage({ params }: { params: Promise<Params> }) 
         }
       />
 
+      {/* Today's sun: sunrise, sunset, golden hour and day length — the broad-
+          appeal daily numbers, computed client-side so the static page never
+          shows a stale "today". */}
+      <section className="mt-10 sm:mt-16">
+        <h2 className="font-display text-2xl sm:text-3xl font-bold">{tSun("cityHeading", labels)}</h2>
+        <p className="mt-2 text-body text-text-muted max-w-2xl">{tSun("cityCaption")}</p>
+        <div className="mt-5">
+          <SunTimesPanel lat={city.lat} lon={city.lon} tz={city.tz} timezone={city.timezone} />
+        </div>
+      </section>
+
       {/* Year profile: the page's signature data-graphic, promoted to a full-width
           protagonist band instead of a card nested inside a card. */}
       <section className="mt-10 sm:mt-16">
@@ -237,6 +303,37 @@ export default async function CityPage({ params }: { params: Promise<Params> }) 
         )}
       </div>
 
+      {/* Month-by-month sunrise/sunset: static, build-time values (fixed
+          reference year, mid-month) — the indexable content for high-volume
+          "sunrise in <city>" queries; today's live values are in the client
+          panel above, which crawlers don't see. */}
+      <section className="mt-10 sm:mt-16">
+        <h2 className="font-display text-2xl sm:text-3xl font-bold">{tSun("monthlyHeading", labels)}</h2>
+        <p className="mt-2 text-body text-text-muted max-w-2xl">{tSun("monthlyCaption")}</p>
+        <div className="mt-5">
+          <MonthlySunTable
+            monthly={monthly}
+            monthNames={monthly.map((m) => capFirst(monthName(p.locale, m.monthIndex)))}
+            lat={city.lat}
+            lon={city.lon}
+            tz={city.tz}
+            timezone={city.timezone}
+            labels={{
+              month: tSun("month"),
+              sunrise: tSun("sunrise"),
+              sunset: tSun("sunset"),
+              dayLength: tSun("dayLength"),
+              day: tSun("day"),
+              dawn: tSun("dawn"),
+              dusk: tSun("dusk"),
+              dayByDay: tSun("dayByDay"),
+              twilightNote: tSun("twilightNote"),
+            }}
+          />
+        </div>
+        <p className="mt-3 text-caption text-text-muted">{tSun("monthlyNote")}</p>
+      </section>
+
       {/* Primary CTA — full-width, centered conversion band (the main action, so
           it stands on its own instead of being tucked into a column). Adapts to
           the live solar phase so it never clashes with the warm-phase page tints. */}
@@ -255,6 +352,13 @@ export default async function CityPage({ params }: { params: Promise<Params> }) 
             </div>
           ))}
         </dl>
+        {/* Bridge into the guide's "sun beyond vitamin D" block, where the sun
+            mechanics behind these answers are explained in depth. */}
+        <p className="mt-6 text-body">
+          <A href="/learn#block-4" className="font-semibold">
+            {tSun("faqMore")}
+          </A>
+        </p>
       </section>
 
       {/* Cross-links to the nearest cities: turns the 438 pages into a crawlable

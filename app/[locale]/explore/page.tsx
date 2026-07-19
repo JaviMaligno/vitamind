@@ -10,6 +10,7 @@ import { useApp } from "@/context/AppProvider";
 import { useCityDisplayName } from "@/hooks/useCityDisplayName";
 import { getCurve, dayOfYear, dateFromDoy, fmtDate } from "@/lib/solar";
 import ExploreHeroBold from "@/components/ExploreHeroBold";
+import SunTimesPanel from "@/components/SunTimesPanel";
 import VisualizationZone from "@/components/VisualizationZone";
 import CitySearch from "@/components/CitySearch";
 import { Link } from "@/i18n/navigation";
@@ -173,6 +174,24 @@ export default function ExplorePage() {
         scrubMode={scrubMode}
         onScrubModeToggle={() => setScrubMode((s) => !s)}
       />
+
+      {/* Sun times for the scrubbed day: the what-if extends beyond vitamin D —
+          sunrise/sunset/golden hour for ANY day of the year at the explored place.
+          (The live sun dot only shows when the slider sits on today.) */}
+      <section className="mx-auto max-w-[1280px] px-4 pt-6">
+        <SunTimesPanel
+          lat={lat}
+          lon={lon}
+          tz={tz}
+          timezone={timezone}
+          date={date}
+          title={
+            doy === dayOfYear(new Date())
+              ? t("sunTimes.heading")
+              : t("sunTimes.headingOn", { date: dateLabel })
+          }
+        />
+      </section>
 
       {/* Zone 3 -- Date controls */}
       <section className="mx-auto max-w-[1280px] px-4 pt-6 pb-2">

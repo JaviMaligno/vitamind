@@ -769,6 +769,38 @@
             "url": "https://pubmed.ncbi.nlm.nih.gov/23462271/"
           }
         ]
+      },
+      "q6": {
+        "q": "Kodėl saulėtekio ir saulėlydžio laikas per metus taip smarkiai keičiasi?",
+        "a": "Todėl, kad Žemės ašis yra pasvirusi apie 23,4° orbitos atžvilgiu. Skriejant aplink Saulę, kiekvienas pusrutulis pusę metų būna pasviręs į ją (dienos ilgėja), o kitą pusę — priešinga kryptimi (dienos trumpėja). Efektas stiprėja tolstant nuo pusiaujo: ties pusiauju dienos trukmė kinta vos keliomis minutėmis, Madride ji svyruoja maždaug nuo 9 iki 15 valandų, o už poliarinio rato pasiekia kraštutinumus — poliarinę dieną ir poliarinę naktį. Per kovo ir rugsėjo lygiadienius diena visoje planetoje trunka ~12 valandų. Kiekvieno miesto mėnesių lentelė ir skiltis „Tyrinėti“ rodo šį ciklą bet kuriai vietai ir bet kuriai dienai.",
+        "sources": [
+          {
+            "label": "NOAA Global Monitoring Laboratory — Solar Calculator",
+            "url": "https://gml.noaa.gov/grad/solcalc/"
+          }
+        ]
+      },
+      "q7": {
+        "q": "Kas yra auksinė valanda ir kodėl jos šviesa tokia šilta?",
+        "a": "Tai laikas, kai saulė yra žemiau nei ~6° virš horizonto: maždaug paskutinė valanda prieš saulėlydį ir pirmoji po saulėtekio. Saulei esant taip žemai, šviesa pereina daug storesnį atmosferos sluoksnį, o Reilėjaus (Rayleigh) sklaida pašalina beveik visą mėlyną spalvą, praleisdama raudonus ir oranžinius tonus su ilgais švelniais šešėliais. Tai mėgstamiausia fotografų ir kino kūrėjų šviesa, o vasarą — patogus metas pasivaikščioti ar sportuoti lauke, nes karštis ir spinduliuotė gerokai mažesni nei vidurdienį. Programėlė kiekvienos dienos auksinę valandą rodo saulės skydelyje."
+      },
+      "q8": {
+        "q": "Ar auksinę valandą galima sintetinti vitaminą D?",
+        "a": "Praktiškai ne. Sintezei reikia UVB, o būtent UVB labiausiai išfiltruojamas, kai saulė žema: šviesos kelias per atmosferą ir ozono sluoksnį taip pailgėja, kad iki odos UVB beveik nebepatenka. Todėl programėlė sintezės langą skaičiuoja pagal saulės aukštį, o ne pagal šviesaus paros meto trukmę: diena gali turėti 15 saulės valandų, iš kurių vitaminui D naudingos tik 6–8. Vis dėlto auksinė valanda duoda visa kita: šviesos signalą cirkadiniam ritmui, nuotaiką ir raudonųjų bei infraraudonųjų bangų ilgius iš ankstesnių klausimų.",
+        "sources": [
+          {
+            "label": "Webb AR, Kline L, Holick MF (1988) — Influence of season and latitude on the cutaneous synthesis of vitamin D3. J Clin Endocrinol Metab 67(2):373-378",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/2839537/"
+          },
+          {
+            "label": "Engelsen O (2010) — The Relationship between Ultraviolet Radiation Exposure and Vitamin D Status. Nutrients 2(5):482-495",
+            "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3257661/"
+          }
+        ]
+      },
+      "q9": {
+        "q": "Kas yra vidurnakčio saulė ir poliarinė naktis?",
+        "a": "Už poliarinių ratų (nuo ~66,6° platumos) dėl Žemės ašies posvyrio vasaros įkarštyje saulė nenusileidžia (vidurnakčio saulė), o žiemos viduryje nepateka (poliarinė naktis). Kuo arčiau ašigalio, tuo ilgiau tai trunka: Tromsėje ar Svalbarde — ištisas savaites ar mėnesius. Programėlė tai pažymi saulės skydelyje, o per ilgą poliarinę žiemą vitamino D galima gauti tik su maistu arba papildais."
       }
     },
     "backToApp": "Grįžti į programėlę"
@@ -922,6 +954,37 @@
   "explore": {
     "title": "Tyrinėti",
     "subtitle": "Keliaukite po planetą ir kalendorių: kur ir kada įmanoma vitamino D sintezė"
+  },
+  "sunTimes": {
+    "heading": "Saulė šiandien",
+    "cityHeading": "Saulė šiandien: {city}",
+    "cityCaption": "Šiandienos saulėtekis, saulėlydis, auksinė valanda ir dienos trukmė.",
+    "sunrise": "Saulėtekis",
+    "sunset": "Saulėlydis",
+    "goldenHour": "Auksinė valanda",
+    "dayLength": "Dienos trukmė",
+    "longer": "{minutes} min ilgiau nei vakar",
+    "shorter": "{minutes} min trumpiau nei vakar",
+    "same": "Kaip vakar",
+    "polarDay": "Poliarinė diena: šiandien saulė nenusileidžia",
+    "polarNight": "Poliarinė naktis: šiandien saulė nepateka",
+    "monthlyHeading": "Saulėtekis ir saulėlydis pagal mėnesį: {city}",
+    "monthlyCaption": "Kaip per metus keičiasi saulėtekis, saulėlydis ir dienos trukmė.",
+    "month": "Mėnuo",
+    "monthlyNote": "Orientacinės reikšmės kiekvieno mėnesio viduriui (15 d.).",
+    "headingOn": "Saulė {date}",
+    "faqTimesQ": "Kada teka ir leidžiasi saulė ({city})?",
+    "faqTimesA": "Tai keičiasi su metų laikais: birželį saulė teka apie {juneSunrise} ir leidžiasi apie {juneSunset}; gruodį teka apie {decSunrise} ir leidžiasi apie {decSunset}.",
+    "faqLongestQ": "Kokia yra ilgiausia metų diena ({city})?",
+    "faqLongestA": "Ilgiausia diena: {maxMonth}, apie {maxHours} val. šviesos. Trumpiausia diena: {minMonth}, apie {minHours} val.",
+    "faqGoldenQ": "Kada yra auksinė valanda ({city})?",
+    "faqGoldenA": "Tai maždaug paskutinė valanda prieš saulėlydį: birželį ji prasideda apie {juneGolden}, o gruodį – apie {decGolden}.",
+    "faqMore": "Daugiau apie saulę, šviesą ir sveikatą — gide",
+    "day": "Diena",
+    "dawn": "Aušra",
+    "dusk": "Sutemos",
+    "dayByDay": "Pagal dienas",
+    "twilightNote": "Aušra ir sutemos žymi civilines prieblandas: saulė yra mažiau nei 6° žemiau horizonto, lauke dar pakankamai šviesu."
   },
   "cityPage": {
     "title": "Vitaminas D iš saulės: {city}",

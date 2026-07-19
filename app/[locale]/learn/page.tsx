@@ -41,7 +41,7 @@ const BLOCKS: Block[] = [
     Icon: Sunrise,
     titleKey: "block4.title",
     subtitleKey: "block4.subtitle",
-    questions: Array.from({ length: 5 }, (_, i) => ({ qKey: `block4.q${i + 1}.q`, aKey: `block4.q${i + 1}.a` })),
+    questions: Array.from({ length: 9 }, (_, i) => ({ qKey: `block4.q${i + 1}.q`, aKey: `block4.q${i + 1}.a` })),
   },
 ];
 

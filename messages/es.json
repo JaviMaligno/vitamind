@@ -769,6 +769,38 @@
             "url": "https://pubmed.ncbi.nlm.nih.gov/23462271/"
           }
         ]
+      },
+      "q6": {
+        "q": "¿Por qué cambian tanto las horas de amanecer y atardecer a lo largo del año?",
+        "a": "Porque el eje de la Tierra está inclinado unos 23,4° respecto a su órbita. Al girar alrededor del Sol, cada hemisferio pasa medio año inclinado hacia él (días cada vez más largos) y medio año en sentido contrario (días cada vez más cortos). El efecto crece con la latitud: en el ecuador la duración del día apenas varía unos minutos, en Madrid oscila entre unas 9 y unas 15 horas, y por encima del círculo polar llega al extremo del sol de medianoche y la noche polar. En los equinoccios de marzo y septiembre el día dura ~12 horas en todo el planeta. En la tabla mensual de cada ciudad y en la pestaña Explorar puedes ver este ciclo para cualquier lugar y cualquier día.",
+        "sources": [
+          {
+            "label": "NOAA Global Monitoring Laboratory — Solar Calculator",
+            "url": "https://gml.noaa.gov/grad/solcalc/"
+          }
+        ]
+      },
+      "q7": {
+        "q": "¿Qué es la hora dorada y por qué su luz es tan cálida?",
+        "a": "Es la franja en que el sol está a menos de ~6° sobre el horizonte: aproximadamente la última hora antes del atardecer y la primera tras el amanecer. Con el sol tan bajo, la luz atraviesa mucha más atmósfera y la dispersión de Rayleigh elimina casi todo el azul, dejando pasar los tonos rojos y anaranjados, con sombras largas y suaves. Es la luz favorita de fotógrafos y cineastas, y en verano una franja cómoda para pasear o hacer ejercicio al aire libre, porque el calor y la radiación son mucho menores que a mediodía. La app te muestra la hora dorada de cada día en el panel del sol."
+      },
+      "q8": {
+        "q": "¿Puedo sintetizar vitamina D durante la hora dorada?",
+        "a": "Prácticamente no. La síntesis necesita UVB, y el UVB es justo la parte del espectro que más se filtra cuando el sol está bajo: el camino de la luz a través de la atmósfera y de la capa de ozono se alarga tanto que apenas llega UVB a la piel. Por eso la app calcula la ventana de síntesis a partir de la elevación del sol y no de las horas de luz: un día puede tener 15 horas de sol y solo 6–8 útiles para la vitamina D. La hora dorada sigue aportando lo demás: señal luminosa para el ritmo circadiano, estado de ánimo y las longitudes de onda rojas e infrarrojas de las preguntas anteriores.",
+        "sources": [
+          {
+            "label": "Webb AR, Kline L, Holick MF (1988) — Influence of season and latitude on the cutaneous synthesis of vitamin D3. J Clin Endocrinol Metab 67(2):373-378",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/2839537/"
+          },
+          {
+            "label": "Engelsen O (2010) — The Relationship between Ultraviolet Radiation Exposure and Vitamin D Status. Nutrients 2(5):482-495",
+            "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3257661/"
+          }
+        ]
+      },
+      "q9": {
+        "q": "¿Qué son el sol de medianoche y la noche polar?",
+        "a": "Por encima de los círculos polares (a partir de ~66,6° de latitud), la inclinación de la Tierra hace que en pleno verano el sol no llegue a ponerse (sol de medianoche) y en pleno invierno no llegue a salir (noche polar). Cuanto más cerca del polo, más dura el fenómeno: en Tromsø o Svalbard son semanas o meses enteros. La app lo señala en el panel del sol cuando ocurre, y durante el largo invierno polar la vitamina D solo puede venir de la dieta o de la suplementación."
       }
     },
     "backToApp": "Volver a la app"
@@ -922,6 +954,37 @@
   "explore": {
     "title": "Explorar",
     "subtitle": "Viaja por el planeta y el calendario: dónde y cuándo se puede sintetizar vitamina D"
+  },
+  "sunTimes": {
+    "heading": "El sol hoy",
+    "cityHeading": "El sol hoy en {city}",
+    "cityCaption": "Amanecer, atardecer, hora dorada y duración del día de hoy.",
+    "sunrise": "Amanecer",
+    "sunset": "Atardecer",
+    "goldenHour": "Hora dorada",
+    "dayLength": "Duración del día",
+    "longer": "{minutes} min más que ayer",
+    "shorter": "{minutes} min menos que ayer",
+    "same": "Como ayer",
+    "polarDay": "Sol de medianoche: hoy el sol no se pone",
+    "polarNight": "Noche polar: hoy el sol no sale",
+    "monthlyHeading": "Amanecer y atardecer por mes en {city}",
+    "monthlyCaption": "Cómo cambian el amanecer, el atardecer y la duración del día a lo largo del año.",
+    "month": "Mes",
+    "monthlyNote": "Valores orientativos para mediados de cada mes (día 15).",
+    "headingOn": "El sol el {date}",
+    "faqTimesQ": "¿A qué hora sale y se pone el sol en {city}?",
+    "faqTimesA": "Cambia con la estación: en junio el sol sale hacia las {juneSunrise} y se pone hacia las {juneSunset}; en diciembre sale hacia las {decSunrise} y se pone hacia las {decSunset}.",
+    "faqLongestQ": "¿Cuál es el día más largo del año en {city}?",
+    "faqLongestA": "Día más largo: {maxMonth}, con unas {maxHours} h de luz. Día más corto: {minMonth}, con unas {minHours} h.",
+    "faqGoldenQ": "¿Cuándo es la hora dorada en {city}?",
+    "faqGoldenA": "Es la franja aproximada de una hora antes de la puesta de sol: en junio empieza hacia las {juneGolden} y en diciembre hacia las {decGolden}.",
+    "faqMore": "Más sobre el sol, la luz y la salud en la guía",
+    "day": "Día",
+    "dawn": "Alba",
+    "dusk": "Anochecer",
+    "dayByDay": "Ver día a día",
+    "twilightNote": "Alba y anochecer marcan el crepúsculo civil: el sol está a menos de 6° bajo el horizonte y todavía hay luz útil al aire libre."
   },
   "cityPage": {
     "title": "Vitamina D del sol en {city}",

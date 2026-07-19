@@ -100,6 +100,11 @@ Both jobs use the `VERCEL_TOKEN` repo secret (GitHub → repo Settings → Secre
 
 **Before merging anything that includes a `supabase/migrations/*.sql`:** apply the migration to the shared Supabase project **first** (see "Supabase migrations" below) — the deploy on merge is automatic, so the DB must be ready before the code lands.
 
+> **Planned (future) feature:** dedicated programmatic SEO pages for
+> sunrise/sunset by city+month (`/amanecer/madrid/julio`). Approved but parked
+> until Search Console shows traction on solar queries — full plan in
+> `docs/plans/2026-07-19-sunrise-seo-pages.md`.
+
 > **Planned (bigger) change:** migrate the project to the personal Vercel
 > account (`js-projects-98e2a0d2`, GitHub `JaviMaligno` login) to stop using the
 > work-email account for personal projects. `getvitamind.app` is registered at a
