@@ -18,6 +18,7 @@ import Button from "@/components/ui/Button";
 import Chip from "@/components/ui/Chip";
 import Flag from "@/components/ui/Flag";
 import ProfileHeroBold from "@/components/ProfileHeroBold";
+import AiConnections from "@/components/AiConnections";
 
 const sectionHeading = "font-display font-bold text-xl sm:text-2xl text-text-primary";
 
@@ -292,6 +293,9 @@ export default function ProfilePage() {
           prominent
         />
       </Card>
+
+      {/* AI connections (OAuth revocation) — self-hides when logged out or empty. */}
+      <AiConnections />
 
     </div>
   );

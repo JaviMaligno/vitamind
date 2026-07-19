@@ -999,9 +999,16 @@
     "approving": "Conectando…",
     "deny": "Cancelar",
     "genericError": "No se pudo completar la conexión. Inténtalo de nuevo.",
-    "revokeNote": "Puedes desconectarlo cuando quieras desde tu aplicación de IA.",
+    "revokeNote": "Puedes revocar el acceso cuando quieras desde tu perfil en la app.",
     "invalidTitle": "Solicitud no válida",
-    "invalidBody": "Esta solicitud de conexión no es válida o ha caducado. Vuelve a intentarlo desde tu aplicación de IA."
+    "invalidBody": "Esta solicitud de conexión no es válida o ha caducado. Vuelve a intentarlo desde tu aplicación de IA.",
+    "connectionsHeading": "Conexiones de IA",
+    "connectionsIntro": "Asistentes con acceso a tu cuenta mediante el conector. Revoca el acceso cuando quieras.",
+    "connectedSince": "Conectado desde {date}",
+    "lastUsed": "último uso {date}",
+    "revoke": "Revocar",
+    "revoking": "Revocando…",
+    "unknownClient": "Cliente desconocido"
   },
   "connect": {
     "eyebrow": "Conecta tu IA",

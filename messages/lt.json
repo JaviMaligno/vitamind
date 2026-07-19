@@ -999,9 +999,16 @@
     "approving": "Jungiama…",
     "deny": "Atšaukti",
     "genericError": "Nepavyko užbaigti prisijungimo. Bandykite dar kartą.",
-    "revokeNote": "Bet kada galite atjungti savo DI programoje.",
+    "revokeNote": "Prieigą bet kada galite atšaukti savo profilyje programėlėje.",
     "invalidTitle": "Netinkama užklausa",
-    "invalidBody": "Ši prisijungimo užklausa netinkama arba pasibaigusi. Bandykite dar kartą iš savo DI programos."
+    "invalidBody": "Ši prisijungimo užklausa netinkama arba pasibaigusi. Bandykite dar kartą iš savo DI programos.",
+    "connectionsHeading": "DI ryšiai",
+    "connectionsIntro": "Asistentai, turintys prieigą prie jūsų paskyros per jungtį. Prieigą galite atšaukti bet kada.",
+    "connectedSince": "Prijungta nuo {date}",
+    "lastUsed": "paskutinį kartą naudota {date}",
+    "revoke": "Atšaukti",
+    "revoking": "Atšaukiama…",
+    "unknownClient": "Nežinomas klientas"
   },
   "connect": {
     "eyebrow": "Prijunkite savo DI",
