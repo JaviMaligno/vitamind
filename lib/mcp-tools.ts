@@ -1,11 +1,12 @@
 import { BUILTIN_CITIES } from "./cities";
 import { CITY_SLUGS } from "./city-slugs";
 import { getSunTimes } from "./sun-times";
-import { getCurve, dayOfYear, fmtTime } from "./solar";
+import { getCurve, dayOfYear, fmtTime, dateFromDoy } from "./solar";
 import {
   computeExposureFromCurve, getCurrentStatus, maxSessionIU, MIN_UVI, type SkinType,
 } from "./vitd";
 import { ozoneDU } from "./uv-model";
+import { cityYearProfile, viableDateBoundaries } from "./city-content";
 import type { WeatherHour } from "./types";
 
 /**
@@ -159,6 +160,59 @@ export function vitaminDWindowTool(args: VitDArgs) {
     minutesNeededAtBestHour: Math.round(result.minutesNeeded),
     maxSessionIU: Math.round(result.maxIU),
     targetCapped: result.targetCapped,
+  };
+}
+
+// ---------------------------------------------------------------------------
+// get_vitamin_d_year
+
+const monthDay = (doy: number) => {
+  const d = dateFromDoy(doy);
+  return `${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+};
+
+/**
+ * The whole year in one call — the answer to "which months can I make
+ * vitamin D in <place>?" without a per-date call cascade. Month possibility
+ * comes from the same threshold model as the SEO city pages; the per-month
+ * windows/minutes use the caller's personal profile (mid-month sample).
+ */
+export function vitaminDYearTool(args: Omit<VitDArgs, "date">) {
+  const { skinType, area, targetIU, age, elevationM } = normalizeProfile(args);
+  const profile = cityYearProfile(args.lat, args.lon, elevationM);
+  const bounds = profile.allYear || profile.neverPossible
+    ? null
+    : viableDateBoundaries(profile.hoursByDay);
+
+  const byMonth = Array.from({ length: 12 }, (_, m) => {
+    const doy = dayOfYear(new Date(2026, m, 15));
+    const curve = getCurve(args.lat, args.lon, doy, 0, args.timezone);
+    const exposure = computeExposureFromCurve(curve, skinType, area, targetIU, age, {
+      ozoneDu: ozoneDU(args.lat, args.lon, doy),
+      elevationM,
+    });
+    return exposure
+      ? {
+          month: m + 1,
+          synthesisPossible: true,
+          window: { start: `${exposure.windowStart}:00`, end: `${exposure.windowEnd}:00` },
+          minutesNeededAtBestHour: Math.round(exposure.minutesNeeded),
+        }
+      : { month: m + 1, synthesisPossible: false, window: null, minutesNeededAtBestHour: null };
+  });
+
+  return {
+    timesIn: args.timezone ?? "UTC",
+    profile: { skinType, exposedSkinFraction: area, age, targetIU },
+    allYear: profile.allYear,
+    neverPossible: profile.neverPossible,
+    possibleMonths: profile.possibleMonths,
+    impossibleMonths: profile.impossibleMonths,
+    exactViableSpan: bounds
+      ? { firstDay: monthDay(bounds.startDoy), lastDay: monthDay(bounds.endDoy), format: "MM-DD, any year" }
+      : null,
+    byMonth,
+    note: DISCLAIMER,
   };
 }
 

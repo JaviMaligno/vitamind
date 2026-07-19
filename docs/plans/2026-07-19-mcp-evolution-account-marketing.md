@@ -6,6 +6,10 @@ que viene después, en tres bloques independientes.
 
 ## Bloque A — Optimización de las herramientas MCP
 
+> **Estado 2026-07-19:** `get_vitamin_d_year`, descripciones anti-cascada y el
+> log de uso implementados. Queda pendiente la auditoría fina de respuestas con
+> más sesiones reales de uso.
+
 Feedback real de la primera sesión de uso (2026-07-19): preguntar "¿qué meses
 hay vitamina D en Londres?" provocó una cascada de llamadas a
 `get_vitamin_d_window` (una por fecha sondeada), porque no existe una
@@ -31,20 +35,21 @@ herramienta de perfil anual.
 
 ## Bloque B — Cuenta de usuario: escalera de valor + OAuth del MCP
 
-### B1. Escalera de valor (producto — decidir antes de construir B2)
+### B1. Escalera de valor — DECIDIDO (2026-07-19)
 
-Hoy la app es anónima-primero (fortaleza: no tocarla) y la cuenta solo aporta
-sincronización invisible. Propuesta a discutir:
-
-| Nivel | Qué da |
-|---|---|
-| Anónimo | Todo lo actual: cálculo, panel del sol, push, historial local |
-| Cuenta | Sync multi-dispositivo de perfil/favoritos/historial + **acceso IA a tus datos** (B2) |
-| (Futuro) | Base para premium si algún día lo hay |
-
-Trabajo de producto pendiente: decidir el momento de venta de la cuenta en la
-UI (¿al activar push?, ¿al mirar el historial?, ¿pantalla "conecta tu IA"?) y
-hacer visible el beneficio (hoy nada explica por qué crearla).
+1. **Nada de lo actual se mueve detrás de la cuenta.** Push sigue anónimo
+   (funciona y no se toca). En IA, las herramientas públicas del MCP siguen
+   públicas: no se fuerza cuenta para lo que naturalmente no la necesita. La
+   cuenta es puramente aditiva: sync multi-dispositivo, historial persistente
+   y las herramientas MCP personales (B2).
+2. **Venta contextual en varios puntos**, no una única pantalla: el historial
+   ("consérvalo y llévatelo a todos tus dispositivos"), el perfil, y la futura
+   sección "Conecta tu IA" (para las herramientas personales). Cada punto
+   vende el beneficio de su propio contexto.
+3. **Premium: hueco abierto, sin compromiso.** Candidatos si algún día llega:
+   opciones avanzadas de IA, personalización avanzada dentro de la app, y
+   "sin anuncios" cuando existan partners con presencia publicitaria. La copy
+   de la cuenta no debe prometer "todo gratis para siempre".
 
 ### B2. OAuth 2.1 para el MCP (técnica — la pieza grande)
 
