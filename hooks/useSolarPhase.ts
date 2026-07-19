@@ -18,7 +18,17 @@ export function useSolarPhase(lat: number, lon: number): SolarPhase | null {
     }
     compute();
     const id = setInterval(compute, 5 * 60 * 1000);
-    return () => clearInterval(id);
+    // Los timers se congelan con la PWA en segundo plano: al retomarla horas
+    // después, la fase seguiría siendo la de cuando se dejó (cielo de día a
+    // las 21:40). Recalcular al volver a ser visible corrige el resume caliente.
+    const onVisible = () => {
+      if (document.visibilityState === "visible") compute();
+    };
+    document.addEventListener("visibilitychange", onVisible);
+    return () => {
+      clearInterval(id);
+      document.removeEventListener("visibilitychange", onVisible);
+    };
   }, [lat, lon]);
   return phase;
 }
