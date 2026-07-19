@@ -1054,6 +1054,26 @@
     "privacyText": "Die öffentliche URL nutzt kein Konto und speichert nichts über dich. Mit der Konto-URL läuft der Zugriff über OAuth mit expliziten Berechtigungen, die du genehmigst; Tokens laufen von selbst ab und deine Daten werden nie an Dritte weitergegeben.",
     "memoryTip": "Tipp: Sag deinem Assistenten auch ohne Konto einmal deinen Hauttyp und deine Stadt — sein Gedächtnis erledigt den Rest."
   },
+  "sunrisePage": {
+    "eyebrow": "Die Sonne Monat für Monat",
+    "metaTitle": "Sonnenaufgang und Sonnenuntergang in {city} im {month}: genaue Zeiten",
+    "metaDescription": "Wann die Sonne in {city} im {month} auf- und untergeht: Tag-für-Tag-Tabelle mit Morgendämmerung, Abenddämmerung, goldener Stunde und Tageslänge.",
+    "title": "Sonnenaufgang und Sonnenuntergang in {city} im {month}",
+    "intro": "Am 1. {month} geht die Sonne in {city} um {firstSunrise} auf und um {firstSunset} unter; am {lastDay}. geht sie um {lastSunrise} auf und um {lastSunset} unter. Im Lauf des Monats {trend, select, longer {wird der Tag {minutes} Minuten länger} shorter {wird der Tag {minutes} Minuten kürzer} other {ändert sich die Tageslänge kaum}}.",
+    "tableHeading": "Tag für Tag",
+    "tableCaption": "Alle Zeiten in Ortszeit von {city}. Morgen- und Abenddämmerung markieren die bürgerliche Dämmerung.",
+    "vitdHeading": "Und Vitamin D im {month}?",
+    "vitdPossible": "Im {month} reicht das typische Synthesefenster in {city} von {start} bis {end}: Mit mittlerem Hauttyp und T-Shirt genügen ~{minutes} Min. zum besten Zeitpunkt.",
+    "vitdImpossible": "Im {month} steigt die Sonne in {city} nicht hoch genug für die Vitamin-D-Synthese: die Zeit, auf deine Ernährung zu achten oder über Supplemente nachzudenken.",
+    "vitdCta": "Zum Vitamin-D-Guide für {city}",
+    "monthsHeading": "Andere Monate in {city}",
+    "nearbyHeading": "Der Sonnenaufgang in anderen Städten",
+    "faqSunriseQ": "Wann geht die Sonne in {city} im {month} auf?",
+    "faqSunriseA": "Am 1. {month} geht sie um {first} auf, am {lastDay}. um {last} — jeweils Ortszeit.",
+    "faqDayQ": "Wie lang ist der Tag in {city} im {month}?",
+    "faqDayA": "Rund {dayLength} zur Monatsmitte.",
+    "note": "Astronomische Richtwerte: Sie können je nach Jahr um ein bis zwei Minuten abweichen."
+  },
   "cityPage": {
     "title": "Vitamin D durch Sonne in {city}",
     "metaDescription": "Wann du in {city} Vitamin D durch die Sonne bilden kannst: mögliche Monate, saisonale Zeitfenster und wann du supplementieren solltest.",
