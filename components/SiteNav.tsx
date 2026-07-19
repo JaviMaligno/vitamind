@@ -54,6 +54,7 @@ export default function SiteNav() {
 
   // Learn/Guide is a primary bottom tab now, so it's not repeated here.
   const secondary = [
+    { href: "/connect", label: t("nav.connect") },
     { href: "/partners", label: t("footer.partners") },
   ];
 

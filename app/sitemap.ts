@@ -11,6 +11,7 @@ const PAGES = [
   { path: "/explore", changeFrequency: "weekly" as const, priority: 0.9 },
   { path: "/dashboard", changeFrequency: "daily" as const, priority: 0.8 },
   { path: "/learn", changeFrequency: "monthly" as const, priority: 0.9 },
+  { path: "/connect", changeFrequency: "monthly" as const, priority: 0.7 },
   { path: "/profile", changeFrequency: "monthly" as const, priority: 0.4 },
   { path: "/partners", changeFrequency: "monthly" as const, priority: 0.6 },
 ];

@@ -5,8 +5,8 @@ import { SITE_URL } from "@/lib/site";
 describe("sitemap", () => {
   const entries = sitemap();
 
-  it("emits 36 static URLs plus 438 city URLs", () => {
-    expect(entries).toHaveLength(36 + 438); // 6 pages + 73 cities, each × 6 locales
+  it("emits 42 static URLs plus 438 city URLs", () => {
+    expect(entries).toHaveLength(42 + 438); // 7 pages + 73 cities, each × 6 locales
   });
 
   it("uses no prefix for es and /xx for other locales", () => {
