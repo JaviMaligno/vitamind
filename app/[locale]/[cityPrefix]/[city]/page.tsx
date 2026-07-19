@@ -359,6 +359,13 @@ export default async function CityPage({ params }: { params: Promise<Params> }) 
             </div>
           ))}
         </dl>
+        {/* Bridge into the guide's "sun beyond vitamin D" block, where the sun
+            mechanics behind these answers are explained in depth. */}
+        <p className="mt-6 text-body">
+          <A href="/learn#block-4" className="font-semibold">
+            {tSun("faqMore")}
+          </A>
+        </p>
       </section>
 
       {/* Cross-links to the nearest cities: turns the 438 pages into a crawlable

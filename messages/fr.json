@@ -769,6 +769,38 @@
             "url": "https://pubmed.ncbi.nlm.nih.gov/23462271/"
           }
         ]
+      },
+      "q6": {
+        "q": "Pourquoi les heures de lever et de coucher du soleil changent-elles autant au fil de l'année ?",
+        "a": "Parce que l'axe de la Terre est incliné d'environ 23,4° par rapport à son orbite. En tournant autour du Soleil, chaque hémisphère passe la moitié de l'année incliné vers lui (jours de plus en plus longs) et l'autre moitié dans le sens opposé (jours de plus en plus courts). L'effet augmente avec la latitude : à l'équateur, la durée du jour ne varie que de quelques minutes ; à Madrid, elle oscille entre environ 9 et 15 heures ; au-delà du cercle polaire, elle atteint les extrêmes du soleil de minuit et de la nuit polaire. Aux équinoxes de mars et de septembre, le jour dure ~12 heures partout sur la planète. Le tableau mensuel de chaque ville et l'onglet « Explorer » montrent ce cycle pour n'importe quel lieu et n'importe quel jour.",
+        "sources": [
+          {
+            "label": "NOAA Global Monitoring Laboratory — Solar Calculator",
+            "url": "https://gml.noaa.gov/grad/solcalc/"
+          }
+        ]
+      },
+      "q7": {
+        "q": "Qu'est-ce que l'heure dorée et pourquoi sa lumière est-elle si chaude ?",
+        "a": "C'est la période où le soleil se trouve à moins de ~6° au-dessus de l'horizon : à peu près la dernière heure avant le coucher et la première après le lever. Le soleil étant très bas, la lumière traverse beaucoup plus d'atmosphère et la diffusion de Rayleigh élimine presque tout le bleu, laissant passer les tons rouges et orangés, avec des ombres longues et douces. C'est la lumière préférée des photographes et des cinéastes, et en été un créneau agréable pour se promener ou faire de l'exercice en plein air, car la chaleur et le rayonnement y sont bien plus faibles qu'à midi. L'application affiche l'heure dorée de chaque jour dans le panneau du soleil."
+      },
+      "q8": {
+        "q": "Peut-on synthétiser de la vitamine D pendant l'heure dorée ?",
+        "a": "Pratiquement pas. La synthèse a besoin d'UVB, et les UVB sont précisément la partie du spectre la plus filtrée quand le soleil est bas : le trajet de la lumière à travers l'atmosphère et la couche d'ozone s'allonge tellement qu'il n'arrive presque plus d'UVB à la peau. C'est pourquoi l'application calcule la fenêtre de synthèse à partir de l'élévation du soleil et non des heures de jour : une journée peut compter 15 heures de soleil mais seulement 6–8 utiles pour la vitamine D. L'heure dorée apporte néanmoins le reste : le signal lumineux du rythme circadien, l'humeur et les longueurs d'onde rouges et infrarouges des questions précédentes.",
+        "sources": [
+          {
+            "label": "Webb AR, Kline L, Holick MF (1988) — Influence of season and latitude on the cutaneous synthesis of vitamin D3. J Clin Endocrinol Metab 67(2):373-378",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/2839537/"
+          },
+          {
+            "label": "Engelsen O (2010) — The Relationship between Ultraviolet Radiation Exposure and Vitamin D Status. Nutrients 2(5):482-495",
+            "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3257661/"
+          }
+        ]
+      },
+      "q9": {
+        "q": "Que sont le soleil de minuit et la nuit polaire ?",
+        "a": "Au-delà des cercles polaires (à partir de ~66,6° de latitude), l'inclinaison de la Terre fait qu'en plein été le soleil ne se couche pas (soleil de minuit) et qu'en plein hiver il ne se lève pas (nuit polaire). Plus on s'approche du pôle, plus le phénomène dure : à Tromsø ou au Svalbard, il s'étend sur des semaines, voire des mois entiers. L'application le signale dans le panneau du soleil quand cela se produit, et pendant le long hiver polaire, la vitamine D ne peut venir que de l'alimentation ou de la supplémentation."
       }
     },
     "backToApp": "Retour à l'application"
@@ -946,7 +978,8 @@
     "faqLongestQ": "Quel est le jour le plus long de l'année {atCity} ?",
     "faqLongestA": "Jour le plus long : {maxMonth}, avec environ {maxHours} h de lumière du jour. Jour le plus court : {minMonth}, avec environ {minHours} h.",
     "faqGoldenQ": "Quand a lieu l'heure dorée {atCity} ?",
-    "faqGoldenA": "C'est à peu près la dernière heure avant le coucher du soleil : en juin, elle commence vers {juneGolden} et en décembre vers {decGolden}."
+    "faqGoldenA": "C'est à peu près la dernière heure avant le coucher du soleil : en juin, elle commence vers {juneGolden} et en décembre vers {decGolden}.",
+    "faqMore": "En savoir plus sur le soleil, la lumière et la santé dans le guide"
   },
   "cityPage": {
     "title": "Vitamine D du soleil {atCity}",

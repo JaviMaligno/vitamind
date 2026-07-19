@@ -769,6 +769,38 @@
             "url": "https://pubmed.ncbi.nlm.nih.gov/23462271/"
           }
         ]
+      },
+      "q6": {
+        "q": "Why do sunrise and sunset times change so much through the year?",
+        "a": "Because Earth's axis is tilted about 23.4° relative to its orbit. As we travel around the Sun, each hemisphere spends half the year tilted toward it (days getting longer) and half tilted away (days getting shorter). The effect grows with latitude: at the equator day length barely changes by minutes, in Madrid it swings between roughly 9 and 15 hours, and above the polar circle it reaches the extremes of midnight sun and polar night. At the March and September equinoxes the day lasts ~12 hours everywhere on Earth. The monthly table on every city page and the Explore tab let you see this cycle for any place and any day.",
+        "sources": [
+          {
+            "label": "NOAA Global Monitoring Laboratory — Solar Calculator",
+            "url": "https://gml.noaa.gov/grad/solcalc/"
+          }
+        ]
+      },
+      "q7": {
+        "q": "What is golden hour and why is its light so warm?",
+        "a": "It's the window when the sun sits less than ~6° above the horizon: roughly the last hour before sunset and the first after sunrise. With the sun that low, light crosses far more atmosphere and Rayleigh scattering strips out most of the blue, letting the reds and oranges through, with long soft shadows. It's the light photographers and filmmakers love, and in summer a comfortable slot for a walk or outdoor exercise, since heat and radiation are far lower than at midday. The app shows each day's golden hour in the sun panel."
+      },
+      "q8": {
+        "q": "Can I synthesize vitamin D during golden hour?",
+        "a": "Practically no. Synthesis needs UVB, and UVB is precisely the part of the spectrum that gets filtered most when the sun is low: the light's path through the atmosphere and the ozone layer grows so long that almost no UVB reaches the skin. That's why the app computes the synthesis window from solar elevation rather than daylight hours: a day can have 15 hours of sun yet only 6–8 useful for vitamin D. Golden hour still delivers the rest: the light signal for your circadian rhythm, mood, and the red and near-infrared wavelengths from the questions above.",
+        "sources": [
+          {
+            "label": "Webb AR, Kline L, Holick MF (1988) — Influence of season and latitude on the cutaneous synthesis of vitamin D3. J Clin Endocrinol Metab 67(2):373-378",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/2839537/"
+          },
+          {
+            "label": "Engelsen O (2010) — The Relationship between Ultraviolet Radiation Exposure and Vitamin D Status. Nutrients 2(5):482-495",
+            "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3257661/"
+          }
+        ]
+      },
+      "q9": {
+        "q": "What are the midnight sun and the polar night?",
+        "a": "Above the polar circles (from ~66.6° latitude), Earth's tilt means the midsummer sun never sets (midnight sun) and the midwinter sun never rises (polar night). The closer to the pole, the longer it lasts: in Tromsø or Svalbard it spans whole weeks or months. The app flags it in the sun panel when it happens, and through the long polar winter vitamin D can only come from diet or supplementation."
       }
     },
     "backToApp": "Back to the app"
@@ -946,7 +978,8 @@
     "faqLongestQ": "What is the longest day of the year in {city}?",
     "faqLongestA": "Longest day: {maxMonth}, with about {maxHours} h of daylight. Shortest day: {minMonth}, with about {minHours} h.",
     "faqGoldenQ": "When is golden hour in {city}?",
-    "faqGoldenA": "It's roughly the last hour before sunset: in June it starts around {juneGolden} and in December around {decGolden}."
+    "faqGoldenA": "It's roughly the last hour before sunset: in June it starts around {juneGolden} and in December around {decGolden}.",
+    "faqMore": "More about the sun, light and health in the guide"
   },
   "cityPage": {
     "title": "Vitamin D from the sun in {city}",
