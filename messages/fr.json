@@ -986,6 +986,22 @@
     "dayByDay": "Voir jour par jour",
     "twilightNote": "L'aube et le crépuscule correspondent au crépuscule civil : le soleil est à moins de 6° sous l'horizon et la lumière reste utilisable en extérieur."
   },
+  "oauth": {
+    "title": "Connecter {client}",
+    "subtitle": "à votre compte Vitamine D",
+    "scopeProfileRead": "Lire votre profil : type de peau, âge, objectif quotidien et votre ville actuelle",
+    "scopeHistoryRead": "Lire votre historique de journées de soleil",
+    "scopeHistoryWrite": "Enregistrer des journées de soleil dans votre historique",
+    "scopeUnknown": "Autorisation inconnue",
+    "loginFirst": "Connectez-vous pour continuer",
+    "approve": "Autoriser {client}",
+    "approving": "Connexion…",
+    "deny": "Annuler",
+    "genericError": "La connexion n'a pas pu être établie. Veuillez réessayer.",
+    "revokeNote": "Vous pouvez le déconnecter à tout moment depuis votre application d'IA.",
+    "invalidTitle": "Requête non valide",
+    "invalidBody": "Cette demande de connexion n'est pas valide ou a expiré. Réessayez depuis votre application d'IA."
+  },
   "cityPage": {
     "title": "Vitamine D du soleil {atCity}",
     "metaDescription": "Quand pouvez-vous synthétiser la vitamine D au soleil {atCity} : mois possibles, fenêtres saisonnières et quand se supplémenter.",
