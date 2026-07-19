@@ -90,3 +90,31 @@ export function getSunTimes(lat: number, lon: number, date: Date, timezone?: str
     polar: null,
   };
 }
+
+export interface MonthlySunTimes {
+  /** 0-based month index (0 = January). */
+  monthIndex: number;
+  /** Local hours (0–24). `null` on polar day/night. */
+  sunrise: number | null;
+  sunset: number | null;
+  /** Minutes of daylight (0 on polar night, 1440 on polar day). */
+  dayLengthMin: number;
+  polar: "day" | "night" | null;
+}
+
+/**
+ * Sun times for the 15th of each month — stable, build-time-safe values for the
+ * static city pages (same fixed reference year the city copy helpers use).
+ */
+export function monthlySunTimes(lat: number, lon: number, timezone?: string, tzFallback = 0): MonthlySunTimes[] {
+  return Array.from({ length: 12 }, (_, monthIndex) => {
+    const st = getSunTimes(lat, lon, new Date(2026, monthIndex, 15), timezone, tzFallback);
+    return {
+      monthIndex,
+      sunrise: st.sunrise,
+      sunset: st.sunset,
+      dayLengthMin: st.dayLengthMin,
+      polar: st.polar,
+    };
+  });
+}

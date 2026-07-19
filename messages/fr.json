@@ -935,7 +935,18 @@
     "shorter": "{minutes} min de moins qu'hier",
     "same": "Comme hier",
     "polarDay": "Soleil de minuit : le soleil ne se couche pas aujourd'hui",
-    "polarNight": "Nuit polaire : le soleil ne se lève pas aujourd'hui"
+    "polarNight": "Nuit polaire : le soleil ne se lève pas aujourd'hui",
+    "monthlyHeading": "Lever et coucher du soleil par mois {atCity}",
+    "monthlyCaption": "Comment le lever, le coucher du soleil et la durée du jour évoluent au fil de l'année.",
+    "month": "Mois",
+    "monthlyNote": "Valeurs indicatives pour le milieu de chaque mois (le 15).",
+    "headingOn": "Le soleil le {date}",
+    "faqTimesQ": "À quelle heure le soleil se lève-t-il et se couche-t-il {atCity} ?",
+    "faqTimesA": "Cela change avec les saisons : en juin, le soleil se lève vers {juneSunrise} et se couche vers {juneSunset} ; en décembre, il se lève vers {decSunrise} et se couche vers {decSunset}.",
+    "faqLongestQ": "Quel est le jour le plus long de l'année {atCity} ?",
+    "faqLongestA": "Jour le plus long : {maxMonth}, avec environ {maxHours} h de lumière du jour. Jour le plus court : {minMonth}, avec environ {minHours} h.",
+    "faqGoldenQ": "Quand a lieu l'heure dorée {atCity} ?",
+    "faqGoldenA": "C'est à peu près la dernière heure avant le coucher du soleil : en juin, elle commence vers {juneGolden} et en décembre vers {decGolden}."
   },
   "cityPage": {
     "title": "Vitamine D du soleil {atCity}",
