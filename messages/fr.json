@@ -923,6 +923,20 @@
     "title": "Explorer",
     "subtitle": "Voyagez sur la planète et dans le calendrier : où et quand la synthèse de vitamine D est possible"
   },
+  "sunTimes": {
+    "heading": "Le soleil aujourd'hui",
+    "cityHeading": "Le soleil aujourd'hui {atCity}",
+    "cityCaption": "Lever et coucher du soleil, heure dorée et durée du jour aujourd'hui.",
+    "sunrise": "Lever du soleil",
+    "sunset": "Coucher du soleil",
+    "goldenHour": "Heure dorée",
+    "dayLength": "Durée du jour",
+    "longer": "{minutes} min de plus qu'hier",
+    "shorter": "{minutes} min de moins qu'hier",
+    "same": "Comme hier",
+    "polarDay": "Soleil de minuit : le soleil ne se couche pas aujourd'hui",
+    "polarNight": "Nuit polaire : le soleil ne se lève pas aujourd'hui"
+  },
   "cityPage": {
     "title": "Vitamine D du soleil {atCity}",
     "metaDescription": "Quand pouvez-vous synthétiser la vitamine D au soleil {atCity} : mois possibles, fenêtres saisonnières et quand se supplémenter.",

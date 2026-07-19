@@ -923,6 +923,20 @@
     "title": "Entdecken",
     "subtitle": "Reise über den Planeten und durchs Jahr: wo und wann Vitamin-D-Synthese möglich ist"
   },
+  "sunTimes": {
+    "heading": "Die Sonne heute",
+    "cityHeading": "Die Sonne heute in {city}",
+    "cityCaption": "Sonnenaufgang, Sonnenuntergang, goldene Stunde und Tageslänge heute.",
+    "sunrise": "Sonnenaufgang",
+    "sunset": "Sonnenuntergang",
+    "goldenHour": "Goldene Stunde",
+    "dayLength": "Tageslänge",
+    "longer": "{minutes} Min. länger als gestern",
+    "shorter": "{minutes} Min. kürzer als gestern",
+    "same": "Wie gestern",
+    "polarDay": "Mitternachtssonne: Die Sonne geht heute nicht unter",
+    "polarNight": "Polarnacht: Die Sonne geht heute nicht auf"
+  },
   "cityPage": {
     "title": "Vitamin D durch Sonne in {city}",
     "metaDescription": "Wann du in {city} Vitamin D durch die Sonne bilden kannst: mögliche Monate, saisonale Zeitfenster und wann du supplementieren solltest.",

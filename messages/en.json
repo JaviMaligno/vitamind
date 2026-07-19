@@ -923,6 +923,20 @@
     "title": "Explore",
     "subtitle": "Travel the planet and the calendar: where and when vitamin D synthesis is possible"
   },
+  "sunTimes": {
+    "heading": "Today's sun",
+    "cityHeading": "Today's sun in {city}",
+    "cityCaption": "Today's sunrise, sunset, golden hour and day length.",
+    "sunrise": "Sunrise",
+    "sunset": "Sunset",
+    "goldenHour": "Golden hour",
+    "dayLength": "Day length",
+    "longer": "{minutes} min longer than yesterday",
+    "shorter": "{minutes} min shorter than yesterday",
+    "same": "Same as yesterday",
+    "polarDay": "Midnight sun: the sun does not set today",
+    "polarNight": "Polar night: the sun does not rise today"
+  },
   "cityPage": {
     "title": "Vitamin D from the sun in {city}",
     "metaDescription": "When you can synthesize vitamin D from the sun in {city}: possible months, seasonal windows, and when to supplement.",
