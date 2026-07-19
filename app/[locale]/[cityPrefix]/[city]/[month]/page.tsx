@@ -174,12 +174,12 @@ export default async function SunriseMonthPage({ params }: { params: Promise<Par
           <table className="w-full text-caption sm:text-body">
             <thead>
               <tr className="text-left text-caption uppercase tracking-wider text-text-muted">
-                <th className="px-2.5 py-2.5 sm:px-4 font-medium">{tSun("day")}</th>
-                <th className="hidden sm:table-cell px-2.5 py-2.5 sm:px-4 font-medium">{tSun("dawn")}</th>
-                <th className="px-2.5 py-2.5 sm:px-4 font-medium">{tSun("sunrise")}</th>
-                <th className="px-2.5 py-2.5 sm:px-4 font-medium">{tSun("sunset")}</th>
-                <th className="hidden sm:table-cell px-2.5 py-2.5 sm:px-4 font-medium">{tSun("dusk")}</th>
-                <th className="px-2.5 py-2.5 sm:px-4 font-medium">{tSun("dayLength")}</th>
+                <th className="px-2 py-2.5 sm:px-4 font-medium">{tSun("day")}</th>
+                <th className="px-2 py-2.5 sm:px-4 font-medium">{tSun("dawn")}</th>
+                <th className="px-2 py-2.5 sm:px-4 font-medium">{tSun("sunrise")}</th>
+                <th className="px-2 py-2.5 sm:px-4 font-medium">{tSun("sunset")}</th>
+                <th className="px-2 py-2.5 sm:px-4 font-medium">{tSun("dusk")}</th>
+                <th className="px-2 py-2.5 sm:px-4 font-medium">{tSun("dayLength")}</th>
               </tr>
             </thead>
             <tbody>
@@ -187,12 +187,12 @@ export default async function SunriseMonthPage({ params }: { params: Promise<Par
                 const len = dayLen(d);
                 return (
                   <tr key={d.day} className="border-t border-border-subtle">
-                    <td className="px-2.5 py-1.5 sm:px-4 font-medium">{d.day}</td>
-                    <td className="hidden sm:table-cell px-2.5 py-1.5 sm:px-4 font-mono text-text-muted">{t2(d.civilDawn)}</td>
-                    <td className="px-2.5 py-1.5 sm:px-4 font-mono">{t2(d.sunrise)}</td>
-                    <td className="px-2.5 py-1.5 sm:px-4 font-mono">{t2(d.sunset)}</td>
-                    <td className="hidden sm:table-cell px-2.5 py-1.5 sm:px-4 font-mono text-text-muted">{t2(d.civilDusk)}</td>
-                    <td className="px-2.5 py-1.5 sm:px-4 whitespace-nowrap">{len !== null ? fmtDayLen(len) : "—"}</td>
+                    <td className="px-2 py-1.5 sm:px-4 font-medium">{d.day}</td>
+                    <td className="px-2 py-1.5 sm:px-4 font-mono text-text-muted">{t2(d.civilDawn)}</td>
+                    <td className="px-2 py-1.5 sm:px-4 font-mono">{t2(d.sunrise)}</td>
+                    <td className="px-2 py-1.5 sm:px-4 font-mono">{t2(d.sunset)}</td>
+                    <td className="px-2 py-1.5 sm:px-4 font-mono text-text-muted">{t2(d.civilDusk)}</td>
+                    <td className="px-2 py-1.5 sm:px-4 whitespace-nowrap">{len !== null ? fmtDayLen(len) : "—"}</td>
                   </tr>
                 );
               })}
