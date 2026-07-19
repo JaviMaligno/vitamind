@@ -1,8 +1,26 @@
 // Standalone Playwright script — runs install-awareness scenarios against the dev/prod server.
 // Usage: BASE_URL=http://localhost:3010 node tests/e2e/install-awareness.spec.mjs
+// Auto-detects the preinstalled Chromium under /opt/pw-browsers (same pattern
+// as the other e2e scripts); override with CHROME_PATH=/path/to/chrome.
 import { chromium } from "@playwright/test";
+import { readdirSync, existsSync } from "node:fs";
+import { join } from "node:path";
 
 const BASE_URL = process.env.BASE_URL || "http://localhost:3010";
+
+function resolveChrome() {
+  if (process.env.CHROME_PATH) return process.env.CHROME_PATH;
+  const base = process.env.PLAYWRIGHT_BROWSERS_PATH || "/opt/pw-browsers";
+  try {
+    const dir = readdirSync(base).find((d) => d.startsWith("chromium-"));
+    if (dir) {
+      const exe = join(base, dir, "chrome-linux", "chrome");
+      if (existsSync(exe)) return exe;
+    }
+  } catch {}
+  return undefined;
+}
+const chromePath = resolveChrome();
 
 const UA_CHROME_DESKTOP =
   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36";
@@ -75,7 +93,7 @@ function record(name, status, detail = "") {
 }
 
 async function withContext(opts, fn) {
-  const browser = await chromium.launch();
+  const browser = await chromium.launch(chromePath ? { executablePath: chromePath } : {});
   const context = await browser.newContext({
     userAgent: opts.userAgent || UA_CHROME_DESKTOP,
     viewport: { width: 414, height: 896 },

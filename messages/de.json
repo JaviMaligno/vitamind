@@ -205,7 +205,8 @@
     "profile": "Profil",
     "menu": "Menü",
     "close": "Schließen",
-    "cities": "Städte"
+    "cities": "Städte",
+    "learn": "Ratgeber"
   },
   "footer": {
     "appHeading": "App",
@@ -919,9 +920,8 @@
     "reload": "Neu laden"
   },
   "explore": {
-    "faqHeading": "Häufig gestellte Fragen",
-    "faqSubheading": "Tauche tiefer in die Wissenschaft hinter der App ein",
-    "faqCta": "Alle Fragen ansehen"
+    "title": "Entdecken",
+    "subtitle": "Reise über den Planeten und durchs Jahr: wo und wann Vitamin-D-Synthese möglich ist"
   },
   "cityPage": {
     "title": "Vitamin D durch Sonne in {city}",

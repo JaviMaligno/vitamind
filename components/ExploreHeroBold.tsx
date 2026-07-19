@@ -1,45 +1,24 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { BookOpen, ArrowRight } from "lucide-react";
-import { Link } from "@/i18n/navigation";
 import CitySearch from "@/components/CitySearch";
 import GpsErrorHint from "@/components/GpsErrorHint";
-import PartnerBadge from "@/components/PartnerBadge";
 import { useSolarPhase } from "@/hooks/useSolarPhase";
 import { PHASE_STYLE } from "@/lib/solar-phase";
-import Flag from "@/components/ui/Flag";
-import type { City, NowStatus } from "@/lib/types";
+import type { City } from "@/lib/types";
 
 interface Props {
   lat: number;
   lon: number;
-  doy: number;
-  canSynthesize: boolean;
-  nowStatus?: NowStatus | null;
-  cityName: string;
-  cityFlag: string;
-  hasLocation: boolean;
   onSelectCity: (c: City) => void;
   onAddFav: (c: City | string) => void;
   favorites: string[];
   allCities: City[];
-  peakElevation: number;
-  dateLabel: string;
-  targetIU: number;
   onRequestGps?: () => void;
   gpsLoading?: boolean;
   gpsSlow?: boolean;
   gpsError?: "gpsDenied" | "gpsTimeout" | "gpsUnavailable" | "gpsGenericError" | "gpsNotSupported" | null;
   onDismissGpsError?: () => void;
-}
-
-function formatCountdown(totalMinutes: number): string {
-  if (totalMinutes < 1) return "<1 min";
-  const h = Math.floor(totalMinutes / 60);
-  const m = Math.round(totalMinutes % 60);
-  if (h === 0) return `${m} min`;
-  return m > 0 ? `${h}h ${m}min` : `${h}h`;
 }
 
 const GpsPin = ({ className }: { className?: string }) => (
@@ -53,26 +32,19 @@ const GpsPin = ({ className }: { className?: string }) => (
 );
 
 /**
- * BOLD poster hero for Explore — same poster language as the other bold heroes
- * (phase gradient + earthrise + dark scrim, content anchored bottom), showing
- * the explorer's current place/date and its synthesis status as the giant
- * focal. Ports HeroZone's five-state + GPS logic; replaces it (Explore-only).
+ * First-run poster for Explore (same poster language as the other bold heroes:
+ * phase gradient + earthrise + dark scrim) shown only while the user has no
+ * location yet — its search/GPS pick sets the REAL city. Once a location
+ * exists, Explore shows a compact lab header instead; the live status poster
+ * lives on My Day (DayHeroBold), not here.
  */
 export default function ExploreHeroBold({
   lat,
   lon,
-  canSynthesize,
-  nowStatus,
-  cityName,
-  cityFlag,
-  hasLocation,
   onSelectCity,
   onAddFav,
   favorites,
   allCities,
-  peakElevation,
-  dateLabel,
-  targetIU,
   onRequestGps,
   gpsLoading,
   gpsSlow,
@@ -80,49 +52,11 @@ export default function ExploreHeroBold({
   onDismissGpsError,
 }: Props) {
   const t = useTranslations("hero");
-  const tc = useTranslations("common");
-  const td = useTranslations("dashboard");
   const phase = useSolarPhase(lat, lon) ?? "day";
 
-  type Mode = "good_now" | "upcoming" | "window_closed" | "no_synthesis" | "day_possible" | "day_impossible";
-  const mode: Mode = nowStatus ? nowStatus.state : canSynthesize ? "day_possible" : "day_impossible";
-  const positive = mode === "good_now" || mode === "day_possible";
-  const muted = mode === "upcoming" || mode === "window_closed";
-  const dot = positive ? PHASE_STYLE[phase].stat : muted ? "#cbd5e1" : "#f87171";
-
-  const statusLabel = (() => {
-    if (mode === "good_now") return t("synthesisPossible");
-    if (mode === "upcoming") return td("now_upcoming");
-    if (mode === "window_closed") return td("now_windowClosed");
-    if (mode === "no_synthesis" || mode === "day_impossible") return t("noSynthesis");
-    return t("synthesisPossible");
-  })();
-
-  // Per-mode giant headline + optional hint.
-  let headline = "";
-  let hint: string | null = null;
-  if (mode === "good_now" || mode === "day_possible") {
-    headline = t("synthesisPossible");
-    hint = t("forVitDDynamic", { iu: targetIU });
-  } else if (mode === "upcoming") {
-    headline = td("nowUpcomingTitle", {
-      countdown: formatCountdown(nowStatus?.minutesUntilWindow ?? 0),
-      hour: `${nowStatus?.window?.start ?? 0}:00`,
-    });
-    hint = nowStatus?.cloudDegraded ? td("cloudDegraded") : null;
-  } else if (mode === "window_closed") {
-    headline = td("nowClosedTitle", { hour: `${nowStatus?.window?.end ?? 0}:00` });
-    hint = td("nowClosedHint");
-  } else {
-    headline = t("noSynthesisTitle");
-    hint = t("noSynthesisHint");
-  }
-
-  const showDetails = mode === "good_now" || mode === "upcoming" || mode === "window_closed" || mode === "day_possible";
-
-  // Shared poster chrome (sky + earthrise + scrim).
-  const Sky = (
-    <>
+  return (
+    <section className="relative isolate flex flex-col overflow-hidden rounded-[2rem] sm:rounded-[2.5rem] min-h-[300px] sm:min-h-[380px]">
+      {/* Sky: phase gradient + earthrise + scrim */}
       <div className="absolute inset-0" style={{ background: PHASE_STYLE[phase].grad }} suppressHydrationWarning aria-hidden />
       <svg className="pointer-events-none absolute inset-0 h-full w-full" viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid slice" aria-hidden>
         <defs>
@@ -155,135 +89,38 @@ export default function ExploreHeroBold({
         style={{ background: "linear-gradient(190deg, rgba(6,8,20,0.05) 0%, rgba(6,8,20,0.24) 42%, rgba(6,8,20,0.8) 100%)" }}
         aria-hidden
       />
-    </>
-  );
 
-  // No-location: a poster with the search/GPS entry.
-  if (!hasLocation) {
-    return (
-      <section className="relative isolate flex flex-col overflow-hidden rounded-[2rem] sm:rounded-[2.5rem] min-h-[300px] sm:min-h-[380px]">
-        {Sky}
-        <div className="relative z-10 flex flex-col gap-5 p-6 sm:p-10 lg:p-14">
-          <h1 className="font-display font-bold text-4xl sm:text-5xl md:text-6xl leading-[1.02] tracking-tight text-white [text-shadow:0_2px_24px_rgba(0,0,0,0.4)]">
-            {t("whereAreYou")}
-          </h1>
-          <p className="text-lg sm:text-xl text-white/85 max-w-2xl [text-shadow:0_1px_10px_rgba(0,0,0,0.35)]">{t("searchHint")}</p>
-          {onRequestGps && (
-            <div>
-              <button
-                onClick={onRequestGps}
-                disabled={gpsLoading}
-                className="inline-flex items-center gap-2 rounded-xl bg-white/95 px-6 py-3 text-body font-semibold text-slate-900 transition-colors hover:bg-white disabled:cursor-not-allowed disabled:opacity-60"
-              >
-                <GpsPin className="h-5 w-5" />
-                {gpsLoading ? t("locating") : t("useMyLocation")}
-              </button>
-              {gpsSlow && !gpsError && <p className="mt-3 max-w-sm animate-pulse text-caption text-white/70">{t("gpsEnableHint")}</p>}
-              {gpsError && (
-                <div className="mt-3">
-                  <GpsErrorHint
-                    error={t(gpsError)}
-                    hint={gpsError === "gpsDenied" ? t("gpsDeniedHint") : gpsError === "gpsTimeout" || gpsError === "gpsUnavailable" ? t("gpsEnableHint") : undefined}
-                    onDismiss={onDismissGpsError}
-                  />
-                </div>
-              )}
-            </div>
-          )}
-          <div className="max-w-md rounded-2xl border border-white/15 bg-black/25 p-3 backdrop-blur-sm">
-            {onRequestGps && <p className="mb-2 text-caption text-white/70">{t("orSearchCity")}</p>}
-            <CitySearch onSelect={onSelectCity} onAddFav={onAddFav} favorites={favorites} allCities={allCities} />
-          </div>
-        </div>
-      </section>
-    );
-  }
-
-  return (
-    <section className="relative isolate flex flex-col overflow-hidden rounded-[2rem] sm:rounded-[2.5rem] min-h-[300px] sm:min-h-[380px]">
-      {Sky}
-      <div className="relative z-10 flex flex-col gap-4 p-6 sm:p-10 lg:p-14">
-        {/* status pill */}
-        <div className="flex items-center gap-2">
-          <span className="inline-block h-2.5 w-2.5 rounded-full" style={{ background: dot }} />
-          <span className="text-caption sm:text-sm font-semibold uppercase tracking-[0.2em]" style={{ color: dot }}>
-            {statusLabel}
-          </span>
-        </div>
-
-        {/* GIANT headline */}
-        <h1 className="font-display font-black text-3xl sm:text-4xl md:text-6xl leading-[1.02] tracking-tight text-white max-w-3xl [text-shadow:0_2px_28px_rgba(0,0,0,0.45)]">
-          {headline}
+      <div className="relative z-10 flex flex-col gap-5 p-6 sm:p-10 lg:p-14">
+        <h1 className="font-display font-bold text-4xl sm:text-5xl md:text-6xl leading-[1.02] tracking-tight text-white [text-shadow:0_2px_24px_rgba(0,0,0,0.4)]">
+          {t("whereAreYou")}
         </h1>
-        {hint && (
-          <p className="text-lg sm:text-xl text-white/85 max-w-2xl [text-shadow:0_1px_10px_rgba(0,0,0,0.35)]">
-            {hint}
-            {(mode === "no_synthesis" || mode === "day_impossible") && (
-              <> <span className="text-white/95"><Flag flag={cityFlag} className="text-body" /> {cityName}</span> · {dateLabel}</>
-            )}
-          </p>
-        )}
-
-        {/* supplement advice for impossible days */}
-        {(mode === "no_synthesis" || mode === "day_impossible") && (
-          <div className="max-w-lg rounded-2xl border border-white/15 bg-black/25 px-4 py-3 text-body text-white/90 backdrop-blur-sm">
-            <span className="font-semibold" style={{ color: dot }}>{t("advice")}</span>{" "}
-            <Link href="/learn#supplement" className="underline decoration-dotted underline-offset-2 hover:text-white">
-              {t("adviceText")}
-            </Link>
-            <PartnerBadge className="mt-2" />
-          </div>
-        )}
-
-        {/* details row */}
-        {showDetails && (
-          <div className="mt-1 flex flex-wrap gap-x-8 gap-y-3">
-            <div>
-              <span className="block text-caption uppercase tracking-wider text-white/55">{t("peakSolar")}</span>
-              <span className="font-mono text-xl font-semibold text-white">{peakElevation.toFixed(1)}°</span>
-            </div>
-            <div>
-              <span className="block text-caption uppercase tracking-wider text-white/55">{t("location")}</span>
-              <span className="text-xl text-white/90"><Flag flag={cityFlag} className="text-lg" /> {cityName}</span>
-            </div>
-            <div>
-              <span className="block text-caption uppercase tracking-wider text-white/55">{t("date")}</span>
-              <span className="text-xl text-white/90">{dateLabel}</span>
-            </div>
-          </div>
-        )}
-
-        {/* GPS + learn row */}
-        <div className="flex flex-wrap items-center gap-3">
-          {onRequestGps && (
+        <p className="text-lg sm:text-xl text-white/85 max-w-2xl [text-shadow:0_1px_10px_rgba(0,0,0,0.35)]">{t("searchHint")}</p>
+        {onRequestGps && (
+          <div>
             <button
               onClick={onRequestGps}
               disabled={gpsLoading}
-              title={t("useMyLocation")}
-              aria-label={t("useMyLocation")}
-              className="inline-flex min-h-[44px] items-center gap-1.5 rounded-lg border border-white/20 bg-white/10 px-3 text-caption text-white/90 backdrop-blur-sm transition-colors hover:bg-white/20 disabled:cursor-not-allowed disabled:opacity-60"
+              className="inline-flex items-center gap-2 rounded-xl bg-white/95 px-6 py-3 text-body font-semibold text-slate-900 transition-colors hover:bg-white disabled:cursor-not-allowed disabled:opacity-60"
             >
-              <GpsPin className="h-3.5 w-3.5" />
+              <GpsPin className="h-5 w-5" />
               {gpsLoading ? t("locating") : t("useMyLocation")}
             </button>
-          )}
-          <Link
-            href={positive ? "/learn" : "/learn#supplement"}
-            className="inline-flex min-h-[44px] items-center gap-1.5 text-caption text-white/75 hover:text-white transition-colors"
-          >
-            <BookOpen className="h-4 w-4" aria-hidden />
-            <span>{positive ? tc("learnMore") : td("noUvLearnTitle")}</span>
-            <ArrowRight className="h-4 w-4" aria-hidden />
-          </Link>
-        </div>
-        {gpsSlow && !gpsError && <p className="max-w-[280px] animate-pulse text-caption text-white/60">{t("gpsEnableHint")}</p>}
-        {gpsError && (
-          <GpsErrorHint
-            error={t(gpsError)}
-            hint={gpsError === "gpsDenied" ? t("gpsDeniedHint") : gpsError === "gpsTimeout" || gpsError === "gpsUnavailable" ? t("gpsEnableHint") : undefined}
-            onDismiss={onDismissGpsError}
-          />
+            {gpsSlow && !gpsError && <p className="mt-3 max-w-sm animate-pulse text-caption text-white/70">{t("gpsEnableHint")}</p>}
+            {gpsError && (
+              <div className="mt-3">
+                <GpsErrorHint
+                  error={t(gpsError)}
+                  hint={gpsError === "gpsDenied" ? t("gpsDeniedHint") : gpsError === "gpsTimeout" || gpsError === "gpsUnavailable" ? t("gpsEnableHint") : undefined}
+                  onDismiss={onDismissGpsError}
+                />
+              </div>
+            )}
+          </div>
         )}
+        <div className="max-w-md rounded-2xl border border-white/15 bg-black/25 p-3 backdrop-blur-sm">
+          {onRequestGps && <p className="mb-2 text-caption text-white/70">{t("orSearchCity")}</p>}
+          <CitySearch onSelect={onSelectCity} onAddFav={onAddFav} favorites={favorites} allCities={allCities} />
+        </div>
       </div>
     </section>
   );

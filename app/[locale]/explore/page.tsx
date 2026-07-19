@@ -2,15 +2,13 @@
 
 import { useState, useMemo, useCallback } from "react";
 import { useMounted } from "@/hooks/useMounted";
-import { Sun, Pill, FlaskConical, Sunrise, ChevronLeft, ChevronRight, ArrowRight, ArrowUpRight, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, ArrowUpRight, X } from "lucide-react";
 import { useTranslations, useLocale } from "next-intl";
 import { indexPath } from "@/lib/city-client-links";
 import CityPageLink from "@/components/CityPageLink";
 import { useApp } from "@/context/AppProvider";
 import { useCityDisplayName } from "@/hooks/useCityDisplayName";
 import { getCurve, dayOfYear, dateFromDoy, fmtDate } from "@/lib/solar";
-import { computeExposure, computeExposureFromCurve } from "@/lib/vitd";
-import { ozoneDU } from "@/lib/uv-model";
 import ExploreHeroBold from "@/components/ExploreHeroBold";
 import VisualizationZone from "@/components/VisualizationZone";
 import CitySearch from "@/components/CitySearch";
@@ -18,14 +16,6 @@ import { Link } from "@/i18n/navigation";
 import type { City } from "@/lib/types";
 import { useWeather } from "@/hooks/useWeather";
 import { useAnimation } from "@/hooks/useAnimation";
-import { useNowStatus } from "@/hooks/useNowStatus";
-
-const FAQ_LINKS = [
-  { anchor: "block-1", titleKey: "learn.block1.title", subKey: "learn.block1.subtitle", Icon: Sun },
-  { anchor: "block-2", titleKey: "learn.block2.title", subKey: "learn.block2.subtitle", Icon: Pill },
-  { anchor: "block-3", titleKey: "learn.block3.title", subKey: "learn.block3.subtitle", Icon: FlaskConical },
-  { anchor: "block-4", titleKey: "learn.block4.title", subKey: "learn.block4.subtitle", Icon: Sunrise },
-] as const;
 
 export default function ExplorePage() {
   const t = useTranslations();
@@ -38,6 +28,9 @@ export default function ExplorePage() {
   const [scrubMode, setScrubMode] = useState(false);
   const { animating, toggleAnim } = useAnimation(setDoy);
 
+  // Explore is a sandbox: picking a place here (search, map, heatmap) only
+  // changes THIS page, never the dashboard city. The only exception is the
+  // first-run poster below, where the user is choosing their city for real.
   const [exploreCity, setExploreCity] = useState<City | null>(null);
 
   const getCityDisplayName = useCityDisplayName();
@@ -57,22 +50,6 @@ export default function ExplorePage() {
 
   // Computed solar data
   const curve = useMemo(() => getCurve(lat, lon, doy, tz), [lat, lon, doy, tz]);
-  const peak = useMemo(() => Math.max(...curve.map((p) => p.elevation)), [curve]);
-
-  const exposure = useMemo(() => {
-    if (weather?.hours) {
-      return computeExposure(weather.hours, app.skinType, app.areaFraction, app.targetIU, app.age);
-    }
-    // Clear-sky curve estimate: use this place/day's ozone column and altitude.
-    const ctx = { ozoneDu: ozoneDU(lat, lon, doy), elevationM: exploreCity?.elevation ?? 0 };
-    return computeExposureFromCurve(curve, app.skinType, app.areaFraction, app.targetIU, app.age, ctx);
-  }, [weather, curve, lat, lon, doy, exploreCity?.elevation, app.skinType, app.areaFraction, app.targetIU, app.age]);
-
-  // For today's date, mirror the dashboard's now-aware status copy in the hero
-  // instead of just "Síntesis posible / Sin vitamina D" (day-level). For other
-  // days the day-level signal is what makes sense.
-  const isToday = doy === dayOfYear(new Date());
-  const todayNowStatus = useNowStatus(lat, lon, tz, timezone, app.skinType, app.areaFraction, app.age, app.targetIU);
 
   const dateLabel = fmtDate(date);
 
@@ -89,10 +66,10 @@ export default function ExplorePage() {
   );
 
   // Hydration guard: this page derives content from `new Date()` (doy →
-  // dateLabel/curve/exposure/isToday) and from localStorage (app.hasLocation,
-  // cityName) — both can differ between server and first client render → React
-  // #418. Render a stable, data-free placeholder until mounted, then swap to
-  // the real content. All hooks above run unconditionally every render.
+  // dateLabel/curve) and from localStorage (app.hasLocation, cityName) — both
+  // can differ between server and first client render → React #418. Render a
+  // stable, data-free placeholder until mounted, then swap to the real
+  // content. All hooks above run unconditionally every render.
   const mounted = useMounted();
 
   if (!mounted) {
@@ -105,38 +82,42 @@ export default function ExplorePage() {
 
   return (
     <>
-      {/* Zone 1 -- Hero (bold poster) */}
-      <div className="mx-auto max-w-[1280px] px-4 pt-6 sm:pt-8">
-        <ExploreHeroBold
-          lat={lat}
-          lon={lon}
-          doy={doy}
-          canSynthesize={exposure !== null}
-          nowStatus={isToday ? todayNowStatus : null}
-          cityName={cityName}
-          cityFlag={cityFlag}
-          hasLocation={app.hasLocation}
-          onSelectCity={(c) => { setExploreCity(c); app.selectCity(c); }}
-          onAddFav={app.toggleFav}
-          favorites={app.favorites}
-          allCities={app.allCities}
-          peakElevation={peak}
-          dateLabel={dateLabel}
-          targetIU={app.targetIU}
-          onRequestGps={app.gps.enableGps}
-          gpsLoading={app.gps.loading}
-          gpsSlow={app.gps.slow}
-          gpsError={app.gps.error}
-          onDismissGpsError={app.gps.clearError}
-        />
-      </div>
+      {app.hasLocation ? (
+        /* Compact lab header — the status poster lives on My Day; Explore is
+           the what-if playground (any place, any day of the year). */
+        <div className="mx-auto max-w-[1280px] px-4 pt-6 sm:pt-8">
+          <h1 className="font-display font-bold text-3xl sm:text-4xl tracking-tight text-text-primary">
+            {t("explore.title")}
+          </h1>
+          <p className="text-body text-text-muted mt-1 max-w-2xl">
+            {t("explore.subtitle")}
+          </p>
+        </div>
+      ) : (
+        /* First run: no location yet — the poster prompt sets the REAL city. */
+        <div className="mx-auto max-w-[1280px] px-4 pt-6 sm:pt-8">
+          <ExploreHeroBold
+            lat={lat}
+            lon={lon}
+            onSelectCity={app.selectCity}
+            onAddFav={app.toggleFav}
+            favorites={app.favorites}
+            allCities={app.allCities}
+            onRequestGps={app.gps.enableGps}
+            gpsLoading={app.gps.loading}
+            gpsSlow={app.gps.slow}
+            gpsError={app.gps.error}
+            onDismissGpsError={app.gps.clearError}
+          />
+        </div>
+      )}
 
       {/* Local city search — only affects Explore, not Dashboard */}
       {app.hasLocation && (
         <div className="mx-auto max-w-[1280px] px-4 pt-4 pb-2 flex items-center gap-2">
           <div className="flex-1">
             <CitySearch
-              onSelect={(city) => { setExploreCity(city); app.selectCity(city); }}
+              onSelect={setExploreCity}
               onAddFav={app.toggleFav}
               favorites={app.favorites}
               allCities={app.allCities}
@@ -185,7 +166,7 @@ export default function ExplorePage() {
         areaFraction={app.areaFraction}
         age={app.age}
         targetIU={app.targetIU}
-        onSelectCity={(c) => { setExploreCity(c); app.selectCity(c); }}
+        onSelectCity={setExploreCity}
         onSelectFromHeatmap={onSelectFromHeatmap}
         favorites={app.favorites}
         allCities={app.allCities}
@@ -260,46 +241,6 @@ export default function ExplorePage() {
           )}
         </div>
       </div>
-
-      {/* Related questions — deep links to /learn anchors */}
-      <section className="mx-auto max-w-[1280px] px-4 mt-10">
-        <div className="mb-4">
-          <h2 className="font-display font-bold text-2xl sm:text-3xl tracking-tight text-text-primary">
-            {t("explore.faqHeading")}
-          </h2>
-          <p className="text-caption text-text-muted mt-1">
-            {t("explore.faqSubheading")}
-          </p>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {FAQ_LINKS.map((link) => (
-            <Link
-              key={link.anchor}
-              href={`/learn#${link.anchor}`}
-              className="flex items-start gap-3 rounded-2xl border border-glass-border bg-glass backdrop-blur-md shadow-lg px-4 py-3 hover:bg-surface-elevated transition-colors"
-            >
-              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-amber-400/15 text-accent mt-0.5" aria-hidden>
-                <link.Icon className="h-5 w-5" />
-              </span>
-              <div className="flex-1 min-w-0">
-                <p className="text-body font-semibold text-text-primary truncate">
-                  {t(link.titleKey)}
-                </p>
-                <p className="text-caption text-text-muted mt-0.5 line-clamp-2">
-                  {t(link.subKey)}
-                </p>
-              </div>
-              <ArrowRight className="h-4 w-4 shrink-0 text-text-muted mt-1.5" aria-hidden />
-            </Link>
-          ))}
-        </div>
-        <div className="mt-4">
-          <Link href="/learn" className="inline-flex items-center gap-1.5 text-caption text-text-muted hover:text-text-secondary transition-colors">
-            {t("explore.faqCta")}
-            <ArrowRight className="h-3.5 w-3.5" aria-hidden />
-          </Link>
-        </div>
-      </section>
     </>
   );
 }

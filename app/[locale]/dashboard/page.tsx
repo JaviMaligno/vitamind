@@ -21,7 +21,7 @@ import Card from "@/components/ui/Card";
 import Flag from "@/components/ui/Flag";
 import PhaseButton from "@/components/PhaseButton";
 import GpsErrorHint from "@/components/GpsErrorHint";
-import { BookOpen, ArrowRight, MapPin, UserRound } from "lucide-react";
+import { ArrowRight, MapPin, UserRound } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 
 // Full-row navigation link ("noUvLearnTitle" prompt, "Learn more"): same glass
@@ -32,7 +32,6 @@ const navRowClasses =
 
 export default function DashboardPage() {
   const t = useTranslations("dashboard");
-  const tc = useTranslations("common");
   const tHero = useTranslations("hero");
   const tCity = useTranslations("cityPage");
   const app = useApp();
@@ -232,15 +231,6 @@ export default function DashboardPage() {
         onNavigate={requestBackfill}
       />
       </>}
-
-      {/* Learn more — always visible */}
-      <Link href="/learn" className={navRowClasses}>
-        <div className="flex items-center gap-2">
-          <BookOpen className="h-4 w-4 text-text-muted" aria-hidden />
-          <span className="text-caption font-medium text-text-secondary">{tc("learnMore")}</span>
-        </div>
-        <ArrowRight className="h-4 w-4 text-sun-strong" aria-hidden />
-      </Link>
     </div>
   );
 }

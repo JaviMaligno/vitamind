@@ -43,7 +43,10 @@ export default function GlobalHeatmap({ selectedLat, selectedDoy, onSelect }: Pr
     const c = canvasRef.current; if (!c) return;
     c.width = W * 2; c.height = H * 2;
     const ctx = c.getContext("2d")!; ctx.scale(2, 2);
-    ctx.fillStyle = "#070b1e"; ctx.fillRect(0, 0, W, H);
+    // Margins are transparent so PhaseWindow's phase-tinted fill frames the
+    // chart; the PLOT keeps its fixed dark fill — it's the calibrated "0 h"
+    // end of the heat scale (matches the legend gradient), not decoration.
+    ctx.clearRect(0, 0, W, H);
     ctx.fillStyle = "#0a0f28"; ctx.fillRect(PAD.l, PAD.t, plotW, plotH);
     const cw = plotW / doyCount, ch = plotH / latCount;
     for (let li = 0; li < latCount; li++) {

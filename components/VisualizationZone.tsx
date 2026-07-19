@@ -7,6 +7,7 @@ import { useTranslations } from "next-intl";
 import WorldMap from "@/components/WorldMap";
 import GlobalHeatmap from "@/components/GlobalHeatmap";
 import DailyCurve from "@/components/DailyCurve";
+import PhaseWindow from "@/components/PhaseWindow";
 import VitDEstimate from "@/components/VitDEstimate";
 import Flag from "@/components/ui/Flag";
 import { synthesisThresholdElevation } from "@/lib/uv-model";
@@ -94,9 +95,11 @@ export default function VisualizationZone({
         ))}
       </div>
 
-      {/* Visualization content — a dark "window to the sky": the charts are
-          drawn on a deep-navy plot area, so a dark window frames them naturally. */}
-      <div className="rounded-2xl border border-window-border bg-window text-on-window p-4 shadow-lg">
+      {/* Visualization content — a dark "window to the sky" TINTED by the live
+          solar phase (PhaseWindow), so the frame matches the moment of day
+          instead of always reading as night. The charts stay on dark fills —
+          the heat palette needs the contrast. */}
+      <PhaseWindow lat={lat} lon={lon} className="p-4" testId="viz-window">
         {tab === "curve" && (
           <>
             <div className="text-caption text-on-window-faint mb-2 pl-2">
@@ -182,7 +185,7 @@ export default function VisualizationZone({
             />
           </>
         )}
-      </div>
+      </PhaseWindow>
 
       {/* VitD Estimate — always visible below */}
       <div className="mt-3">

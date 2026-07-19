@@ -5,9 +5,8 @@ import { PHASE_STYLE } from "@/lib/solar-phase";
 
 /**
  * BOLD poster hero for the profile/settings page. Same poster language as the
- * other bold heroes (full-bleed phase gradient + earthrise + dark scrim,
- * content anchored bottom) but text-only and a bit shorter, since a settings
- * page has no single dramatic figure to blow up. Reads the user's location so
+ * other bold heroes (full-bleed phase gradient + earthrise + dark scrim) but
+ * text-only and short — a settings page needs a masthead, not a billboard. Reads the user's location so
  * its sky matches the live page background (SolarBackground).
  */
 export default function ProfileHeroBold({
@@ -23,7 +22,7 @@ export default function ProfileHeroBold({
   const phase = useSolarPhase(app.lat, app.lon) ?? "day";
 
   return (
-    <section className="relative isolate overflow-hidden rounded-[2rem] sm:rounded-[2.5rem] min-h-[240px] sm:min-h-[300px]">
+    <section className="relative isolate overflow-hidden rounded-[2rem] sm:rounded-[2.5rem] min-h-[180px] sm:min-h-[220px]">
       {/* the sky */}
       <div className="absolute inset-0" style={{ background: PHASE_STYLE[phase].grad }} suppressHydrationWarning aria-hidden />
 
@@ -74,8 +73,7 @@ export default function ProfileHeroBold({
         aria-hidden
       />
 
-      {/* content, anchored to the bottom like a poster */}
-      <div className="relative z-10 flex h-full flex-col justify-end gap-3 p-6 sm:p-10">
+      <div className="relative z-10 flex flex-col gap-3 p-6 sm:p-10">
         <p className="text-caption sm:text-sm font-semibold uppercase tracking-[0.2em] text-white/70">
           {eyebrow}
         </p>
