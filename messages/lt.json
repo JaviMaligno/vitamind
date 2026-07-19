@@ -939,7 +939,14 @@
     "monthlyHeading": "Saulėtekis ir saulėlydis pagal mėnesį: {city}",
     "monthlyCaption": "Kaip per metus keičiasi saulėtekis, saulėlydis ir dienos trukmė.",
     "month": "Mėnuo",
-    "monthlyNote": "Orientacinės reikšmės kiekvieno mėnesio viduriui (15 d.)."
+    "monthlyNote": "Orientacinės reikšmės kiekvieno mėnesio viduriui (15 d.).",
+    "headingOn": "Saulė {date}",
+    "faqTimesQ": "Kada teka ir leidžiasi saulė ({city})?",
+    "faqTimesA": "Tai keičiasi su metų laikais: birželį saulė teka apie {juneSunrise} ir leidžiasi apie {juneSunset}; gruodį teka apie {decSunrise} ir leidžiasi apie {decSunset}.",
+    "faqLongestQ": "Kokia yra ilgiausia metų diena ({city})?",
+    "faqLongestA": "Ilgiausia diena: {maxMonth}, apie {maxHours} val. šviesos. Trumpiausia diena: {minMonth}, apie {minHours} val.",
+    "faqGoldenQ": "Kada yra auksinė valanda ({city})?",
+    "faqGoldenA": "Tai maždaug paskutinė valanda prieš saulėlydį: birželį ji prasideda apie {juneGolden}, o gruodį – apie {decGolden}."
   },
   "cityPage": {
     "title": "Vitaminas D iš saulės: {city}",

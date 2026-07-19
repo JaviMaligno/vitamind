@@ -939,7 +939,14 @@
     "monthlyHeading": "Amanecer y atardecer por mes en {city}",
     "monthlyCaption": "Cómo cambian el amanecer, el atardecer y la duración del día a lo largo del año.",
     "month": "Mes",
-    "monthlyNote": "Valores orientativos para mediados de cada mes (día 15)."
+    "monthlyNote": "Valores orientativos para mediados de cada mes (día 15).",
+    "headingOn": "El sol el {date}",
+    "faqTimesQ": "¿A qué hora sale y se pone el sol en {city}?",
+    "faqTimesA": "Cambia con la estación: en junio el sol sale hacia las {juneSunrise} y se pone hacia las {juneSunset}; en diciembre sale hacia las {decSunrise} y se pone hacia las {decSunset}.",
+    "faqLongestQ": "¿Cuál es el día más largo del año en {city}?",
+    "faqLongestA": "Día más largo: {maxMonth}, con unas {maxHours} h de luz. Día más corto: {minMonth}, con unas {minHours} h.",
+    "faqGoldenQ": "¿Cuándo es la hora dorada en {city}?",
+    "faqGoldenA": "Es la franja aproximada de una hora antes de la puesta de sol: en junio empieza hacia las {juneGolden} y en diciembre hacia las {decGolden}."
   },
   "cityPage": {
     "title": "Vitamina D del sol en {city}",

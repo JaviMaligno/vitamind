@@ -939,7 +939,14 @@
     "monthlyHeading": "Sonnenaufgang und Sonnenuntergang nach Monat in {city}",
     "monthlyCaption": "Wie sich Sonnenaufgang, Sonnenuntergang und Tageslänge im Laufe des Jahres verändern.",
     "month": "Monat",
-    "monthlyNote": "Richtwerte für die Monatsmitte (jeweils der 15.)."
+    "monthlyNote": "Richtwerte für die Monatsmitte (jeweils der 15.).",
+    "headingOn": "Die Sonne am {date}",
+    "faqTimesQ": "Wann geht die Sonne in {city} auf und unter?",
+    "faqTimesA": "Das ändert sich mit den Jahreszeiten: Im Juni geht die Sonne gegen {juneSunrise} auf und gegen {juneSunset} unter; im Dezember geht sie gegen {decSunrise} auf und gegen {decSunset} unter.",
+    "faqLongestQ": "Was ist der längste Tag des Jahres in {city}?",
+    "faqLongestA": "Längster Tag: {maxMonth}, mit etwa {maxHours} h Tageslicht. Kürzester Tag: {minMonth}, mit etwa {minHours} h.",
+    "faqGoldenQ": "Wann ist die goldene Stunde in {city}?",
+    "faqGoldenA": "Das ist ungefähr die letzte Stunde vor Sonnenuntergang: Im Juni beginnt sie gegen {juneGolden}, im Dezember gegen {decGolden}."
   },
   "cityPage": {
     "title": "Vitamin D durch Sonne in {city}",

@@ -20,7 +20,7 @@ import {
 import { nearbyCities } from "@/lib/city-nearby";
 import { capFirst, cityLabels, monthLabels, monthName, verdictMonths } from "@/lib/city-copy";
 import { fmtTime, dateFromDoy } from "@/lib/solar";
-import { monthlySunTimes } from "@/lib/sun-times";
+import { getSunTimes, monthlySunTimes } from "@/lib/sun-times";
 
 export function generateStaticParams() {
   return cityStaticParams();
@@ -129,6 +129,17 @@ export default async function CityPage({ params }: { params: Promise<Params> }) 
 
   const summerWindow = windows.find((w) => w.possible && w.minutesNeeded !== null);
 
+  // Month-by-month sun values feed both the static table below and the sun FAQs.
+  // June/December are the FAQ's fixed anchor months (named literally in each
+  // translation, correctly declined); longest/shortest month varies by hemisphere.
+  const monthly = monthlySunTimes(city.lat, city.lon, city.timezone, city.tz);
+  const june = monthly[5];
+  const dec = monthly[11];
+  const longest = monthly.reduce((a, b) => (b.dayLengthMin > a.dayLengthMin ? b : a));
+  const shortest = monthly.reduce((a, b) => (b.dayLengthMin < a.dayLengthMin ? b : a));
+  const juneGolden = getSunTimes(city.lat, city.lon, new Date(2026, 5, 15), city.timezone, city.tz).goldenEveningStart;
+  const decGolden = getSunTimes(city.lat, city.lon, new Date(2026, 11, 15), city.timezone, city.tz).goldenEveningStart;
+
   const faq = [
     {
       "@type": "Question",
@@ -143,6 +154,46 @@ export default async function CityPage({ params }: { params: Promise<Params> }) 
             "@type": "Answer",
             // A number, not a string: lt selects an ICU plural form on it.
             text: t("faqMinutesA", { ...labels, minutes: Math.round(summerWindow.minutesNeeded!) }),
+          },
+        }]
+      : []),
+    // Sunrise/sunset FAQs: the high-volume questions the monthly table answers,
+    // surfaced as FAQPage entries too. Skipped for (hypothetical) polar cities.
+    ...(june.sunrise !== null && june.sunset !== null && dec.sunrise !== null && dec.sunset !== null
+      ? [{
+          "@type": "Question",
+          name: tSun("faqTimesQ", labels),
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: tSun("faqTimesA", {
+              juneSunrise: fmtTime(june.sunrise),
+              juneSunset: fmtTime(june.sunset),
+              decSunrise: fmtTime(dec.sunrise),
+              decSunset: fmtTime(dec.sunset),
+            }),
+          },
+        }]
+      : []),
+    {
+      "@type": "Question",
+      name: tSun("faqLongestQ", labels),
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: tSun("faqLongestA", {
+          maxMonth: monthName(p.locale, longest.monthIndex),
+          maxHours: Math.round(longest.dayLengthMin / 60),
+          minMonth: monthName(p.locale, shortest.monthIndex),
+          minHours: Math.round(shortest.dayLengthMin / 60),
+        }),
+      },
+    },
+    ...(juneGolden !== null && decGolden !== null
+      ? [{
+          "@type": "Question",
+          name: tSun("faqGoldenQ", labels),
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: tSun("faqGoldenA", { juneGolden: fmtTime(juneGolden), decGolden: fmtTime(decGolden) }),
           },
         }]
       : []),
@@ -276,7 +327,7 @@ export default async function CityPage({ params }: { params: Promise<Params> }) 
               </tr>
             </thead>
             <tbody>
-              {monthlySunTimes(city.lat, city.lon, city.timezone, city.tz).map((m) => (
+              {monthly.map((m) => (
                 <tr key={m.monthIndex} className="border-t border-border-subtle">
                   <td className="px-3 py-2.5 sm:px-6 font-medium">{capFirst(monthName(p.locale, m.monthIndex))}</td>
                   <td className="px-3 py-2.5 sm:px-6 font-mono">{m.sunrise !== null ? fmtTime(m.sunrise) : "—"}</td>

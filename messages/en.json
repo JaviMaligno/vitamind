@@ -939,7 +939,14 @@
     "monthlyHeading": "Sunrise and sunset by month in {city}",
     "monthlyCaption": "How sunrise, sunset and day length change over the year.",
     "month": "Month",
-    "monthlyNote": "Approximate values for mid-month (the 15th)."
+    "monthlyNote": "Approximate values for mid-month (the 15th).",
+    "headingOn": "The sun on {date}",
+    "faqTimesQ": "What time does the sun rise and set in {city}?",
+    "faqTimesA": "It shifts with the seasons: in June the sun rises around {juneSunrise} and sets around {juneSunset}; in December it rises around {decSunrise} and sets around {decSunset}.",
+    "faqLongestQ": "What is the longest day of the year in {city}?",
+    "faqLongestA": "Longest day: {maxMonth}, with about {maxHours} h of daylight. Shortest day: {minMonth}, with about {minHours} h.",
+    "faqGoldenQ": "When is golden hour in {city}?",
+    "faqGoldenA": "It's roughly the last hour before sunset: in June it starts around {juneGolden} and in December around {decGolden}."
   },
   "cityPage": {
     "title": "Vitamin D from the sun in {city}",
