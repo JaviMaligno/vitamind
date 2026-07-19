@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { getSunTimes, monthlySunTimes } from "../sun-times";
+import { getSunTimes, monthlySunTimes, dailySunTimes } from "../sun-times";
 
 const MADRID = { lat: 40.4168, lon: -3.7038, tz: "Europe/Madrid" };
 
@@ -99,5 +99,34 @@ describe("monthlySunTimes", () => {
   it("southern hemisphere: June days shorter than December days", () => {
     const months = monthlySunTimes(-33.87, 151.21, "Australia/Sydney");
     expect(months[5].dayLengthMin).toBeLessThan(months[11].dayLengthMin);
+  });
+});
+
+describe("civil twilight and dailySunTimes", () => {
+  it("civil dawn precedes sunrise and civil dusk follows sunset by ~30 min in Madrid", () => {
+    const st = getSunTimes(MADRID.lat, MADRID.lon, new Date(2026, 5, 21), MADRID.tz);
+    expect(st.civilDawn).toBeLessThan(st.sunrise!);
+    expect(st.civilDusk).toBeGreaterThan(st.sunset!);
+    expect((st.sunrise! - st.civilDawn!) * 60).toBeGreaterThan(20);
+    expect((st.sunrise! - st.civilDawn!) * 60).toBeLessThan(45);
+  });
+
+  it("dailySunTimes covers every day of the month in order", () => {
+    const june = dailySunTimes(MADRID.lat, MADRID.lon, 5, MADRID.tz);
+    expect(june).toHaveLength(30);
+    expect(june[0].day).toBe(1);
+    expect(june[29].day).toBe(30);
+    const feb = dailySunTimes(MADRID.lat, MADRID.lon, 1, MADRID.tz);
+    expect(feb).toHaveLength(28);
+    for (const d of june) {
+      expect(d.civilDawn).toBeLessThan(d.sunrise!);
+      expect(d.civilDusk).toBeGreaterThan(d.sunset!);
+    }
+  });
+
+  it("polar night in Svalbard December has no sunrise but keeps polar flag", () => {
+    const dec = dailySunTimes(78.22, 15.65, 11, undefined, 1);
+    expect(dec[20].polar).toBe("night");
+    expect(dec[20].sunrise).toBeNull();
   });
 });

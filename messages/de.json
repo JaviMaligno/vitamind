@@ -979,7 +979,12 @@
     "faqLongestA": "Längster Tag: {maxMonth}, mit etwa {maxHours} h Tageslicht. Kürzester Tag: {minMonth}, mit etwa {minHours} h.",
     "faqGoldenQ": "Wann ist die goldene Stunde in {city}?",
     "faqGoldenA": "Das ist ungefähr die letzte Stunde vor Sonnenuntergang: Im Juni beginnt sie gegen {juneGolden}, im Dezember gegen {decGolden}.",
-    "faqMore": "Mehr über Sonne, Licht und Gesundheit im Ratgeber"
+    "faqMore": "Mehr über Sonne, Licht und Gesundheit im Ratgeber",
+    "day": "Tag",
+    "dawn": "Morgendämmerung",
+    "dusk": "Abenddämmerung",
+    "dayByDay": "Tag für Tag ansehen",
+    "twilightNote": "Morgen- und Abenddämmerung bezeichnen die bürgerliche Dämmerung: Die Sonne steht weniger als 6° unter dem Horizont, und es ist noch brauchbar hell."
   },
   "cityPage": {
     "title": "Vitamin D durch Sonne in {city}",
