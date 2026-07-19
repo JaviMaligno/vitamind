@@ -769,6 +769,38 @@
             "url": "https://pubmed.ncbi.nlm.nih.gov/23462271/"
           }
         ]
+      },
+      "q6": {
+        "q": "Warum ändern sich die Zeiten von Sonnenaufgang und Sonnenuntergang im Jahresverlauf so stark?",
+        "a": "Weil die Erdachse um etwa 23,4° gegenüber der Umlaufbahn geneigt ist. Auf dem Weg um die Sonne ist jede Hemisphäre ein halbes Jahr lang ihr zugeneigt (die Tage werden länger) und ein halbes Jahr abgewandt (die Tage werden kürzer). Der Effekt wächst mit der geografischen Breite: Am Äquator schwankt die Tageslänge nur um Minuten, in Madrid pendelt sie zwischen rund 9 und 15 Stunden, und jenseits des Polarkreises erreicht sie die Extreme von Mitternachtssonne und Polarnacht. Zu den Tagundnachtgleichen im März und September dauert der Tag überall auf der Erde ~12 Stunden. Die Monatstabelle jeder Stadt und der Bereich „Entdecken“ zeigen diesen Zyklus für jeden Ort und jeden Tag.",
+        "sources": [
+          {
+            "label": "NOAA Global Monitoring Laboratory — Solar Calculator",
+            "url": "https://gml.noaa.gov/grad/solcalc/"
+          }
+        ]
+      },
+      "q7": {
+        "q": "Was ist die goldene Stunde und warum ist ihr Licht so warm?",
+        "a": "Das ist die Zeitspanne, in der die Sonne weniger als ~6° über dem Horizont steht: ungefähr die letzte Stunde vor dem Sonnenuntergang und die erste nach dem Sonnenaufgang. Steht die Sonne so tief, durchquert das Licht viel mehr Atmosphäre, und die Rayleigh-Streuung filtert fast das gesamte Blau heraus — übrig bleiben Rot- und Orangetöne mit langen, weichen Schatten. Es ist das Lieblingslicht von Fotografen und Filmemachern und im Sommer ein angenehmes Zeitfenster für Spaziergänge oder Sport im Freien, weil Hitze und Strahlung deutlich geringer sind als mittags. Die App zeigt die goldene Stunde jedes Tages im Sonnenpanel."
+      },
+      "q8": {
+        "q": "Kann ich während der goldenen Stunde Vitamin D bilden?",
+        "a": "Praktisch nicht. Die Synthese braucht UVB, und UVB ist genau der Teil des Spektrums, der bei tief stehender Sonne am stärksten gefiltert wird: Der Weg des Lichts durch Atmosphäre und Ozonschicht wird so lang, dass kaum noch UVB die Haut erreicht. Deshalb berechnet die App das Synthesefenster aus der Sonnenhöhe und nicht aus den Tageslichtstunden: Ein Tag kann 15 Sonnenstunden haben, von denen nur 6–8 für Vitamin D nutzbar sind. Die goldene Stunde liefert trotzdem den Rest: das Lichtsignal für den zirkadianen Rhythmus, die Stimmung und die roten und infraroten Wellenlängen aus den vorigen Fragen.",
+        "sources": [
+          {
+            "label": "Webb AR, Kline L, Holick MF (1988) — Influence of season and latitude on the cutaneous synthesis of vitamin D3. J Clin Endocrinol Metab 67(2):373-378",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/2839537/"
+          },
+          {
+            "label": "Engelsen O (2010) — The Relationship between Ultraviolet Radiation Exposure and Vitamin D Status. Nutrients 2(5):482-495",
+            "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3257661/"
+          }
+        ]
+      },
+      "q9": {
+        "q": "Was sind Mitternachtssonne und Polarnacht?",
+        "a": "Jenseits der Polarkreise (ab ~66,6° Breite) führt die Neigung der Erde dazu, dass die Sonne im Hochsommer nicht untergeht (Mitternachtssonne) und im tiefsten Winter nicht aufgeht (Polarnacht). Je näher am Pol, desto länger dauert das Phänomen: In Tromsø oder auf Spitzbergen sind es ganze Wochen oder Monate. Die App weist im Sonnenpanel darauf hin, wenn es so weit ist — und im langen Polarwinter kann Vitamin D nur aus der Ernährung oder über Nahrungsergänzung kommen."
       }
     },
     "backToApp": "Zurück zur App"
@@ -946,7 +978,8 @@
     "faqLongestQ": "Was ist der längste Tag des Jahres in {city}?",
     "faqLongestA": "Längster Tag: {maxMonth}, mit etwa {maxHours} h Tageslicht. Kürzester Tag: {minMonth}, mit etwa {minHours} h.",
     "faqGoldenQ": "Wann ist die goldene Stunde in {city}?",
-    "faqGoldenA": "Das ist ungefähr die letzte Stunde vor Sonnenuntergang: Im Juni beginnt sie gegen {juneGolden}, im Dezember gegen {decGolden}."
+    "faqGoldenA": "Das ist ungefähr die letzte Stunde vor Sonnenuntergang: Im Juni beginnt sie gegen {juneGolden}, im Dezember gegen {decGolden}.",
+    "faqMore": "Mehr über Sonne, Licht und Gesundheit im Ratgeber"
   },
   "cityPage": {
     "title": "Vitamin D durch Sonne in {city}",
