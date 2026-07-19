@@ -5,8 +5,9 @@ import { PHASE_STYLE } from "@/lib/solar-phase";
 
 /**
  * BOLD poster hero shared by text-first pages (Learn, Partners, …). A text-only
- * poster (phase gradient + earthrise + scrim, content anchored bottom) matching
- * the rest of the redesign. A small client island so the host page can stay a
+ * poster (phase gradient + earthrise + scrim, content anchored TOP like the
+ * other tab heroes, and kept short — a text page needs a masthead, not a
+ * billboard) matching the rest of the redesign. A small client island so the host page can stay a
  * server component (its content ships in the static HTML for SEO); this only
  * reads the user's location so its sky matches the live page background.
  */
@@ -23,7 +24,7 @@ export default function PosterHero({
   const phase = useSolarPhase(app.lat, app.lon) ?? "day";
 
   return (
-    <section className="relative isolate flex flex-col justify-end overflow-hidden rounded-[2rem] sm:rounded-[2.5rem] min-h-[260px] sm:min-h-[340px]">
+    <section className="relative isolate flex flex-col overflow-hidden rounded-[2rem] sm:rounded-[2.5rem] min-h-[180px] sm:min-h-[220px]">
       <div className="absolute inset-0" style={{ background: PHASE_STYLE[phase].grad }} suppressHydrationWarning aria-hidden />
 
       <svg
