@@ -1054,6 +1054,26 @@
     "privacyText": "Viešasis URL nenaudoja paskyros ir nieko apie jus nesaugo. Su paskyros URL prieiga vyksta per OAuth su aiškiais leidimais, kuriuos patvirtinate jūs; žetonai nustoja galioti savaime, o jūsų duomenimis niekada nesidalijama su trečiosiomis šalimis.",
     "memoryTip": "Patarimas: net be paskyros vieną kartą pasakykite asistentui savo odos tipą ir miestą — jo atmintis padarys visa kita."
   },
+  "sunrisePage": {
+    "eyebrow": "Saulė mėnuo po mėnesio",
+    "metaTitle": "Saulėtekis ir saulėlydis: {city}, {month} — tikslus laikas",
+    "metaDescription": "{city}, {month}: kada teka ir leidžiasi saulė — lentelė kiekvienai dienai su aušra, sutemomis, auksine valanda ir dienos trukme.",
+    "title": "Saulėtekis ir saulėlydis: {city}, {month}",
+    "intro": "{city}, {month}: 1 d. saulė teka {firstSunrise} ir leidžiasi {firstSunset}; {lastDay} d. teka {lastSunrise} ir leidžiasi {lastSunset}. Per mėnesį diena {trend, select, longer {pailgėja {minutes} min.} shorter {sutrumpėja {minutes} min.} other {beveik nesikeičia}}.",
+    "tableHeading": "Diena po dienos",
+    "tableCaption": "Visi laikai nurodyti vietos laiku ({city}). Aušra ir sutemos žymi civilinę prieblandą.",
+    "vitdHeading": "O kaip vitaminas D ({month})?",
+    "vitdPossible": "{city}, {month}: tipinis sintezės langas — nuo {start} iki {end}; su vidutinio tipo oda ir marškinėliais geriausiu metu pakanka ~{minutes} min.",
+    "vitdImpossible": "{city}, {month}: saulė nepakyla pakankamai aukštai, kad vyktų vitamino D sintezė — metas skirti daugiau dėmesio mitybai arba pagalvoti apie papildus.",
+    "vitdCta": "Atidaryti vitamino D gidą: {city}",
+    "monthsHeading": "Kiti mėnesiai: {city}",
+    "nearbyHeading": "Saulėtekis kituose miestuose",
+    "faqSunriseQ": "Kada teka saulė ({city}, {month})?",
+    "faqSunriseA": "1 d. ({month}) saulė teka {first}, o {lastDay} d. — {last} (visada vietos laiku).",
+    "faqDayQ": "Kokia dienos trukmė ({city}, {month})?",
+    "faqDayA": "Apie {dayLength} mėnesio viduryje.",
+    "note": "Astronominės reikšmės yra orientacinės: priklausomai nuo metų jos gali skirtis viena–dviem minutėmis."
+  },
   "cityPage": {
     "title": "Vitaminas D iš saulės: {city}",
     "metaDescription": "{city}: kada saulėje galite pasigaminti vitamino D — tinkami mėnesiai, paros saulės langai ir kada verta rinktis papildus (D3, K2, magnis).",

@@ -1054,6 +1054,26 @@
     "privacyText": "L'URL publique n'utilise aucun compte et n'enregistre rien de vous. Avec l'URL de compte, l'accès passe par OAuth avec des permissions explicites que vous approuvez ; les jetons expirent d'eux-mêmes et vos données ne sont jamais partagées avec des tiers.",
     "memoryTip": "Astuce : même sans compte, indiquez une fois à votre assistant votre type de peau et votre ville — sa mémoire fera le reste."
   },
+  "sunrisePage": {
+    "eyebrow": "Le soleil mois par mois",
+    "metaTitle": "Lever et coucher du soleil à {city} en {month} : heures exactes",
+    "metaDescription": "À quelle heure le soleil se lève et se couche à {city} en {month} : tableau jour par jour avec aube, crépuscule, heure dorée et durée du jour.",
+    "title": "Lever et coucher du soleil à {city} en {month}",
+    "intro": "Le 1er {month} à {city}, le soleil se lève à {firstSunrise} et se couche à {firstSunset} ; le {lastDay}, il se lève à {lastSunrise} et se couche à {lastSunset}. Au fil du mois, le jour {trend, select, longer {s'allonge de {minutes} minutes} shorter {raccourcit de {minutes} minutes} other {change à peine}}.",
+    "tableHeading": "Jour par jour",
+    "tableCaption": "Toutes les heures sont en heure locale de {city}. L'aube et le crépuscule marquent le crépuscule civil.",
+    "vitdHeading": "Et la vitamine D en {month} ?",
+    "vitdPossible": "En {month}, la fenêtre typique de synthèse à {city} va de {start} à {end} : avec une peau moyenne et un t-shirt, ~{minutes} min au meilleur moment suffisent.",
+    "vitdImpossible": "En {month}, le soleil ne monte pas assez haut à {city} pour synthétiser la vitamine D : c'est la saison où soigner son alimentation ou envisager une supplémentation.",
+    "vitdCta": "Voir le guide vitamine D de {city}",
+    "monthsHeading": "Les autres mois à {city}",
+    "nearbyHeading": "Le lever du soleil dans d'autres villes",
+    "faqSunriseQ": "À quelle heure le soleil se lève-t-il à {city} en {month} ?",
+    "faqSunriseA": "Le 1er {month}, il se lève à {first} et le {lastDay} à {last}, toujours en heure locale.",
+    "faqDayQ": "Combien de temps dure le jour à {city} en {month} ?",
+    "faqDayA": "Environ {dayLength} à la mi-mois.",
+    "note": "Valeurs astronomiques indicatives : elles peuvent varier d'une ou deux minutes selon l'année."
+  },
   "cityPage": {
     "title": "Vitamine D du soleil {atCity}",
     "metaDescription": "Quand pouvez-vous synthétiser la vitamine D au soleil {atCity} : mois possibles, fenêtres saisonnières et quand se supplémenter.",
