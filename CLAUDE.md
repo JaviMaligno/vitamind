@@ -32,12 +32,14 @@ Routes are locale-segmented via next-intl (`es` default without prefix; `en`, `f
 - **`app/layout.tsx`** — Passthrough root layout (just returns `children`). The real `<html>`/`<body>`, metadata, and PWA manifest link live in `app/[locale]/layout.tsx` (required by the next-intl as-needed i18n, where the default locale has no URL prefix). Service worker registration is **not** here — it's done client-side in `components/UpdateNotice.tsx`.
 - **`app/[locale]/page.tsx`** — Home. Other screens: `dashboard/`, `explore/`, `learn/`, `profile/`, `partners/`, `offline/`, `reset-password/`.
 - **`app/[locale]/[cityPrefix]/[city]/page.tsx`** — SEO city pages with localized route prefixes AND slugs (`/vitamina-d/madrid` ↔ `/en/vitamin-d/madrid`). `lib/city-routes.ts` + `i18n/metadata.ts` build the hreflang alternates.
+- **`app/[locale]/[cityPrefix]/[city]/[month]/page.tsx`** — Programmatic sunrise/sunset SEO pages (`/amanecer/madrid/julio` ↔ `/en/sunrise/madrid/july`), 28 starter cities × 12 months × 6 locales, fully static with the day-by-day sun table in the HTML. Routing/slugs in `lib/sun-routes.ts` (shares the `[cityPrefix]` segment with city pages; each validates its own prefix). Grow `SUNRISE_CITIES` there for the next waves.
+- **`app/[locale]/connect/page.tsx`** — "Connect your AI" documentation page (`/connect`, in the top nav): the two MCP connector URLs, per-client setup steps and a mocked consent preview rendered from the real `oauth` strings.
 - **`app/[locale]/error.tsx`, `app/[locale]/not-found.tsx`, `app/global-error.tsx`** — error boundaries; localized copy under the `errorPage`/`notFoundPage` message keys.
 - **`app/api/weather/route.ts`** — Proxies Open-Meteo (UV index, cloud cover). Validates lat/lon/dates, 8s upstream timeout, opaque error responses.
 - **`app/api/cities/route.ts`** — Server-side city search against Supabase (localized RPCs with fallbacks).
 - **`app/api/push/subscribe/route.ts`** — Push subscription CRUD (validates/clamps all input).
 - **`app/api/push/notify/route.ts`** — Cron-triggered (daily 8 AM UTC via Vercel cron) push broadcaster. Auth: `Authorization: Bearer $CRON_SECRET`. Logs a run summary; returns 500 if every delivery fails so Vercel marks the cron run failed.
-- **`app/api/mcp/[transport]/route.ts`** — Remote MCP server (`mcp-handler`, stateless Streamable HTTP at `/api/mcp/mcp`; no Redis, so no SSE transport). Two tiers: five public read-only tools (`search_city`, `get_sun_times`, `get_vitamin_d_window`, `get_vitamin_d_year`, `get_current_status`) that work with no auth, and four personal tools (`get_my_profile`, `get_my_cities`, `get_my_history`, `log_sun_session`) gated by OAuth 2.1. Tool logic lives in `lib/mcp-tools.ts` / `lib/mcp-personal.ts` (pure, unit-tested). Connector URL: `https://getvitamind.app/api/mcp/mcp` (dev: `https://getvitamind-dev.vercel.app/api/mcp/mcp`).
+- **`app/api/mcp/[transport]/route.ts` + `app/api/mcp-auth/[transport]/route.ts`** — Remote MCP server (`mcp-handler`, stateless Streamable HTTP; no Redis, so no SSE transport), tool set registered once in `lib/mcp-server.ts` and served at TWO endpoints: `/api/mcp/mcp` (public, auth optional — never 401s) and `/api/mcp-auth/mcp` (auth REQUIRED — its 401 is what triggers the client's OAuth flow). Six public tools (`search_city`, `get_sun_times`, `get_vitamin_d_window` with `atTime`, `get_vitamin_d_year`, `get_current_status`, `estimate_sun_session`) plus four OAuth-scoped personal tools (`get_my_profile`, `get_my_cities`, `get_my_history`, `log_sun_session`). Tool logic is pure and unit-tested in `lib/mcp-tools.ts` / `lib/mcp-personal.ts`; per-call usage logging (tool + duration only, never args). User docs at `/connect`.
 - **`app/api/oauth/*` + `app/.well-known/oauth-*`** — Minimal OAuth 2.1 authorization server for the MCP personal tools (`lib/oauth.ts`): dynamic client registration, PKCE S256 mandatory, single-use hashed codes, hashed opaque tokens (`vd_at_…`) with refresh rotation. Identity = Supabase Auth via the consent page at `/oauth-consent` (namespace `oauth` in messages). Supabase JWTs are never accepted at the MCP endpoint. Tables in `supabase/migrations/20260719_mcp_oauth.sql` (service-role only, RLS with no policies).
 
 State lives in `context/` providers (`AppProvider`, `ThemeProvider`, `InstallProvider`) and `hooks/` — there is no single-page monolith.
@@ -102,14 +104,17 @@ Both jobs use the `VERCEL_TOKEN` repo secret (GitHub → repo Settings → Secre
 
 **Before merging anything that includes a `supabase/migrations/*.sql`:** apply the migration to the shared Supabase project **first** (see "Supabase migrations" below) — the deploy on merge is automatic, so the DB must be ready before the code lands.
 
-> **Planned (future) feature:** dedicated programmatic SEO pages for
-> sunrise/sunset by city+month (`/amanecer/madrid/julio`). Approved but parked
-> until Search Console shows traction on solar queries — full plan in
-> `docs/plans/2026-07-19-sunrise-seo-pages.md`.
+> **Shipped 2026-07-20 — sunrise SEO pages (wave 1):** 28 cities × 12 months ×
+> 6 locales at `/amanecer/{city}/{month}` (localized prefixes/slugs in
+> `lib/sun-routes.ts`, page at `app/[locale]/[cityPrefix]/[city]/[month]/`).
+> Next waves (expand `SUNRISE_CITIES` toward all 73 when Search Console shows
+> traction): `docs/plans/2026-07-19-sunrise-seo-pages.md`.
 
-> **Planned (next) work:** MCP tool optimization (yearly vitamin D tool to stop
-> per-date call cascades), account value ladder + OAuth 2.1 for personal MCP
-> tools, and the "connect your AI" marketing push — full plan in
+> **Shipped 2026-07-19/20 — MCP evolution:** 10 tools (6 public incl.
+> `get_vitamin_d_year` + `estimate_sun_session`, 4 personal via OAuth 2.1),
+> live-audited with agent user-simulations, hardened (rate limits, revocation
+> UI in profile, lazy cleanup) and documented for users at `/connect`.
+> Remaining marketing items (MCP directories, announcement) in
 > `docs/plans/2026-07-19-mcp-evolution-account-marketing.md`.
 
 > **Planned (bigger) change:** migrate the project to the personal Vercel

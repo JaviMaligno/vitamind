@@ -84,10 +84,14 @@ herramienta de perfil anual.
 > hasheados con rotación de refresh), consentimiento en `/oauth-consent`
 > (6 idiomas, login Supabase reutilizando AuthButton), verificación con
 > `withMcpAuth (required:false)` y 4 herramientas personales. Migración:
-> `supabase/migrations/20260719_mcp_oauth.sql` — **aplicar antes de desplegar**.
-> Pendiente: prueba end-to-end con el conector real, UI de revocación en el
-> perfil, rate limit del token endpoint, y limpieza periódica de filas
-> caducadas.
+> `supabase/migrations/20260719_mcp_oauth.sql` (aplicada 2026-07-19).
+> **TODO COMPLETADO en producción:** flujo end-to-end validado con el conector
+> real de claude.ai (conectar → consentir → leer perfil/historial → revocar →
+> acceso muerto), UI de revocación en el perfil ("Conexiones de IA"), rate
+> limits por IP en todos los endpoints OAuth, y limpieza perezosa de filas
+> caducadas en el token endpoint. Dos URLs: `/api/mcp/mcp` (pública) y
+> `/api/mcp-auth/mcp` (cuenta, 401-driven OAuth). Documentación de usuario en
+> `/connect`.
 
 Los conectores de Claude/ChatGPT autentican vía OAuth 2.1. Arquitectura:
 
