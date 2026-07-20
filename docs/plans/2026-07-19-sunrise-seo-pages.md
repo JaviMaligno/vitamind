@@ -1,7 +1,14 @@
 # Plan futuro: páginas SEO dedicadas de amanecer/atardecer
 
-**Estado: idea aprobada, sin fecha.** Se documenta para atacarla cuando las
-analíticas lo justifiquen (ver "Cuándo activarlo").
+**Estado: PRIMERA OLA EN PRODUCCIÓN (2026-07-20).** 28 ciudades × 12 meses ×
+6 idiomas = 2.016 páginas en `/amanecer/{ciudad}/{mes}` y equivalentes
+localizados. Implementación: `lib/sun-routes.ts` (prefijos/slugs/alternates,
+con tests) + `app/[locale]/[cityPrefix]/[city]/[month]/page.tsx` (tabla día a
+día server-rendered con alba/anochecer, snapshot mensual, bloque de vitamina D,
+FAQ JSON-LD, malla interna) + sitemap. **Siguientes olas:** ampliar
+`SUNRISE_CITIES` hacia las 73 ciudades cuando Search Console muestre
+impresiones en estas; el resto de este documento describe el plan original y
+los criterios, que siguen vigentes para la expansión.
 
 ## Contexto
 
