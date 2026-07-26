@@ -1,5 +1,5 @@
 /** The one host whose pages may be indexed. */
-const CANONICAL_HOST = "getvitamind.app";
+export const CANONICAL_HOST = "getvitamind.app";
 
 export const SITE_URL = (
   process.env.NEXT_PUBLIC_SITE_URL ?? `https://${CANONICAL_HOST}`
