@@ -108,7 +108,9 @@ deploy's sitemap.
 
 ```yaml
 - name: Snapshot the live sitemap (pre-deploy)
-  run: curl -sf https://getvitamind.app/sitemap.xml -o /tmp/sitemap-before.xml || : > /tmp/sitemap-before.xml
+  run: |
+    curl -sf https://getvitamind.app/sitemap.xml -o /tmp/sitemap-before.xml \
+      || printf '' > /tmp/sitemap-before.xml
 
 - name: Deploy to Vercel (production)   # existing step
 
@@ -124,13 +126,20 @@ deploy's sitemap.
 
 Deliberate details:
 
-`|| : >` leaves an empty snapshot when the curl fails, which degrades to "submit
-everything" instead of breaking the deploy. `setup-node` + `npm ci` come *after* the
-deploy so the deploy is not delayed by ~40 s of install; `npm ci` sits inside the
-`continue-on-error` step so a failed install cannot red-mark a deploy that already
-succeeded. The alternative to installing at all — a dependency-free `.mjs` runnable
-with bare `node` — would put the logic outside the Vitest run and duplicate the
-sitemap generation. The 40 s is the better trade.
+The `|| printf '' >` fallback leaves an empty snapshot when the curl fails, which
+degrades to "submit everything" instead of breaking the deploy. `setup-node` + `npm ci`
+come *after* the deploy so the deploy is not delayed by ~40 s of install; `npm ci` sits
+inside the `continue-on-error` step so a failed install cannot red-mark a deploy that
+already succeeded. The alternative to installing at all — a dependency-free `.mjs`
+runnable with bare `node` — would put the logic outside the Vitest run and duplicate
+the sitemap generation. The 40 s is the better trade.
+
+**Both run bodies must be block scalars.** The first version wrote the snapshot as a
+plain inline `run: … || : > file`, and the `: ` inside it made the whole workflow file
+invalid YAML — GitHub reported "This run likely failed because of a workflow file
+issue" in 0 s and, worse, silently ran no CI at all. Validate with
+`python -c "import yaml; yaml.safe_load(open('.github/workflows/ci.yml'))"` after
+editing this file; a broken workflow on `master` means no quality gate and no deploys.
 
 ## Testing
 

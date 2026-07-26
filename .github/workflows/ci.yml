@@ -58,7 +58,9 @@ jobs:
       # CDN answers HIT regardless.) A failed curl leaves the file empty, which
       # makes the diff treat every URL as new rather than break the deploy.
       - name: Snapshot the live sitemap (pre-deploy)
-        run: curl -sf https://getvitamind.app/sitemap.xml -o /tmp/sitemap-before.xml || : > /tmp/sitemap-before.xml
+        run: |
+          curl -sf https://getvitamind.app/sitemap.xml -o /tmp/sitemap-before.xml \
+            || printf '' > /tmp/sitemap-before.xml
 
       - name: Deploy to Vercel (production)
         env:
