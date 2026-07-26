@@ -50,12 +50,40 @@ jobs:
     environment: production
     steps:
       - uses: actions/checkout@v4
+
+      # Captured BEFORE deploying: Vercel purges the edge cache per deploy, so
+      # this read is the sitemap of the deploy that is currently live — exactly
+      # the baseline the IndexNow diff needs. (A ?cb= cache-buster would not
+      # help: query strings are not part of the cache key for this route, so the
+      # CDN answers HIT regardless.) A failed curl leaves the file empty, which
+      # makes the diff treat every URL as new rather than break the deploy.
+      - name: Snapshot the live sitemap (pre-deploy)
+        run: curl -sf https://getvitamind.app/sitemap.xml -o /tmp/sitemap-before.xml || : > /tmp/sitemap-before.xml
+
       - name: Deploy to Vercel (production)
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           VERCEL_ORG_ID: team_oI08l1QRpySHg7Wm7CEShc5y
           VERCEL_PROJECT_ID: prj_3kIX7Anjxormcb5UlF8qsLOpnsoN
         run: npx vercel@latest deploy --prod --yes --token "$VERCEL_TOKEN"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      # Tells Bing/Yandex/Seznam/Naver which pages this deploy added. The URL
+      # list comes from this commit's app/sitemap.ts (not from the network), so
+      # it needs no waiting for cache purges. Only new URLs are submitted:
+      # re-submitting the whole sitemap on every deploy is what IndexNow treats
+      # as abuse. continue-on-error because the deploy is already live and
+      # correct at this point — a failed ping must not red-mark it. npm ci lives
+      # in this step (it is needed for tsx) so its failure is covered too.
+      - name: Ping IndexNow with the new URLs
+        continue-on-error: true
+        run: |
+          npm ci
+          npx tsx scripts/indexnow.ts --before /tmp/sitemap-before.xml
 
   # Dev deploy: pushes to the dev branch produce a Preview deployment (Preview
   # environment variables: its own VAPID keys and CRON_SECRET, isolated push
