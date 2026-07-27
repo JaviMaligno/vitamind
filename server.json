@@ -1,0 +1,21 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.JaviMaligno/vitamind",
+  "description": "Know when the sun can make vitamin D where you are, for your skin type. Live UV data.",
+  "version": "1.0.0",
+  "repository": {
+    "url": "https://github.com/JaviMaligno/vitamind",
+    "source": "github"
+  },
+  "websiteUrl": "https://getvitamind.app/connect",
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://getvitamind.app/api/mcp/mcp"
+    },
+    {
+      "type": "streamable-http",
+      "url": "https://getvitamind.app/api/mcp-auth/mcp"
+    }
+  ]
+}
