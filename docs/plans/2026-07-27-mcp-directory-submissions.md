@@ -1,10 +1,41 @@
 # Plan: publicar el MCP en directorios (bloque C del plan del 19/7)
 
 **Fecha:** 2026-07-27
-**Estado:** artefactos preparados; los envíos los hace el usuario.
+**Estado (2026-07-27, final del día):** registro oficial y npm publicados; PR a punkpeye
+abierta y bloqueada por Glama; Glama caído. Detalle en «Marcador» abajo.
 **Contexto:** el bloque C de `docs/plans/2026-07-19-mcp-evolution-account-marketing.md`
 ("Directorios MCP: enviar el conector al registry y directorios cuando esté estable en
 producción"). El servidor lleva estable desde el 19-20/7.
+
+## Marcador
+
+| Destino | Estado |
+|---|---|
+| **Registro MCP oficial** | ✅ `io.github.JaviMaligno/vitamind` 1.0.0, verificado contra su API |
+| **npm** | ✅ `vitamind-mcp@1.0.0`, handshake probado vía `npx` contra producción |
+| **Repo del paquete** | ✅ https://github.com/JaviMaligno/vitamind-mcp (+ `Dockerfile`) |
+| **homepage del repo principal** | ✅ corregido: apuntaba a `vitamind-tau.vercel.app` |
+| **punkpeye/awesome-mcp-servers** | ⏸️ PR [#11026](https://github.com/punkpeye/awesome-mcp-servers/pull/11026) — su bot exige ficha en Glama + badge de score |
+| **Glama** | ❌ host caído (504; 1 de cada 5 peticiones responde, en ~24 s) |
+| **mcpservers.org** | ⏸️ pendiente; su listado gratuito es **nofollow** |
+
+### Lo que costó descubrir (para no repetirlo)
+
+- **El publisher NO es el paquete `mcp-publisher` de npm.** Ese nombre pertenece a otro
+  proyecto que es a su vez un servidor MCP: `npx mcp-publisher login github` arranca un
+  proceso stdio en vez de autenticar. El bueno es un **binario Go** de las releases de
+  `modelcontextprotocol/registry` (v1.8.0), con builds para Windows.
+- **`description` tiene un máximo de 100 caracteres.** Con 152 devuelve 422.
+- **El namespace distingue mayúsculas:** concede `io.github.JaviMaligno/*`; con
+  `javimaligno` devuelve 403 y lista el permitido literalmente.
+- Correr `mcp-publisher validate` antes de pedir login ahorra las dos primeras.
+
+### Alternativa pendiente de decidir: namespace por DNS
+
+El publisher admite `login dns --domain getvitamind.app`, lo que permitiría republicar
+como **`app.getvitamind/vitamind`** en vez de bajo el usuario de GitHub. Mejor marca y
+el dominio va en el propio identificador de la ficha. Requiere par de claves y un
+registro TXT. La entrada actual no impide migrar después.
 
 ## Por qué esto y no otra cosa
 
@@ -51,7 +82,7 @@ los haces tú** — o me das el visto bueno explícito para cada uno.
 
 | Directorio | Qué requiere | Quién |
 |---|---|---|
-| Registro MCP oficial | `server.json` + CLI `mcp-publisher` + login GitHub para el namespace `io.github.javimaligno` | Tú (login) |
+| Registro MCP oficial | ~~pendiente~~ — **hecho** el 27/7 (login GitHub del owner + `publish`) | ✅ |
 | `punkpeye/awesome-mcp-servers` | PR al README | Yo preparo, tú apruebas |
 | `wong2/awesome-mcp-servers` | PR al README | Yo preparo, tú apruebas |
 | Glama | Escanea GitHub solo; se puede reclamar el servidor | Tú (login GitHub) |
@@ -70,11 +101,17 @@ verificado el 27/7 en la doc del registro (la primera versión de este fichero l
 `2025-07-09`, de memoria, y estaba obsoleta — señal de que este dato caduca). **Validar
 igualmente antes de publicar:**
 
+El publisher es un **binario Go** de las releases de `modelcontextprotocol/registry`.
+**No** es el paquete `mcp-publisher` de npm, que pertenece a otro proyecto y arranca un
+servidor MCP en stdio en vez de autenticar:
+
 ```bash
-# instalar el publisher (comprobar el nombre actual en la doc del registro)
-mcp-publisher validate      # valida server.json contra el esquema
-mcp-publisher login github  # autentica el namespace io.github.javimaligno
-mcp-publisher publish
+gh release download v1.8.0 --repo modelcontextprotocol/registry   --pattern "mcp-publisher_windows_amd64.tar.gz" --dir /tmp/mcppub
+cd /tmp/mcppub && tar xzf mcp-publisher_windows_amd64.tar.gz
+
+./mcp-publisher.exe validate      # SIEMPRE antes de pedir login a nadie
+./mcp-publisher.exe login github  # device flow; namespace io.github.JaviMaligno (case-sensitive)
+./mcp-publisher.exe publish
 ```
 
 Si `validate` se queja del esquema, la doc del registro manda sobre este fichero.
@@ -104,21 +141,28 @@ de terceros.
 
 ## Entradas para las awesome lists
 
-**Verificar el formato exacto en el README de cada repo antes de abrir el PR** — cada lista
-tiene su convención de emoji de lenguaje/ámbito y su orden alfabético por categoría.
-
-Formato típico de `punkpeye/awesome-mcp-servers` (categoría *Health & Wellness*), donde
-🌐 = servicio remoto y ☁️ = cloud:
-
-```markdown
-- [JaviMaligno/vitamind](https://github.com/JaviMaligno/vitamind) 🌐 ☁️ - Solar vitamin D calculator: synthesis windows, minutes needed by Fitzpatrick skin type, year-round viability by latitude, and sun-session estimates from live UV data.
-```
-
-Formato típico de `wong2/awesome-mcp-servers`:
+**`punkpeye/awesome-mcp-servers` — PR enviada** ([#11026](https://github.com/punkpeye/awesome-mcp-servers/pull/11026)).
+Categoría real: **Biology, Medicine and Bioinformatics** (no existe una de Health &
+Wellness). Emojis según su leyenda: 📇 base de código JavaScript, ☁️ servicio en la nube.
+Entrada, en orden alfabético dentro de la categoría y apuntando al repo del paquete:
 
 ```markdown
-- [Vitamin D Explorer](https://getvitamind.app/connect) - When the sun where you are can actually make vitamin D, for your skin type. Real solar geometry and live UV data; 6 public tools, plus personal tools over OAuth.
+- [JaviMaligno/vitamind-mcp](https://github.com/JaviMaligno/vitamind-mcp) 📇 ☁️ - Solar vitamin D: whether the sun where you are can make vitamin D right now, how many minutes your Fitzpatrick skin type needs for a target dose, which months of the year synthesis is possible at your latitude, and how much a sun session produced. Computed from solar geometry, a clear-sky UV model with ozone and altitude, and live Open-Meteo UV data. `npx vitamind-mcp`
 ```
+
+Su bot responde automáticamente exigiendo dos cosas antes de aceptar: **ficha en Glama
+pasando sus checks** (con Dockerfile añadido en la propia Glama) y el **badge de score**
+detrás de la descripción:
+
+```markdown
+[![OWNER/REPO MCP server](https://glama.ai/mcp/servers/OWNER/REPO/badges/score.svg)](https://glama.ai/mcp/servers/OWNER/REPO)
+```
+
+**`wong2/awesome-mcp-servers` — NO acepta PRs.** Su README lo dice explícitamente: el alta
+se hace en el formulario de https://mcpservers.org/submit. Campos: nombre, descripción de
+una frase, enlace, categoría (no hay ninguna de salud → *Otros*) y correo de contacto.
+Ojo: la opción Premium de $39 lista "enlace dofollow" entre sus ventajas, lo que implica
+que **el listado gratuito es nofollow** — sirve para descubrimiento, no para autoridad.
 
 ## Detalle que importa para el objetivo
 
