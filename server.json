@@ -1,0 +1,21 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.javimaligno/vitamind",
+  "description": "Solar vitamin D calculator: when the sun where you are can actually make vitamin D, for your skin type. Real solar geometry and live UV data, in 6 languages.",
+  "version": "1.0.0",
+  "repository": {
+    "url": "https://github.com/JaviMaligno/vitamind",
+    "source": "github"
+  },
+  "websiteUrl": "https://getvitamind.app/connect",
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://getvitamind.app/api/mcp/mcp"
+    },
+    {
+      "type": "streamable-http",
+      "url": "https://getvitamind.app/api/mcp-auth/mcp"
+    }
+  ]
+}
