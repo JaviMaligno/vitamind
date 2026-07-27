@@ -1,6 +1,6 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
-  "name": "io.github.javimaligno/vitamind",
+  "name": "io.github.JaviMaligno/vitamind",
   "description": "Know when the sun can make vitamin D where you are, for your skin type. Live UV data.",
   "version": "1.0.0",
   "repository": {
