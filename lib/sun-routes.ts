@@ -35,15 +35,40 @@ export const MONTH_SLUGS: Record<string, string[]> = {
 };
 
 /**
- * Starter batch (plan: grow in waves, not all 73×12 at once): the Spanish
- * cities plus high-traffic world cities across both hemispheres.
+ * Grown in waves, not all 73×12 at once, so each wave can be measured before the
+ * next one is added.
+ *
+ * Wave 1 (2026-07-19): the Spanish cities plus high-traffic world cities across both
+ * hemispheres. In its first 8 days it produced most of the site's search impressions —
+ * 435 in 28 days against 39 in the previous 90 — and nine of the ten most-seen pages
+ * were from this tree.
+ *
+ * Wave 2 (2026-07-28): chosen on two criteria drawn from that data rather than by
+ * gut. First, **latitude ≥ 48°**: the further from the equator, the more the twelve
+ * monthly tables actually differ, so each page answers a distinct question instead of
+ * being a near-copy of its siblings — the same reason low-latitude cities (Bangkok,
+ * Nairobi, Kuala Lumpur) are deliberately still absent. Second, **major destination**,
+ * matching the profile of the cities already earning impressions (Tokyo, Paris,
+ * Amsterdam, London, Sydney). The observed queries are dominated by sunset and "what
+ * time does it get dark", which is exactly what a high-latitude city makes interesting.
+ *
+ * Tromsø belongs here on both counts and is missing for a reason: its English slug
+ * resolves to "troms" (the ø is dropped rather than folded to o), which is a Norwegian
+ * county, not the city. Adding it would ship 12 wrong URLs. Fixing the slug means
+ * changing the already-live /en/vitamin-d/troms, so it needs its own change with a
+ * redirect — see the note in docs/plans/2026-07-19-sunrise-seo-pages.md.
  */
 export const SUNRISE_CITIES: string[] = [
+  // Wave 1
   "madrid", "barcelona", "valencia", "sevilla", "malaga", "las-palmas", "tenerife",
   "londres", "paris", "berlin", "roma", "lisboa", "amsterdam", "dublin", "edimburgo",
   "nueva-york", "los-angeles", "miami", "chicago", "toronto",
   "ciudad-de-mexico", "bogota", "lima", "santiago", "buenos-aires",
   "sidney", "tokio", "singapur",
+  // Wave 2 — Nordic and central-European capitals plus the Pacific Northwest
+  "reikiavik", "oslo", "estocolmo", "helsinki", "copenhague",
+  "varsovia", "praga", "viena", "budapest", "bruselas",
+  "seattle", "vancouver",
 ];
 
 export function monthIndexFromSlug(locale: string, slug: string): number | null {

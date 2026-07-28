@@ -76,3 +76,62 @@ solares lleven en producción:
 - **Coste técnico:** bajo. La matemática (`lib/sun-times.ts`), el patrón de
   rutas localizadas, el sitemap y el patrón de copy por plantillas ya existen;
   es sobre todo trabajo de rutas + copy + i18n (6 locales).
+
+---
+
+## Ola 2 (2026-07-28) y qué la justificó
+
+Datos que la motivaron, de Search Console a 28 días frente al baseline de 90 días del
+25/7:
+
+| | Baseline (90 d) | Ola 1 viva (28 d) |
+|---|---|---|
+| Impresiones | 39 | **435** |
+| Páginas con datos | 20 | **192** |
+| Posición media | 9,5 | 8,8 |
+
+**Nueve de las diez páginas más vistas eran de esta familia**, y la curva de impresiones
+se dispara el 26/7. Las consultas son de cola larga y en su mayoría piden **puesta de
+sol**, no amanecer: `sunset in paris august`, `what time does it get dark in japan in
+august`, `heure coucher soleil 15 aout`, `sunset tokyo october`.
+
+Criterios de selección de la ola 2, sacados de esos datos:
+
+1. **Latitud ≥ 48°.** Cuanto más lejos del ecuador, más difieren de verdad las doce
+   tablas mensuales: cada página responde algo distinto en vez de ser casi copia de sus
+   hermanas. Por eso las ciudades ecuatoriales (Bangkok, Nairobi, Kuala Lumpur, Lagos)
+   siguen deliberadamente fuera.
+2. **Destino grande**, que es el perfil de las que ya rinden (Tokio, París, Ámsterdam,
+   Londres, Sídney).
+
+Ciudades: Reikiavik, Oslo, Estocolmo, Helsinki, Copenhague, Varsovia, Praga, Viena,
+Budapest, Bruselas, Seattle, Vancouver. **12 × 12 meses × 6 idiomas = 864 URLs**
+(sitemap 2496 → 3360).
+
+Se eligió una ola corta y no las 45 ciudades restantes porque el cuello no es el
+contenido sino el **descubrimiento**: de las 2496 URLs declaradas Google solo conocía
+~633. Añadir 3240 de golpe sería echar agua en un vaso lleno.
+
+### CTR: por qué NO se tocó el copy
+
+El CTR es del 0,7 % (3 clics / 435 impresiones), pero la causa no es la plantilla:
+
+- El título ya cubre la demanda — `Sunrise and sunset in Tokyo in October: exact times`.
+- **Posición media 8,8**: en los puestos 8-10 un CTR del 1-2 % es lo normal. Eso no se
+  arregla con copy.
+- Son consultas de **cero clic**: Google responde "sunset in paris august" en la propia
+  SERP.
+
+Revisar si la posición media sube a top 3-5 y el CTR sigue por debajo del 2 %.
+
+### Deuda conocida: el slug de Tromsø
+
+Tromsø cumple los dos criterios de la ola 2 (70° de latitud, destino canónico de sol de
+medianoche y auroras) y **está fuera a propósito**: su slug inglés resuelve a `troms`
+porque la `ø` se descarta en vez de plegarse a `o`. "Troms" es un condado noruego, no la
+ciudad. Meterla habría publicado 12 URLs equivocadas.
+
+Arreglarlo no es solo tocar `slugify`: `/en/vitamin-d/troms` **ya está viva en
+producción** (200), así que el cambio necesita su propio 301 — la maquinaria existe en
+`i18n/cross-locale-redirect.ts`, pero este caso es distinto (cambio de slug, no cruce de
+idioma). Tarea aparte; Tromsø entraría en la ola 3.

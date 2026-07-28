@@ -1,13 +1,28 @@
 import { describe, it, expect } from "vitest";
 import sitemap from "@/app/sitemap";
 import { SITE_URL } from "@/lib/site";
+import { SUNRISE_CITIES } from "@/lib/sun-routes";
+import { CITY_SLUGS } from "@/lib/city-slugs";
 
 describe("sitemap", () => {
   const entries = sitemap();
 
   it("emits the static, city and sunrise-month URLs", () => {
-    // 7 pages ×6 + 73 cities ×6 + 28 sunrise cities ×12 months ×6
-    expect(entries).toHaveLength(42 + 438 + 2016);
+    // 7 pages ×6 + 73 cities ×6 + every sunrise city ×12 months ×6.
+    //
+    // The sunrise term is derived from SUNRISE_CITIES rather than hardcoded, so adding
+    // a wave does not require editing this number. What it still pins is the shape —
+    // twelve months in six locales for each configured city — which is what would break
+    // if a locale or a month were ever dropped from the generator.
+    expect(entries).toHaveLength(42 + 438 + SUNRISE_CITIES.length * 12 * 6);
+  });
+
+  it("covers every configured sunrise city in every locale", () => {
+    // Guards the gap the count alone cannot see: the right total with the wrong cities.
+    const urls = entries.map((e) => e.url).join("\n");
+    for (const base of SUNRISE_CITIES) {
+      expect(urls, `no sunrise URLs for ${base}`).toContain(`/${CITY_SLUGS[base].en}/`);
+    }
   });
 
   it("uses no prefix for es and /xx for other locales", () => {
