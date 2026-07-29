@@ -1017,6 +1017,7 @@
     "metaTitle": "Conecta tu IA — servidor MCP de Vitamina D",
     "metaDescription": "Conecta Vitamina D Explorer a Claude, ChatGPT o cualquier cliente MCP: amanecer, UV y tu ventana de vitamina D, directamente en tu asistente.",
     "intro": "Una vez conectado, tu asistente puede consultar los mismos cálculos que usa la app — y, si enlazas tu cuenta, también tu perfil y tu historial. Por ejemplo:",
+    "widgetCallout": "Pregunta por la temporada de vitamina D de un lugar y los asistentes compatibles dibujarán el año entero como gráfico interactivo dentro de la conversación.",
     "exampleQ1": "«¿Cuándo puedo hacer vitamina D hoy en Madrid?»",
     "exampleQ2": "«¿Qué meses hay sol suficiente en Berlín?»",
     "exampleQ3": "«¿Cómo llevo mi mes de sol?» (con cuenta)",

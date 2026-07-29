@@ -1017,6 +1017,7 @@
     "metaTitle": "KI verbinden — Vitamin-D-MCP-Server",
     "metaDescription": "Verbinde Vitamin D Explorer mit Claude, ChatGPT oder jedem MCP-Client: Sonnenaufgang, UV und dein Vitamin-D-Fenster, direkt in deinem Assistenten.",
     "intro": "Einmal verbunden, kann dein Assistent dieselben Berechnungen ausführen wie die App — und, wenn du dein Konto verknüpfst, auch dein Profil und deinen Verlauf lesen. Zum Beispiel:",
+    "widgetCallout": "Frage nach der Vitamin-D-Saison eines Ortes: Kompatible Assistenten zeigen das ganze Jahr als interaktive Grafik direkt im Gespräch.",
     "exampleQ1": "„Wann kann ich heute in Madrid Vitamin D bilden?“",
     "exampleQ2": "„In welchen Monaten gibt es in Berlin genug Sonne?“",
     "exampleQ3": "„Wie läuft mein Sonnenmonat?“ (mit Konto)",

@@ -1017,6 +1017,7 @@
     "metaTitle": "Connect your AI — Vitamin D MCP server",
     "metaDescription": "Connect Vitamin D Explorer to Claude, ChatGPT or any MCP client: sunrise, UV and your vitamin D window, right inside your assistant.",
     "intro": "Once connected, your assistant can run the same calculations the app uses — and, if you link your account, read your profile and history too. For example:",
+    "widgetCallout": "Ask about a place's vitamin D season and compatible assistants draw the whole year as an interactive chart directly in the conversation.",
     "exampleQ1": "“When can I make vitamin D today in Madrid?”",
     "exampleQ2": "“Which months have enough sun in Berlin?”",
     "exampleQ3": "“How is my sun month going?” (with an account)",

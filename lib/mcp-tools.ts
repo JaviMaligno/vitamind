@@ -236,9 +236,12 @@ const monthDay = (doy: number) => {
  * comes from the same threshold model as the SEO city pages; the per-month
  * windows/minutes use the caller's personal profile (mid-month sample).
  */
-export function vitaminDYearTool(args: Omit<VitDArgs, "date">) {
-  const { skinType, area, targetIU, age, elevationM } = normalizeProfile(args);
-  const profile = cityYearProfile(args.lat, args.lon, elevationM);
+function buildVitaminDYearResult(
+  args: Omit<VitDArgs, "date">,
+  normalized: ReturnType<typeof normalizeProfile>,
+  profile: ReturnType<typeof cityYearProfile>,
+) {
+  const { skinType, area, targetIU, age, elevationM } = normalized;
   const bounds = profile.allYear || profile.neverPossible
     ? null
     : viableDateBoundaries(profile.hoursByDay);
@@ -314,6 +317,18 @@ export function vitaminDYearTool(args: Omit<VitDArgs, "date">) {
     byMonth,
     note: DISCLAIMER,
   };
+}
+
+export function vitaminDYearTool(args: Omit<VitDArgs, "date">) {
+  const normalized = normalizeProfile(args);
+  const profile = cityYearProfile(args.lat, args.lon, normalized.elevationM);
+  return buildVitaminDYearResult(args, normalized, profile);
+}
+
+export function vitaminDYearFull(args: Omit<VitDArgs, "date">) {
+  const normalized = normalizeProfile(args);
+  const profile = cityYearProfile(args.lat, args.lon, normalized.elevationM);
+  return { text: buildVitaminDYearResult(args, normalized, profile), hoursByDay: profile.hoursByDay };
 }
 
 // ---------------------------------------------------------------------------

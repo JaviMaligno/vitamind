@@ -1017,6 +1017,7 @@
     "metaTitle": "Prijunkite savo DI — Vitamin D MCP serveris",
     "metaDescription": "Prijunkite Vitamin D Explorer prie Claude, ChatGPT ar bet kurio MCP kliento: saulėtekis, UV ir jūsų vitamino D langas — tiesiai jūsų asistente.",
     "intro": "Prijungus asistentas gali atlikti tuos pačius skaičiavimus kaip programėlė, o susiejus paskyrą — skaityti ir jūsų profilį bei istoriją. Pavyzdžiui:",
+    "widgetCallout": "Paklauskite apie vietovės vitamino D sezoną — suderinami asistentai parodys visus metus interaktyvioje diagramoje tiesiai pokalbyje.",
     "exampleQ1": "„Kada šiandien Madride galiu gauti vitamino D?“",
     "exampleQ2": "„Kuriais mėnesiais Berlyne pakanka saulės?“",
     "exampleQ3": "„Kaip sekasi mano saulės mėnuo?“ (su paskyra)",

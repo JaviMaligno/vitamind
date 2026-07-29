@@ -1,0 +1,159 @@
+{
+  "timesIn": "Europe/London",
+  "profile": {
+    "skinType": 3,
+    "exposedSkinFraction": 0.25,
+    "age": null,
+    "targetIU": 1000
+  },
+  "allYear": false,
+  "neverPossible": false,
+  "monthsWithSun": [
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "solidMonths": [
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "exactViableSpan": {
+    "firstDay": "03-24",
+    "lastDay": "09-27",
+    "format": "MM-DD, any year"
+  },
+  "summary": {
+    "viableDaysPerYear": 188,
+    "seasonLengthDays": 188,
+    "bestMonth": 6,
+    "minutesAtBestMonth": 8
+  },
+  "byMonth": [
+    {
+      "month": 1,
+      "synthesisPossible": false,
+      "viableDays": 0,
+      "partialMonth": false,
+      "window": null,
+      "minutesNeededAtBestHour": null
+    },
+    {
+      "month": 2,
+      "synthesisPossible": false,
+      "viableDays": 0,
+      "partialMonth": false,
+      "window": null,
+      "minutesNeededAtBestHour": null
+    },
+    {
+      "month": 3,
+      "synthesisPossible": true,
+      "viableDays": 8,
+      "partialMonth": true,
+      "window": {
+        "start": "12:00",
+        "end": "14:00"
+      },
+      "minutesNeededAtBestHour": 17
+    },
+    {
+      "month": 4,
+      "synthesisPossible": true,
+      "viableDays": 30,
+      "partialMonth": false,
+      "window": {
+        "start": "11:00",
+        "end": "16:00"
+      },
+      "minutesNeededAtBestHour": 13
+    },
+    {
+      "month": 5,
+      "synthesisPossible": true,
+      "viableDays": 31,
+      "partialMonth": false,
+      "window": {
+        "start": "10:00",
+        "end": "17:00"
+      },
+      "minutesNeededAtBestHour": 10
+    },
+    {
+      "month": 6,
+      "synthesisPossible": true,
+      "viableDays": 30,
+      "partialMonth": false,
+      "window": {
+        "start": "10:00",
+        "end": "17:00"
+      },
+      "minutesNeededAtBestHour": 8
+    },
+    {
+      "month": 7,
+      "synthesisPossible": true,
+      "viableDays": 31,
+      "partialMonth": false,
+      "window": {
+        "start": "10:00",
+        "end": "17:00"
+      },
+      "minutesNeededAtBestHour": 8
+    },
+    {
+      "month": 8,
+      "synthesisPossible": true,
+      "viableDays": 31,
+      "partialMonth": false,
+      "window": {
+        "start": "10:00",
+        "end": "17:00"
+      },
+      "minutesNeededAtBestHour": 10
+    },
+    {
+      "month": 9,
+      "synthesisPossible": true,
+      "viableDays": 28,
+      "partialMonth": true,
+      "window": {
+        "start": "12:00",
+        "end": "15:00"
+      },
+      "minutesNeededAtBestHour": 14
+    },
+    {
+      "month": 10,
+      "synthesisPossible": false,
+      "viableDays": 0,
+      "partialMonth": false,
+      "window": null,
+      "minutesNeededAtBestHour": null
+    },
+    {
+      "month": 11,
+      "synthesisPossible": false,
+      "viableDays": 0,
+      "partialMonth": false,
+      "window": null,
+      "minutesNeededAtBestHour": null
+    },
+    {
+      "month": 12,
+      "synthesisPossible": false,
+      "viableDays": 0,
+      "partialMonth": false,
+      "window": null,
+      "minutesNeededAtBestHour": null
+    }
+  ],
+  "note": "Clear-sky model estimate for healthy adults; not medical advice. Cloud cover can reduce or remove the real window."
+}

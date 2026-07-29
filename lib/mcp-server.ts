@@ -1,9 +1,12 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { AuthInfo } from "@modelcontextprotocol/sdk/server/auth/types.js";
+import { registerAppResource, registerAppTool, RESOURCE_MIME_TYPE } from "@modelcontextprotocol/ext-apps/server";
 import { z } from "zod";
 import {
-  searchCity, sunTimesTool, vitaminDWindowTool, vitaminDYearTool, currentStatusTool, estimateSunSessionTool,
+  searchCity, sunTimesTool, vitaminDWindowTool, vitaminDYearFull, currentStatusTool, estimateSunSessionTool,
 } from "@/lib/mcp-tools";
+import { YEAR_STRIP_META_KEY } from "@/widgets/year-strip/data";
+import { YEAR_STRIP_WIDGET_HTML } from "@/widgets/year-strip/generated";
 import { getOAuthDb, verifyAccessToken, type OAuthScope } from "@/lib/oauth";
 import {
   getProfileStore, myProfileTool, myCitiesTool, myHistoryTool, logSunSessionTool,
@@ -81,9 +84,25 @@ const PROFILE = {
 };
 
 export const SERVER_INFO = { name: "vitamind-explorer", version: "1.0.0" };
+export const YEAR_STRIP_RESOURCE_URI = "ui://getvitamind/year-strip.html";
 
 /** Registers the full tool set (public + personal) on an MCP server. */
 export function initMcpServer(server: McpServer) {
+    registerAppResource(
+      server,
+      "Vitamin D year strip",
+      YEAR_STRIP_RESOURCE_URI,
+      { description: "Daily viable vitamin D sunlight across a year" },
+      async () => ({
+        contents: [{
+          uri: YEAR_STRIP_RESOURCE_URI,
+          mimeType: RESOURCE_MIME_TYPE,
+          text: YEAR_STRIP_WIDGET_HTML,
+          _meta: { ui: { csp: {} } },
+        }],
+      }),
+    );
+
     server.tool(
       "search_city",
       "Find a city in the app's database by name (any of the app's six languages works) and get its coordinates, IANA timezone and elevation — feed those into the other tools.",
@@ -120,11 +139,21 @@ export function initMcpServer(server: McpServer) {
       async (args) => timed("get_vitamin_d_window", () => json(vitaminDWindowTool(args))),
     );
 
-    server.tool(
+    registerAppTool(
+      server,
       "get_vitamin_d_year",
-      "The WHOLE YEAR of solar vitamin D for a location in a single call. monthsWithSun lists every month with at least one viable day (season edges count as partial months, see byMonth[].viableDays); solidMonths lists months where most days work; exactViableSpan gives the exact season boundaries; summary carries per-year aggregates for comparing places. Use this for any question about months, seasons, winter/summer or 'when during the year can I…' — never probe individual dates with get_vitamin_d_window for that.",
-      { lat: LAT, lon: LON, timezone: TZ, ...PROFILE },
-      async (args) => timed("get_vitamin_d_year", () => json(vitaminDYearTool(args))),
+      {
+        description: "The WHOLE YEAR of solar vitamin D for a location in a single call. monthsWithSun lists every month with at least one viable day (season edges count as partial months, see byMonth[].viableDays); solidMonths lists months where most days work; exactViableSpan gives the exact season boundaries; summary carries per-year aggregates for comparing places. Use this for any question about months, seasons, winter/summer or 'when during the year can I…' — never probe individual dates with get_vitamin_d_window for that.",
+        inputSchema: { lat: LAT, lon: LON, timezone: TZ, ...PROFILE },
+        _meta: { ui: { resourceUri: YEAR_STRIP_RESOURCE_URI } },
+      },
+      async (args) => timed("get_vitamin_d_year", () => {
+        const result = vitaminDYearFull(args);
+        return {
+          ...json(result.text),
+          _meta: { [YEAR_STRIP_META_KEY]: { hoursByDay: result.hoursByDay } },
+        };
+      }),
     );
 
     server.tool(

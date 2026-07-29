@@ -73,6 +73,12 @@ export default async function ConnectPage({ params }: { params: Promise<{ locale
       {/* Intro + example prompts */}
       <section className="space-y-4">
         <p className="text-body text-text-secondary leading-relaxed max-w-2xl">{t("intro")}</p>
+        <Card variant="glass" className="!p-4 sm:!p-5 max-w-2xl border-amber-400/25">
+          <p className="flex items-start gap-2 text-body text-text-secondary">
+            <Sparkles className="mt-0.5 h-5 w-5 shrink-0 text-accent" aria-hidden />
+            {t("widgetCallout")}
+          </p>
+        </Card>
         <ul className="flex flex-wrap gap-2">
           {[t("exampleQ1"), t("exampleQ2"), t("exampleQ3")].map((q) => (
             <li
