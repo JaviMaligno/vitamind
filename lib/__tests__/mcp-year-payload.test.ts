@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi, beforeAll, afterAll } from "vitest";
 
 import { vitaminDYearTool, vitaminDYearFull } from "../mcp-tools";
 import { cityYearProfile } from "../city-content";
@@ -38,6 +38,22 @@ const serialize = (value: unknown) => JSON.stringify(value, null, 2);
  * still has to match exactly.
  */
 const normalizeEol = (value: string) => value.replaceAll("\r\n", "\n");
+
+/**
+ * The tool's numbers currently depend on the machine's timezone: `dateFromDoy`
+ * in lib/solar.ts builds its dates with the local-time constructor, so near a
+ * day boundary a doy lands on a different UTC day and season edges move by a
+ * day (September at London: 28 viable days here, 27 in CI). That is a real bug
+ * in the tool, tracked separately — it is not something this fixture should
+ * paper over, and it is not something this slice introduced.
+ *
+ * What the fixture CAN do is stop being ambiguous: production runs on Vercel,
+ * which is UTC, so the bytes frozen below are the ones real MCP clients get.
+ * Pinning the zone also makes the test say the same thing on every laptop.
+ */
+const originalTz = process.env.TZ;
+beforeAll(() => { process.env.TZ = "UTC"; });
+afterAll(() => { process.env.TZ = originalTz; });
 
 describe("get_vitamin_d_year text payload (frozen)", () => {
   it("serialises to exactly the bytes captured before the widget existed", () => {

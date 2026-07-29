@@ -84,7 +84,7 @@
         "start": "10:00",
         "end": "17:00"
       },
-      "minutesNeededAtBestHour": 10
+      "minutesNeededAtBestHour": 9
     },
     {
       "month": 6,
@@ -122,13 +122,13 @@
     {
       "month": 9,
       "synthesisPossible": true,
-      "viableDays": 28,
+      "viableDays": 27,
       "partialMonth": true,
       "window": {
         "start": "12:00",
         "end": "15:00"
       },
-      "minutesNeededAtBestHour": 14
+      "minutesNeededAtBestHour": 15
     },
     {
       "month": 10,
