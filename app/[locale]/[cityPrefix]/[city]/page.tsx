@@ -90,7 +90,7 @@ export default async function CityPage({ params }: { params: Promise<Params> }) 
   const bounds =
     profile.allYear || profile.neverPossible ? null : viableDateBoundaries(profile.hoursByDay);
   const dateRange = bounds
-    ? new Intl.DateTimeFormat(p.locale, { day: "numeric", month: "long" })
+    ? new Intl.DateTimeFormat(p.locale, { day: "numeric", month: "long", timeZone: "UTC" })
         // Both endpoints are pinned to the same reference year. A southern band
         // wraps past January, and real cross-year dates would make formatRange
         // print a fabricated "2026 – 2027" on a pattern that repeats every year.

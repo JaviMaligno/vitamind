@@ -1,7 +1,7 @@
 import { BUILTIN_CITIES } from "./cities";
 import { CITY_SLUGS } from "./city-slugs";
 import { getSunTimes } from "./sun-times";
-import { getCurve, dayOfYear, fmtTime, dateFromDoy } from "./solar";
+import { getCurve, dayOfYear, fmtTime, dateFromDoy, doyFromMonthDay, daysInMonth } from "./solar";
 import {
   computeExposureFromCurve, getCurrentStatus, maxSessionIU, MIN_UVI,
   iuForMinutes, erythemaMinutes, minutesForVitD, estimateUVFromElevation, type SkinType,
@@ -78,8 +78,13 @@ export interface SunTimesArgs {
   timezone?: string;
 }
 
+/**
+ * Midday UTC, not midday local: the day number is a UTC convention (see
+ * lib/solar.ts), so parsing "2026-07-15" in the server's zone made the tools
+ * answer for the 14th on a machine east of Greenwich.
+ */
 function parseDate(date?: string): Date {
-  if (date && /^\d{4}-\d{2}-\d{2}$/.test(date)) return new Date(`${date}T12:00:00`);
+  if (date && /^\d{4}-\d{2}-\d{2}$/.test(date)) return new Date(`${date}T12:00:00Z`);
   return new Date();
 }
 
@@ -227,7 +232,7 @@ export function vitaminDWindowTool(args: VitDArgs) {
 
 const monthDay = (doy: number) => {
   const d = dateFromDoy(doy);
-  return `${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  return `${String(d.getUTCMonth() + 1).padStart(2, "0")}-${String(d.getUTCDate()).padStart(2, "0")}`;
 };
 
 /**
@@ -253,9 +258,8 @@ function buildVitaminDYearResult(
   const viable = profile.hoursByDay.map((h) => h >= MIN_VIABLE_HOURS);
 
   const byMonth = Array.from({ length: 12 }, (_, m) => {
-    const startDoy = dayOfYear(new Date(2026, m, 1));
-    const daysInMonth = new Date(2026, m + 1, 0).getDate();
-    const doys = Array.from({ length: daysInMonth }, (_, i) => startDoy + i);
+    const startDoy = doyFromMonthDay(m, 1);
+    const doys = Array.from({ length: daysInMonth(m) }, (_, i) => startDoy + i);
     const viableDoys = doys.filter((d) => viable[d - 1]);
 
     // Sample a representative viable day (the 15th when it qualifies, else the
@@ -283,7 +287,7 @@ function buildVitaminDYearResult(
       month: m + 1,
       synthesisPossible: viableDoys.length > 0,
       viableDays: viableDoys.length,
-      partialMonth: viableDoys.length > 0 && viableDoys.length < daysInMonth,
+      partialMonth: viableDoys.length > 0 && viableDoys.length < daysInMonth(m),
       window,
       minutesNeededAtBestHour,
     };

@@ -57,14 +57,48 @@ export function getWindow(curve: SolarPoint[], threshold: number): VitDWindow | 
   };
 }
 
+/**
+ * The day-of-year calendar is a pure UTC convention, and every function here
+ * builds and reads its dates in UTC on purpose.
+ *
+ * It used to use the local-time constructor and local getters, which looks
+ * self-consistent and is not: the offset in January differs from the offset in
+ * July in every DST zone, so `dayOfYear(new Date(2026, 6, 1))` returned 182 in
+ * UTC and 181 in Madrid or New York. That day of drift moved season edges and
+ * month boundaries, which meant the deployed server (Vercel runs UTC) answered
+ * differently from any developer's laptop — issue #25.
+ *
+ * Consequence for callers: a Date handed to `dayOfYear` is interpreted in UTC.
+ * For "what day is it where the USER is", normalise their local calendar date
+ * first — that is what `todayDoy()` is for.
+ */
+const DOY_REFERENCE_YEAR = 2026;
+
 export function dayOfYear(d: Date): number {
-  return Math.floor((d.getTime() - new Date(d.getFullYear(), 0, 0).getTime()) / 86400000);
+  return Math.floor((d.getTime() - Date.UTC(d.getUTCFullYear(), 0, 0)) / 86400000);
 }
 
 export function dateFromDoy(doy: number): Date {
-  const d = new Date(2026, 0);
-  d.setDate(doy);
-  return d;
+  return new Date(Date.UTC(DOY_REFERENCE_YEAR, 0, doy));
+}
+
+/** Day number for a calendar month/day, without going through a local Date. */
+export function doyFromMonthDay(monthIndex: number, day: number): number {
+  return dayOfYear(new Date(Date.UTC(DOY_REFERENCE_YEAR, monthIndex, day)));
+}
+
+/** Days in a month of the reference year. */
+export function daysInMonth(monthIndex: number): number {
+  return new Date(Date.UTC(DOY_REFERENCE_YEAR, monthIndex + 1, 0)).getUTCDate();
+}
+
+/**
+ * The day number of the viewer's own calendar day. Used by the client, where
+ * "today" means today where the user is standing, not today in UTC — without
+ * this, anyone west of Greenwich would jump a day during their evening.
+ */
+export function todayDoy(now: Date = new Date()): number {
+  return dayOfYear(new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate())));
 }
 
 export function fmtTime(h: number): string {
@@ -75,6 +109,7 @@ export function fmtTime(h: number): string {
 
 const MONTH_NAMES = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
 
+/** Reads in UTC, to match how `dateFromDoy` builds its dates. */
 export function fmtDate(d: Date): string {
-  return `${d.getDate()} ${MONTH_NAMES[d.getMonth()]}`;
+  return `${d.getUTCDate()} ${MONTH_NAMES[d.getUTCMonth()]}`;
 }

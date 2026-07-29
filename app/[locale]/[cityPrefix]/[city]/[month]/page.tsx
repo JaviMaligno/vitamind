@@ -12,7 +12,7 @@ import { baseSlug, cityPathname, localizedCityName } from "@/lib/city-routes";
 import { nearbyCities } from "@/lib/city-nearby";
 import { capFirst, monthName } from "@/lib/city-copy";
 import { dailySunTimes, getSunTimes } from "@/lib/sun-times";
-import { getCurve, dayOfYear, fmtTime } from "@/lib/solar";
+import { getCurve, doyFromMonthDay, dateFromDoy, fmtTime } from "@/lib/solar";
 import { computeExposureFromCurve } from "@/lib/vitd";
 import { ozoneDU } from "@/lib/uv-model";
 
@@ -44,9 +44,9 @@ function monthData(lat: number, lon: number, tz: number, timezone: string | unde
   const lastLen = dayLen(last);
   const deltaMin = firstLen !== null && lastLen !== null ? Math.round(lastLen - firstLen) : 0;
 
-  const mid = getSunTimes(lat, lon, new Date(2026, monthIndex, 15), timezone, tz);
+  const mid = getSunTimes(lat, lon, dateFromDoy(doyFromMonthDay(monthIndex, 15)), timezone, tz);
 
-  const doy15 = dayOfYear(new Date(2026, monthIndex, 15));
+  const doy15 = doyFromMonthDay(monthIndex, 15);
   const exposure = computeExposureFromCurve(
     getCurve(lat, lon, doy15, tz, timezone), 3, 0.25, 1000, null,
     { ozoneDu: ozoneDU(lat, lon, doy15), elevationM },

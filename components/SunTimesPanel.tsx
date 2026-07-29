@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import { Sunrise, Sunset, Sun, Hourglass } from "lucide-react";
 import { useMounted } from "@/hooks/useMounted";
 import { getSunTimes, type SunTimes } from "@/lib/sun-times";
-import { fmtTime, dayOfYear } from "@/lib/solar";
+import { fmtTime, dayOfYear, todayDoy } from "@/lib/solar";
 import { tzOffsetForDate } from "@/lib/timezone";
 import PhaseWindow from "@/components/PhaseWindow";
 
@@ -60,8 +60,10 @@ export default function SunTimesPanel({ lat, lon, tz, timezone, title, date }: P
       const now = new Date();
       const target = dateMs !== undefined ? new Date(dateMs) : now;
       setSt(getSunTimes(lat, lon, target, timezone, tz));
-      // The dot only makes sense when the panel shows the current day.
-      if (dayOfYear(target) === dayOfYear(now)) {
+      // The dot only makes sense when the panel shows the current day. With no
+      // date passed the target IS now; when one is passed it is a day-of-year
+      // instant (UTC), compared against the viewer's own calendar day.
+      if (dateMs === undefined || dayOfYear(target) === todayDoy(now)) {
         const offset = timezone ? tzOffsetForDate(timezone, now) : tz;
         setNowLocal((((now.getUTCHours() + now.getUTCMinutes() / 60 + offset) % 24) + 24) % 24);
       } else {

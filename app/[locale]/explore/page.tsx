@@ -8,7 +8,7 @@ import { indexPath } from "@/lib/city-client-links";
 import CityPageLink from "@/components/CityPageLink";
 import { useApp } from "@/context/AppProvider";
 import { useCityDisplayName } from "@/hooks/useCityDisplayName";
-import { getCurve, dayOfYear, dateFromDoy, fmtDate } from "@/lib/solar";
+import { getCurve, dateFromDoy, fmtDate, todayDoy } from "@/lib/solar";
 import ExploreHeroBold from "@/components/ExploreHeroBold";
 import SunTimesPanel from "@/components/SunTimesPanel";
 import VisualizationZone from "@/components/VisualizationZone";
@@ -25,7 +25,7 @@ export default function ExplorePage() {
   const app = useApp();
 
   // Local state (explorer-specific)
-  const [doy, setDoy] = useState(dayOfYear(new Date()));
+  const [doy, setDoy] = useState(todayDoy());
   const [scrubMode, setScrubMode] = useState(false);
   const { animating, toggleAnim } = useAnimation(setDoy);
 
@@ -186,7 +186,7 @@ export default function ExplorePage() {
           timezone={timezone}
           date={date}
           title={
-            doy === dayOfYear(new Date())
+            doy === todayDoy()
               ? t("sunTimes.heading")
               : t("sunTimes.headingOn", { date: dateLabel })
           }

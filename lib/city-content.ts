@@ -40,7 +40,7 @@ export function cityYearProfile(lat: number, lon: number, elevationM = 0): CityY
   const daysPerMonth = Array.from({ length: 12 }, () => 0);
   const possibleDaysPerMonth = Array.from({ length: 12 }, () => 0);
   for (let doy = 1; doy <= 365; doy++) {
-    const monthIndex = dateFromDoy(doy).getMonth(); // 0-11
+    const monthIndex = dateFromDoy(doy).getUTCMonth(); // 0-11
     daysPerMonth[monthIndex] += 1;
     if (hoursByDay[doy - 1] > 0) possibleDaysPerMonth[monthIndex] += 1;
   }
@@ -147,7 +147,7 @@ export function citySeasonalWindows(
       ozoneDu: ozoneDU(lat, lon, doy),
       elevationM,
     });
-    const monthIndex = dateFromDoy(doy).getMonth();
+    const monthIndex = dateFromDoy(doy).getUTCMonth();
 
     if (!exposure || exposure.windowStart < 0 || exposure.windowEnd < 0) {
       return { doy, monthIndex, possible: false, windowStart: null, windowEnd: null, minutesNeeded: null };
