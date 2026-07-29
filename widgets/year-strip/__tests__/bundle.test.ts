@@ -17,6 +17,6 @@ describe("year-strip widget bundle", () => {
   });
 
   it("stays small enough to serve inline from a serverless function", () => {
-    expect(new TextEncoder().encode(YEAR_STRIP_WIDGET_HTML).byteLength).toBeLessThan(400_000);
+    expect(new TextEncoder().encode(YEAR_STRIP_WIDGET_HTML).byteLength).toBeLessThan(40_000);
   });
 });

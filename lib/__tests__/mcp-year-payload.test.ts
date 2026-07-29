@@ -30,9 +30,18 @@ const FIXTURE = join(__dirname, "fixtures", "vitamin-d-year-london.json");
 
 const serialize = (value: unknown) => JSON.stringify(value, null, 2);
 
+/**
+ * Line endings are the one difference that is NOT the payload: git rewrites the
+ * fixture to CRLF on a Windows checkout, while `JSON.stringify` always emits LF.
+ * Without this the test fails on Windows and passes in CI for a reason that has
+ * nothing to do with the tool. Everything else — key order, spacing, rounding —
+ * still has to match exactly.
+ */
+const normalizeEol = (value: string) => value.replaceAll("\r\n", "\n");
+
 describe("get_vitamin_d_year text payload (frozen)", () => {
   it("serialises to exactly the bytes captured before the widget existed", () => {
-    const expected = readFileSync(FIXTURE, "utf8");
+    const expected = normalizeEol(readFileSync(FIXTURE, "utf8"));
     expect(serialize(vitaminDYearTool(LONDON))).toBe(expected);
   });
 

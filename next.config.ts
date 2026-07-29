@@ -63,9 +63,6 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   serverExternalPackages: ["web-push"],
-  // A package-lock.json above the checkout can otherwise make Next 16 infer the
-  // wrong Turbopack workspace root, expanding the build graph outside the repo.
-  turbopack: { root: process.cwd() },
   env: {
     NEXT_PUBLIC_BUILD_VERSION: resolveBuildVersion(),
   },
