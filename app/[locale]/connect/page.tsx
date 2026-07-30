@@ -62,7 +62,10 @@ export default async function ConnectPage({ params }: { params: Promise<{ locale
     { Icon: MessageSquare, title: t("chatgptTitle"), steps: [t("chatgptStep1"), t("chatgptStep2"), t("chatgptStep3")] },
   ];
 
-  const publicTools = [t("toolSearchCity"), t("toolSunTimes"), t("toolWindow"), t("toolYear"), t("toolStatus")];
+  const publicTools = [
+    t("toolSearchCity"), t("toolSunTimes"), t("toolWindow"),
+    t("toolYear"), t("toolCompare"), t("toolStatus"), t("toolEstimate"), t("toolProfile"),
+  ];
   const personalTools = [t("toolMyProfile"), t("toolMyCities"), t("toolMyHistory"), t("toolLogSession")];
   const consentScopes = [tOauth("scopeProfileRead"), tOauth("scopeHistoryRead"), tOauth("scopeHistoryWrite")];
 
