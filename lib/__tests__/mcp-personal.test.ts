@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import {
-  myProfileTool, myCitiesTool, myHistoryTool, logSunSessionTool,
+  myProfileTool, myCitiesTool, myHistoryTool, logSunSessionTool, updateMyProfileTool,
   type ProfileStore, type ProfileRow,
 } from "../mcp-personal";
 import type { DayRecord } from "../types";
@@ -10,6 +10,9 @@ function memoryStore(rows: Record<string, ProfileRow>): ProfileStore {
     async getProfile(userId) { return rows[userId] ?? null; },
     async updateHistory(userId, history) {
       rows[userId].history = history as DayRecord[];
+    },
+    async updateProfile(userId, patch) {
+      Object.assign(rows[userId], patch);
     },
   };
 }
@@ -76,5 +79,89 @@ describe("personal tools", () => {
     expect(created).toBeTruthy();
     expect(created!.userOverride).toBe(true);
     expect(created!.cityId).toBe("builtin:madrid");
+  });
+});
+
+describe("updateMyProfileTool", () => {
+  it("writes only the fields it was given", async () => {
+    const rows = { u: { ...PROFILE } };
+    const result = await updateMyProfileTool(memoryStore(rows), "u", { skinType: 5 });
+
+    expect(result).toMatchObject({ saved: true });
+    expect(rows.u.skin_type).toBe(5);
+    // Everything else is left exactly as it was: this tool sets the four
+    // synthesis inputs, it does not rewrite a profile row.
+    expect(rows.u.area_fraction).toBe(PROFILE.area_fraction);
+    expect(rows.u.age).toBe(PROFILE.age);
+    expect(rows.u.favorites).toEqual(PROFILE.favorites);
+    expect(rows.u.history).toEqual(PROFILE.history);
+  });
+
+  it("clamps rather than storing whatever it is handed", async () => {
+    const rows = { u: { ...PROFILE } };
+    await updateMyProfileTool(memoryStore(rows), "u", {
+      skinType: 42, exposedSkinFraction: 9, age: 500, targetIU: 1,
+    });
+    expect(rows.u.skin_type).toBe(6);
+    expect(rows.u.area_fraction).toBe(1);
+    expect(rows.u.age).toBe(120);
+    expect(rows.u.target_iu).toBe(100);
+  });
+
+  it("accepts an explicit null age — 'adult baseline' is a real choice", async () => {
+    const rows = { u: { ...PROFILE } };
+    await updateMyProfileTool(memoryStore(rows), "u", { age: null });
+    expect(rows.u.age).toBeNull();
+  });
+
+  it("refuses an empty write instead of touching the row", async () => {
+    const rows = { u: { ...PROFILE } };
+    let wrote = false;
+    const store: ProfileStore = {
+      ...memoryStore(rows),
+      async updateProfile() { wrote = true; },
+    };
+    const result = await updateMyProfileTool(store, "u", {});
+    expect(result).toMatchObject({ saved: false, reason: "nothing_to_update" });
+    expect(wrote).toBe(false);
+  });
+
+  it("says so when the user has no profile row at all", async () => {
+    const result = await updateMyProfileTool(memoryStore({}), "nobody", { skinType: 3 });
+    expect(result).toMatchObject({ error: expect.any(String) });
+  });
+});
+
+describe("logSunSessionTool: three answers", () => {
+  it("records an explicit 'had sun and stayed in' as false", async () => {
+    // Distinct from null: false is an answer, null is the absence of one.
+    const rows = { u: { ...PROFILE, history: [record("2026-07-30", true)] } };
+    const result = await logSunSessionTool(memoryStore(rows), "u", { date: "2026-07-30", confirmed: false });
+
+    expect(result).toMatchObject({ logged: true, confirmed: false });
+    expect(rows.u.history![0].userOverride).toBe(false);
+  });
+
+  it("clears back to unanswered with null", async () => {
+    const rows = { u: { ...PROFILE, history: [record("2026-07-30", false)] } };
+    const result = await logSunSessionTool(memoryStore(rows), "u", { date: "2026-07-30", confirmed: null });
+
+    expect(result).toMatchObject({ logged: true });
+    expect(rows.u.history![0].userOverride).toBeNull();
+  });
+
+  it("still confirms by default", async () => {
+    const rows = { u: { ...PROFILE, history: [record("2026-07-30", null)] } };
+    await logSunSessionTool(memoryStore(rows), "u", { date: "2026-07-30" });
+    expect(rows.u.history![0].userOverride).toBe(true);
+  });
+
+  it("does not invent a row for a day the app never evaluated", async () => {
+    const rows = { u: { ...PROFILE, history: [] } };
+    for (const confirmed of [false, null] as const) {
+      const result = await logSunSessionTool(memoryStore(rows), "u", { date: "2026-07-30", confirmed });
+      expect(result).toMatchObject({ logged: false });
+    }
+    expect(rows.u.history).toHaveLength(0);
   });
 });

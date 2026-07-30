@@ -13,7 +13,7 @@ import { createHash, randomBytes } from "node:crypto";
  * with an in-memory fake; production uses the service-role Supabase client.
  */
 
-export const OAUTH_SCOPES = ["profile:read", "history:read", "history:write"] as const;
+export const OAUTH_SCOPES = ["profile:read", "profile:write", "history:read", "history:write"] as const;
 export type OAuthScope = (typeof OAUTH_SCOPES)[number];
 export const DEFAULT_SCOPE: OAuthScope = "profile:read";
 

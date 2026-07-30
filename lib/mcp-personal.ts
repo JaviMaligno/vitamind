@@ -23,6 +23,15 @@ export interface ProfileRow {
 export interface ProfileStore {
   getProfile(userId: string): Promise<ProfileRow | null>;
   updateHistory(userId: string, history: DayRecord[]): Promise<void>;
+  updateProfile(userId: string, patch: ProfilePatch): Promise<void>;
+}
+
+/** The four synthesis inputs, and only those: nothing else is writable here. */
+export interface ProfilePatch {
+  skin_type?: number;
+  area_fraction?: number;
+  age?: number | null;
+  target_iu?: number;
 }
 
 function cityRef(cityId: string, custom: City[]): { name: string; lat: number; lon: number; timezone?: string } | null {
@@ -99,21 +108,31 @@ export async function myHistoryTool(store: ProfileStore, userId: string, args: {
 
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 
+/**
+ * Sets a day's answer in the history calendar — the same edit the app's own
+ * calendar makes when you tap a day, and with the same three values.
+ *
+ * `true` went out, `false` had sun and stayed in, `null` never answered. The
+ * three are distinct on purpose: a deliberate "no" is a fact, a missing answer is
+ * not, and conflating them would quietly inflate whatever reads the history.
+ * Mirrors `toggleDayOverride` in lib/storage.ts.
+ */
 export async function logSunSessionTool(
   store: ProfileStore,
   userId: string,
-  args: { date?: string; minutes?: number },
+  args: { date?: string; minutes?: number; confirmed?: boolean | null },
 ) {
   const p = await store.getProfile(userId);
   if (!p) return NO_PROFILE;
 
+  const confirmed = args.confirmed === undefined ? true : args.confirmed;
   const date = args.date && DATE_RE.test(args.date) ? args.date : new Date().toISOString().slice(0, 10);
   const history = [...(p.history ?? [])];
   const existing = history.find((r) => r.date === date);
 
   if (existing) {
-    existing.userOverride = true;
-  } else {
+    existing.userOverride = confirmed;
+  } else if (confirmed === true) {
     history.push({
       date,
       cityId: p.last_city_id ?? "",
@@ -124,14 +143,69 @@ export async function logSunSessionTool(
       sufficient: false,
       userOverride: true,
     });
+  } else {
+    // Nothing recorded for that day, and the answer is not "I went out": there is
+    // no row to annotate, and inventing one would record a day the app never
+    // evaluated.
+    return { logged: false, date, confirmed, note: "That day is not in the history, so there was nothing to set." };
   }
+
   await store.updateHistory(userId, history);
 
   return {
     logged: true,
     date,
+    confirmed,
     minutesReported: args.minutes ?? null,
-    note: "Day marked as sun-confirmed in the app's history calendar. Reported minutes are acknowledged but not stored — the history tracks confirmed days.",
+    note: confirmed === true
+      ? "Day marked as sun-confirmed in the app's history calendar. Reported minutes are acknowledged but not stored — the history tracks confirmed days."
+      : confirmed === false
+        ? "Day marked as 'had sun, stayed in' in the app's history calendar."
+        : "Answer cleared for that day: it is back to unanswered.",
+  };
+}
+
+/**
+ * Writes the four synthesis inputs to the signed-in user's saved profile — the
+ * same row the app's own profile screen edits, so a change made from the chat
+ * shows up in the app and vice versa.
+ *
+ * Deliberately narrow: favourites, custom locations, the current city and the
+ * history are NOT writable from here. A tool that can rewrite a user's whole
+ * profile row is a much bigger thing to hand a language model than one that can
+ * set their skin type.
+ */
+export async function updateMyProfileTool(
+  store: ProfileStore,
+  userId: string,
+  args: { skinType?: number; exposedSkinFraction?: number; age?: number | null; targetIU?: number },
+) {
+  const p = await store.getProfile(userId);
+  if (!p) return NO_PROFILE;
+
+  const patch: ProfilePatch = {};
+  if (args.skinType !== undefined) patch.skin_type = Math.min(6, Math.max(1, Math.round(args.skinType)));
+  if (args.exposedSkinFraction !== undefined) {
+    patch.area_fraction = Math.min(1, Math.max(0.05, args.exposedSkinFraction));
+  }
+  if (args.age !== undefined) patch.age = args.age === null ? null : Math.min(120, Math.max(0, Math.round(args.age)));
+  if (args.targetIU !== undefined) patch.target_iu = Math.min(10000, Math.max(100, Math.round(args.targetIU)));
+
+  if (Object.keys(patch).length === 0) {
+    return { saved: false, reason: "nothing_to_update", hint: "Pass at least one of skinType, exposedSkinFraction, age or targetIU." };
+  }
+
+  await store.updateProfile(userId, patch);
+
+  return {
+    saved: true,
+    profile: {
+      skinType: patch.skin_type ?? p.skin_type,
+      exposedSkinFraction: patch.area_fraction ?? p.area_fraction,
+      age: patch.age !== undefined ? patch.age : p.age,
+      targetIU: patch.target_iu ?? p.target_iu,
+    },
+    note: "Saved to the user's account. The app and every later tool call now use these values.",
   };
 }
 
@@ -160,6 +234,14 @@ class SupabaseProfileStore implements ProfileStore {
       .update({ history, updated_at: new Date().toISOString() })
       .eq("id", userId);
     if (error) throw new Error(`profiles history update failed: ${error.message}`);
+  }
+
+  async updateProfile(userId: string, patch: ProfilePatch): Promise<void> {
+    const { error } = await this.sb
+      .from("profiles")
+      .update({ ...patch, updated_at: new Date().toISOString() })
+      .eq("id", userId);
+    if (error) throw new Error(`profiles update failed: ${error.message}`);
   }
 }
 

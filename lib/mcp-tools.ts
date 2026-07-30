@@ -1,12 +1,14 @@
 import { BUILTIN_CITIES } from "./cities";
 import { CITY_SLUGS } from "./city-slugs";
 import { getSunTimes } from "./sun-times";
-import { getCurve, dayOfYear, fmtTime, dateFromDoy } from "./solar";
+import { getCurve, dayOfYear, fmtTime, dateFromDoy, doyFromMonthDay, daysInMonth } from "./solar";
 import {
   computeExposureFromCurve, getCurrentStatus, maxSessionIU, MIN_UVI,
   iuForMinutes, erythemaMinutes, minutesForVitD, estimateUVFromElevation, type SkinType,
 } from "./vitd";
-import { ozoneDU } from "./uv-model";
+import { ozoneDU, synthesisThresholdElevation } from "./uv-model";
+import { tzOffsetForDate } from "./timezone";
+import { sampleElevations, DAY_CURVE_STEP_MINUTES } from "./day-curve";
 import { cityYearProfile, viableDateBoundaries, MIN_VIABLE_HOURS } from "./city-content";
 import type { SolarPoint, WeatherHour } from "./types";
 
@@ -78,8 +80,13 @@ export interface SunTimesArgs {
   timezone?: string;
 }
 
+/**
+ * Midday UTC, not midday local: the day number is a UTC convention (see
+ * lib/solar.ts), so parsing "2026-07-15" in the server's zone made the tools
+ * answer for the 14th on a machine east of Greenwich.
+ */
 function parseDate(date?: string): Date {
-  if (date && /^\d{4}-\d{2}-\d{2}$/.test(date)) return new Date(`${date}T12:00:00`);
+  if (date && /^\d{4}-\d{2}-\d{2}$/.test(date)) return new Date(`${date}T12:00:00Z`);
   return new Date();
 }
 
@@ -227,7 +234,7 @@ export function vitaminDWindowTool(args: VitDArgs) {
 
 const monthDay = (doy: number) => {
   const d = dateFromDoy(doy);
-  return `${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  return `${String(d.getUTCMonth() + 1).padStart(2, "0")}-${String(d.getUTCDate()).padStart(2, "0")}`;
 };
 
 /**
@@ -236,9 +243,12 @@ const monthDay = (doy: number) => {
  * comes from the same threshold model as the SEO city pages; the per-month
  * windows/minutes use the caller's personal profile (mid-month sample).
  */
-export function vitaminDYearTool(args: Omit<VitDArgs, "date">) {
-  const { skinType, area, targetIU, age, elevationM } = normalizeProfile(args);
-  const profile = cityYearProfile(args.lat, args.lon, elevationM);
+function buildVitaminDYearResult(
+  args: Omit<VitDArgs, "date">,
+  normalized: ReturnType<typeof normalizeProfile>,
+  profile: ReturnType<typeof cityYearProfile>,
+) {
+  const { skinType, area, targetIU, age, elevationM } = normalized;
   const bounds = profile.allYear || profile.neverPossible
     ? null
     : viableDateBoundaries(profile.hoursByDay);
@@ -250,9 +260,8 @@ export function vitaminDYearTool(args: Omit<VitDArgs, "date">) {
   const viable = profile.hoursByDay.map((h) => h >= MIN_VIABLE_HOURS);
 
   const byMonth = Array.from({ length: 12 }, (_, m) => {
-    const startDoy = dayOfYear(new Date(2026, m, 1));
-    const daysInMonth = new Date(2026, m + 1, 0).getDate();
-    const doys = Array.from({ length: daysInMonth }, (_, i) => startDoy + i);
+    const startDoy = doyFromMonthDay(m, 1);
+    const doys = Array.from({ length: daysInMonth(m) }, (_, i) => startDoy + i);
     const viableDoys = doys.filter((d) => viable[d - 1]);
 
     // Sample a representative viable day (the 15th when it qualifies, else the
@@ -280,7 +289,7 @@ export function vitaminDYearTool(args: Omit<VitDArgs, "date">) {
       month: m + 1,
       synthesisPossible: viableDoys.length > 0,
       viableDays: viableDoys.length,
-      partialMonth: viableDoys.length > 0 && viableDoys.length < daysInMonth,
+      partialMonth: viableDoys.length > 0 && viableDoys.length < daysInMonth(m),
       window,
       minutesNeededAtBestHour,
     };
@@ -313,6 +322,154 @@ export function vitaminDYearTool(args: Omit<VitDArgs, "date">) {
     },
     byMonth,
     note: DISCLAIMER,
+  };
+}
+
+export function vitaminDYearTool(args: Omit<VitDArgs, "date">) {
+  const normalized = normalizeProfile(args);
+  const profile = cityYearProfile(args.lat, args.lon, normalized.elevationM);
+  return buildVitaminDYearResult(args, normalized, profile);
+}
+
+export function vitaminDYearFull(args: Omit<VitDArgs, "date">) {
+  const normalized = normalizeProfile(args);
+  const profile = cityYearProfile(args.lat, args.lon, normalized.elevationM);
+  return { text: buildVitaminDYearResult(args, normalized, profile), hoursByDay: profile.hoursByDay };
+}
+
+// ---------------------------------------------------------------------------
+// configure_sun_profile
+
+export interface ProfileArgs {
+  lat?: number;
+  lon?: number;
+  timezone?: string;
+  placeName?: string;
+  skinType?: number;
+  exposedSkinFraction?: number;
+  age?: number;
+  targetIU?: number;
+}
+
+/** UV a reference clear day offers at noon, when no place is known yet. */
+const REFERENCE_UVI = 6;
+
+/**
+ * The profile every other tool silently assumes.
+ *
+ * Skin type 3, a quarter of the skin exposed, adult, 1000 IU: four defaults that
+ * change every number this server returns and that the user never sees. The
+ * widget makes them visible and adjustable; the text below states them for
+ * clients that cannot render it, which is the point of saying them out loud.
+ */
+export function configureSunProfileFull(args: ProfileArgs) {
+  // normalizeProfile only reads the four profile fields; the coordinates are
+  // optional here because the picker is useful before a place is chosen.
+  const { skinType, area, targetIU, age } = normalizeProfile({ lat: 0, lon: 0, ...args });
+
+  let uvIndex = REFERENCE_UVI;
+  if (typeof args.lat === "number" && typeof args.lon === "number") {
+    const doy = dayOfYear(new Date());
+    const curve = getCurve(args.lat, args.lon, doy, 0, args.timezone);
+    const peak = curve.reduce((best, p) => (p.elevation > best.elevation ? p : best), curve[0]);
+    uvIndex = Math.round(estimateUVFromElevation(peak.elevation, {
+      ozoneDu: ozoneDU(args.lat, args.lon, doy),
+      elevationM: 0,
+    }) * 10) / 10;
+  }
+
+  const minutes = minutesForVitD(uvIndex, skinType, area, targetIU, age);
+
+  return {
+    text: {
+      profile: { skinType, exposedSkinFraction: area, age, targetIU },
+      usingDefaultsFor: [
+        args.skinType === undefined ? "skinType" : null,
+        args.exposedSkinFraction === undefined ? "exposedSkinFraction" : null,
+        args.age === undefined ? "age" : null,
+        args.targetIU === undefined ? "targetIU" : null,
+      ].filter(Boolean),
+      referenceUVIndex: uvIndex,
+      ...(args.placeName ? { place: args.placeName } : {}),
+      minutesAtThatUV: minutes === null ? null : Math.round(minutes),
+      hint: "These four values change every other answer. The user can adjust them in the widget; whatever they choose comes back into the conversation, and later tool calls should pass those values explicitly.",
+      note: DISCLAIMER,
+    },
+    chart: {
+      profile: { skinType, exposedSkinFraction: area, age, targetIU },
+      uvIndex,
+      ...(args.placeName ? { placeName: args.placeName } : {}),
+    },
+  };
+}
+
+// ---------------------------------------------------------------------------
+// compare_vitamin_d_year
+
+export interface ComparePlace {
+  name: string;
+  lat: number;
+  lon: number;
+  timezone?: string;
+  elevationM?: number;
+}
+
+export type CompareArgs = Omit<VitDArgs, "date" | "lat" | "lon" | "elevationM"> & { places: ComparePlace[] };
+
+/**
+ * Several places, one call, one picture.
+ *
+ * A separate tool rather than letting the model call get_vitamin_d_year N times:
+ * each tool call renders its own view, so N calls give N unrelated widgets. A
+ * comparison only means anything when the years share an axis, and that requires
+ * the data to arrive together.
+ */
+export function compareVitaminDYearFull(args: CompareArgs) {
+  const places = args.places.slice(0, 5);
+  const perPlace = places.map((place) => {
+    const full = vitaminDYearFull({
+      lat: place.lat,
+      lon: place.lon,
+      timezone: place.timezone,
+      elevationM: place.elevationM,
+      skinType: args.skinType,
+      exposedSkinFraction: args.exposedSkinFraction,
+      age: args.age,
+      targetIU: args.targetIU,
+    });
+    return { place, ...full };
+  });
+
+  const text = {
+    profile: perPlace[0]?.text.profile,
+    places: perPlace.map(({ place, text: year }) => ({
+      name: place.name,
+      monthsWithSun: year.monthsWithSun,
+      solidMonths: year.solidMonths,
+      exactViableSpan: year.exactViableSpan,
+      viableDaysPerYear: year.summary.viableDaysPerYear,
+      bestMonth: year.summary.bestMonth,
+      minutesAtBestMonth: year.summary.minutesAtBestMonth,
+    })),
+    // Spelled out so the model does not have to re-derive the ranking and get it
+    // wrong; ties keep the caller's order.
+    rankedByViableDays: perPlace
+      .map(({ place, text: year }) => ({ name: place.name, viableDaysPerYear: year.summary.viableDaysPerYear }))
+      .sort((a, b) => b.viableDaysPerYear - a.viableDaysPerYear)
+      .map((r) => r.name),
+    note: DISCLAIMER,
+  };
+
+  return {
+    text,
+    chart: {
+      places: perPlace.map(({ place, text: year, hoursByDay }) => ({
+        name: place.name,
+        hoursByDay,
+        spanStart: year.exactViableSpan?.firstDay,
+        spanEnd: year.exactViableSpan?.lastDay,
+      })),
+    },
   };
 }
 
@@ -408,7 +565,13 @@ export const fetchWeatherHours: WeatherFetcher = async (lat, lon) => {
   }
 };
 
-export async function currentStatusTool(args: VitDArgs, fetcher: WeatherFetcher = fetchWeatherHours) {
+/**
+ * Shared body for the two entry points below, so the widget's chart data comes
+ * out of the SAME computation the text answer does — the curve is 289 solar
+ * evaluations plus a weather fetch, and doing that twice per call to decorate a
+ * picture would be indefensible.
+ */
+async function buildCurrentStatus(args: VitDArgs, fetcher: WeatherFetcher) {
   const now = new Date();
   const doy = dayOfYear(now);
   const { skinType, area, targetIU, age, elevationM } = normalizeProfile(args);
@@ -436,7 +599,7 @@ export async function currentStatusTool(args: VitDArgs, fetcher: WeatherFetcher 
     }
   }
 
-  return {
+  const text = {
     timesIn: args.timezone ?? "UTC",
     uvSource: hours ? "open-meteo forecast (includes clouds)" : "clear-sky model (no cloud data)",
     profile: { skinType, exposedSkinFraction: area, age, targetIU },
@@ -452,4 +615,34 @@ export async function currentStatusTool(args: VitDArgs, fetcher: WeatherFetcher 
     maxSessionIU: Math.round(maxSessionIU(area, age)),
     note: DISCLAIMER,
   };
+
+  const offset = args.timezone ? tzOffsetForDate(args.timezone, now) : 0;
+  const nowLocalHours = (((now.getUTCHours() + now.getUTCMinutes() / 60 + offset) % 24) + 24) % 24;
+
+  return {
+    text,
+    chart: {
+      elevations: sampleElevations(curve),
+      stepMinutes: DAY_CURVE_STEP_MINUTES,
+      thresholdElevation: Math.round(
+        synthesisThresholdElevation(args.lat, args.lon, doy, elevationM) * 10) / 10,
+      nowLocalHours: Math.round(nowLocalHours * 100) / 100,
+      windowStart: status.window ? status.window.start : null,
+      windowEnd: status.window ? status.window.end : null,
+      state: status.state,
+      uvIndex: text.currentUVIndex,
+      minutesNeeded: text.minutesNeededNow,
+      cloudCoverPercent: status.cloudCover,
+    },
+  };
+}
+
+/** The tool's answer for the model: unchanged, text only. */
+export async function currentStatusTool(args: VitDArgs, fetcher: WeatherFetcher = fetchWeatherHours) {
+  return (await buildCurrentStatus(args, fetcher)).text;
+}
+
+/** Same answer plus the chart channel the MCP App widget renders from. */
+export async function currentStatusFull(args: VitDArgs, fetcher: WeatherFetcher = fetchWeatherHours) {
+  return buildCurrentStatus(args, fetcher);
 }

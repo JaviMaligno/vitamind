@@ -3,6 +3,7 @@
 import { useRef, useState, useEffect, useMemo, useCallback } from "react";
 import { vitDHrs, fmtDate, dateFromDoy } from "@/lib/solar";
 import { synthesisThresholdElevation } from "@/lib/uv-model";
+import { heatColor } from "@/lib/year-strip";
 
 interface Props {
   selectedLat: number;
@@ -53,8 +54,10 @@ export default function GlobalHeatmap({ selectedLat, selectedDoy, onSelect }: Pr
       for (let di = 0; di < doyCount; di++) {
         const hrs = heatData[li * doyCount + di];
         if (hrs <= 0) continue;
-        const t = Math.min(hrs / 10, 1);
-        ctx.fillStyle = `hsl(${45 - t * 25},${80 + t * 20}%,${15 + t * 50}%)`;
+        // Same ramp as CityYearStrip and the MCP widget. This is a canvas
+        // fillStyle, not markup, so the shared function's spaced-out `hsl(…)`
+        // formatting is irrelevant here — the CSS parser takes either.
+        ctx.fillStyle = heatColor(hrs);
         ctx.fillRect(PAD.l + di * cw, PAD.t + li * ch, Math.ceil(cw) + 0.5, Math.ceil(ch) + 0.5);
       }
     }

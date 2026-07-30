@@ -25,6 +25,7 @@ interface Props {
 /** i18n key per scope id ("profile:read" → scopeProfileRead). */
 const SCOPE_KEY: Record<string, string> = {
   "profile:read": "scopeProfileRead",
+  "profile:write": "scopeProfileWrite",
   "history:read": "scopeHistoryRead",
   "history:write": "scopeHistoryWrite",
 };
