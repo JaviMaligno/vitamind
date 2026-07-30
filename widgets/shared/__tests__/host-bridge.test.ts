@@ -182,3 +182,70 @@ describe("HostBridge.notifySize", () => {
     expect(host.posted).toEqual([]);
   });
 });
+
+describe("HostBridge.callServerTool", () => {
+  it("forwards a tools/call over the same channel and resolves with the result", async () => {
+    const host = fakeHost();
+    const bridge = new HostBridge({ appInfo, transport: host.transport });
+    const connected = bridge.connect();
+    host.respondToInitialize({});
+    await connected;
+
+    const pending = bridge.callServerTool({ name: "log_sun_session", arguments: { date: "2026-07-30" } });
+    const sent = host.posted.at(-1)!;
+    expect(sent.method).toBe("tools/call");
+    expect(sent.params).toEqual({ name: "log_sun_session", arguments: { date: "2026-07-30" } });
+
+    host.send({ jsonrpc: "2.0", id: sent.id, result: { content: [{ type: "text", text: "ok" }] } });
+    await expect(pending).resolves.toMatchObject({ content: [{ type: "text", text: "ok" }] });
+  });
+
+  it("refuses before the handshake, rather than posting into the void", async () => {
+    const host = fakeHost();
+    const bridge = new HostBridge({ appInfo, transport: host.transport });
+
+    await expect(bridge.callServerTool({ name: "log_sun_session" })).rejects.toThrow(/not connected/i);
+    expect(host.posted).toEqual([]);
+  });
+
+  it("surfaces a tool error to the caller instead of resolving", async () => {
+    const host = fakeHost();
+    const bridge = new HostBridge({ appInfo, transport: host.transport });
+    const connected = bridge.connect();
+    host.respondToInitialize({});
+    await connected;
+
+    const pending = bridge.callServerTool({ name: "nope" });
+    const sent = host.posted.at(-1)!;
+    host.send({ jsonrpc: "2.0", id: sent.id, error: { code: -32602, message: "unknown tool" } });
+
+    await expect(pending).rejects.toThrow(/unknown tool/);
+  });
+});
+
+describe("HostBridge.updateModelContext", () => {
+  it("sends the structured context the model should inherit", async () => {
+    const host = fakeHost();
+    const bridge = new HostBridge({ appInfo, transport: host.transport });
+    const connected = bridge.connect();
+    host.respondToInitialize({});
+    await connected;
+
+    const pending = bridge.updateModelContext({
+      content: [{ type: "text", text: "Skin type 2, 25% exposed" }],
+      structuredContent: { skinType: 2, exposedSkinFraction: 0.25 },
+    });
+    const sent = host.posted.at(-1)!;
+    expect(sent.method).toBe("ui/update-model-context");
+    expect(sent.params).toMatchObject({ structuredContent: { skinType: 2 } });
+
+    host.send({ jsonrpc: "2.0", id: sent.id, result: {} });
+    await expect(pending).resolves.toBeUndefined();
+  });
+
+  it("refuses before the handshake", async () => {
+    const host = fakeHost();
+    const bridge = new HostBridge({ appInfo, transport: host.transport });
+    await expect(bridge.updateModelContext({ structuredContent: {} })).rejects.toThrow(/not connected/i);
+  });
+});

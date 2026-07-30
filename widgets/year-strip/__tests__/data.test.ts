@@ -12,8 +12,11 @@ describe("readYearStripMeta", () => {
   it("pulls the chart data out of the tool result's _meta", () => {
     const payload = readYearStripMeta(validResult(year()));
     expect(payload).not.toBeNull();
-    expect(payload!.hoursByDay).toHaveLength(365);
-    expect(payload!.hoursByDay[0]).toBe(0);
+    // Normalised into a one-element place list: the comparison tool sends
+    // several, and both shapes reach the renderer the same way.
+    expect(payload!.places).toHaveLength(1);
+    expect(payload!.places[0].hoursByDay).toHaveLength(365);
+    expect(payload!.places[0].hoursByDay[0]).toBe(0);
   });
 
   it("returns null when the result carries no _meta at all", () => {
@@ -43,6 +46,6 @@ describe("readYearStripMeta", () => {
   });
 
   it("accepts a leap-length array so the viewBox can follow the data", () => {
-    expect(readYearStripMeta(validResult(new Array(366).fill(1)))!.hoursByDay).toHaveLength(366);
+    expect(readYearStripMeta(validResult(new Array(366).fill(1)))!.places[0].hoursByDay).toHaveLength(366);
   });
 });

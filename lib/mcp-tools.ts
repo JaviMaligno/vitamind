@@ -338,6 +338,76 @@ export function vitaminDYearFull(args: Omit<VitDArgs, "date">) {
 }
 
 // ---------------------------------------------------------------------------
+// compare_vitamin_d_year
+
+export interface ComparePlace {
+  name: string;
+  lat: number;
+  lon: number;
+  timezone?: string;
+  elevationM?: number;
+}
+
+export type CompareArgs = Omit<VitDArgs, "date" | "lat" | "lon" | "elevationM"> & { places: ComparePlace[] };
+
+/**
+ * Several places, one call, one picture.
+ *
+ * A separate tool rather than letting the model call get_vitamin_d_year N times:
+ * each tool call renders its own view, so N calls give N unrelated widgets. A
+ * comparison only means anything when the years share an axis, and that requires
+ * the data to arrive together.
+ */
+export function compareVitaminDYearFull(args: CompareArgs) {
+  const places = args.places.slice(0, 5);
+  const perPlace = places.map((place) => {
+    const full = vitaminDYearFull({
+      lat: place.lat,
+      lon: place.lon,
+      timezone: place.timezone,
+      elevationM: place.elevationM,
+      skinType: args.skinType,
+      exposedSkinFraction: args.exposedSkinFraction,
+      age: args.age,
+      targetIU: args.targetIU,
+    });
+    return { place, ...full };
+  });
+
+  const text = {
+    profile: perPlace[0]?.text.profile,
+    places: perPlace.map(({ place, text: year }) => ({
+      name: place.name,
+      monthsWithSun: year.monthsWithSun,
+      solidMonths: year.solidMonths,
+      exactViableSpan: year.exactViableSpan,
+      viableDaysPerYear: year.summary.viableDaysPerYear,
+      bestMonth: year.summary.bestMonth,
+      minutesAtBestMonth: year.summary.minutesAtBestMonth,
+    })),
+    // Spelled out so the model does not have to re-derive the ranking and get it
+    // wrong; ties keep the caller's order.
+    rankedByViableDays: perPlace
+      .map(({ place, text: year }) => ({ name: place.name, viableDaysPerYear: year.summary.viableDaysPerYear }))
+      .sort((a, b) => b.viableDaysPerYear - a.viableDaysPerYear)
+      .map((r) => r.name),
+    note: DISCLAIMER,
+  };
+
+  return {
+    text,
+    chart: {
+      places: perPlace.map(({ place, text: year, hoursByDay }) => ({
+        name: place.name,
+        hoursByDay,
+        spanStart: year.exactViableSpan?.firstDay,
+        spanEnd: year.exactViableSpan?.lastDay,
+      })),
+    },
+  };
+}
+
+// ---------------------------------------------------------------------------
 // estimate_sun_session
 
 const ERYTHEMA_NOTE =

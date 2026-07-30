@@ -3,7 +3,8 @@ import type { AuthInfo } from "@modelcontextprotocol/sdk/server/auth/types.js";
 import { registerAppResource, registerAppTool, RESOURCE_MIME_TYPE } from "@modelcontextprotocol/ext-apps/server";
 import { z } from "zod";
 import {
-  searchCity, sunTimesTool, vitaminDWindowTool, vitaminDYearFull, currentStatusFull, estimateSunSessionTool,
+  searchCity, sunTimesTool, vitaminDWindowTool, vitaminDYearFull, currentStatusFull,
+  compareVitaminDYearFull, estimateSunSessionTool,
 } from "@/lib/mcp-tools";
 import { YEAR_STRIP_META_KEY } from "@/widgets/year-strip/data";
 import { YEAR_STRIP_WIDGET_HTML } from "@/widgets/year-strip/generated";
@@ -170,6 +171,35 @@ export function initMcpServer(server: McpServer) {
         return {
           ...json(result.text),
           _meta: { [YEAR_STRIP_META_KEY]: { hoursByDay: result.hoursByDay } },
+        };
+      }),
+    );
+
+    registerAppTool(
+      server,
+      "compare_vitamin_d_year",
+      {
+        description: "Compare the vitamin D year of 2 to 5 places side by side in ONE call — 'Madrid vs Berlin vs Oslo, where do I actually get winter sun?'. Returns each place's months with sun, exact season span and viable days per year, plus rankedByViableDays. Use this instead of calling get_vitamin_d_year once per city: only this tool can draw the years on a shared axis.",
+        inputSchema: {
+          places: z.array(z.object({
+            name: z.string().min(1).max(60).describe("How to label this place in the comparison"),
+            lat: LAT,
+            lon: LON,
+            timezone: TZ,
+            elevationM: PROFILE.elevationM,
+          })).min(2).max(5).describe("The places to compare, 2 to 5"),
+          skinType: PROFILE.skinType,
+          exposedSkinFraction: PROFILE.exposedSkinFraction,
+          age: PROFILE.age,
+          targetIU: PROFILE.targetIU,
+        },
+        _meta: { ui: { resourceUri: YEAR_STRIP_RESOURCE_URI } },
+      },
+      async (args) => timed("compare_vitamin_d_year", () => {
+        const result = compareVitaminDYearFull(args);
+        return {
+          ...json(result.text),
+          _meta: { [YEAR_STRIP_META_KEY]: result.chart },
         };
       }),
     );

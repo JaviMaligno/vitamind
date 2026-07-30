@@ -123,6 +123,40 @@ export class HostBridge {
     this.notify(SIZE_CHANGED, { height });
   }
 
+  /**
+   * Calls a tool on the MCP server through the host, without a chat round trip.
+   *
+   * This is what makes a widget interactive rather than a picture: tapping a day
+   * in the history calendar logs it and the calendar updates in place. The host
+   * relays it as a normal `tools/call`, so the server sees no difference between
+   * this and the model calling the same tool.
+   */
+  async callServerTool(params: { name: string; arguments?: Record<string, unknown> }): Promise<Record<string, unknown>> {
+    this.assertConnected("callServerTool");
+    return this.request("tools/call", params);
+  }
+
+  /**
+   * Hands the model something the user did in the widget, so later turns inherit
+   * it. Each call replaces the previous context this view sent.
+   */
+  async updateModelContext(params: {
+    content?: unknown[];
+    structuredContent?: Record<string, unknown>;
+  }): Promise<void> {
+    this.assertConnected("updateModelContext");
+    await this.request("ui/update-model-context", params);
+  }
+
+  /**
+   * Anything that talks to the host must wait for the handshake: posting a
+   * request before `ui/initialize` has been answered means the host has no
+   * record of this view, and the message is dropped with no error anywhere.
+   */
+  private assertConnected(method: string): void {
+    if (!this.ready) throw new Error(`HostBridge is not connected yet — ${method} needs the handshake first`);
+  }
+
   close(): void {
     this.unsubscribe?.();
     this.unsubscribe = null;

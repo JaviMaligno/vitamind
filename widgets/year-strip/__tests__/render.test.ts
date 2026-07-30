@@ -9,36 +9,36 @@ const countRects = (html: string) => (html.match(/<rect\b/g) ?? []).length;
 
 describe("renderYearStrip with data", () => {
   it("draws one bar per day — 365 for a full year", () => {
-    const html = renderYearStrip({ hoursByDay: year, locale: "en", theme: "light" });
+    const html = renderYearStrip({ places: [{ hoursByDay: year }], locale: "en", theme: "light" });
     expect(countRects(html)).toBe(365);
   });
 
   it("colours the bars with the shared ramp", () => {
-    const html = renderYearStrip({ hoursByDay: [0, 10], locale: "en", theme: "light" });
+    const html = renderYearStrip({ places: [{ hoursByDay: [0, 10] }], locale: "en", theme: "light" });
     expect(html).toContain(HEAT_LOW);
     expect(html).toContain(HEAT_HIGH);
   });
 
   it("sizes the viewBox from the data so a 366-day array still fits", () => {
-    expect(renderYearStrip({ hoursByDay: year, locale: "en", theme: "dark" }))
+    expect(renderYearStrip({ places: [{ hoursByDay: year }], locale: "en", theme: "dark" }))
       .toContain('viewBox="0 0 365 110"');
-    expect(renderYearStrip({ hoursByDay: new Array(366).fill(1), locale: "en", theme: "dark" }))
+    expect(renderYearStrip({ places: [{ hoursByDay: new Array(366).fill(1) }], locale: "en", theme: "dark" }))
       .toContain('viewBox="0 0 366 110"');
   });
 
   it("labels the months and the legend in the host's language", () => {
-    const ru = renderYearStrip({ hoursByDay: year, locale: "ru", theme: "light" });
+    const ru = renderYearStrip({ places: [{ hoursByDay: year }], locale: "ru", theme: "light" });
     expect(ru).toContain(widgetStrings("ru").caption);
     expect(ru).toContain("0 ч");
     expect(ru).toContain("10 ч+");
 
-    const lt = renderYearStrip({ hoursByDay: year, locale: "lt", theme: "light" });
+    const lt = renderYearStrip({ places: [{ hoursByDay: year }], locale: "lt", theme: "light" });
     expect(lt).toContain("saus.");
     expect(lt).toContain("gruod.");
   });
 
   it("escapes text so a translation can never inject markup", () => {
-    const html = renderYearStrip({ hoursByDay: year, locale: "fr", theme: "light" });
+    const html = renderYearStrip({ places: [{ hoursByDay: year }], locale: "fr", theme: "light" });
     // fr's caption contains an apostrophe; it must survive as text, and no
     // stray unescaped angle bracket may appear in a text node.
     expect(html).toContain("d&#39;heures");
@@ -48,13 +48,13 @@ describe("renderYearStrip with data", () => {
 
 describe("renderYearStrip empty state", () => {
   it("draws no bars and says why when there is no data", () => {
-    const html = renderYearStrip({ hoursByDay: null, locale: "en", theme: "light" });
+    const html = renderYearStrip({ places: null, locale: "en", theme: "light" });
     expect(countRects(html)).toBe(0);
     expect(html).toContain(widgetStrings("en").empty);
   });
 
   it("localises the empty state too", () => {
-    const html = renderYearStrip({ hoursByDay: null, locale: "de", theme: "dark" });
+    const html = renderYearStrip({ places: null, locale: "de", theme: "dark" });
     expect(html).toContain(widgetStrings("de").empty);
   });
 });
@@ -84,8 +84,8 @@ describe("theme", () => {
   });
 
   it("renders different markup under a dark host theme", () => {
-    const light = renderYearStrip({ hoursByDay: year, locale: "en", theme: "light" });
-    const dark = renderYearStrip({ hoursByDay: year, locale: "en", theme: "dark" });
+    const light = renderYearStrip({ places: [{ hoursByDay: year }], locale: "en", theme: "light" });
+    const dark = renderYearStrip({ places: [{ hoursByDay: year }], locale: "en", theme: "dark" });
     expect(dark).not.toBe(light);
     expect(light).toContain(widgetPalette("light").textPrimary);
     expect(dark).toContain(widgetPalette("dark").textPrimary);
@@ -100,5 +100,59 @@ describe("theme", () => {
     const p = widgetPalette("light");
     expect(p.pageBackground).toContain("var(--color-background-primary,");
     expect(p.textPrimary).toContain("var(--color-text-primary,");
+  });
+});
+
+describe("renderYearStrip stacked (comparison)", () => {
+  const flat = (h: number) => new Array(365).fill(h);
+
+  it("draws one strip per place, each labelled", () => {
+    const html = renderYearStrip({
+      places: [
+        { name: "Reykjavik", hoursByDay: flat(1), spanStart: "04-30", spanEnd: "08-23" },
+        { name: "Singapore", hoursByDay: flat(9) },
+      ],
+      locale: "en",
+      theme: "dark",
+    });
+    expect((html.match(/<svg/g) ?? [])).toHaveLength(2);
+    expect(html).toContain("Reykjavik");
+    expect(html).toContain("Singapore");
+    expect(html).toContain("04-30");
+  });
+
+  it("shares one month axis and one legend across the stack", () => {
+    // The comparison only means something if every strip is the same 365 days
+    // on the same axis; repeating the axis per strip would invite the opposite
+    // reading.
+    const html = renderYearStrip({
+      places: [
+        { name: "A", hoursByDay: flat(1) },
+        { name: "B", hoursByDay: flat(2) },
+        { name: "C", hoursByDay: flat(3) },
+      ],
+      locale: "en",
+    });
+    expect((html.match(/repeat\(12,1fr\)/g) ?? [])).toHaveLength(1);
+    expect((html.match(/linear-gradient/g) ?? [])).toHaveLength(1);
+  });
+
+  it("shrinks the strips when there is more than one", () => {
+    const one = renderYearStrip({ places: [{ hoursByDay: flat(4) }], locale: "en" });
+    const two = renderYearStrip({
+      places: [{ name: "A", hoursByDay: flat(4) }, { name: "B", hoursByDay: flat(4) }],
+      locale: "en",
+    });
+    expect(one).toContain('height="110"');
+    expect(two).toContain('height="56"');
+  });
+
+  it("keeps a place name from becoming markup", () => {
+    const html = renderYearStrip({
+      places: [{ name: "<img src=x onerror=alert(1)>", hoursByDay: flat(3) }],
+      locale: "en",
+    });
+    expect(html).not.toContain("<img");
+    expect(html).toContain("&lt;img");
   });
 });

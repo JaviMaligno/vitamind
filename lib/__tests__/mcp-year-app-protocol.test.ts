@@ -64,11 +64,13 @@ describe("MCP App metadata on the wire", () => {
 
     // The tool set stays at ten for every client; only the tools whose answer is
     // genuinely worse as prose carry a widget, and the others must stay clean.
-    expect(result.tools).toHaveLength(10);
+    expect(result.tools).toHaveLength(11);
     expect(withUi.map((t) => t.name).sort())
-      .toEqual(["get_current_status", "get_vitamin_d_year"]);
+      .toEqual(["compare_vitamin_d_year", "get_current_status", "get_vitamin_d_year"]);
+    // The comparison reuses the year strip's resource: same picture, one or many.
     expect(Object.fromEntries(withUi.map((t) => [t.name, t._meta.ui.resourceUri]))).toEqual({
       get_vitamin_d_year: YEAR_STRIP_RESOURCE_URI,
+      compare_vitamin_d_year: YEAR_STRIP_RESOURCE_URI,
       get_current_status: DAY_CURVE_RESOURCE_URI,
     });
   });
@@ -103,6 +105,34 @@ describe("MCP App metadata on the wire", () => {
     // structuredContent is surfaced to the model by clients that support it, so
     // the chart data must not be there — that is why _meta carries it.
     expect(result.structuredContent).toBeUndefined();
+  });
+
+  it("compares several places in one call, on one shared payload", async () => {
+    await connect();
+    const { result } = await rpc(
+      "tools/call",
+      {
+        name: "compare_vitamin_d_year",
+        arguments: {
+          places: [
+            { name: "Reykjavik", lat: 64.15, lon: -21.94, timezone: "Atlantic/Reykjavik" },
+            { name: "Singapore", lat: 1.35, lon: 103.82, timezone: "Asia/Singapore" },
+          ],
+        },
+      },
+      6,
+    );
+
+    const text = JSON.parse(result.content[0].text);
+    expect(text.places.map((p: { name: string }) => p.name)).toEqual(["Reykjavik", "Singapore"]);
+    // The ranking is spelled out so the model does not re-derive it and slip.
+    expect(text.rankedByViableDays).toEqual(["Singapore", "Reykjavik"]);
+    expect(result.content[0].text).not.toContain("hoursByDay");
+
+    const chart = result._meta[YEAR_STRIP_META_KEY];
+    expect(chart.places).toHaveLength(2);
+    expect(chart.places[0].hoursByDay).toHaveLength(365);
+    expect(chart.places[0].name).toBe("Reykjavik");
   });
 
   it("answers get_current_status with the day curve alongside the text", async () => {

@@ -11,6 +11,7 @@ export function widgetPalette(theme: unknown) {
     textPrimary: resolved === "dark" ? "var(--color-text-primary, #f4f5f7)" : "var(--color-text-primary, #17191f)",
     textMuted: resolved === "dark" ? "var(--color-text-secondary, #a8adb8)" : "var(--color-text-secondary, #646b78)",
     plate: "#0a0f28",
+    onPlate: "rgba(255,255,255,0.92)",
     onPlateFaint: "rgba(255,255,255,0.55)",
   };
 }
