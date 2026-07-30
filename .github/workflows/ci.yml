@@ -1,11 +1,20 @@
-# Quality gate + deploys: every push and PR must pass lint, typecheck, unit
-# tests and a production build. On green CI, pushes to master deploy to
-# production and pushes to dev deploy to the stable dev preview — so a red CI
-# never reaches a deploy (better than Vercel's native Git integration, which
-# deploys regardless of checks).
+# Deploys, and the quality gate for pull requests.
 #
-# Secrets required: VERCEL_TOKEN (Vercel account token, scope
-# javieraguilar-6355s-projects). The org/project IDs below are not secrets.
+# The gate itself lives in vercel.json's buildCommand — lint, typecheck, tests
+# and the build all run inside Vercel's build, so a red tree cannot produce a
+# deployment no matter which path asks for one: this workflow, `vercel --prod`
+# typed by hand during an incident, or Vercel's own Git integration. That last
+# one is switched off (`git.deploymentEnabled: false`) so a push does not deploy
+# twice; this workflow stays in charge because the IndexNow ping needs to
+# snapshot the live sitemap BEFORE the deploy replaces it, which an automatic
+# Git deploy cannot do.
+#
+# Consequence for this file: the `ci` job runs on PULL REQUESTS only. On a push
+# the same checks run inside the Vercel build, and running them here as well
+# would just be paying for them twice.
+#
+# Secrets required: VERCEL_TOKEN (Vercel account token). The org/project IDs
+# below are not secrets.
 name: CI
 
 on:
@@ -14,7 +23,10 @@ on:
   pull_request:
 
 jobs:
+  # Fast feedback before merging. On push this is redundant — vercel.json's
+  # buildCommand runs the same four commands during the deploy's build.
   ci:
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -44,7 +56,6 @@ jobs:
   # Production deploy: only after the full quality gate, only on master pushes.
   # Builds remotely on Vercel (same as npx vercel --prod locally).
   deploy-prod:
-    needs: ci
     if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     environment: production
@@ -92,7 +103,6 @@ jobs:
   # subscriptions) aliased to a stable URL so push-notification testing has a
   # fixed origin. This replaces the old vitamind-dev Vercel project.
   deploy-dev:
-    needs: ci
     if: github.event_name == 'push' && github.ref == 'refs/heads/dev'
     runs-on: ubuntu-latest
     environment: dev

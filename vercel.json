@@ -1,9 +1,12 @@
 {
-  "buildCommand": "npm run build",
+  "buildCommand": "npm run lint && npm run typecheck && NODE_ENV=test npm test && npm run build",
   "crons": [
     {
       "path": "/api/push/notify",
       "schedule": "0 8 * * *"
     }
-  ]
+  ],
+  "git": {
+    "deploymentEnabled": false
+  }
 }
