@@ -1,19 +1,14 @@
 import { HostBridge, windowTransport, type HostContext } from "../shared/host-bridge";
-import { readYearStripMeta } from "./data";
-import { renderYearStrip } from "./render";
-import { widgetPalette } from "./theme";
+import { readDayCurveMeta, type DayCurveMeta } from "./data";
+import { renderDayCurve } from "./render";
+import { dayCurvePalette } from "./theme";
 
 const root = document.querySelector<HTMLElement>("#app");
-if (!root) throw new Error("year-strip widget root missing");
+if (!root) throw new Error("day-curve widget root missing");
 
-let hoursByDay: number[] | null = null;
+let meta: DayCurveMeta | null = null;
 
-/**
- * The host owns the theme and the CSS variables; the iframe inherits neither, so
- * both get applied by hand. These two are what `applyDocumentTheme` and
- * `applyHostStyleVariables` do in @modelcontextprotocol/ext-apps — three lines
- * each, reproduced here to keep the bundle free of that package at runtime.
- */
+/** The host owns the theme and its CSS variables; an iframe inherits neither. */
 function applyHostAppearance(context: HostContext | undefined) {
   const element = document.documentElement;
   if (context?.theme) {
@@ -27,18 +22,18 @@ function applyHostAppearance(context: HostContext | undefined) {
 
 function render() {
   const context = bridge.getHostContext();
-  const palette = widgetPalette(context?.theme);
+  const palette = dayCurvePalette(context?.theme, meta?.state ?? "no_synthesis");
   document.body.style.background = palette.pageBackground;
   document.body.style.color = palette.textPrimary;
-  root!.innerHTML = renderYearStrip({ hoursByDay, locale: context?.locale, theme: context?.theme });
+  root!.innerHTML = renderDayCurve({ meta, locale: context?.locale, theme: context?.theme });
   bridge.notifySize(Math.ceil(document.documentElement.scrollHeight));
 }
 
 const bridge = new HostBridge({
-  appInfo: { name: "Vitamin D Year Strip", version: "1.0.0" },
+  appInfo: { name: "Vitamin D Day Curve", version: "1.0.0" },
   transport: windowTransport(),
   onToolResult: (result) => {
-    hoursByDay = readYearStripMeta(result)?.hoursByDay ?? null;
+    meta = readDayCurveMeta(result);
     render();
   },
   onHostContextChanged: (context) => {
@@ -47,8 +42,8 @@ const bridge = new HostBridge({
   },
 });
 
-// Render the empty state immediately: the host can preload the resource before
-// the tool has run, and a blank iframe reads as broken.
+// The host may preload the resource before the tool has run; a blank iframe
+// reads as broken, so the empty state goes up immediately.
 render();
 
 void bridge.connect().then(() => {

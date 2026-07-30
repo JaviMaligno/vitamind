@@ -3,10 +3,12 @@ import type { AuthInfo } from "@modelcontextprotocol/sdk/server/auth/types.js";
 import { registerAppResource, registerAppTool, RESOURCE_MIME_TYPE } from "@modelcontextprotocol/ext-apps/server";
 import { z } from "zod";
 import {
-  searchCity, sunTimesTool, vitaminDWindowTool, vitaminDYearFull, currentStatusTool, estimateSunSessionTool,
+  searchCity, sunTimesTool, vitaminDWindowTool, vitaminDYearFull, currentStatusFull, estimateSunSessionTool,
 } from "@/lib/mcp-tools";
 import { YEAR_STRIP_META_KEY } from "@/widgets/year-strip/data";
 import { YEAR_STRIP_WIDGET_HTML } from "@/widgets/year-strip/generated";
+import { DAY_CURVE_META_KEY } from "@/widgets/day-curve/data";
+import { DAY_CURVE_WIDGET_HTML } from "@/widgets/day-curve/generated";
 import { getOAuthDb, verifyAccessToken, type OAuthScope } from "@/lib/oauth";
 import {
   getProfileStore, myProfileTool, myCitiesTool, myHistoryTool, logSunSessionTool,
@@ -85,6 +87,7 @@ const PROFILE = {
 
 export const SERVER_INFO = { name: "vitamind-explorer", version: "1.0.0" };
 export const YEAR_STRIP_RESOURCE_URI = "ui://getvitamind/year-strip.html";
+export const DAY_CURVE_RESOURCE_URI = "ui://getvitamind/day-curve.html";
 
 /** Registers the full tool set (public + personal) on an MCP server. */
 export function initMcpServer(server: McpServer) {
@@ -98,6 +101,21 @@ export function initMcpServer(server: McpServer) {
           uri: YEAR_STRIP_RESOURCE_URI,
           mimeType: RESOURCE_MIME_TYPE,
           text: YEAR_STRIP_WIDGET_HTML,
+          _meta: { ui: { csp: {} } },
+        }],
+      }),
+    );
+
+    registerAppResource(
+      server,
+      "Vitamin D day curve",
+      DAY_CURVE_RESOURCE_URI,
+      { description: "Today's sun elevation curve with the vitamin D window shaded" },
+      async () => ({
+        contents: [{
+          uri: DAY_CURVE_RESOURCE_URI,
+          mimeType: RESOURCE_MIME_TYPE,
+          text: DAY_CURVE_WIDGET_HTML,
           _meta: { ui: { csp: {} } },
         }],
       }),
@@ -156,11 +174,21 @@ export function initMcpServer(server: McpServer) {
       }),
     );
 
-    server.tool(
+    registerAppTool(
+      server,
       "get_current_status",
-      "Whether RIGHT NOW is a good moment for vitamin D synthesis at a location, using live Open-Meteo UV/cloud data when reachable (clear-sky model otherwise): current UV index, minutes needed now, and when today's window opens or closes.",
-      { lat: LAT, lon: LON, timezone: TZ, ...PROFILE },
-      async (args) => timed("get_current_status", async () => json(await currentStatusTool(args))),
+      {
+        description: "Whether RIGHT NOW is a good moment for vitamin D synthesis at a location, using live Open-Meteo UV/cloud data when reachable (clear-sky model otherwise): current UV index, minutes needed now, and when today's window opens or closes.",
+        inputSchema: { lat: LAT, lon: LON, timezone: TZ, ...PROFILE },
+        _meta: { ui: { resourceUri: DAY_CURVE_RESOURCE_URI } },
+      },
+      async (args) => timed("get_current_status", async () => {
+        const result = await currentStatusFull(args);
+        return {
+          ...json(result.text),
+          _meta: { [DAY_CURVE_META_KEY]: result.chart },
+        };
+      }),
     );
 
     server.tool(

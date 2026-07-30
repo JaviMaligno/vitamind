@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Solar Vitamin D Explorer - Know when and where you can synthesize Vitamin D",
   "scripts": {
-    "build:widgets": "node scripts/build-year-strip-widget.mjs",
+    "build:widgets": "node scripts/build-widgets.mjs",
     "predev": "npm run build:widgets && node scripts/build-sw.mjs",
     "dev": "next dev",
     "prebuild": "npm run build:widgets && node scripts/build-sw.mjs",

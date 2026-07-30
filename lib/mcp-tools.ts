@@ -6,7 +6,9 @@ import {
   computeExposureFromCurve, getCurrentStatus, maxSessionIU, MIN_UVI,
   iuForMinutes, erythemaMinutes, minutesForVitD, estimateUVFromElevation, type SkinType,
 } from "./vitd";
-import { ozoneDU } from "./uv-model";
+import { ozoneDU, synthesisThresholdElevation } from "./uv-model";
+import { tzOffsetForDate } from "./timezone";
+import { sampleElevations, DAY_CURVE_STEP_MINUTES } from "./day-curve";
 import { cityYearProfile, viableDateBoundaries, MIN_VIABLE_HOURS } from "./city-content";
 import type { SolarPoint, WeatherHour } from "./types";
 
@@ -427,7 +429,13 @@ export const fetchWeatherHours: WeatherFetcher = async (lat, lon) => {
   }
 };
 
-export async function currentStatusTool(args: VitDArgs, fetcher: WeatherFetcher = fetchWeatherHours) {
+/**
+ * Shared body for the two entry points below, so the widget's chart data comes
+ * out of the SAME computation the text answer does — the curve is 289 solar
+ * evaluations plus a weather fetch, and doing that twice per call to decorate a
+ * picture would be indefensible.
+ */
+async function buildCurrentStatus(args: VitDArgs, fetcher: WeatherFetcher) {
   const now = new Date();
   const doy = dayOfYear(now);
   const { skinType, area, targetIU, age, elevationM } = normalizeProfile(args);
@@ -455,7 +463,7 @@ export async function currentStatusTool(args: VitDArgs, fetcher: WeatherFetcher 
     }
   }
 
-  return {
+  const text = {
     timesIn: args.timezone ?? "UTC",
     uvSource: hours ? "open-meteo forecast (includes clouds)" : "clear-sky model (no cloud data)",
     profile: { skinType, exposedSkinFraction: area, age, targetIU },
@@ -471,4 +479,34 @@ export async function currentStatusTool(args: VitDArgs, fetcher: WeatherFetcher 
     maxSessionIU: Math.round(maxSessionIU(area, age)),
     note: DISCLAIMER,
   };
+
+  const offset = args.timezone ? tzOffsetForDate(args.timezone, now) : 0;
+  const nowLocalHours = (((now.getUTCHours() + now.getUTCMinutes() / 60 + offset) % 24) + 24) % 24;
+
+  return {
+    text,
+    chart: {
+      elevations: sampleElevations(curve),
+      stepMinutes: DAY_CURVE_STEP_MINUTES,
+      thresholdElevation: Math.round(
+        synthesisThresholdElevation(args.lat, args.lon, doy, elevationM) * 10) / 10,
+      nowLocalHours: Math.round(nowLocalHours * 100) / 100,
+      windowStart: status.window ? status.window.start : null,
+      windowEnd: status.window ? status.window.end : null,
+      state: status.state,
+      uvIndex: text.currentUVIndex,
+      minutesNeeded: text.minutesNeededNow,
+      cloudCoverPercent: status.cloudCover,
+    },
+  };
+}
+
+/** The tool's answer for the model: unchanged, text only. */
+export async function currentStatusTool(args: VitDArgs, fetcher: WeatherFetcher = fetchWeatherHours) {
+  return (await buildCurrentStatus(args, fetcher)).text;
+}
+
+/** Same answer plus the chart channel the MCP App widget renders from. */
+export async function currentStatusFull(args: VitDArgs, fetcher: WeatherFetcher = fetchWeatherHours) {
+  return buildCurrentStatus(args, fetcher);
 }
