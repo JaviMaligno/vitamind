@@ -1,3 +1,4 @@
+import { monthLabels } from "../shared/months";
 export const WIDGET_LOCALES = ["en", "es", "fr", "de", "ru", "lt"] as const;
 export type WidgetLocale = (typeof WIDGET_LOCALES)[number];
 interface WidgetCopy { caption: string; legendLow: string; legendHigh: string; empty: string }
@@ -11,14 +12,6 @@ const COPY: Record<WidgetLocale, WidgetCopy> = {
   lt: { caption: "Valandos per dieną, kai saulės pakanka vitaminui D gaminti — ištisus metus.", legendLow: "0 h", legendHigh: "10 h+", empty: "Metinio profilio duomenys negauti." },
 };
 
-const MONTHS: Record<WidgetLocale, string[]> = {
-  en: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-  es: ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sept", "oct", "nov", "dic"],
-  fr: ["janv.", "févr.", "mars", "avr.", "mai", "juin", "juil.", "août", "sept.", "oct.", "nov.", "déc."],
-  de: ["Jan.", "Feb.", "März", "Apr.", "Mai", "Juni", "Juli", "Aug.", "Sept.", "Okt.", "Nov.", "Dez."],
-  ru: ["янв.", "февр.", "март", "апр.", "май", "июнь", "июль", "авг.", "сент.", "окт.", "нояб.", "дек."],
-  lt: ["saus.", "vas.", "kov.", "bal.", "geg.", "birž.", "liep.", "rugp.", "rugs.", "spal.", "lapkr.", "gruod."],
-};
 
 export function resolveWidgetLocale(locale: unknown): WidgetLocale {
   if (typeof locale !== "string") return "en";
@@ -26,4 +19,5 @@ export function resolveWidgetLocale(locale: unknown): WidgetLocale {
   return (WIDGET_LOCALES as readonly string[]).includes(base) ? base as WidgetLocale : "en";
 }
 export function widgetStrings(locale: unknown): WidgetCopy { return COPY[resolveWidgetLocale(locale)]; }
-export function widgetMonthLabels(locale: unknown): string[] { return MONTHS[resolveWidgetLocale(locale)]; }
+/** Re-exported from the shared table so every widget names months alike. */
+export function widgetMonthLabels(locale: unknown): string[] { return monthLabels(locale); }

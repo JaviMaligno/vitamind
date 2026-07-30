@@ -39,12 +39,15 @@ const REF_MONDAY = new Date(2024, 0, 1);
 /** Any mid-month day works as a reference for locale month-name formatting. */
 const refMonthDate = (monthIndex: number) => new Date(2024, monthIndex, 15);
 
-type DayStatus = "empty" | "future" | "unfavorable" | "favorable" | "confirmed";
+type DayStatus = "empty" | "future" | "unfavorable" | "favorable" | "confirmed" | "declined";
 
 function getDayStatus(record: DayRecord | null, isFuture: boolean): DayStatus {
   if (isFuture) return "future";
   if (!record) return "empty";
   if (record.userOverride === true && record.sufficient) return "confirmed";
+  // Explicitly answered "no" on a day that did have a window. Neutral, not red:
+  // the app tracks what happened, it does not scold anyone for staying in.
+  if (record.userOverride === false && record.sufficient) return "declined";
   if (record.sufficient) return "favorable";
   return "unfavorable";
 }
@@ -58,6 +61,8 @@ function getCellClasses(status: DayStatus, isToday: boolean): string {
   switch (status) {
     case "confirmed":
       return `bg-emerald-500/35 text-emerald-100 ${ring}`;
+    case "declined":
+      return `bg-surface-elevated text-text-secondary ring-1 ring-inset ring-amber-400/30 ${ring}`;
     case "favorable":
       return `bg-amber-400/25 text-accent ${ring}`;
     case "unfavorable":
@@ -378,6 +383,10 @@ export default function HistoryCalendar({ records, onToggleOverride, onNavigate 
               <Check className="h-2 w-2 text-emerald-200" strokeWidth={3} aria-hidden />
             </span>
             {t("legendConfirmed")}
+          </span>
+          <span className="flex items-center gap-1.5">
+            <span className="inline-block w-3 h-3 rounded-md bg-surface-elevated ring-1 ring-inset ring-amber-400/30" />
+            {t("legendDeclined")}
           </span>
           <span className="flex items-center gap-1.5">
             <span className="inline-block w-3 h-3 rounded-md bg-surface-elevated" />

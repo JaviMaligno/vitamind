@@ -1,12 +1,14 @@
 import { describe, expect, it } from "vitest";
-import { readHistoryMeta, withDayConfirmed, HISTORY_META_KEY, type HistoryDay } from "../data";
-import { renderHistory, weekdayIndex } from "../render";
+import { readHistoryMeta, withDayConfirmed, nextAnswer, HISTORY_META_KEY, type HistoryDay } from "../data";
+import { renderHistory, weekdayIndex, cellLabel, dayParts, cellState } from "../render";
 import { historyStrings, WIDGET_LOCALES } from "../i18n";
 
 const wrap = (payload: unknown) => ({ content: [], _meta: { [HISTORY_META_KEY]: payload } });
 
+// Default answer is null, not false: with three states, false stopped meaning
+// "unconfirmed" and started meaning "had sun and stayed in".
 const day = (date: string, over: Partial<HistoryDay> = {}): HistoryDay =>
-  ({ date, viableSun: true, wentOutside: false, ...over });
+  ({ date, viableSun: true, wentOutside: null, ...over });
 
 describe("readHistoryMeta", () => {
   it("reads a signed-in payload", () => {
@@ -35,12 +37,18 @@ describe("readHistoryMeta", () => {
     expect(meta?.days).toHaveLength(1);
   });
 
-  it("treats anything that is not exactly true as false", () => {
+  it("keeps the three answers apart and calls anything else 'never said'", () => {
     const meta = readHistoryMeta(wrap({
       authenticated: true,
-      days: [{ date: "2026-07-01", viableSun: "yes", wentOutside: 1 }],
+      days: [
+        { date: "2026-07-01", viableSun: true, wentOutside: true },
+        { date: "2026-07-02", viableSun: true, wentOutside: false },
+        { date: "2026-07-03", viableSun: true, wentOutside: 1 },
+        { date: "2026-07-04", viableSun: "yes" },
+      ],
     }));
-    expect(meta?.days[0]).toEqual({ date: "2026-07-01", viableSun: false, wentOutside: false });
+    expect(meta?.days.map((d) => d.wentOutside)).toEqual([true, false, null, null]);
+    expect(meta?.days[3].viableSun).toBe(false);
   });
 });
 
@@ -56,9 +64,14 @@ describe("withDayConfirmed", () => {
     expect(days[1]).toEqual({ date: "2026-07-05", viableSun: false, wentOutside: true });
   });
 
-  it("never un-confirms — log_sun_session has no opposite", () => {
-    const days = withDayConfirmed([day("2026-07-01", { wentOutside: true })], "2026-07-01");
-    expect(days[0].wentOutside).toBe(true);
+  it("clears a day when asked, like the app's own calendar", () => {
+    const days = withDayConfirmed([day("2026-07-01", { wentOutside: true })], "2026-07-01", false);
+    expect(days[0].wentOutside).toBe(false);
+  });
+
+  it("does not invent a row just to clear a day it never had", () => {
+    const days = withDayConfirmed([day("2026-07-01")], "2026-07-09", false);
+    expect(days).toHaveLength(1);
   });
 });
 
@@ -92,7 +105,8 @@ describe("renderHistory", () => {
   it("marks confirmed days differently from merely sunny ones", () => {
     const html = renderHistory({ meta, locale: "en" });
     expect((html.match(/aria-pressed="true"/g) ?? [])).toHaveLength(1);
-    expect(html).toContain("#ffb020");
+    // Emerald for "you logged sun", the same word the app's calendar uses.
+    expect(html).toContain("rgba(16,185,129,0.55)");
   });
 
   it("shows a tapped day as pending until the server answers", () => {
@@ -122,6 +136,130 @@ describe("widget copy", () => {
       const copy = historyStrings(locale);
       expect(copy.signedOut.length, locale).toBeGreaterThan(0);
       expect(copy.weekdays, locale).toHaveLength(7);
+    }
+  });
+});
+
+describe("reading the grid", () => {
+  it("splits a date without going through Date or a timezone", () => {
+    expect(dayParts("2026-08-01")).toEqual({ day: 1, month: 7 });
+    expect(dayParts("2026-12-31")).toEqual({ day: 31, month: 11 });
+  });
+
+  it("prints the day number, and the month name where a new month starts", () => {
+    expect(cellLabel("2026-07-14", "en")).toBe("14");
+    expect(cellLabel("2026-08-01", "en")).toBe("Aug");
+    expect(cellLabel("2026-08-01", "es")).toBe("ago");
+    expect(cellLabel("2026-08-01", "lt")).toBe("rugp.");
+  });
+});
+
+describe("the calendar says which days it is showing", () => {
+  const meta = {
+    authenticated: true,
+    days: [
+      { date: "2026-07-30", viableSun: true, wentOutside: null },
+      { date: "2026-07-31", viableSun: true, wentOutside: true },
+      { date: "2026-08-01", viableSun: true, wentOutside: false },
+    ] as HistoryDay[],
+    streak: 0,
+    daysTracked: 3,
+  };
+
+  it("numbers every cell", () => {
+    const html = renderHistory({ meta, locale: "en" });
+    expect(html).toContain(">30</button>");
+    expect(html).toContain(">31</button>");
+  });
+
+  it("names the month where the grid crosses into it", () => {
+    expect(renderHistory({ meta, locale: "es" })).toContain(">ago</button>");
+  });
+
+  it("states the range above the grid", () => {
+    expect(renderHistory({ meta, locale: "es" })).toContain("30 jul – 1 ago");
+  });
+
+  it("hides the number while a tap is in flight, so the pulse reads as pending", () => {
+    const html = renderHistory({ meta, pending: ["2026-07-30"], locale: "en" });
+    expect(html).toContain("color:transparent");
+  });
+
+  it("puts dark ink on the filled cell and light ink on the rest", () => {
+    const html = renderHistory({ meta, locale: "en" });
+    expect(html).toContain("#04231a");
+    expect(html).toContain("rgba(255,255,255,0.86)");
+  });
+
+  it("spells out the cycle a tap runs through", () => {
+    expect(renderHistory({ meta, locale: "es" }))
+      .toContain("saliste → no saliste → sin respuesta");
+  });
+});
+
+describe("three answers", () => {
+  it("cycles unanswered → went out → stayed in → unanswered", () => {
+    expect(nextAnswer(null)).toBe(true);
+    expect(nextAnswer(true)).toBe(false);
+    expect(nextAnswer(false)).toBeNull();
+  });
+
+  it("gives each answer its own appearance", () => {
+    expect(cellState({ viableSun: true, wentOutside: true })).toBe("confirmed");
+    expect(cellState({ viableSun: true, wentOutside: false })).toBe("declined");
+    expect(cellState({ viableSun: true, wentOutside: null })).toBe("viable");
+    expect(cellState({ viableSun: false, wentOutside: null })).toBe("missed");
+  });
+
+  it("never shows 'stayed in' on a day that had no sun to skip", () => {
+    // Answering "no" to a day with no window is not a thing the app can produce,
+    // and drawing it would imply a choice nobody was offered.
+    expect(cellState({ viableSun: false, wentOutside: false })).toBe("missed");
+  });
+
+  it("stores the answer it was given, including the explicit no", () => {
+    const days = [{ date: "2026-07-01", viableSun: true, wentOutside: null } as HistoryDay];
+    expect(withDayConfirmed(days, "2026-07-01", false)[0].wentOutside).toBe(false);
+    expect(withDayConfirmed(days, "2026-07-01", null)[0].wentOutside).toBeNull();
+  });
+});
+
+describe("the legend and what is tappable", () => {
+  const meta = {
+    authenticated: true,
+    days: [
+      { date: "2026-07-27", viableSun: true, wentOutside: true },
+      { date: "2026-07-28", viableSun: true, wentOutside: false },
+      { date: "2026-07-29", viableSun: true, wentOutside: null },
+      { date: "2026-07-30", viableSun: false, wentOutside: null },
+    ] as HistoryDay[],
+    streak: 1,
+    daysTracked: 4,
+  };
+
+  it("shows a swatch per meaning", () => {
+    const html = renderHistory({ meta, locale: "en" });
+    const copy = historyStrings("en");
+    for (const text of [copy.confirmed, copy.declined, copy.viable, copy.missed]) {
+      expect(html, text).toContain(text);
+    }
+  });
+
+  it("disables the days with no usable sun, as the app does", () => {
+    const html = renderHistory({ meta, locale: "en" });
+    expect(html).toContain('data-date="2026-07-30" title="2026-07-30');
+    expect((html.match(/disabled /g) ?? [])).toHaveLength(1);
+    expect((html.match(/cursor:pointer/g) ?? [])).toHaveLength(3);
+  });
+
+  it("outlines the 'stayed in' cell instead of colouring it like a miss", () => {
+    const html = renderHistory({ meta, locale: "en" });
+    expect(html).toContain("inset 0 0 0 1px rgba(255,176,32,0.45)");
+  });
+
+  it("translates both new labels everywhere", () => {
+    for (const locale of WIDGET_LOCALES) {
+      expect(historyStrings(locale).declined.length, locale).toBeGreaterThan(0);
     }
   });
 });

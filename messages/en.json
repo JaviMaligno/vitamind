@@ -259,6 +259,7 @@
     "noConditionsTap": "Insufficient UV this day",
     "legendFavorable": "Favorable",
     "legendConfirmed": "Confirmed",
+    "legendDeclined": "Stayed in",
     "legendUnfavorable": "No UV",
     "noUvLearnTitle": "No UV window today — how to supplement",
     "noUvLearnHint": "D3, K2, magnesium, and food sources explained",

@@ -131,3 +131,37 @@ describe("updateMyProfileTool", () => {
     expect(result).toMatchObject({ error: expect.any(String) });
   });
 });
+
+describe("logSunSessionTool: three answers", () => {
+  it("records an explicit 'had sun and stayed in' as false", async () => {
+    // Distinct from null: false is an answer, null is the absence of one.
+    const rows = { u: { ...PROFILE, history: [record("2026-07-30", true)] } };
+    const result = await logSunSessionTool(memoryStore(rows), "u", { date: "2026-07-30", confirmed: false });
+
+    expect(result).toMatchObject({ logged: true, confirmed: false });
+    expect(rows.u.history![0].userOverride).toBe(false);
+  });
+
+  it("clears back to unanswered with null", async () => {
+    const rows = { u: { ...PROFILE, history: [record("2026-07-30", false)] } };
+    const result = await logSunSessionTool(memoryStore(rows), "u", { date: "2026-07-30", confirmed: null });
+
+    expect(result).toMatchObject({ logged: true });
+    expect(rows.u.history![0].userOverride).toBeNull();
+  });
+
+  it("still confirms by default", async () => {
+    const rows = { u: { ...PROFILE, history: [record("2026-07-30", null)] } };
+    await logSunSessionTool(memoryStore(rows), "u", { date: "2026-07-30" });
+    expect(rows.u.history![0].userOverride).toBe(true);
+  });
+
+  it("does not invent a row for a day the app never evaluated", async () => {
+    const rows = { u: { ...PROFILE, history: [] } };
+    for (const confirmed of [false, null] as const) {
+      const result = await logSunSessionTool(memoryStore(rows), "u", { date: "2026-07-30", confirmed });
+      expect(result).toMatchObject({ logged: false });
+    }
+    expect(rows.u.history).toHaveLength(0);
+  });
+});

@@ -6,6 +6,7 @@ interface Copy {
   streak: string;
   tracked: string;
   confirmed: string;
+  declined: string;
   viable: string;
   missed: string;
   tapHint: string;
@@ -18,8 +19,8 @@ interface Copy {
 const COPY: Record<WidgetLocale, Copy> = {
   en: {
     title: "Your sun history", streak: "day streak", tracked: "days tracked",
-    confirmed: "went outside", viable: "sun was viable", missed: "no viable sun",
-    tapHint: "Tap a day to confirm you went out",
+    confirmed: "went outside", declined: "stayed in", viable: "sun was viable", missed: "no viable sun",
+    tapHint: "Tap a day: went out → stayed in → no answer",
     signedOut: "Connect your account to see your history",
     signedOutHint: "Reconnect this server with the account connector and the calendar fills in.",
     empty: "No days tracked yet.",
@@ -27,8 +28,8 @@ const COPY: Record<WidgetLocale, Copy> = {
   },
   es: {
     title: "Tu historial de sol", streak: "días seguidos", tracked: "días registrados",
-    confirmed: "saliste", viable: "hubo sol útil", missed: "sin sol útil",
-    tapHint: "Toca un día para confirmar que saliste",
+    confirmed: "saliste", declined: "no saliste", viable: "hubo sol útil", missed: "sin sol útil",
+    tapHint: "Toca un día: saliste → no saliste → sin respuesta",
     signedOut: "Conecta tu cuenta para ver tu historial",
     signedOutHint: "Reconecta este servidor con el conector de cuenta y el calendario se rellena.",
     empty: "Aún no hay días registrados.",
@@ -36,8 +37,8 @@ const COPY: Record<WidgetLocale, Copy> = {
   },
   fr: {
     title: "Votre historique solaire", streak: "jours d'affilée", tracked: "jours suivis",
-    confirmed: "sorti", viable: "soleil suffisant", missed: "soleil insuffisant",
-    tapHint: "Touchez un jour pour confirmer votre sortie",
+    confirmed: "sorti", declined: "resté dedans", viable: "soleil suffisant", missed: "soleil insuffisant",
+    tapHint: "Touchez un jour : sorti → resté dedans → sans réponse",
     signedOut: "Connectez votre compte pour voir votre historique",
     signedOutHint: "Reconnectez ce serveur avec le connecteur de compte et le calendrier se remplit.",
     empty: "Aucun jour suivi pour l'instant.",
@@ -45,8 +46,8 @@ const COPY: Record<WidgetLocale, Copy> = {
   },
   de: {
     title: "Deine Sonnen-Historie", streak: "Tage in Folge", tracked: "Tage erfasst",
-    confirmed: "warst draußen", viable: "Sonne reichte", missed: "Sonne reichte nicht",
-    tapHint: "Tippe einen Tag an, um zu bestätigen",
+    confirmed: "warst draußen", declined: "drinnen geblieben", viable: "Sonne reichte", missed: "Sonne reichte nicht",
+    tapHint: "Tippe einen Tag: draußen → drinnen → keine Angabe",
     signedOut: "Verbinde dein Konto, um die Historie zu sehen",
     signedOutHint: "Verbinde diesen Server über den Konto-Connector, dann füllt sich der Kalender.",
     empty: "Noch keine Tage erfasst.",
@@ -54,8 +55,8 @@ const COPY: Record<WidgetLocale, Copy> = {
   },
   ru: {
     title: "Ваша история солнца", streak: "дней подряд", tracked: "дней отмечено",
-    confirmed: "выходили", viable: "солнца хватало", missed: "солнца не хватало",
-    tapHint: "Нажмите на день, чтобы подтвердить",
+    confirmed: "выходили", declined: "остались дома", viable: "солнца хватало", missed: "солнца не хватало",
+    tapHint: "Нажмите на день: вышли → остались → без ответа",
     signedOut: "Подключите аккаунт, чтобы увидеть историю",
     signedOutHint: "Переподключите сервер через коннектор с аккаунтом — календарь заполнится.",
     empty: "Пока нет отмеченных дней.",
@@ -63,8 +64,8 @@ const COPY: Record<WidgetLocale, Copy> = {
   },
   lt: {
     title: "Jūsų saulės istorija", streak: "dienų iš eilės", tracked: "dienų sekama",
-    confirmed: "buvote lauke", viable: "saulės pakako", missed: "saulės nepakako",
-    tapHint: "Bakstelėkite dieną, kad patvirtintumėte",
+    confirmed: "buvote lauke", declined: "likote viduje", viable: "saulės pakako", missed: "saulės nepakako",
+    tapHint: "Bakstelėkite dieną: lauke → viduje → be atsakymo",
     signedOut: "Prijunkite paskyrą, kad matytumėte istoriją",
     signedOutHint: "Prijunkite šį serverį per paskyros jungtį ir kalendorius užsipildys.",
     empty: "Kol kas dienų nėra.",

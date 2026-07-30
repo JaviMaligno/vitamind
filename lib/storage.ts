@@ -149,8 +149,11 @@ export function toggleDayOverride(date: string): void {
   // Only allow toggling on favorable days
   if (!record.sufficient) return;
 
-  // 2-state toggle: null (unconfirmed) ↔ true (confirmed went out)
-  record.userOverride = record.userOverride === true ? null : true;
+  // 3-state cycle: null (no answer) → true (went out) → false (did not) → null.
+  // The third state is not decoration: a day with sun that you deliberately spent
+  // indoors is a different fact from a day you never answered, and the streak and
+  // the MCP history both read them differently.
+  record.userOverride = record.userOverride === true ? false : record.userOverride === false ? null : true;
   saveHistory(records);
 }
 

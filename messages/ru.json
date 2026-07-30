@@ -259,6 +259,7 @@
     "noConditionsTap": "Недостаточный UV в этот день",
     "legendFavorable": "Благоприятно",
     "legendConfirmed": "Подтверждено",
+    "legendDeclined": "Не выходили",
     "legendUnfavorable": "Нет UV",
     "noUvLearnTitle": "Сегодня нет UV-окна — как принимать добавки",
     "noUvLearnHint": "D3, K2, магний и пищевые источники — объяснение",

@@ -259,6 +259,7 @@
     "noConditionsTap": "UV insuficiente este día",
     "legendFavorable": "Favorable",
     "legendConfirmed": "Confirmado",
+    "legendDeclined": "No saliste",
     "legendUnfavorable": "Sin UV",
     "noUvLearnTitle": "Sin ventana UV hoy — cómo suplementar",
     "noUvLearnHint": "D3, K2, magnesio y fuentes alimentarias explicados",

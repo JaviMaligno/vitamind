@@ -108,21 +108,31 @@ export async function myHistoryTool(store: ProfileStore, userId: string, args: {
 
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 
+/**
+ * Sets a day's answer in the history calendar — the same edit the app's own
+ * calendar makes when you tap a day, and with the same three values.
+ *
+ * `true` went out, `false` had sun and stayed in, `null` never answered. The
+ * three are distinct on purpose: a deliberate "no" is a fact, a missing answer is
+ * not, and conflating them would quietly inflate whatever reads the history.
+ * Mirrors `toggleDayOverride` in lib/storage.ts.
+ */
 export async function logSunSessionTool(
   store: ProfileStore,
   userId: string,
-  args: { date?: string; minutes?: number },
+  args: { date?: string; minutes?: number; confirmed?: boolean | null },
 ) {
   const p = await store.getProfile(userId);
   if (!p) return NO_PROFILE;
 
+  const confirmed = args.confirmed === undefined ? true : args.confirmed;
   const date = args.date && DATE_RE.test(args.date) ? args.date : new Date().toISOString().slice(0, 10);
   const history = [...(p.history ?? [])];
   const existing = history.find((r) => r.date === date);
 
   if (existing) {
-    existing.userOverride = true;
-  } else {
+    existing.userOverride = confirmed;
+  } else if (confirmed === true) {
     history.push({
       date,
       cityId: p.last_city_id ?? "",
@@ -133,14 +143,25 @@ export async function logSunSessionTool(
       sufficient: false,
       userOverride: true,
     });
+  } else {
+    // Nothing recorded for that day, and the answer is not "I went out": there is
+    // no row to annotate, and inventing one would record a day the app never
+    // evaluated.
+    return { logged: false, date, confirmed, note: "That day is not in the history, so there was nothing to set." };
   }
+
   await store.updateHistory(userId, history);
 
   return {
     logged: true,
     date,
+    confirmed,
     minutesReported: args.minutes ?? null,
-    note: "Day marked as sun-confirmed in the app's history calendar. Reported minutes are acknowledged but not stored — the history tracks confirmed days.",
+    note: confirmed === true
+      ? "Day marked as sun-confirmed in the app's history calendar. Reported minutes are acknowledged but not stored — the history tracks confirmed days."
+      : confirmed === false
+        ? "Day marked as 'had sun, stayed in' in the app's history calendar."
+        : "Answer cleared for that day: it is back to unanswered.",
   };
 }
 

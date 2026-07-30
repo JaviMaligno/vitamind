@@ -1,5 +1,5 @@
 import { HostBridge, windowTransport, type HostContext } from "../shared/host-bridge";
-import { readHistoryMeta, withDayConfirmed, type HistoryMeta } from "./data";
+import { readHistoryMeta, withDayConfirmed, nextAnswer, type HistoryMeta } from "./data";
 import { renderHistory } from "./render";
 
 const root = document.querySelector<HTMLElement>("#app");
@@ -27,26 +27,34 @@ function render() {
 }
 
 /**
- * The whole point of this widget: confirming a day without a chat round trip.
+ * The whole point of this widget: answering a day without a chat round trip.
+ *
+ * Tapping cycles through the same three answers as the app's calendar — went
+ * out, stayed in, never said. A control you can only push one way is a trap,
+ * because the first thing anyone does after marking a day by mistake is tap it
+ * again.
  *
  * The cell goes into a pending state immediately, because a tap that does
  * nothing for a second reads as a broken button; the real state arrives when the
- * server answers. On failure the pending mark is dropped and the calendar
- * returns to the truth rather than keeping an optimistic lie.
+ * server answers. On failure the change is dropped and the calendar returns to
+ * the truth rather than keeping an optimistic lie.
  */
-async function confirmDay(date: string) {
+async function cycleDay(date: string) {
   if (!meta?.authenticated || pending.includes(date)) return;
-  const already = meta.days.find((d) => d.date === date)?.wentOutside;
-  if (already) return;
+  const day = meta.days.find((d) => d.date === date);
+  // Days with no usable sun are not answerable, exactly as in the app: there was
+  // no window to take or skip.
+  if (!day?.viableSun) return;
+  const next = nextAnswer(day.wentOutside);
 
   pending = [...pending, date];
   render();
 
   try {
-    await bridge.callServerTool({ name: "log_sun_session", arguments: { date } });
-    meta = { ...meta, days: withDayConfirmed(meta.days, date), streak: meta.streak };
+    await bridge.callServerTool({ name: "log_sun_session", arguments: { date, confirmed: next } });
+    meta = { ...meta, days: withDayConfirmed(meta.days, date, next) };
   } catch {
-    // Left unmarked on purpose: the calendar shows what the server believes.
+    // Left as it was on purpose: the calendar shows what the server believes.
   } finally {
     pending = pending.filter((d) => d !== date);
     render();
@@ -56,7 +64,7 @@ async function confirmDay(date: string) {
 root.addEventListener("click", (event) => {
   const button = (event.target as HTMLElement | null)?.closest("button");
   const date = button?.dataset.date;
-  if (date) void confirmDay(date);
+  if (date) void cycleDay(date);
 });
 
 const bridge = new HostBridge({

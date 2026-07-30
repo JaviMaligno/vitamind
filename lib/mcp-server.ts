@@ -124,7 +124,13 @@ function historyChartMeta(payload: unknown, authenticated: boolean) {
       authenticated: authenticated && !p.error,
       days: records.map((r) => {
         const rec = r as Record<string, unknown>;
-        return { date: rec.date, viableSun: rec.viableSun === true, wentOutside: rec.wentOutside === true };
+        return {
+          date: rec.date,
+          viableSun: rec.viableSun === true,
+          // Passed through as three values, not coerced: "stayed in" and "never
+          // said" are different answers and the widget draws them differently.
+          wentOutside: rec.wentOutside === true ? true : rec.wentOutside === false ? false : null,
+        };
       }),
       streak: typeof p.currentConfirmedStreak === "number" ? p.currentConfirmedStreak : 0,
       daysTracked: typeof p.daysTracked === "number" ? p.daysTracked : records.length,
@@ -399,13 +405,15 @@ export function initMcpServer(server: McpServer) {
 
     server.tool(
       "log_sun_session",
-      "Marks a day as sun-confirmed in the signed-in user's history calendar — use when the user says they went (or will have gone) outside for their sun. Defaults to today. Requires OAuth (scope history:write).",
+      "Sets a day's answer in the signed-in user's history calendar. Three values: confirmed=true (went out, the default), confirmed=false (had usable sun but stayed in), confirmed=null (clear the answer). Defaults to today. Requires OAuth (scope history:write).",
       {
-        date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional().describe("Day to confirm, YYYY-MM-DD; defaults to today"),
+        date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional().describe("Day to set, YYYY-MM-DD; defaults to today"),
         minutes: z.number().min(1).max(600).optional().describe("Minutes the user reports having spent in the sun (acknowledged, not stored)"),
+        confirmed: z.boolean().nullable().optional()
+          .describe("true (default) the user went out; false they had sun but stayed in; null clears the answer"),
       },
       personal("log_sun_session", "history:write",
-        (userId, args: { date?: string; minutes?: number }) => logSunSessionTool(store(), userId, args)),
+        (userId, args: { date?: string; minutes?: number; confirmed?: boolean | null }) => logSunSessionTool(store(), userId, args)),
     );
 }
 
