@@ -4,6 +4,7 @@ import { describe, it, expect, vi, beforeAll, afterAll } from "vitest";
 
 import { vitaminDYearTool, vitaminDYearFull } from "../mcp-tools";
 import { cityYearProfile } from "../city-content";
+import { inferElevationM } from "../elevation";
 
 /**
  * The acceptance invariant of the MCP App slice: adding a chart channel to
@@ -120,8 +121,27 @@ describe("vitaminDYearFull", () => {
   });
 
   it("hands out the very numbers cityYearProfile computes, unrounded", () => {
+    // Elevation comes from the coordinates now when the caller omits it, so the
+    // comparison has to use the same figure — London sits at 11 m, not at sea
+    // level. Asserting against 0 would be asserting the old behaviour.
     const { hoursByDay } = vitaminDYearFull(LONDON);
-    expect(hoursByDay).toEqual(cityYearProfile(LONDON.lat, LONDON.lon, 0).hoursByDay);
+    const elevation = inferElevationM(LONDON.lat, LONDON.lon) ?? 0;
+    expect(elevation).toBe(11);
+    expect(hoursByDay).toEqual(cityYearProfile(LONDON.lat, LONDON.lon, elevation).hoursByDay);
+  });
+
+  it("infers the elevation the model did not send", () => {
+    // The point of the inference: a caller that only knows the coordinates gets
+    // the same answer as one that looked the city up properly.
+    const inferred = vitaminDYearFull(LONDON);
+    const explicit = vitaminDYearFull({ ...LONDON, elevationM: 11 });
+    expect(inferred.hoursByDay).toEqual(explicit.hoursByDay);
+  });
+
+  it("still lets an explicit elevation win, including a deliberate zero", () => {
+    const atSeaLevel = vitaminDYearFull({ ...LONDON, elevationM: 0 });
+    const inferred = vitaminDYearFull(LONDON);
+    expect(atSeaLevel.hoursByDay).not.toEqual(inferred.hoursByDay);
   });
 
   it("passes the caller's elevation through to the profile", () => {

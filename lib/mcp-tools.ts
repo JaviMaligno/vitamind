@@ -8,6 +8,7 @@ import {
 } from "./vitd";
 import { ozoneDU, synthesisThresholdElevation } from "./uv-model";
 import { tzOffsetForDate } from "./timezone";
+import { inferElevationM } from "./elevation";
 import { sampleElevations, DAY_CURVE_STEP_MINUTES } from "./day-curve";
 import { cityYearProfile, viableDateBoundaries, MIN_VIABLE_HOURS } from "./city-content";
 import type { SolarPoint, WeatherHour } from "./types";
@@ -176,7 +177,15 @@ function normalizeProfile(args: VitDArgs) {
   const area = Math.min(1, Math.max(0.05, args.exposedSkinFraction ?? 0.25));
   const targetIU = Math.min(10000, Math.max(100, args.targetIU ?? 1000));
   const age = args.age !== undefined ? Math.min(120, Math.max(0, args.age)) : null;
-  const elevationM = Math.min(6000, Math.max(-100, args.elevationM ?? 0));
+
+  // An explicit elevation always wins — a caller who says 0 means 0. Only when
+  // it is missing do we look it up from the coordinates, because the caller is a
+  // language model and it omits the field whenever it filled lat/lon from memory
+  // instead of calling search_city. Sea level is the wrong guess for Madrid and
+  // a bad one for Bogotá.
+  const inferred = args.elevationM === undefined ? inferElevationM(args.lat, args.lon) : null;
+  const elevationM = Math.min(6000, Math.max(-100, args.elevationM ?? inferred ?? 0));
+
   return { skinType, area, targetIU, age, elevationM };
 }
 
