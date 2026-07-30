@@ -66,8 +66,14 @@ export default async function ConnectPage({ params }: { params: Promise<{ locale
     t("toolSearchCity"), t("toolSunTimes"), t("toolWindow"),
     t("toolYear"), t("toolCompare"), t("toolStatus"), t("toolEstimate"), t("toolProfile"),
   ];
-  const personalTools = [t("toolMyProfile"), t("toolMyCities"), t("toolMyHistory"), t("toolLogSession")];
-  const consentScopes = [tOauth("scopeProfileRead"), tOauth("scopeHistoryRead"), tOauth("scopeHistoryWrite")];
+  const personalTools = [
+    t("toolMyProfile"), t("toolSaveProfile"), t("toolMyCities"),
+    t("toolMyHistory"), t("toolLogSession"),
+  ];
+  const consentScopes = [
+    tOauth("scopeProfileRead"), tOauth("scopeProfileWrite"),
+    tOauth("scopeHistoryRead"), tOauth("scopeHistoryWrite"),
+  ];
 
   return (
     <main className="mx-auto max-w-[1100px] px-4 py-6 sm:py-8 space-y-10 sm:space-y-14">

@@ -1,6 +1,6 @@
 import { HostBridge, windowTransport, type HostContext } from "../shared/host-bridge";
 import { readProfileMeta, type ProfileMeta, type SunProfile } from "./data";
-import { renderProfile, liveEstimate } from "./render";
+import { renderProfile, liveEstimate, type SaveState } from "./render";
 import { profileStrings } from "./i18n";
 
 const root = document.querySelector<HTMLElement>("#app");
@@ -8,6 +8,7 @@ if (!root) throw new Error("profile widget root missing");
 
 let meta: ProfileMeta | null = null;
 let profile: SunProfile | null = null;
+let saveState: SaveState = "idle";
 
 function applyHostAppearance(context: HostContext | undefined) {
   const element = document.documentElement;
@@ -25,6 +26,7 @@ function render() {
   root!.innerHTML = renderProfile({
     meta,
     profile: profile ?? undefined,
+    saveState,
     locale: context?.locale,
     theme: context?.theme,
   });
@@ -68,11 +70,44 @@ function pushToModel() {
   }, 400);
 }
 
+let saveTimer: ReturnType<typeof setTimeout> | null = null;
+
+/**
+ * Writes the profile to the user's account, when the connection allows it.
+ *
+ * Debounced like the context push, and for the same reason: a tap is a change,
+ * not a decision. On the public connector `canSave` is false and this never
+ * runs — the widget says "for this conversation only" instead of offering a
+ * save that would come back insufficient_scope.
+ */
+function saveToAccount() {
+  if (!meta?.canSave || !profile) return;
+  if (saveTimer) clearTimeout(saveTimer);
+  saveState = "saving";
+  saveTimer = setTimeout(() => {
+    const snapshot = profile!;
+    void bridge
+      .callServerTool({
+        name: "update_my_profile",
+        arguments: {
+          skinType: snapshot.skinType,
+          exposedSkinFraction: snapshot.exposedSkinFraction,
+          age: snapshot.age,
+          targetIU: snapshot.targetIU,
+        },
+      })
+      .then(() => { saveState = "saved"; })
+      .catch(() => { saveState = "failed"; })
+      .finally(render);
+  }, 600);
+}
+
 function update(change: Partial<SunProfile>) {
   if (!profile) return;
   profile = { ...profile, ...change };
   render();
   pushToModel();
+  saveToAccount();
 }
 
 root.addEventListener("click", (event) => {
@@ -95,6 +130,7 @@ root.addEventListener("input", (event) => {
   // updates the model without a redraw; the readout follows on the next change.
   if (profile) profile = { ...profile, age: raw === "" ? null : Math.min(120, Math.max(0, Number(raw))) };
   pushToModel();
+  saveToAccount();
 });
 
 const bridge = new HostBridge({
@@ -103,6 +139,7 @@ const bridge = new HostBridge({
   onToolResult: (result) => {
     meta = readProfileMeta(result);
     profile = meta ? meta.profile : null;
+    saveState = "idle";
     render();
   },
   onHostContextChanged: (context) => {

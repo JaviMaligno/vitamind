@@ -33,9 +33,12 @@ export function liveEstimate(profile: SunProfile, uvIndex: number): LiveEstimate
   };
 }
 
+export type SaveState = "idle" | "saving" | "saved" | "failed";
+
 export interface RenderProfileOptions {
   meta: ProfileMeta | null;
   profile?: SunProfile;
+  saveState?: SaveState;
   locale?: unknown;
   theme?: unknown;
 }
@@ -48,7 +51,7 @@ const palette = (theme: unknown) => ({
   card: theme === "dark" ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.03)",
 });
 
-export function renderProfile({ meta, profile, locale, theme }: RenderProfileOptions): string {
+export function renderProfile({ meta, profile, saveState = "idle", locale, theme }: RenderProfileOptions): string {
   const copy = profileStrings(locale);
   const p = palette(theme);
   if (!meta) {
@@ -96,6 +99,18 @@ export function renderProfile({ meta, profile, locale, theme }: RenderProfileOpt
     ? ` <span style="color:${p.muted};font-size:12px">${escapeHtml(copy.at)} ${escapeHtml(meta.placeName)} · UV ${meta.uvIndex}</span>`
     : ` <span style="color:${p.muted};font-size:12px">UV ${meta.uvIndex}</span>`;
 
+  // Says which kind of picker this is. Without it, a user on the public
+  // connector would reasonably assume their choice was kept.
+  const status = !meta.canSave
+    ? `<span style="color:${p.muted}">${escapeHtml(copy.contextOnly)}</span>`
+    : saveState === "saving"
+      ? `<span style="color:${p.muted}">${escapeHtml(copy.saving)}</span>`
+      : saveState === "failed"
+        ? `<span style="color:${p.muted}">${escapeHtml(copy.saveFailed)}</span>`
+        : saveState === "saved"
+          ? `<span style="color:${p.selected}">${escapeHtml(copy.saved)}</span>`
+          : "";
+
   return [
     `<form id="profile-form" style="margin:0;font-family:system-ui,sans-serif;color:${p.text};display:grid;gap:12px">`,
     `<div style="font-size:16px;font-weight:650">${escapeHtml(copy.title)}${where}</div>`,
@@ -112,6 +127,7 @@ export function renderProfile({ meta, profile, locale, theme }: RenderProfileOpt
     `<div style="display:flex;gap:6px;flex-wrap:wrap">${targetButtons}</div></div>`,
     `</div>`,
     `<div style="padding:10px 12px;border-radius:10px;background:${p.card};font-size:13px">${readout}</div>`,
+    status ? `<div style="font-size:12px">${status}</div>` : "",
     `</form>`,
   ].join("");
 }

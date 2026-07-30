@@ -17,6 +17,12 @@ export interface ProfileMeta {
    */
   uvIndex: number;
   placeName?: string;
+  /**
+   * True when the connection can write to the account. False on the public
+   * connector, where the picker is context-only — the widget says which it is
+   * rather than offering a Save that would come back insufficient_scope.
+   */
+  canSave: boolean;
 }
 
 /** The presets the app itself offers, so the widget and the app agree. */
@@ -55,5 +61,6 @@ export function readProfileMeta(result: unknown): ProfileMeta | null {
     profile: normalizeProfile(p.profile),
     uvIndex: uv,
     placeName: typeof p.placeName === "string" && p.placeName.length <= 60 ? p.placeName : undefined,
+    canSave: p.canSave === true,
   };
 }

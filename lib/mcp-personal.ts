@@ -23,6 +23,15 @@ export interface ProfileRow {
 export interface ProfileStore {
   getProfile(userId: string): Promise<ProfileRow | null>;
   updateHistory(userId: string, history: DayRecord[]): Promise<void>;
+  updateProfile(userId: string, patch: ProfilePatch): Promise<void>;
+}
+
+/** The four synthesis inputs, and only those: nothing else is writable here. */
+export interface ProfilePatch {
+  skin_type?: number;
+  area_fraction?: number;
+  age?: number | null;
+  target_iu?: number;
 }
 
 function cityRef(cityId: string, custom: City[]): { name: string; lat: number; lon: number; timezone?: string } | null {
@@ -135,6 +144,50 @@ export async function logSunSessionTool(
   };
 }
 
+/**
+ * Writes the four synthesis inputs to the signed-in user's saved profile — the
+ * same row the app's own profile screen edits, so a change made from the chat
+ * shows up in the app and vice versa.
+ *
+ * Deliberately narrow: favourites, custom locations, the current city and the
+ * history are NOT writable from here. A tool that can rewrite a user's whole
+ * profile row is a much bigger thing to hand a language model than one that can
+ * set their skin type.
+ */
+export async function updateMyProfileTool(
+  store: ProfileStore,
+  userId: string,
+  args: { skinType?: number; exposedSkinFraction?: number; age?: number | null; targetIU?: number },
+) {
+  const p = await store.getProfile(userId);
+  if (!p) return NO_PROFILE;
+
+  const patch: ProfilePatch = {};
+  if (args.skinType !== undefined) patch.skin_type = Math.min(6, Math.max(1, Math.round(args.skinType)));
+  if (args.exposedSkinFraction !== undefined) {
+    patch.area_fraction = Math.min(1, Math.max(0.05, args.exposedSkinFraction));
+  }
+  if (args.age !== undefined) patch.age = args.age === null ? null : Math.min(120, Math.max(0, Math.round(args.age)));
+  if (args.targetIU !== undefined) patch.target_iu = Math.min(10000, Math.max(100, Math.round(args.targetIU)));
+
+  if (Object.keys(patch).length === 0) {
+    return { saved: false, reason: "nothing_to_update", hint: "Pass at least one of skinType, exposedSkinFraction, age or targetIU." };
+  }
+
+  await store.updateProfile(userId, patch);
+
+  return {
+    saved: true,
+    profile: {
+      skinType: patch.skin_type ?? p.skin_type,
+      exposedSkinFraction: patch.area_fraction ?? p.area_fraction,
+      age: patch.age !== undefined ? patch.age : p.age,
+      targetIU: patch.target_iu ?? p.target_iu,
+    },
+    note: "Saved to the user's account. The app and every later tool call now use these values.",
+  };
+}
+
 // ---------------------------------------------------------------------------
 // Production store
 
@@ -160,6 +213,14 @@ class SupabaseProfileStore implements ProfileStore {
       .update({ history, updated_at: new Date().toISOString() })
       .eq("id", userId);
     if (error) throw new Error(`profiles history update failed: ${error.message}`);
+  }
+
+  async updateProfile(userId: string, patch: ProfilePatch): Promise<void> {
+    const { error } = await this.sb
+      .from("profiles")
+      .update({ ...patch, updated_at: new Date().toISOString() })
+      .eq("id", userId);
+    if (error) throw new Error(`profiles update failed: ${error.message}`);
   }
 }
 

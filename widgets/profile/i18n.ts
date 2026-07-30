@@ -15,6 +15,10 @@ interface Copy {
   noSun: string;
   at: string;
   empty: string;
+  saved: string;
+  saving: string;
+  saveFailed: string;
+  contextOnly: string;
 }
 
 const COPY: Record<WidgetLocale, Copy> = {
@@ -24,6 +28,7 @@ const COPY: Record<WidgetLocale, Copy> = {
     age: "Age", ageAny: "adult", target: "Target per session",
     minutes: "minutes to your target", burn: "until sunburn", noSun: "Not enough UV for synthesis",
     at: "at", empty: "No profile was returned.",
+    saved: "Saved to your account", saving: "Saving…", saveFailed: "Could not save — shown for this chat only", contextOnly: "For this conversation only",
   },
   es: {
     title: "Tu perfil solar", skin: "Tipo de piel", skinHint: "1 se quema fácil · 6 rara vez",
@@ -31,6 +36,7 @@ const COPY: Record<WidgetLocale, Copy> = {
     age: "Edad", ageAny: "adulto", target: "Objetivo por sesión",
     minutes: "minutos hasta tu objetivo", burn: "hasta quemarte", noSun: "UV insuficiente para sintetizar",
     at: "en", empty: "No se recibió ningún perfil.",
+    saved: "Guardado en tu cuenta", saving: "Guardando…", saveFailed: "No se pudo guardar — vale solo para este chat", contextOnly: "Solo para esta conversación",
   },
   fr: {
     title: "Votre profil solaire", skin: "Type de peau", skinHint: "1 brûle vite · 6 rarement",
@@ -38,6 +44,7 @@ const COPY: Record<WidgetLocale, Copy> = {
     age: "Âge", ageAny: "adulte", target: "Objectif par séance",
     minutes: "minutes pour l'objectif", burn: "avant le coup de soleil", noSun: "UV insuffisant pour la synthèse",
     at: "à", empty: "Aucun profil reçu.",
+    saved: "Enregistré dans votre compte", saving: "Enregistrement…", saveFailed: "Échec — valable pour cette conversation seulement", contextOnly: "Pour cette conversation seulement",
   },
   de: {
     title: "Dein Sonnenprofil", skin: "Hauttyp", skinHint: "1 verbrennt schnell · 6 selten",
@@ -45,6 +52,7 @@ const COPY: Record<WidgetLocale, Copy> = {
     age: "Alter", ageAny: "Erwachsen", target: "Ziel pro Einheit",
     minutes: "Minuten bis zum Ziel", burn: "bis Sonnenbrand", noSun: "Zu wenig UV für die Bildung",
     at: "in", empty: "Kein Profil empfangen.",
+    saved: "In deinem Konto gespeichert", saving: "Speichern…", saveFailed: "Konnte nicht gespeichert werden — gilt nur für diesen Chat", contextOnly: "Nur für dieses Gespräch",
   },
   ru: {
     title: "Ваш солнечный профиль", skin: "Тип кожи", skinHint: "1 быстро сгорает · 6 почти нет",
@@ -52,6 +60,7 @@ const COPY: Record<WidgetLocale, Copy> = {
     age: "Возраст", ageAny: "взрослый", target: "Цель за сеанс",
     minutes: "минут до цели", burn: "до ожога", noSun: "УФ недостаточно для синтеза",
     at: "в", empty: "Профиль не получен.",
+    saved: "Сохранено в аккаунте", saving: "Сохранение…", saveFailed: "Не удалось сохранить — только для этого чата", contextOnly: "Только для этого разговора",
   },
   lt: {
     title: "Jūsų saulės profilis", skin: "Odos tipas", skinHint: "1 greitai nudega · 6 beveik ne",
@@ -59,6 +68,7 @@ const COPY: Record<WidgetLocale, Copy> = {
     age: "Amžius", ageAny: "suaugęs", target: "Tikslas per kartą",
     minutes: "minutės iki tikslo", burn: "iki nudegimo", noSun: "Per mažai UV sintezei",
     at: "vietovėje", empty: "Profilis negautas.",
+    saved: "Išsaugota paskyroje", saving: "Saugoma…", saveFailed: "Nepavyko išsaugoti — galioja tik šiam pokalbiui", contextOnly: "Tik šiam pokalbiui",
   },
 };
 

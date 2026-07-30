@@ -13,6 +13,7 @@ import {
 import { YEAR_STRIP_META_KEY } from "@/widgets/year-strip/data";
 import { DAY_CURVE_META_KEY } from "@/widgets/day-curve/data";
 import { HISTORY_META_KEY } from "@/widgets/history/data";
+import { PROFILE_META_KEY } from "@/widgets/profile/data";
 
 /**
  * The companion to mcp-year-app.test.ts, which asserts registration against a
@@ -68,7 +69,7 @@ describe("MCP App metadata on the wire", () => {
 
     // The tool set stays at ten for every client; only the tools whose answer is
     // genuinely worse as prose carry a widget, and the others must stay clean.
-    expect(result.tools).toHaveLength(12);
+    expect(result.tools).toHaveLength(13);
     expect(withUi.map((t) => t.name).sort()).toEqual([
       "compare_vitamin_d_year", "configure_sun_profile",
       "get_current_status", "get_my_history", "get_vitamin_d_year",
@@ -155,6 +156,31 @@ describe("MCP App metadata on the wire", () => {
     const chart = result._meta[HISTORY_META_KEY];
     expect(chart.authenticated).toBe(false);
     expect(chart.days).toEqual([]);
+  });
+
+  it("tells the profile widget it cannot save on the public connector", async () => {
+    await connect();
+    const { result } = await rpc(
+      "tools/call",
+      { name: "configure_sun_profile", arguments: { lat: 41.39, lon: 2.17, placeName: "Barcelona" } },
+      8,
+    );
+
+    // No token here, so no profile:write — the widget must show "for this
+    // conversation only" rather than offering a save that would be refused.
+    expect(result._meta[PROFILE_META_KEY].canSave).toBe(false);
+    expect(result.content[0].text).toContain('"savesToAccount": false');
+  });
+
+  it("refuses to write the profile without the scope", async () => {
+    await connect();
+    const { result } = await rpc(
+      "tools/call",
+      { name: "update_my_profile", arguments: { skinType: 5 } },
+      9,
+    );
+
+    expect(result.content[0].text).toContain("authentication_required");
   });
 
   it("answers get_current_status with the day curve alongside the text", async () => {

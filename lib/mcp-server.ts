@@ -16,7 +16,7 @@ import { HISTORY_META_KEY } from "@/widgets/history/data";
 import { HISTORY_WIDGET_HTML } from "@/widgets/history/generated";
 import { getOAuthDb, verifyAccessToken, type OAuthScope } from "@/lib/oauth";
 import {
-  getProfileStore, myProfileTool, myCitiesTool, myHistoryTool, logSunSessionTool,
+  getProfileStore, myProfileTool, myCitiesTool, myHistoryTool, logSunSessionTool, updateMyProfileTool,
 } from "@/lib/mcp-personal";
 
 /**
@@ -264,11 +264,15 @@ export function initMcpServer(server: McpServer) {
         },
         _meta: { ui: { resourceUri: PROFILE_RESOURCE_URI } },
       },
-      async (args) => timed("configure_sun_profile", () => {
+      async (args, extra: { authInfo?: AuthInfo }) => timed("configure_sun_profile", () => {
         const result = configureSunProfileFull(args);
+        // Whether the form can persist depends on the connection, not the tool:
+        // the public endpoint carries no token, so the widget must know to stay
+        // context-only rather than offering a Save that would fail.
+        const canSave = extra.authInfo?.scopes.includes("profile:write") === true;
         return {
-          ...json(result.text),
-          _meta: { [PROFILE_META_KEY]: result.chart },
+          ...json({ ...result.text, savesToAccount: canSave }),
+          _meta: { [PROFILE_META_KEY]: { ...result.chart, canSave } },
         };
       }),
     );
@@ -357,6 +361,24 @@ export function initMcpServer(server: McpServer) {
       "The signed-in user's current city and favorite cities with coordinates and timezones, ready to feed into the public tools. Requires OAuth (scope profile:read).",
       {},
       personal("get_my_cities", "profile:read", (userId) => myCitiesTool(store(), userId)),
+    );
+
+    server.tool(
+      "update_my_profile",
+      "Save the signed-in user's synthesis profile — skin type, exposed-skin fraction, age and target IU — to their account, so the app and every later call use them. Requires OAuth (scope profile:write). Only these four values are writable; favourites, cities and history are not.",
+      {
+        skinType: PROFILE.skinType,
+        exposedSkinFraction: PROFILE.exposedSkinFraction,
+        age: z.number().min(0).max(120).nullable().optional()
+          .describe("Age in years, or null for the adult baseline"),
+        targetIU: PROFILE.targetIU,
+      },
+      personal(
+        "update_my_profile",
+        "profile:write",
+        (userId, args: { skinType?: number; exposedSkinFraction?: number; age?: number | null; targetIU?: number }) =>
+          updateMyProfileTool(store(), userId, args),
+      ),
     );
 
     registerAppTool(

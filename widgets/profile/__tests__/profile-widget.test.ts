@@ -29,7 +29,7 @@ describe("normalizeProfile", () => {
 
 describe("readProfileMeta", () => {
   it("reads a well-formed payload", () => {
-    const meta = readProfileMeta(wrap({ profile, uvIndex: 7, placeName: "Madrid" }));
+    const meta = readProfileMeta(wrap({ profile, uvIndex: 7, placeName: "Madrid", canSave: true }));
     expect(meta?.uvIndex).toBe(7);
     expect(meta?.placeName).toBe("Madrid");
   });
@@ -66,7 +66,7 @@ describe("liveEstimate", () => {
 });
 
 describe("renderProfile", () => {
-  const meta = { profile, uvIndex: 7, placeName: "Madrid" };
+  const meta = { profile, uvIndex: 7, placeName: "Madrid", canSave: false };
 
   it("shows the empty state when nothing arrived", () => {
     expect(renderProfile({ meta: null, locale: "es" })).toContain("No se recibió");
@@ -103,11 +103,11 @@ describe("renderProfile", () => {
 
   it("names the place it is estimating for", () => {
     expect(renderProfile({ meta, locale: "en" })).toContain("Madrid");
-    expect(renderProfile({ meta: { profile, uvIndex: 6 }, locale: "en" })).toContain("UV 6");
+    expect(renderProfile({ meta: { profile, uvIndex: 6, canSave: false }, locale: "en" })).toContain("UV 6");
   });
 
   it("keeps a place name from becoming markup", () => {
-    const html = renderProfile({ meta: { profile, uvIndex: 6, placeName: "<b>x</b>" }, locale: "en" });
+    const html = renderProfile({ meta: { profile, uvIndex: 6, placeName: "<b>x</b>", canSave: false }, locale: "en" });
     expect(html).not.toContain("<b>x</b>");
   });
 });
@@ -125,5 +125,51 @@ describe("widget copy", () => {
   it("maps host locales onto what we speak", () => {
     expect(resolveWidgetLocale("fr-CA")).toBe("fr");
     expect(resolveWidgetLocale("zh")).toBe("en");
+  });
+});
+
+describe("saving vs context-only", () => {
+  const saving = { profile, uvIndex: 7, canSave: true };
+
+  it("says the choice is conversation-only when the connection cannot save", () => {
+    const html = renderProfile({ meta: { ...saving, canSave: false }, locale: "en" });
+    expect(html).toContain(profileStrings("en").contextOnly);
+    expect(html).not.toContain(profileStrings("en").saved);
+  });
+
+  it("walks through saving and saved when it can", () => {
+    expect(renderProfile({ meta: saving, saveState: "saving", locale: "en" }))
+      .toContain(profileStrings("en").saving);
+    expect(renderProfile({ meta: saving, saveState: "saved", locale: "en" }))
+      .toContain(profileStrings("en").saved);
+  });
+
+  it("admits a failed save instead of claiming success", () => {
+    const html = renderProfile({ meta: saving, saveState: "failed", locale: "en" });
+    expect(html).toContain(profileStrings("en").saveFailed);
+    expect(html).not.toContain(profileStrings("en").saved);
+  });
+
+  it("shows nothing yet when it can save but nothing has changed", () => {
+    const html = renderProfile({ meta: saving, saveState: "idle", locale: "en" });
+    expect(html).not.toContain(profileStrings("en").saved);
+    expect(html).not.toContain(profileStrings("en").contextOnly);
+  });
+
+  it("defaults canSave to false when the payload does not claim it", () => {
+    // Absent, non-boolean or truthy-but-not-true all mean "no": the widget must
+    // not promise persistence it cannot deliver.
+    expect(readProfileMeta(wrap({ profile, uvIndex: 7 }))?.canSave).toBe(false);
+    expect(readProfileMeta(wrap({ profile, uvIndex: 7, canSave: "yes" }))?.canSave).toBe(false);
+    expect(readProfileMeta(wrap({ profile, uvIndex: 7, canSave: 1 }))?.canSave).toBe(false);
+  });
+
+  it("translates the save states everywhere", () => {
+    for (const locale of WIDGET_LOCALES) {
+      const copy = profileStrings(locale);
+      for (const key of ["saved", "saving", "saveFailed", "contextOnly"] as const) {
+        expect(copy[key].length, `${locale}/${key}`).toBeGreaterThan(0);
+      }
+    }
   });
 });
