@@ -4,12 +4,16 @@ import { registerAppResource, registerAppTool, RESOURCE_MIME_TYPE } from "@model
 import { z } from "zod";
 import {
   searchCity, sunTimesTool, vitaminDWindowTool, vitaminDYearFull, currentStatusFull,
-  compareVitaminDYearFull, estimateSunSessionTool,
+  compareVitaminDYearFull, configureSunProfileFull, estimateSunSessionTool,
 } from "@/lib/mcp-tools";
 import { YEAR_STRIP_META_KEY } from "@/widgets/year-strip/data";
 import { YEAR_STRIP_WIDGET_HTML } from "@/widgets/year-strip/generated";
 import { DAY_CURVE_META_KEY } from "@/widgets/day-curve/data";
 import { DAY_CURVE_WIDGET_HTML } from "@/widgets/day-curve/generated";
+import { PROFILE_META_KEY } from "@/widgets/profile/data";
+import { PROFILE_WIDGET_HTML } from "@/widgets/profile/generated";
+import { HISTORY_META_KEY } from "@/widgets/history/data";
+import { HISTORY_WIDGET_HTML } from "@/widgets/history/generated";
 import { getOAuthDb, verifyAccessToken, type OAuthScope } from "@/lib/oauth";
 import {
   getProfileStore, myProfileTool, myCitiesTool, myHistoryTool, logSunSessionTool,
@@ -31,27 +35,42 @@ const json = (value: unknown) => ({
   content: [{ type: "text" as const, text: JSON.stringify(value, null, 2) }],
 });
 
-type ToolResult = ReturnType<typeof json>;
+/** What a tool handler returns: the model-facing text, plus the optional
+ *  `_meta` channel a widget renders from. */
+type ToolResult = ReturnType<typeof json> & { _meta?: Record<string, unknown> };
 
-/** Wraps a personal tool: requires a verified token with the given scope. */
+/**
+ * Wraps a personal tool: requires a verified token with the given scope.
+ *
+ * `run` returns the raw payload rather than a formatted result so this wrapper
+ * can both serialise it and, for tools that carry a widget, derive the chart
+ * channel from it — including on the unauthenticated path, where the widget
+ * still has to render something honest instead of a blank frame.
+ */
 function personal<A>(
   tool: string,
   scope: OAuthScope,
-  run: (userId: string, args: A) => Promise<ToolResult>,
+  run: (userId: string, args: A) => Promise<unknown>,
+  meta?: (payload: unknown, authenticated: boolean) => Record<string, unknown> | undefined,
 ) {
+  const wrap = (payload: unknown, authenticated: boolean): ToolResult => {
+    const built = meta?.(payload, authenticated);
+    return built ? { ...json(payload), _meta: built } : json(payload);
+  };
+
   return async (args: A, extra: { authInfo?: AuthInfo }): Promise<ToolResult> => {
     const auth = extra.authInfo;
     const userId = (auth?.extra as { userId?: string } | undefined)?.userId;
     if (!userId) {
-      return json({
+      return wrap({
         error: "authentication_required",
         hint: "This tool needs the user's Vitamin D account. Reconnect the MCP server using OAuth (the connector will offer a login) to enable personal tools.",
-      });
+      }, false);
     }
     if (!auth!.scopes.includes(scope)) {
-      return json({ error: "insufficient_scope", requiredScope: scope });
+      return wrap({ error: "insufficient_scope", requiredScope: scope }, false);
     }
-    return timed(tool, () => run(userId, args));
+    return timed(tool, async () => wrap(await run(userId, args), true));
   };
 }
 
@@ -89,6 +108,29 @@ const PROFILE = {
 export const SERVER_INFO = { name: "vitamind-explorer", version: "1.0.0" };
 export const YEAR_STRIP_RESOURCE_URI = "ui://getvitamind/year-strip.html";
 export const DAY_CURVE_RESOURCE_URI = "ui://getvitamind/day-curve.html";
+export const PROFILE_RESOURCE_URI = "ui://getvitamind/profile.html";
+export const HISTORY_RESOURCE_URI = "ui://getvitamind/history.html";
+
+/**
+ * Chart channel for the history widget, derived from whatever the tool answered
+ * — including the authentication_required payload, so the widget can say "connect
+ * your account" instead of drawing an empty year.
+ */
+function historyChartMeta(payload: unknown, authenticated: boolean) {
+  const p = (payload ?? {}) as Record<string, unknown>;
+  const records = Array.isArray(p.records) ? p.records : [];
+  return {
+    [HISTORY_META_KEY]: {
+      authenticated: authenticated && !p.error,
+      days: records.map((r) => {
+        const rec = r as Record<string, unknown>;
+        return { date: rec.date, viableSun: rec.viableSun === true, wentOutside: rec.wentOutside === true };
+      }),
+      streak: typeof p.currentConfirmedStreak === "number" ? p.currentConfirmedStreak : 0,
+      daysTracked: typeof p.daysTracked === "number" ? p.daysTracked : records.length,
+    },
+  };
+}
 
 /** Registers the full tool set (public + personal) on an MCP server. */
 export function initMcpServer(server: McpServer) {
@@ -175,6 +217,62 @@ export function initMcpServer(server: McpServer) {
       }),
     );
 
+    registerAppResource(
+      server,
+      "Sun history calendar",
+      HISTORY_RESOURCE_URI,
+      { description: "The signed-in user's recent sun days, tappable to confirm" },
+      async () => ({
+        contents: [{
+          uri: HISTORY_RESOURCE_URI,
+          mimeType: RESOURCE_MIME_TYPE,
+          text: HISTORY_WIDGET_HTML,
+          _meta: { ui: { csp: {} } },
+        }],
+      }),
+    );
+
+    registerAppResource(
+      server,
+      "Sun profile picker",
+      PROFILE_RESOURCE_URI,
+      { description: "Interactive skin type, exposure, age and target picker" },
+      async () => ({
+        contents: [{
+          uri: PROFILE_RESOURCE_URI,
+          mimeType: RESOURCE_MIME_TYPE,
+          text: PROFILE_WIDGET_HTML,
+          _meta: { ui: { csp: {} } },
+        }],
+      }),
+    );
+
+    registerAppTool(
+      server,
+      "configure_sun_profile",
+      {
+        description: "Show the user an interactive form for the four values every other tool assumes — Fitzpatrick skin type, fraction of skin exposed, age and target IU — with the minutes they need updating live. Use this when those values are unknown, when the user wants to change them, or instead of asking for them one at a time in conversation. Whatever the user picks comes back into the conversation; pass those values explicitly to the other tools afterwards.",
+        inputSchema: {
+          lat: z.number().min(-90).max(90).optional().describe("Latitude of the place being discussed, so the live estimate uses today's real UV there"),
+          lon: z.number().min(-180).max(180).optional().describe("Longitude, paired with lat"),
+          timezone: TZ,
+          placeName: z.string().min(1).max(60).optional().describe("How to label that place in the widget"),
+          skinType: PROFILE.skinType,
+          exposedSkinFraction: PROFILE.exposedSkinFraction,
+          age: PROFILE.age,
+          targetIU: PROFILE.targetIU,
+        },
+        _meta: { ui: { resourceUri: PROFILE_RESOURCE_URI } },
+      },
+      async (args) => timed("configure_sun_profile", () => {
+        const result = configureSunProfileFull(args);
+        return {
+          ...json(result.text),
+          _meta: { [PROFILE_META_KEY]: result.chart },
+        };
+      }),
+    );
+
     registerAppTool(
       server,
       "compare_vitamin_d_year",
@@ -251,22 +349,30 @@ export function initMcpServer(server: McpServer) {
       "get_my_profile",
       "The signed-in user's saved Vitamin D profile: skin type, exposed-skin default, age, target IU and their current city. Requires connecting with OAuth (scope profile:read). Call this FIRST for any personal question, then pass its values to the public tools instead of asking the user.",
       {},
-      personal("get_my_profile", "profile:read", async (userId) => json(await myProfileTool(store(), userId))),
+      personal("get_my_profile", "profile:read", (userId) => myProfileTool(store(), userId)),
     );
 
     server.tool(
       "get_my_cities",
       "The signed-in user's current city and favorite cities with coordinates and timezones, ready to feed into the public tools. Requires OAuth (scope profile:read).",
       {},
-      personal("get_my_cities", "profile:read", async (userId) => json(await myCitiesTool(store(), userId))),
+      personal("get_my_cities", "profile:read", (userId) => myCitiesTool(store(), userId)),
     );
 
-    server.tool(
+    registerAppTool(
+      server,
       "get_my_history",
-      "The signed-in user's sun history from the app's calendar: which recent days had viable sun, which they confirmed going outside, and their current streak. Requires OAuth (scope history:read).",
-      { days: z.number().int().min(1).max(365).optional().describe("How many recent days to return; default 30") },
-      personal("get_my_history", "history:read", async (userId, args: { days?: number }) =>
-        json(await myHistoryTool(store(), userId, args))),
+      {
+        description: "The signed-in user's sun history from the app's calendar: which recent days had viable sun, which they confirmed going outside, and their current streak. Requires OAuth (scope history:read). Renders as a calendar the user can tap to confirm a day.",
+        inputSchema: { days: z.number().int().min(1).max(365).optional().describe("How many recent days to return; default 30") },
+        _meta: { ui: { resourceUri: HISTORY_RESOURCE_URI } },
+      },
+      personal(
+        "get_my_history",
+        "history:read",
+        (userId, args: { days?: number }) => myHistoryTool(store(), userId, args),
+        historyChartMeta,
+      ),
     );
 
     server.tool(
@@ -276,8 +382,8 @@ export function initMcpServer(server: McpServer) {
         date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional().describe("Day to confirm, YYYY-MM-DD; defaults to today"),
         minutes: z.number().min(1).max(600).optional().describe("Minutes the user reports having spent in the sun (acknowledged, not stored)"),
       },
-      personal("log_sun_session", "history:write", async (userId, args: { date?: string; minutes?: number }) =>
-        json(await logSunSessionTool(store(), userId, args))),
+      personal("log_sun_session", "history:write",
+        (userId, args: { date?: string; minutes?: number }) => logSunSessionTool(store(), userId, args)),
     );
 }
 

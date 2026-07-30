@@ -338,6 +338,72 @@ export function vitaminDYearFull(args: Omit<VitDArgs, "date">) {
 }
 
 // ---------------------------------------------------------------------------
+// configure_sun_profile
+
+export interface ProfileArgs {
+  lat?: number;
+  lon?: number;
+  timezone?: string;
+  placeName?: string;
+  skinType?: number;
+  exposedSkinFraction?: number;
+  age?: number;
+  targetIU?: number;
+}
+
+/** UV a reference clear day offers at noon, when no place is known yet. */
+const REFERENCE_UVI = 6;
+
+/**
+ * The profile every other tool silently assumes.
+ *
+ * Skin type 3, a quarter of the skin exposed, adult, 1000 IU: four defaults that
+ * change every number this server returns and that the user never sees. The
+ * widget makes them visible and adjustable; the text below states them for
+ * clients that cannot render it, which is the point of saying them out loud.
+ */
+export function configureSunProfileFull(args: ProfileArgs) {
+  // normalizeProfile only reads the four profile fields; the coordinates are
+  // optional here because the picker is useful before a place is chosen.
+  const { skinType, area, targetIU, age } = normalizeProfile({ lat: 0, lon: 0, ...args });
+
+  let uvIndex = REFERENCE_UVI;
+  if (typeof args.lat === "number" && typeof args.lon === "number") {
+    const doy = dayOfYear(new Date());
+    const curve = getCurve(args.lat, args.lon, doy, 0, args.timezone);
+    const peak = curve.reduce((best, p) => (p.elevation > best.elevation ? p : best), curve[0]);
+    uvIndex = Math.round(estimateUVFromElevation(peak.elevation, {
+      ozoneDu: ozoneDU(args.lat, args.lon, doy),
+      elevationM: 0,
+    }) * 10) / 10;
+  }
+
+  const minutes = minutesForVitD(uvIndex, skinType, area, targetIU, age);
+
+  return {
+    text: {
+      profile: { skinType, exposedSkinFraction: area, age, targetIU },
+      usingDefaultsFor: [
+        args.skinType === undefined ? "skinType" : null,
+        args.exposedSkinFraction === undefined ? "exposedSkinFraction" : null,
+        args.age === undefined ? "age" : null,
+        args.targetIU === undefined ? "targetIU" : null,
+      ].filter(Boolean),
+      referenceUVIndex: uvIndex,
+      ...(args.placeName ? { place: args.placeName } : {}),
+      minutesAtThatUV: minutes === null ? null : Math.round(minutes),
+      hint: "These four values change every other answer. The user can adjust them in the widget; whatever they choose comes back into the conversation, and later tool calls should pass those values explicitly.",
+      note: DISCLAIMER,
+    },
+    chart: {
+      profile: { skinType, exposedSkinFraction: area, age, targetIU },
+      uvIndex,
+      ...(args.placeName ? { placeName: args.placeName } : {}),
+    },
+  };
+}
+
+// ---------------------------------------------------------------------------
 // compare_vitamin_d_year
 
 export interface ComparePlace {

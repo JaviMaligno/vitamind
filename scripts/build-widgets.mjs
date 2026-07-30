@@ -17,6 +17,8 @@ const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const WIDGETS = [
   { dir: "year-strip", exportName: "YEAR_STRIP_WIDGET_HTML" },
   { dir: "day-curve", exportName: "DAY_CURVE_WIDGET_HTML" },
+  { dir: "profile", exportName: "PROFILE_WIDGET_HTML" },
+  { dir: "history", exportName: "HISTORY_WIDGET_HTML" },
 ];
 
 const PAGE_STYLE = "html,body{margin:0;padding:0}"
