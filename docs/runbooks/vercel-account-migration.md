@@ -4,6 +4,13 @@
 `DEPLOYMENT_NOT_FOUND` con usuarios afectados. Este documento existe para que la
 próxima vez no haga falta improvisar.
 
+**Ampliado el 2026-07-31**, tras hacer la migración entera siguiéndolo. Salió **sin
+un segundo de caída**, y aun así aparecieron cuatro cosas que el runbook no
+contemplaba: la protección de despliegue que traen los proyectos nuevos, que
+`domains move` solo envía una solicitud por email (y que esa solicitud puede caducar
+en silencio), el TXT de verificación a nivel de proyecto, y que `domains add` deja el
+apex redirigiendo a `www`. Todas están abajo, en su paso.
+
 ---
 
 ## Qué pasó, en una línea
@@ -97,6 +104,30 @@ los suscriptores actuales sin notificaciones y sin manera de recuperarlos.
 `CRON_SECRET` y las VAPID deben ser **distintas entre Production y Preview**; el
 resto son iguales en ambos entornos.
 
+### 2 bis · Desactivar Deployment Protection en el proyecto nuevo
+
+**Los proyectos nuevos nacen con `ssoProtection` activada**, en modo
+`all_except_custom_domains`. Consecuencia concreta: el dominio propio pasa, pero
+cualquier URL `*.vercel.app` devuelve un **302 al SSO de Vercel** — y ahí está el
+alias de dev, que es el host del conector MCP de pruebas. Claude recibiría el
+redirect en vez de JSON y el servidor MCP sería inalcanzable.
+
+En el panel: **Settings → Deployment Protection → Vercel Authentication →
+Disabled**. Por API:
+
+```bash
+curl -s -X PATCH "https://api.vercel.com/v9/projects/<proyecto>?teamId=<team>" \
+  -H "Authorization: Bearer $TOKEN" -H "content-type: application/json" \
+  -d '{"ssoProtection":null}'
+```
+
+⚠️ El token que guarda el CLI en `com.vercel.cli/Data/auth.json` **no sirve** para
+esto: devuelve 403. Hace falta un token de API creado en
+`vercel.com/account/settings/tokens`.
+
+Comprobar por la URL de **despliegue**, no por el alias de producción: el alias
+está exento y da 200 aunque la protección siga puesta.
+
 ### 3 · Desplegar a producción y verificar **por la URL del proyecto**, sin dominio
 
 ```bash
@@ -131,18 +162,117 @@ npx vercel@latest domains move getvitamind.app <cuenta-destino> --scope <cuenta-
 Mover conserva los registros DNS y no pide TXT, porque no cambia de dueño a ojos de
 la verificación: cambia de cuenta dentro de Vercel.
 
+**El comando NO mueve nada por sí solo.** Contesta:
+
+> Success! Sent "<cuenta-destino>" an email to approve the "getvitamind.app" move request.
+
+Ese «Success» es de la *solicitud*, no del traslado. El dominio se queda en la
+cuenta origen — y por tanto producción sigue sirviendo, que es la parte buena —
+hasta que alguien acepta el email en la cuenta destino. También se puede aceptar
+desde `vercel.com/dashboard/domains` con la cuenta destino.
+
+⚠️ **Una solicitud puede caducar sin avisar.** Nos pasó el 2026-07-30: se envió, y
+un rato después no había ni dominio movido ni solicitud pendiente
+(`transferredAt: null`, ningún campo de transferencia). Hubo que relanzarla.
+
+**Cómo saber si el traslado se completó de verdad** — y no confundirlo con el
+dominio simplemente *adjuntado* a un proyecto, que es otra cosa y puede existir sin
+que la cuenta sea dueña:
+
+```bash
+# el dominio debe DESAPARECER de la cuenta origen y APARECER en la destino
+curl -s "https://api.vercel.com/v5/domains?teamId=<team-origen>"  -H "Authorization: Bearer $TOKEN_ORIGEN"  | grep -c '"name":"getvitamind.app"'   # → 0
+curl -s "https://api.vercel.com/v5/domains?teamId=<team-destino>" -H "Authorization: Bearer $TOKEN_DESTINO" | grep -c '"name":"getvitamind.app"'   # → 1
+```
+
+Mirar `/v9/projects/<proyecto>/domains` **no vale** para esto: ahí el dominio
+aparece en cuanto se adjunta, con `verified: false`, aunque la cuenta no lo posea.
+Confundir las dos cosas nos costó dar el traslado por hecho cuando no lo estaba.
+
 Después, asignarlo al proyecto nuevo:
 
 ```bash
 npx vercel@latest domains add getvitamind.app <proyecto> --scope <cuenta-destino>
 ```
 
+**Y comprobar inmediatamente qué ha hecho con `www`.** Ese comando añade también la
+variante `www` y la deja como principal, con el apex **redirigiendo hacia ella**.
+Resultado en producción: `getvitamind.app` responde 308 hacia `www`, que a su vez
+devuelve otro redirect porque ni siquiera está verificada. El sitio "responde", pero
+ninguna URL es la que era — y todos los canónicos y hreflang apuntan al apex.
+
+```bash
+curl -s "https://api.vercel.com/v9/projects/<proyecto>/domains?teamId=<team>" \
+  -H "Authorization: Bearer $TOKEN" | grep -o '"name":"[^"]*","[^}]*redirect":"[^"]*"'
+```
+
+Para dejarlo como debe estar — el apex sirve, `www` redirige al apex:
+
+```bash
+# el apex deja de redirigir
+curl -s -X PATCH "https://api.vercel.com/v9/projects/<proyecto>/domains/getvitamind.app?teamId=<team>" \
+  -H "Authorization: Bearer $TOKEN" -H "content-type: application/json" -d '{"redirect":null}'
+# www apunta al apex
+curl -s -X PATCH "https://api.vercel.com/v9/projects/<proyecto>/domains/www.getvitamind.app?teamId=<team>" \
+  -H "Authorization: Bearer $TOKEN" -H "content-type: application/json" \
+  -d '{"redirect":"getvitamind.app","redirectStatusCode":308}'
+```
+
+#### El TXT de verificación, si aparece
+
+Tras adjuntar el dominio, el proyecto puede quedarse en `verified: false` pidiendo un
+TXT en `_vercel.<dominio>`, y sin eso **el alias no se puede asignar**
+(«The domain is not verified and cannot be used as an alias»).
+
+No hace falta tocar el registrador: si el DNS lo sirve Vercel y el dominio ya está en
+la cuenta destino, el propio registro se crea por API.
+
+```bash
+# el valor exacto sale de aquí, campo `verification`
+curl -s "https://api.vercel.com/v9/projects/<proyecto>/domains/getvitamind.app?teamId=<team>" \
+  -H "Authorization: Bearer $TOKEN"
+
+curl -s -X POST "https://api.vercel.com/v2/domains/getvitamind.app/records?teamId=<team>" \
+  -H "Authorization: Bearer $TOKEN" -H "content-type: application/json" \
+  -d '{"name":"_vercel","type":"TXT","value":"vc-domain-verify=..."}'
+
+npx vercel@latest domains verify getvitamind.app --scope <cuenta-destino>
+```
+
+Éste es el TXT que Vercel pide cuando se intenta añadir el dominio desde una cuenta
+que no lo posee. Con el orden correcto —mover primero, adjuntar después— se resuelve
+en un segundo, porque el DNS ya es tuyo.
+
+#### El alias final
+
+Adjuntar el dominio **no** hace que sirva: hace falta un despliegue de producción en
+el proyecto destino y apuntarle el alias.
+
+```bash
+npx vercel@latest alias set <deploy-de-produccion>.vercel.app getvitamind.app --scope <cuenta-destino>
+
+# comprobar a qué apunta realmente
+curl -s "https://api.vercel.com/v4/aliases?domain=getvitamind.app&teamId=<team>" \
+  -H "Authorization: Bearer $TOKEN"
+```
+
+Ese `v4/aliases` es la respuesta a «¿quién sirve el dominio ahora mismo?». Mientras
+apunte a un despliegue de la cuenta origen, el tráfico sigue yendo allí por mucho que
+el dominio haya cambiado de dueño.
+
 ### 5 · Verificar producción de verdad
 
 ```bash
-curl -s -o /dev/null -w "%{http_code}\n" https://getvitamind.app/
-curl -s -o /dev/null -w "%{http_code}\n" https://getvitamind.app/es
+for p in / /en /fr /vitamina-d/madrid /amanecer/madrid/julio /connect /manifest.json /sitemap.xml /robots.txt; do
+  printf "%-26s " "$p"; curl -s -o /dev/null -w "%{http_code}\n" "https://getvitamind.app$p"
+done
+curl -s -o /dev/null -w "cities  %{http_code}\n" "https://getvitamind.app/api/cities?q=madrid"
+curl -s -o /dev/null -w "cron    %{http_code} (401 = bien)\n" "https://getvitamind.app/api/push/notify"
+curl -sI https://www.getvitamind.app/ | grep -i location   # → https://getvitamind.app/
 ```
+
+**Un 200 no basta**: el fallo del `www` devolvía 308 y 307, no errores. Hay que mirar
+el código exacto y, en los redirects, hacia dónde.
 
 Y a mano, en el navegador: cargar la home, iniciar sesión, ver el perfil. El
 certificado puede tardar un par de minutos en emitirse tras el movimiento.
@@ -163,9 +293,21 @@ certificado puede tardar un par de minutos en emitirse tras el movimiento.
   sobrevive **si el dominio no cambia**. Si cambiara, es una instalación muerta que
   nadie va a reinstalar por su cuenta.
 
+**Orden importante**: el token del repo y los IDs del workflow hay que cambiarlos
+**a la vez**. Con los IDs nuevos y el token viejo, los despliegues fallan con
+«Project not found»; con los IDs viejos y el token nuevo, igual. Y hay una ventana
+peor: si el dominio ya sirve desde la cuenta nueva pero el workflow sigue apuntando
+al proyecto viejo, los despliegues **funcionan** y no llegan a producción. Nada
+falla visiblemente y los cambios dejan de aparecer.
+
+Mientras esa ventana esté abierta, no empujar nada.
+
 ### 7 · Solo ahora, borrar el proyecto viejo
 
 Con producción verificada en la cuenta nueva durante al menos un día. Antes no.
+
+**El proyecto viejo no estorba.** Ya no tiene el dominio, así que no sirve tráfico:
+solo ocupa un hueco en la lista. Ese hueco es la vuelta atrás, y es barato.
 
 ---
 
