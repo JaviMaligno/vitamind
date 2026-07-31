@@ -524,7 +524,7 @@ export async function sunForecastFull(
   fetcher: WeatherFetcher = fetchWeatherHours,
 ) {
   const requested = Math.min(7, Math.max(2, Math.round(args.days ?? 5)));
-  const { skinType, area, targetIU, age, elevationM } = normalizeProfile(args);
+  const { skinType, area, targetIU, age } = normalizeProfile(args);
   const hours = await fetcher(args.lat, args.lon, requested);
 
   if (!hours) {
@@ -540,25 +540,36 @@ export async function sunForecastFull(
   const days: ForecastDaySummary[] = [];
   for (const [date, dayHours] of groupByDay(hours)) {
     if (days.length >= requested) break;
-    const doy = dayOfYear(new Date(`${date}T12:00:00Z`));
-    const curve = getCurve(args.lat, args.lon, doy, 0, args.timezone);
-    const ctx = { ozoneDu: ozoneDU(args.lat, args.lon, doy), elevationM };
 
-    // Cloud cover scales the clear-sky UV: the forecast is what makes this tool
-    // worth more than the geometry alone.
-    const exposure = computeExposureFromCurve(curve, skinType, area, targetIU, age, ctx);
-    const peak = Math.max(0, ...dayHours.map((h) => h.uvIndex ?? 0));
+    // The window comes from the FORECAST's hourly UV, not from the clear-sky
+    // curve. Open-Meteo's UV already has the cloud cover in it, which is the
+    // only reason this tool beats the geometry: a day under 74% cloud must not
+    // report the same window and the same minutes as a clear one.
+    let peak = 0;
+    let start = -1;
+    let end = -1;
+    for (const h of dayHours) {
+      const uvi = h.uvIndex ?? 0;
+      const hour = Number(h.time.slice(11, 13));
+      if (uvi > peak) peak = uvi;
+      if (uvi >= MIN_UVI) {
+        if (start < 0) start = hour;
+        end = hour + 1;
+      }
+    }
+
     const avgCloud = dayHours.length
       ? Math.round(dayHours.reduce((sum, h) => sum + (h.cloudCover ?? 0), 0) / dayHours.length)
       : 0;
-    const possible = peak >= MIN_UVI && exposure !== null && exposure.windowStart >= 0;
+    const possible = start >= 0;
+    const minutes = possible ? minutesForVitD(peak, skinType, area, targetIU, age) : null;
 
     days.push({
       date,
       peakUVIndex: Math.round(peak * 10) / 10,
       avgCloudPercent: avgCloud,
-      window: possible && exposure ? { start: hh(exposure.windowStart), end: hh(exposure.windowEnd) } : null,
-      minutesNeededAtBestHour: possible && exposure ? Math.round(exposure.minutesNeeded) : null,
+      window: possible ? { start: hh(start), end: hh(end) } : null,
+      minutesNeededAtBestHour: minutes === null ? null : Math.round(minutes),
       synthesisPossible: possible,
     });
   }
