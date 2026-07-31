@@ -1,12 +1,44 @@
 import { HEAT_LEGEND_GRADIENT, yearStripColumns, yearStripViewBox } from "@/lib/year-strip";
 import { widgetMonthLabels, widgetStrings } from "./i18n";
 import { widgetPalette } from "./theme";
-import type { YearStripPlace } from "./data";
+import type { YearStripPlace, YearVerdict } from "./data";
+import { YEAR_COPY } from "./generated-copy";
+import { resolveWidgetLocale } from "./i18n";
 
 export interface RenderYearStripOptions {
   places: YearStripPlace[] | null;
+  verdict?: YearVerdict | null;
   locale?: unknown;
   theme?: unknown;
+}
+
+const interpolate = (template: string, values: Record<string, string>) =>
+  template.replace(/\{(\w+)\}/g, (_, k) => values[k] ?? `{${k}}`);
+
+/**
+ * The answer in a sentence, above the strip.
+ *
+ * The strip is a good picture — it is the app's own, it carries a legend, and it
+ * shows the exact season edges that a month view would round away. What it did
+ * not do was answer the question someone asked in words before making them read
+ * it (#29). Uses the city page's own verdict copy so the two agree.
+ *
+ * Without a place name there is no sentence to build — the app's copy is written
+ * around one — so the span alone is stated instead.
+ */
+export function yearHeadline(v: YearVerdict | null | undefined, locale: unknown): string | null {
+  if (!v) return null;
+  const copy = YEAR_COPY[resolveWidgetLocale(locale)];
+
+  if (v.name) {
+    if (v.neverPossible) return interpolate(copy.verdictNever, { city: v.name });
+    if (v.allYear) return interpolate(copy.verdictAllYear, { city: v.name });
+    if (v.spanStart && v.spanEnd) {
+      return interpolate(copy.verdictRange, { city: v.name, startMonth: v.spanStart, endMonth: v.spanEnd });
+    }
+  }
+  if (v.spanStart && v.spanEnd) return `${v.spanStart} → ${v.spanEnd}`;
+  return null;
 }
 
 const escapeHtml = (value: string) => value
@@ -37,7 +69,7 @@ function strip(place: YearStripPlace, height: number, palette: ReturnType<typeof
     + `role="img" aria-label="${escapeHtml(label)}" preserveAspectRatio="none">${bars}</svg></div>`;
 }
 
-export function renderYearStrip({ places, locale, theme }: RenderYearStripOptions): string {
+export function renderYearStrip({ places, verdict, locale, theme }: RenderYearStripOptions): string {
   const copy = widgetStrings(locale);
   const palette = widgetPalette(theme);
   if (!places || places.length === 0) {
@@ -52,8 +84,13 @@ export function renderYearStrip({ places, locale, theme }: RenderYearStripOption
   // comparison is that every strip is the same 365 days on the same axis.
   const months = widgetMonthLabels(locale).map((m) => `<span>${escapeHtml(m)}</span>`).join("");
 
+  const headline = yearHeadline(verdict, locale);
+
   return [
     `<figure style="margin:0;color:${palette.textPrimary};font-family:system-ui,sans-serif">`,
+    headline
+      ? `<div style="font-size:17px;line-height:1.35;font-weight:600;margin-bottom:10px">${escapeHtml(headline)}</div>`
+      : "",
     `<div style="padding:12px;border-radius:12px;background:${palette.plate}">`,
     strips,
     `<div style="display:grid;grid-template-columns:repeat(12,1fr);color:${palette.onPlateFaint};font-size:11px">${months}</div>`,

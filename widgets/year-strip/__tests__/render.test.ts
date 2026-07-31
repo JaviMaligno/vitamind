@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { HEAT_HIGH, HEAT_LOW } from "@/lib/year-strip";
-import { renderYearStrip } from "../render";
+import { renderYearStrip, yearHeadline } from "../render";
 import { widgetPalette, resolveWidgetTheme } from "../theme";
 import { widgetStrings } from "../i18n";
 
@@ -154,5 +154,56 @@ describe("renderYearStrip stacked (comparison)", () => {
     });
     expect(html).not.toContain("<img");
     expect(html).toContain("&lt;img");
+  });
+});
+
+describe("yearHeadline — the answer before the picture", () => {
+  const base = { allYear: false, neverPossible: false, monthsWithSun: 5 };
+
+  it("states the season in the app's own words when the place is named", () => {
+    expect(yearHeadline({ ...base, name: "Reikiavik", spanStart: "30 abr", spanEnd: "23 ago" }, "es"))
+      .toBe("En Reikiavik puedes sintetizar vitamina D de 30 abr a 23 ago.");
+  });
+
+  it("uses the all-year and never sentences where they apply", () => {
+    expect(yearHeadline({ ...base, name: "Singapur", allYear: true }, "es"))
+      .toContain("durante todo el año");
+    expect(yearHeadline({ ...base, name: "Tromsø", neverPossible: true }, "es"))
+      .toContain("nunca alcanza");
+  });
+
+  it("falls back to the span alone when nobody named the place", () => {
+    // The app's copy is written around a city name; without one there is no
+    // sentence to build, so state the fact rather than invent a phrasing.
+    expect(yearHeadline({ ...base, spanStart: "24 mar", spanEnd: "27 sep" }, "es"))
+      .toBe("24 mar → 27 sep");
+  });
+
+  it("says nothing rather than something empty", () => {
+    expect(yearHeadline(null, "es")).toBeNull();
+    expect(yearHeadline({ ...base }, "es")).toBeNull();
+  });
+
+  it("leaves no unfilled placeholders", () => {
+    const h = yearHeadline({ ...base, name: "Oslo", spanStart: "23 abr", spanEnd: "29 ago" }, "de");
+    expect(h).not.toContain("{");
+  });
+
+  it("puts the headline above the strip, and only for a single place", () => {
+    const year = new Array(365).fill(4);
+    const single = renderYearStrip({
+      places: [{ hoursByDay: year }],
+      verdict: { ...base, name: "Madrid", spanStart: "14 feb", spanEnd: "2 nov" },
+      locale: "es",
+    });
+    expect(single.indexOf("Madrid")).toBeLessThan(single.indexOf("<svg"));
+
+    // A comparison captions each strip already; one headline cannot speak for five.
+    const many = renderYearStrip({
+      places: [{ name: "A", hoursByDay: year }, { name: "B", hoursByDay: year }],
+      verdict: null,
+      locale: "es",
+    });
+    expect(many).not.toContain("puedes sintetizar");
   });
 });

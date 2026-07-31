@@ -1,100 +1,144 @@
-import { curvePath, viableBand } from "@/lib/day-curve";
-import { dayCurveStrings } from "./i18n";
-import { dayCurvePalette } from "./theme";
-import type { DayCurveMeta } from "./data";
-
-const W = 640;
-const H = 200;
-const PAD = { t: 16, r: 14, b: 22, l: 14 };
-const PLOT_W = W - PAD.l - PAD.r;
-const PLOT_H = H - PAD.t - PAD.b;
+import { DAY_COPY } from "./generated-copy";
+import { statusKey, formatCountdown, fmtMin, type DayMeta, type StatusKey } from "./data";
+import { resolveWidgetLocale } from "./i18n";
 
 const escapeHtml = (value: string) => value
   .replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;")
   .replaceAll('"', "&quot;").replaceAll("'", "&#39;");
 
-/** Decimal local hours as HH:MM. */
-export function fmtHours(h: number): string {
-  const hours = Math.floor(h);
-  const minutes = Math.round((h - hours) * 60);
-  const carry = minutes === 60;
-  return `${String((carry ? hours + 1 : hours) % 24).padStart(2, "0")}:${String(carry ? 0 : minutes).padStart(2, "0")}`;
+/**
+ * Dot colour per verdict, copied from `DOT` in components/dashboard/DayHeroBold.tsx
+ * so the chat and the app agree on what green means.
+ */
+const DOT: Record<StatusKey, string> = {
+  optimal: "#5fd39b",
+  moderate: "#fbbf24",
+  upcoming: "#60a5fa",
+  windowClosed: "#cbd5e1",
+  insufficient: "#f87171",
+};
+
+const palette = (theme: unknown) => ({
+  text: theme === "dark" ? "var(--color-text-primary, #f4f5f7)" : "var(--color-text-primary, #17191f)",
+  muted: theme === "dark" ? "var(--color-text-secondary, #a8adb8)" : "var(--color-text-secondary, #646b78)",
+  // The poster surface is dark in both themes, exactly as the app's hero is: the
+  // status colours are tuned to read on it and would wash out on white.
+  plate: "#0a0f28",
+  onPlate: "rgba(255,255,255,0.92)",
+  onPlateFaint: "rgba(255,255,255,0.55)",
+});
+
+/** Fills `{countdown}` / `{hour}` the way next-intl would, without shipping it. */
+function interpolate(template: string, values: Record<string, string>): string {
+  return template.replace(/\{(\w+)\}/g, (_, k) => values[k] ?? `{${k}}`);
 }
 
-export interface RenderDayCurveOptions {
-  meta: DayCurveMeta | null;
+export interface Verdict {
+  headline: string;
+  hint: string | null;
+}
+
+/**
+ * The headline and hint, mirroring the branch order of DayHeroBold. This is the
+ * whole point of the widget: the first thing on screen is the answer in words,
+ * not a chart that has to be decoded first (#29).
+ */
+export function verdict(meta: DayMeta, locale: unknown): Verdict {
+  const copy = DAY_COPY[resolveWidgetLocale(locale)];
+  const key = statusKey(meta);
+
+  if (key === "optimal") return { headline: copy.nowOptimalTitle, hint: copy.nowOptimalHint };
+  if (key === "moderate") return { headline: copy.nowModerateTitle, hint: copy.nowModerateHint };
+  if (key === "upcoming") {
+    return {
+      headline: interpolate(copy.nowUpcomingTitle, {
+        countdown: formatCountdown(meta.minutesUntilWindow ?? 0),
+        hour: `${meta.windowStart ?? 0}:00`,
+      }),
+      hint: meta.cloudDegraded ? copy.cloudDegraded : null,
+    };
+  }
+  if (key === "windowClosed") {
+    return {
+      headline: interpolate(copy.nowClosedTitle, { hour: `${meta.windowEnd ?? 0}:00` }),
+      hint: copy.nowClosedHint,
+    };
+  }
+  return {
+    headline: copy.noWindowToday,
+    hint: meta.cloudDegraded ? copy.cloudDegradedFull : copy.noWindowHint,
+  };
+}
+
+export interface Stat {
+  label: string;
+  value: string;
+}
+
+/**
+ * The numbers under the verdict, same selection and order as the app's hero.
+ *
+ * Only shown when there is a window to talk about — on a day with no synthesis,
+ * a UV reading and an empty window are noise around a verdict that already said
+ * everything.
+ */
+export function stats(meta: DayMeta, locale: unknown): Stat[] {
+  const copy = DAY_COPY[resolveWidgetLocale(locale)];
+  if (meta.state !== "good_now" && meta.state !== "upcoming") return [];
+
+  const out: Stat[] = [{ label: copy.currentUVI, value: meta.uvIndex.toFixed(1) }];
+
+  if (meta.windowStart !== null && meta.windowEnd !== null) {
+    out.push({ label: copy.nowWindow, value: `${meta.windowStart}:00 – ${meta.windowEnd}:00` });
+  }
+  if (meta.state === "good_now" && meta.minutesNeeded !== null) {
+    out.push({ label: copy.nowTimeNeeded, value: fmtMin(meta.minutesNeeded) });
+  }
+  if (meta.state === "good_now" && meta.windowClosesInMinutes !== null) {
+    out.push({ label: copy.nowClosesIn, value: formatCountdown(meta.windowClosesInMinutes) });
+  }
+  if (meta.state === "upcoming" && meta.bestHour !== null && meta.bestMinutes !== null) {
+    out.push({ label: copy.nowBestHour, value: `${fmtMin(meta.bestMinutes)} · ${meta.bestHour}:00` });
+  }
+  return out;
+}
+
+export interface RenderDayOptions {
+  meta: DayMeta | null;
   locale?: unknown;
   theme?: unknown;
+  emptyText?: string;
 }
 
-export function renderDayCurve({ meta, locale, theme }: RenderDayCurveOptions): string {
-  const copy = dayCurveStrings(locale);
+export function renderDay({ meta, locale, theme, emptyText }: RenderDayOptions): string {
+  const p = palette(theme);
   if (!meta) {
-    const palette = dayCurvePalette(theme, "no_synthesis");
-    return `<p style="margin:0;color:${palette.textMuted};font:14px/1.5 system-ui,sans-serif">${escapeHtml(copy.empty)}</p>`;
+    return `<p style="margin:0;color:${p.muted};font:14px/1.5 system-ui,sans-serif">`
+      + `${escapeHtml(emptyText ?? "No reading was returned for this place.")}</p>`;
   }
 
-  const palette = dayCurvePalette(theme, meta.state);
-  const peak = Math.max(...meta.elevations, meta.thresholdElevation + 5);
-  // The horizon anchors the bottom: elevations below it are night, and letting
-  // the scale follow them would squash the useful part of the chart.
-  const box = { width: PLOT_W, height: PLOT_H, min: Math.min(0, meta.thresholdElevation - 5), max: peak };
-  const path = curvePath(meta.elevations, box);
-  const band = viableBand(meta.elevations, meta.thresholdElevation);
+  const key = statusKey(meta);
+  const v = verdict(meta, locale);
+  const cells = stats(meta, locale);
 
-  const xForHour = (h: number) => PAD.l + (h / 24) * PLOT_W;
-  const yForElevation = (e: number) =>
-    PAD.t + PLOT_H - ((e - box.min) / (box.max - box.min || 1)) * PLOT_H;
-
-  const bandRect = band
-    ? `<rect x="${xForHour(band.startHours).toFixed(1)}" y="${PAD.t}" `
-      + `width="${(xForHour(band.endHours) - xForHour(band.startHours)).toFixed(1)}" height="${PLOT_H}" `
-      + `fill="${palette.accent}" opacity="0.16"/>`
-    : "";
-
-  const thresholdY = yForElevation(meta.thresholdElevation).toFixed(1);
-  const thresholdLine = `<line x1="${PAD.l}" y1="${thresholdY}" x2="${W - PAD.r}" y2="${thresholdY}" `
-    + `stroke="${palette.accent}" stroke-width="1" stroke-dasharray="4 4" opacity="0.7"/>`;
-
-  const nowMarker = meta.nowLocalHours !== null
-    ? `<line x1="${xForHour(meta.nowLocalHours).toFixed(1)}" y1="${PAD.t}" `
-      + `x2="${xForHour(meta.nowLocalHours).toFixed(1)}" y2="${PAD.t + PLOT_H}" `
-      + `stroke="${palette.onPlate}" stroke-width="1.5" opacity="0.85"/>`
-    : "";
-
-  const hourLabels = [0, 6, 12, 18, 24]
-    .map((h) => `<text x="${xForHour(h).toFixed(1)}" y="${H - 6}" fill="${palette.onPlateFaint}" `
-      + `font-size="10" text-anchor="${h === 0 ? "start" : h === 24 ? "end" : "middle"}">${String(h).padStart(2, "0")}</text>`)
-    .join("");
-
-  const facts = [
-    `${escapeHtml(copy.uv)} <strong>${meta.uvIndex}</strong>`,
-    meta.minutesNeeded !== null ? `<strong>${meta.minutesNeeded}</strong> ${escapeHtml(copy.minutes)}` : null,
-    meta.windowStart !== null && meta.windowEnd !== null
-      ? `${escapeHtml(copy.window)} <strong>${fmtHours(meta.windowStart)}–${fmtHours(meta.windowEnd)}</strong>`
-      : null,
-    meta.cloudCoverPercent !== null ? `<strong>${meta.cloudCoverPercent}%</strong> ${escapeHtml(copy.clouds)}` : null,
-  ].filter(Boolean).join(" · ");
+  const statBlocks = cells.map((s) =>
+    `<div style="min-width:96px">`
+    + `<span style="display:block;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:${p.onPlateFaint}">${escapeHtml(s.label)}</span>`
+    + `<span style="font-size:20px;font-weight:600;color:${p.onPlate}">${escapeHtml(s.value)}</span>`
+    + `</div>`).join("");
 
   return [
-    `<figure style="margin:0;font-family:system-ui,sans-serif;color:${palette.textPrimary}">`,
-    `<div style="font-size:22px;line-height:1.25;font-weight:650;margin-bottom:10px;color:${palette.accent}">`,
-    escapeHtml(copy.headline[meta.state]),
+    `<figure style="margin:0;font-family:system-ui,sans-serif">`,
+    `<div style="border-radius:16px;background:${p.plate};padding:18px 20px">`,
+    `<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">`,
+    `<span style="width:10px;height:10px;border-radius:50%;background:${DOT[key]};flex:none"></span>`,
+    `<span style="font-size:22px;line-height:1.25;font-weight:650;color:${p.onPlate}">${escapeHtml(v.headline)}</span>`,
     `</div>`,
-    `<div style="border-radius:12px;background:${palette.plate};padding:4px">`,
-    `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="${escapeHtml(copy.headline[meta.state])}">`,
-    bandRect,
-    thresholdLine,
-    `<g transform="translate(${PAD.l},${PAD.t})">`,
-    `<path d="${path}" fill="none" stroke="${palette.accent}" stroke-width="2.5" stroke-linejoin="round"/>`,
-    `</g>`,
-    nowMarker,
-    hourLabels,
-    `</svg>`,
+    v.hint ? `<div style="font-size:13px;line-height:1.5;color:${p.onPlateFaint};margin-bottom:14px">${escapeHtml(v.hint)}</div>` : "",
+    cells.length
+      ? `<div style="display:flex;flex-wrap:wrap;gap:18px 24px">${statBlocks}</div>`
+      : "",
     `</div>`,
-    `<figcaption style="margin-top:8px;font-size:13px;line-height:1.5;color:${palette.textMuted}">`,
-    facts,
-    `</figcaption>`,
     `</figure>`,
   ].join("");
 }

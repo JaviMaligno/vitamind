@@ -1,12 +1,13 @@
 import { HostBridge, windowTransport, type HostContext } from "../shared/host-bridge";
-import { readDayCurveMeta, type DayCurveMeta } from "./data";
-import { renderDayCurve } from "./render";
-import { dayCurvePalette } from "./theme";
+import { readDayMeta, type DayMeta } from "./data";
+import { renderDay } from "./render";
+import { emptyText } from "./i18n";
+
 
 const root = document.querySelector<HTMLElement>("#app");
 if (!root) throw new Error("day-curve widget root missing");
 
-let meta: DayCurveMeta | null = null;
+let meta: DayMeta | null = null;
 
 /** The host owns the theme and its CSS variables; an iframe inherits neither. */
 function applyHostAppearance(context: HostContext | undefined) {
@@ -22,10 +23,12 @@ function applyHostAppearance(context: HostContext | undefined) {
 
 function render() {
   const context = bridge.getHostContext();
-  const palette = dayCurvePalette(context?.theme, meta?.state ?? "no_synthesis");
-  document.body.style.background = palette.pageBackground;
-  document.body.style.color = palette.textPrimary;
-  root!.innerHTML = renderDayCurve({ meta, locale: context?.locale, theme: context?.theme });
+  root!.innerHTML = renderDay({
+    meta,
+    locale: context?.locale,
+    theme: context?.theme,
+    emptyText: emptyText(context?.locale),
+  });
   bridge.notifySize(Math.ceil(document.documentElement.scrollHeight));
 }
 
@@ -33,7 +36,7 @@ const bridge = new HostBridge({
   appInfo: { name: "Vitamin D Day Curve", version: "1.0.0" },
   transport: windowTransport(),
   onToolResult: (result) => {
-    meta = readDayCurveMeta(result);
+    meta = readDayMeta(result);
     render();
   },
   onHostContextChanged: (context) => {

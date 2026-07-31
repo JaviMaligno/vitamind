@@ -11,6 +11,18 @@ export interface YearStripPlace {
 
 export interface YearStripMeta {
   places: YearStripPlace[];
+  /** Only on the single-place payload; the comparison captions each strip. */
+  verdict: YearVerdict | null;
+}
+
+/** What the headline needs to state the answer before the picture is read. */
+export interface YearVerdict {
+  name?: string;
+  allYear: boolean;
+  neverPossible: boolean;
+  monthsWithSun: number;
+  spanStart?: string;
+  spanEnd?: string;
 }
 
 const isHours = (value: unknown): value is number[] =>
@@ -55,9 +67,22 @@ export function readYearStripMeta(result: unknown): YearStripMeta | null {
   if (Array.isArray(p.places)) {
     // Five is what the tool accepts; more would be unreadable stacked anyway.
     const places = p.places.slice(0, 5).map(readPlace).filter((x): x is YearStripPlace => x !== null);
-    return places.length > 0 ? { places } : null;
+    // A comparison needs no headline: every strip is already captioned with its
+    // own name and season, and one verdict cannot speak for five places.
+    return places.length > 0 ? { places, verdict: null } : null;
   }
 
   const single = readPlace(p);
-  return single ? { places: [single] } : null;
+  if (!single) return null;
+  return {
+    places: [single],
+    verdict: {
+      name: str(p.name),
+      allYear: p.allYear === true,
+      neverPossible: p.neverPossible === true,
+      monthsWithSun: typeof p.monthsWithSun === "number" ? p.monthsWithSun : 0,
+      spanStart: str(p.spanStart),
+      spanEnd: str(p.spanEnd),
+    },
+  };
 }

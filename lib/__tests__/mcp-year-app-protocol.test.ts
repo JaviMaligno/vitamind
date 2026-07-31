@@ -183,7 +183,7 @@ describe("MCP App metadata on the wire", () => {
     expect(result.content[0].text).toContain("authentication_required");
   });
 
-  it("answers get_current_status with the day curve alongside the text", async () => {
+  it("answers get_current_status with the verdict data the hero needs", async () => {
     await connect();
     const { result } = await rpc(
       "tools/call",
@@ -196,9 +196,13 @@ describe("MCP App metadata on the wire", () => {
     expect(text).not.toContain("elevations");
 
     const chart = result._meta[DAY_CURVE_META_KEY];
-    expect(chart.elevations).toHaveLength(97);
-    expect(chart.stepMinutes).toBe(15);
-    expect(typeof chart.thresholdElevation).toBe("number");
+    // What the widget renders is the app's own hero: a verdict and a few
+    // numbers. The elevation curve it used to carry was dropped in #29 — it
+    // answered a question nobody asked, and it was most of the payload.
     expect(["good_now", "upcoming", "window_closed", "no_synthesis"]).toContain(chart.state);
+    expect([null, "optimal", "moderate"]).toContain(chart.intensity);
+    expect(typeof chart.uvIndex).toBe("number");
+    expect(chart).not.toHaveProperty("elevations");
+    expect(chart).not.toHaveProperty("thresholdElevation");
   });
 });

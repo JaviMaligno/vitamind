@@ -211,14 +211,31 @@ export function initMcpServer(server: McpServer) {
       "get_vitamin_d_year",
       {
         description: "The WHOLE YEAR of solar vitamin D for a location in a single call. monthsWithSun lists every month with at least one viable day (season edges count as partial months, see byMonth[].viableDays); solidMonths lists months where most days work; exactViableSpan gives the exact season boundaries; summary carries per-year aggregates for comparing places. Use this for any question about months, seasons, winter/summer or 'when during the year can I…' — never probe individual dates with get_vitamin_d_window for that.",
-        inputSchema: { lat: LAT, lon: LON, timezone: TZ, ...PROFILE },
+        inputSchema: {
+          lat: LAT, lon: LON, timezone: TZ, ...PROFILE,
+          placeName: z.string().min(1).max(60).optional()
+            .describe("The place's name as the user said it — used to caption the chart"),
+        },
         _meta: { ui: { resourceUri: YEAR_STRIP_RESOURCE_URI } },
       },
       async (args) => timed("get_vitamin_d_year", () => {
         const result = vitaminDYearFull(args);
         return {
           ...json(result.text),
-          _meta: { [YEAR_STRIP_META_KEY]: { hoursByDay: result.hoursByDay } },
+          // The strip alone makes the reader decode a picture to get an answer
+          // they asked in words. The span and the month count let the widget put
+          // the answer above it, using the app's own verdict copy (#29).
+          _meta: {
+            [YEAR_STRIP_META_KEY]: {
+              hoursByDay: result.hoursByDay,
+              name: args.placeName,
+              spanStart: result.text.exactViableSpan?.firstDay,
+              spanEnd: result.text.exactViableSpan?.lastDay,
+              allYear: result.text.allYear,
+              neverPossible: result.text.neverPossible,
+              monthsWithSun: result.text.monthsWithSun.length,
+            },
+          },
         };
       }),
     );

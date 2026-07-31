@@ -6,10 +6,8 @@ import {
   computeExposureFromCurve, getCurrentStatus, maxSessionIU, MIN_UVI,
   iuForMinutes, erythemaMinutes, minutesForVitD, estimateUVFromElevation, type SkinType,
 } from "./vitd";
-import { ozoneDU, synthesisThresholdElevation } from "./uv-model";
-import { tzOffsetForDate } from "./timezone";
+import { ozoneDU } from "./uv-model";
 import { inferElevationM } from "./elevation";
-import { sampleElevations, DAY_CURVE_STEP_MINUTES } from "./day-curve";
 import { cityYearProfile, viableDateBoundaries, MIN_VIABLE_HOURS } from "./city-content";
 import type { SolarPoint, WeatherHour } from "./types";
 
@@ -159,6 +157,8 @@ export function sunTimesTool(args: SunTimesArgs) {
 export interface VitDArgs {
   lat: number;
   lon: number;
+  /** How the user named the place; only used to caption a widget. */
+  placeName?: string;
   date?: string;
   timezone?: string;
   /** Fitzpatrick skin type 1–6. */
@@ -625,23 +625,25 @@ async function buildCurrentStatus(args: VitDArgs, fetcher: WeatherFetcher) {
     note: DISCLAIMER,
   };
 
-  const offset = args.timezone ? tzOffsetForDate(args.timezone, now) : 0;
-  const nowLocalHours = (((now.getUTCHours() + now.getUTCMinutes() / 60 + offset) % 24) + 24) % 24;
-
   return {
     text,
+    // What the app's own "My Day" hero puts on screen, and nothing else. It
+    // deliberately does NOT send the elevation curve: the curve answers "what
+    // shape does this day have", which is the explore screen's question, not
+    // "should I go outside now". See #29.
     chart: {
-      elevations: sampleElevations(curve),
-      stepMinutes: DAY_CURVE_STEP_MINUTES,
-      thresholdElevation: Math.round(
-        synthesisThresholdElevation(args.lat, args.lon, doy, elevationM) * 10) / 10,
-      nowLocalHours: Math.round(nowLocalHours * 100) / 100,
-      windowStart: status.window ? status.window.start : null,
-      windowEnd: status.window ? status.window.end : null,
       state: status.state,
+      intensity: status.intensity,
       uvIndex: text.currentUVIndex,
       minutesNeeded: text.minutesNeededNow,
+      windowStart: status.window ? status.window.start : null,
+      windowEnd: status.window ? status.window.end : null,
+      minutesUntilWindow: status.minutesUntilWindow,
+      windowClosesInMinutes: status.windowClosesIn,
+      bestHour: status.bestHour,
+      bestMinutes: status.bestMinutes === null ? null : Math.round(status.bestMinutes),
       cloudCoverPercent: status.cloudCover,
+      cloudDegraded: status.cloudDegraded,
     },
   };
 }

@@ -1,5 +1,5 @@
 import { HostBridge, windowTransport, type HostContext } from "../shared/host-bridge";
-import { readYearStripMeta, type YearStripPlace } from "./data";
+import { readYearStripMeta, type YearStripPlace, type YearVerdict } from "./data";
 import { renderYearStrip } from "./render";
 import { widgetPalette } from "./theme";
 
@@ -7,6 +7,7 @@ const root = document.querySelector<HTMLElement>("#app");
 if (!root) throw new Error("year-strip widget root missing");
 
 let places: YearStripPlace[] | null = null;
+let verdict: YearVerdict | null = null;
 
 /**
  * The host owns the theme and the CSS variables; the iframe inherits neither, so
@@ -30,7 +31,7 @@ function render() {
   const palette = widgetPalette(context?.theme);
   document.body.style.background = palette.pageBackground;
   document.body.style.color = palette.textPrimary;
-  root!.innerHTML = renderYearStrip({ places, locale: context?.locale, theme: context?.theme });
+  root!.innerHTML = renderYearStrip({ places, verdict, locale: context?.locale, theme: context?.theme });
   bridge.notifySize(Math.ceil(document.documentElement.scrollHeight));
 }
 
@@ -38,7 +39,9 @@ const bridge = new HostBridge({
   appInfo: { name: "Vitamin D Year Strip", version: "1.0.0" },
   transport: windowTransport(),
   onToolResult: (result) => {
-    places = readYearStripMeta(result)?.places ?? null;
+    const read = readYearStripMeta(result);
+    places = read?.places ?? null;
+    verdict = read?.verdict ?? null;
     render();
   },
   onHostContextChanged: (context) => {
