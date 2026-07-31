@@ -5,11 +5,12 @@
 próxima vez no haga falta improvisar.
 
 **Ampliado el 2026-07-31**, tras hacer la migración entera siguiéndolo. Salió **sin
-un segundo de caída**, y aun así aparecieron cuatro cosas que el runbook no
+un segundo de caída**, y aun así aparecieron cinco cosas que el runbook no
 contemplaba: la protección de despliegue que traen los proyectos nuevos, que
 `domains move` solo envía una solicitud por email (y que esa solicitud puede caducar
-en silencio), el TXT de verificación a nivel de proyecto, y que `domains add` deja el
-apex redirigiendo a `www`. Todas están abajo, en su paso.
+en silencio), el TXT de verificación a nivel de proyecto, que `domains add` deja el
+apex redirigiendo a `www`, y que el alias `.vercel.app` de dev no se libera solo.
+Todas están abajo, en su paso.
 
 ---
 
@@ -285,8 +286,22 @@ certificado puede tardar un par de minutos en emitirse tras el movimiento.
 - **`VERCEL_TOKEN`** en los secretos del repo: el token es de la cuenta vieja y no
   sirve. Crear uno nuevo en la cuenta destino y sustituirlo.
 - **Alias de dev**: lo pone el job `deploy-dev` con
-  `vercel alias set <url> getvitamind-dev.vercel.app`. Ese hostname también es un
-  dominio `.vercel.app` de la cuenta: hay que asegurarse de que existe en la nueva.
+  `vercel alias set <url> getvitamind-dev.vercel.app`. Ese hostname es un dominio
+  `.vercel.app` **reclamado por la cuenta vieja**, y no se libera solo. El primer
+  despliegue a dev tras la migración falla con:
+
+  > `Error: The chosen alias "getvitamind-dev.vercel.app" is already in use.`
+
+  Y falla **después** de haber desplegado bien, así que el job sale en rojo con el
+  código ya subido. Se arregla soltándolo en origen y reasignándolo en destino:
+
+  ```bash
+  npx vercel@latest alias rm getvitamind-dev.vercel.app --yes --token $TOKEN_ORIGEN
+  npx vercel@latest alias set <deploy-dev>.vercel.app getvitamind-dev.vercel.app --scope <cuenta-destino>
+  ```
+
+  Mejor hacerlo **antes** del primer push, en el paso 6, y no descubrirlo por un CI
+  rojo. Comprobar quién lo tiene con `/v4/aliases` en cada cuenta.
 - **Cron**: sale de `vercel.json` y se recrea solo, pero solo corre en despliegues de
   **Production**. Verificar en el panel que aparece.
 - **PWA instalada**: la que tengan los usuarios apunta al mismo origen, así que
