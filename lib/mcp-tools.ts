@@ -483,6 +483,108 @@ export function compareVitaminDYearFull(args: CompareArgs) {
 }
 
 // ---------------------------------------------------------------------------
+// get_sun_forecast
+
+/** One day of the outlook: what the sun offers and whether it is worth going out. */
+export interface ForecastDaySummary {
+  date: string;
+  peakUVIndex: number;
+  avgCloudPercent: number;
+  window: { start: string; end: string } | null;
+  minutesNeededAtBestHour: number | null;
+  synthesisPossible: boolean;
+}
+
+/** Groups Open-Meteo's flat hourly list into local calendar days. */
+function groupByDay(hours: WeatherHour[]): Map<string, WeatherHour[]> {
+  const byDay = new Map<string, WeatherHour[]>();
+  for (const h of hours) {
+    const date = h.time.slice(0, 10);
+    const bucket = byDay.get(date);
+    if (bucket) bucket.push(h);
+    else byDay.set(date, [h]);
+  }
+  return byDay;
+}
+
+/**
+ * The next few days, so "which day this week should I go out?" has an answer.
+ *
+ * Everything else here answers for one day. Someone planning a walk, or waiting
+ * out a cloudy stretch, is asking across days — and until now the only way to
+ * serve them was to call the single-day tool once per date, which is exactly the
+ * cascade the year tool's description tells the model not to do.
+ *
+ * Uses the live forecast, not the clear-sky model: the whole point of looking
+ * ahead is the weather. Without it there is nothing to say that the solar
+ * geometry does not already say.
+ */
+export async function sunForecastFull(
+  args: Omit<VitDArgs, "date"> & { days?: number },
+  fetcher: WeatherFetcher = fetchWeatherHours,
+) {
+  const requested = Math.min(7, Math.max(2, Math.round(args.days ?? 5)));
+  const { skinType, area, targetIU, age, elevationM } = normalizeProfile(args);
+  const hours = await fetcher(args.lat, args.lon, requested);
+
+  if (!hours) {
+    return {
+      text: {
+        error: "forecast_unavailable",
+        hint: "The weather provider did not answer. get_vitamin_d_window still gives the clear-sky answer for a specific date.",
+      },
+      chart: null,
+    };
+  }
+
+  const days: ForecastDaySummary[] = [];
+  for (const [date, dayHours] of groupByDay(hours)) {
+    if (days.length >= requested) break;
+    const doy = dayOfYear(new Date(`${date}T12:00:00Z`));
+    const curve = getCurve(args.lat, args.lon, doy, 0, args.timezone);
+    const ctx = { ozoneDu: ozoneDU(args.lat, args.lon, doy), elevationM };
+
+    // Cloud cover scales the clear-sky UV: the forecast is what makes this tool
+    // worth more than the geometry alone.
+    const exposure = computeExposureFromCurve(curve, skinType, area, targetIU, age, ctx);
+    const peak = Math.max(0, ...dayHours.map((h) => h.uvIndex ?? 0));
+    const avgCloud = dayHours.length
+      ? Math.round(dayHours.reduce((sum, h) => sum + (h.cloudCover ?? 0), 0) / dayHours.length)
+      : 0;
+    const possible = peak >= MIN_UVI && exposure !== null && exposure.windowStart >= 0;
+
+    days.push({
+      date,
+      peakUVIndex: Math.round(peak * 10) / 10,
+      avgCloudPercent: avgCloud,
+      window: possible && exposure ? { start: hh(exposure.windowStart), end: hh(exposure.windowEnd) } : null,
+      minutesNeededAtBestHour: possible && exposure ? Math.round(exposure.minutesNeeded) : null,
+      synthesisPossible: possible,
+    });
+  }
+
+  const usable = days.filter((d) => d.synthesisPossible);
+  // Spelled out so the model does not re-derive it from the list and slip.
+  const best = usable.length
+    ? usable.reduce((a, b) => (b.peakUVIndex > a.peakUVIndex ? b : a)).date
+    : null;
+
+  return {
+    text: {
+      timesIn: args.timezone ?? "UTC",
+      profile: { skinType, exposedSkinFraction: area, age, targetIU },
+      daysAhead: days.length,
+      bestDay: best,
+      daysWithSun: usable.length,
+      days,
+      source: "open-meteo forecast (UV and cloud cover)",
+      note: DISCLAIMER,
+    },
+    chart: { days, bestDay: best },
+  };
+}
+
+// ---------------------------------------------------------------------------
 // estimate_sun_session
 
 const ERYTHEMA_NOTE =
@@ -546,20 +648,20 @@ export function estimateSunSessionTool(args: SessionArgs) {
 // ---------------------------------------------------------------------------
 // get_current_status
 
-export type WeatherFetcher = (lat: number, lon: number) => Promise<WeatherHour[] | null>;
+export type WeatherFetcher = (lat: number, lon: number, days?: number) => Promise<WeatherHour[] | null>;
 
 const UPSTREAM_TIMEOUT_MS = 5000;
 
 /** Today's hourly UV/clouds from Open-Meteo; null on any failure (the caller
  *  falls back to the clear-sky model — same policy as the app's UI). */
-export const fetchWeatherHours: WeatherFetcher = async (lat, lon) => {
+export const fetchWeatherHours: WeatherFetcher = async (lat, lon, days = 1) => {
   try {
     const url = new URL("https://api.open-meteo.com/v1/forecast");
     url.searchParams.set("latitude", String(lat));
     url.searchParams.set("longitude", String(lon));
     url.searchParams.set("hourly", "uv_index,cloud_cover");
     url.searchParams.set("timezone", "auto");
-    url.searchParams.set("forecast_days", "1");
+    url.searchParams.set("forecast_days", String(Math.min(7, Math.max(1, Math.round(days)))));
     const res = await fetch(url.toString(), { signal: AbortSignal.timeout(UPSTREAM_TIMEOUT_MS) });
     if (!res.ok) return null;
     const data = await res.json();

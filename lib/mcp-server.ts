@@ -4,7 +4,7 @@ import { registerAppResource, registerAppTool, RESOURCE_MIME_TYPE } from "@model
 import { z } from "zod";
 import {
   searchCity, sunTimesTool, vitaminDWindowTool, vitaminDYearFull, currentStatusFull,
-  compareVitaminDYearFull, configureSunProfileFull, estimateSunSessionTool,
+  compareVitaminDYearFull, configureSunProfileFull, sunForecastFull, estimateSunSessionTool,
 } from "@/lib/mcp-tools";
 import { YEAR_STRIP_META_KEY } from "@/widgets/year-strip/data";
 import { YEAR_STRIP_WIDGET_HTML } from "@/widgets/year-strip/generated";
@@ -14,6 +14,8 @@ import { PROFILE_META_KEY } from "@/widgets/profile/data";
 import { PROFILE_WIDGET_HTML } from "@/widgets/profile/generated";
 import { HISTORY_META_KEY } from "@/widgets/history/data";
 import { HISTORY_WIDGET_HTML } from "@/widgets/history/generated";
+import { FORECAST_META_KEY } from "@/widgets/forecast/data";
+import { FORECAST_WIDGET_HTML } from "@/widgets/forecast/generated";
 import { getOAuthDb, verifyAccessToken, type OAuthScope } from "@/lib/oauth";
 import {
   getProfileStore, myProfileTool, myCitiesTool, myHistoryTool, logSunSessionTool, updateMyProfileTool,
@@ -110,6 +112,7 @@ export const YEAR_STRIP_RESOURCE_URI = "ui://getvitamind/year-strip.html";
 export const DAY_CURVE_RESOURCE_URI = "ui://getvitamind/day-curve.html";
 export const PROFILE_RESOURCE_URI = "ui://getvitamind/profile.html";
 export const HISTORY_RESOURCE_URI = "ui://getvitamind/history.html";
+export const FORECAST_RESOURCE_URI = "ui://getvitamind/forecast.html";
 
 /**
  * Chart channel for the history widget, derived from whatever the tool answered
@@ -242,6 +245,21 @@ export function initMcpServer(server: McpServer) {
 
     registerAppResource(
       server,
+      "Sun forecast",
+      FORECAST_RESOURCE_URI,
+      { description: "The next few days of usable sun, best day first" },
+      async () => ({
+        contents: [{
+          uri: FORECAST_RESOURCE_URI,
+          mimeType: RESOURCE_MIME_TYPE,
+          text: FORECAST_WIDGET_HTML,
+          _meta: { ui: { csp: {} } },
+        }],
+      }),
+    );
+
+    registerAppResource(
+      server,
       "Sun history calendar",
       HISTORY_RESOURCE_URI,
       { description: "The signed-in user's recent sun days, tappable to confirm" },
@@ -297,6 +315,26 @@ export function initMcpServer(server: McpServer) {
           ...json({ ...result.text, savesToAccount: canSave }),
           _meta: { [PROFILE_META_KEY]: { ...result.chart, canSave } },
         };
+      }),
+    );
+
+    registerAppTool(
+      server,
+      "get_sun_forecast",
+      {
+        description: "The NEXT FEW DAYS of vitamin D sun at a location, using the live Open-Meteo forecast: per day the peak UV, average cloud cover, the synthesis window and the minutes needed, plus bestDay. Use this for any question spanning several days — 'which day this week should I go out', 'will it be better tomorrow', 'when's my next chance' — instead of calling get_vitamin_d_window once per date.",
+        inputSchema: {
+          lat: LAT, lon: LON, timezone: TZ, ...PROFILE,
+          days: z.number().int().min(2).max(7).optional()
+            .describe("How many days ahead, 2 to 7; default 5"),
+        },
+        _meta: { ui: { resourceUri: FORECAST_RESOURCE_URI } },
+      },
+      async (args) => timed("get_sun_forecast", async () => {
+        const result = await sunForecastFull(args);
+        return result.chart
+          ? { ...json(result.text), _meta: { [FORECAST_META_KEY]: result.chart } }
+          : json(result.text);
       }),
     );
 

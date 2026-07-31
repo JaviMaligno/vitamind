@@ -71,6 +71,7 @@ const WIDGETS = [
   { dir: "day-curve", exportName: "DAY_CURVE_WIDGET_HTML" },
   { dir: "profile", exportName: "PROFILE_WIDGET_HTML" },
   { dir: "history", exportName: "HISTORY_WIDGET_HTML" },
+  { dir: "forecast", exportName: "FORECAST_WIDGET_HTML" },
 ];
 
 const PAGE_STYLE = "html,body{margin:0;padding:0}"

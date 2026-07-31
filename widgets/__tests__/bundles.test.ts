@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { YEAR_STRIP_WIDGET_HTML } from "../year-strip/generated";
 import { DAY_CURVE_WIDGET_HTML } from "../day-curve/generated";
+import { PROFILE_WIDGET_HTML } from "../profile/generated";
+import { HISTORY_WIDGET_HTML } from "../history/generated";
+import { FORECAST_WIDGET_HTML } from "../forecast/generated";
 
 /**
  * Properties every widget bundle must hold, checked on all of them at once so a
@@ -9,6 +12,9 @@ import { DAY_CURVE_WIDGET_HTML } from "../day-curve/generated";
 const BUNDLES: Array<[string, string]> = [
   ["year-strip", YEAR_STRIP_WIDGET_HTML],
   ["day-curve", DAY_CURVE_WIDGET_HTML],
+  ["profile", PROFILE_WIDGET_HTML],
+  ["history", HISTORY_WIDGET_HTML],
+  ["forecast", FORECAST_WIDGET_HTML],
 ];
 
 describe.each(BUNDLES)("%s bundle", (_name, html) => {

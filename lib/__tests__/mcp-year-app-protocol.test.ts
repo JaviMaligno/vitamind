@@ -9,6 +9,7 @@ import { RESOURCE_MIME_TYPE } from "@modelcontextprotocol/ext-apps";
 import {
   initMcpServer, SERVER_INFO,
   YEAR_STRIP_RESOURCE_URI, DAY_CURVE_RESOURCE_URI, PROFILE_RESOURCE_URI, HISTORY_RESOURCE_URI,
+  FORECAST_RESOURCE_URI,
 } from "../mcp-server";
 import { YEAR_STRIP_META_KEY } from "@/widgets/year-strip/data";
 import { DAY_CURVE_META_KEY } from "@/widgets/day-curve/data";
@@ -69,10 +70,10 @@ describe("MCP App metadata on the wire", () => {
 
     // The tool set stays at ten for every client; only the tools whose answer is
     // genuinely worse as prose carry a widget, and the others must stay clean.
-    expect(result.tools).toHaveLength(13);
+    expect(result.tools).toHaveLength(14);
     expect(withUi.map((t) => t.name).sort()).toEqual([
       "compare_vitamin_d_year", "configure_sun_profile",
-      "get_current_status", "get_my_history", "get_vitamin_d_year",
+      "get_current_status", "get_my_history", "get_sun_forecast", "get_vitamin_d_year",
     ]);
     // The comparison reuses the year strip's resource: same picture, one or many.
     expect(Object.fromEntries(withUi.map((t) => [t.name, t._meta.ui.resourceUri]))).toEqual({
@@ -81,6 +82,7 @@ describe("MCP App metadata on the wire", () => {
       get_current_status: DAY_CURVE_RESOURCE_URI,
       configure_sun_profile: PROFILE_RESOURCE_URI,
       get_my_history: HISTORY_RESOURCE_URI,
+      get_sun_forecast: FORECAST_RESOURCE_URI,
     });
   });
 
@@ -89,6 +91,7 @@ describe("MCP App metadata on the wire", () => {
     ["day curve", DAY_CURVE_RESOURCE_URI],
     ["profile picker", PROFILE_RESOURCE_URI],
     ["history calendar", HISTORY_RESOURCE_URI],
+    ["forecast", FORECAST_RESOURCE_URI],
   ])("serves the %s as one self-contained document", async (_label, uri) => {
     await connect();
     const { result } = await rpc("resources/read", { uri }, 3);
