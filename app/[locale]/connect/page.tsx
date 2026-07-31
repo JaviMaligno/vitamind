@@ -59,7 +59,7 @@ export default async function ConnectPage({ params }: { params: Promise<{ locale
 
   const clients: { Icon: LucideIcon; title: string; steps: string[] }[] = [
     { Icon: Bot, title: t("claudeTitle"), steps: [t("claudeStep1"), t("claudeStep2"), t("claudeStep3")] },
-    { Icon: MessageSquare, title: t("chatgptTitle"), steps: [t("chatgptStep1"), t("chatgptStep2"), t("chatgptStep3")] },
+    { Icon: MessageSquare, title: t("chatgptTitle"), steps: [t("chatgptStep1"), t("chatgptStep2"), t("chatgptStep3"), t("chatgptStep4")] },
   ];
 
   const publicTools = [
