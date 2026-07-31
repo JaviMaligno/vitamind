@@ -76,8 +76,8 @@ jobs:
       - name: Deploy to Vercel (production)
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_ORG_ID: team_oI08l1QRpySHg7Wm7CEShc5y
-          VERCEL_PROJECT_ID: prj_pe79Xe9ZpRJRLK2wJCLu1fe1KY1p
+          VERCEL_ORG_ID: team_eTDnqBpgBeHeslEJxGTbffda
+          VERCEL_PROJECT_ID: prj_5Fe55OLq4R3Uk1zz1NCMwsB4jH7t
         run: npx vercel@latest deploy --prod --yes --token "$VERCEL_TOKEN"
 
       - uses: actions/setup-node@v4
@@ -111,8 +111,8 @@ jobs:
       - name: Deploy to Vercel (dev preview + stable alias)
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_ORG_ID: team_oI08l1QRpySHg7Wm7CEShc5y
-          VERCEL_PROJECT_ID: prj_pe79Xe9ZpRJRLK2wJCLu1fe1KY1p
+          VERCEL_ORG_ID: team_eTDnqBpgBeHeslEJxGTbffda
+          VERCEL_PROJECT_ID: prj_5Fe55OLq4R3Uk1zz1NCMwsB4jH7t
         run: |
           url=$(npx vercel@latest deploy --yes --token "$VERCEL_TOKEN")
           npx vercel@latest alias set "$url" getvitamind-dev.vercel.app --token "$VERCEL_TOKEN"
