@@ -12,9 +12,19 @@ export type StatusKey = "optimal" | "moderate" | "upcoming" | "windowClosed" | "
 
 const STATES: DayState[] = ["good_now", "upcoming", "window_closed", "no_synthesis"];
 
+/** The four skies the app's hero paints, from `lib/solar-phase.ts`. */
+export type SolarPhase = "dawn" | "day" | "dusk" | "night";
+const PHASES: SolarPhase[] = ["dawn", "day", "dusk", "night"];
+
 export interface DayMeta {
   state: DayState;
   intensity: Intensity;
+  /**
+   * What the sky looks like there right now. Content, not theme: the host still
+   * owns light/dark, but only the server knows what hour it is at those
+   * coordinates. Null on payloads that predate this.
+   */
+  phase: SolarPhase | null;
   uvIndex: number;
   minutesNeeded: number | null;
   windowStart: number | null;
@@ -52,6 +62,7 @@ export function readDayMeta(result: unknown): DayMeta | null {
   return {
     state: STATES.includes(p.state as DayState) ? (p.state as DayState) : "no_synthesis",
     intensity: p.intensity === "optimal" || p.intensity === "moderate" ? p.intensity : null,
+    phase: PHASES.includes(p.phase as SolarPhase) ? (p.phase as SolarPhase) : null,
     uvIndex: uv,
     minutesNeeded: num(p.minutesNeeded),
     windowStart: num(p.windowStart),

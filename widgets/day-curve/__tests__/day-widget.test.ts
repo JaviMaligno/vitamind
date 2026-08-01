@@ -12,7 +12,7 @@ import { getStatusKey, formatCountdown as appCountdown, fmtMin as appFmtMin } fr
  */
 
 const base: DayMeta = {
-  state: "good_now", intensity: "optimal", uvIndex: 7.4, minutesNeeded: 12,
+  state: "good_now", intensity: "optimal", phase: "day", uvIndex: 7.4, minutesNeeded: 12,
   windowStart: 11, windowEnd: 17, minutesUntilWindow: null, windowClosesInMinutes: 95,
   bestHour: 14, bestMinutes: 10, cloudCoverPercent: 15, cloudDegraded: false,
 };
@@ -162,5 +162,53 @@ describe("copy coverage", () => {
   it("maps host locales onto what we speak", () => {
     expect(resolveWidgetLocale("es-419")).toBe("es");
     expect(resolveWidgetLocale("pt-BR")).toBe("en");
+  });
+});
+
+/**
+ * The poster carried a flat navy plate, so a widget shown at midday looked like
+ * midnight and stopped matching the app, whose hero paints the sky for the hour
+ * (`useSolarPhase` → `PHASE_STYLE`). The phase is content, not theme: it says
+ * what time it is there. The host still owns light/dark.
+ */
+describe("the sky follows the hour", () => {
+  const base = {
+    state: "good_now", intensity: "moderate", uvIndex: 4.9, minutesNeeded: 11,
+    windowStart: 11, windowEnd: 19, minutesUntilWindow: null, windowClosesInMinutes: 72,
+    bestHour: 15, bestMinutes: 9, cloudCoverPercent: 20, cloudDegraded: false,
+  };
+
+  const withPhase = (phase: string | null) =>
+    readDayMeta({ content: [], _meta: { [DAY_CURVE_META_KEY]: { ...base, phase } } });
+
+  it("paints a different sky for each phase", () => {
+    const skies = ["dawn", "day", "dusk", "night"].map(
+      (phase) => renderDay({ meta: withPhase(phase), locale: "es" }),
+    );
+    // Four phases, four backgrounds — the bug was that all four were identical.
+    expect(new Set(skies).size).toBe(4);
+  });
+
+  it("uses the app's own gradients, not invented ones", () => {
+    // Same literals as --grad-day / --grad-dusk in app/globals.css; if that file
+    // moves, this is where the divergence surfaces.
+    expect(renderDay({ meta: withPhase("day"), locale: "es" })).toContain("#6fb7ef");
+    expect(renderDay({ meta: withPhase("dusk"), locale: "es" })).toContain("#7a3a9e");
+  });
+
+  it("keeps the poster dark enough for white text in every phase", () => {
+    // The app veils the gradient with a scrim so the headline survives a pale
+    // midday sky. Without it, white on #a6d4f4 is unreadable.
+    for (const phase of ["dawn", "day", "dusk", "night"]) {
+      expect(renderDay({ meta: withPhase(phase), locale: "es" }), phase).toContain("rgba(10,15,40");
+    }
+  });
+
+  it("falls back to night when the server sends no phase", () => {
+    expect(renderDay({ meta: withPhase(null), locale: "es" })).toContain("#0a0e24");
+  });
+
+  it("ignores a phase the server should never send", () => {
+    expect(renderDay({ meta: withPhase("teatime"), locale: "es" })).toContain("#0a0e24");
   });
 });

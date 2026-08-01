@@ -1,5 +1,5 @@
 import { DAY_COPY } from "./generated-copy";
-import { statusKey, formatCountdown, fmtMin, type DayMeta, type StatusKey } from "./data";
+import { statusKey, formatCountdown, fmtMin, type DayMeta, type SolarPhase, type StatusKey } from "./data";
 import { resolveWidgetLocale } from "./i18n";
 
 const escapeHtml = (value: string) => value
@@ -18,12 +18,31 @@ const DOT: Record<StatusKey, string> = {
   insufficient: "#f87171",
 };
 
+/**
+ * The four skies, copied literally from `--grad-*` in app/globals.css. The
+ * iframe inherits no CSS variables, so the values travel rather than the names.
+ */
+const SKY: Record<SolarPhase, string> = {
+  dawn: "linear-gradient(165deg, #ffb07a 0%, #ff7a9c 55%, #c9457e 100%)",
+  day: "linear-gradient(165deg, #6fb7ef 0%, #a6d4f4 42%, #ffd7a8 100%)",
+  dusk: "linear-gradient(165deg, #ff7a45 0%, #e0457e 55%, #7a3a9e 100%)",
+  night: "radial-gradient(120% 90% at 75% -10%, #3a2f6b 0%, #141a3a 50%, #0a0e24 100%)",
+};
+
+/**
+ * The sky for the hour, under the same dark scrim the app's hero uses. The veil
+ * is what lets one set of hardcoded status colours and white text work over all
+ * four gradients — without it, white on the pale midday sky is unreadable.
+ *
+ * No phase means night, which is what the flat plate used to be.
+ */
+function plateFor(phase: SolarPhase | null | undefined): string {
+  return `linear-gradient(rgba(10,15,40,0.74), rgba(10,15,40,0.88)), ${SKY[phase ?? "night"]}`;
+}
+
 const palette = (theme: unknown) => ({
   text: theme === "dark" ? "var(--color-text-primary, #f4f5f7)" : "var(--color-text-primary, #17191f)",
   muted: theme === "dark" ? "var(--color-text-secondary, #a8adb8)" : "var(--color-text-secondary, #646b78)",
-  // The poster surface is dark in both themes, exactly as the app's hero is: the
-  // status colours are tuned to read on it and would wash out on white.
-  plate: "#0a0f28",
   onPlate: "rgba(255,255,255,0.92)",
   onPlateFaint: "rgba(255,255,255,0.55)",
 });
@@ -129,7 +148,7 @@ export function renderDay({ meta, locale, theme, emptyText }: RenderDayOptions):
 
   return [
     `<figure style="margin:0;font-family:system-ui,sans-serif">`,
-    `<div style="border-radius:16px;background:${p.plate};padding:18px 20px">`,
+    `<div style="border-radius:16px;background:${plateFor(meta.phase)};padding:18px 20px">`,
     `<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">`,
     `<span style="width:10px;height:10px;border-radius:50%;background:${DOT[key]};flex:none"></span>`,
     `<span style="font-size:22px;line-height:1.25;font-weight:650;color:${p.onPlate}">${escapeHtml(v.headline)}</span>`,

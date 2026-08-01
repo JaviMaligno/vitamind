@@ -20,3 +20,4 @@ public/sw.js
 
 # UI audit screenshots (local reference, not part of the app)
 screenshots/
+widget-preview.html

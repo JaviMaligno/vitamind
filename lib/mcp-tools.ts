@@ -1,7 +1,8 @@
 import { BUILTIN_CITIES } from "./cities";
 import { CITY_SLUGS } from "./city-slugs";
 import { getSunTimes } from "./sun-times";
-import { getCurve, dayOfYear, fmtTime, dateFromDoy, doyFromMonthDay, daysInMonth } from "./solar";
+import { getCurve, dayOfYear, fmtTime, dateFromDoy, doyFromMonthDay, daysInMonth, solarElev } from "./solar";
+import { solarPhase, type SolarPhase } from "./solar-phase";
 import {
   computeExposureFromCurve, getCurrentStatus, maxSessionIU, MIN_UVI,
   iuForMinutes, erythemaMinutes, minutesForVitD, estimateUVFromElevation, type SkinType,
@@ -693,6 +694,18 @@ export const fetchWeatherHours: WeatherFetcher = async (lat, lon, days = 1) => {
  * evaluations plus a weather fetch, and doing that twice per call to decorate a
  * picture would be indefensible.
  */
+/**
+ * The solar phase at a location right now, the same way `useSolarPhase` does it
+ * in the app: elevation now, against elevation ten minutes ago to tell a rising
+ * sun from a setting one.
+ */
+function currentSolarPhase(lat: number, lon: number, doy: number, now: Date): SolarPhase {
+  const utcH = now.getUTCHours() + now.getUTCMinutes() / 60;
+  const elev = solarElev(lat, lon, doy, utcH);
+  const before = solarElev(lat, lon, doy, utcH - 1 / 6);
+  return solarPhase(elev, elev >= before);
+}
+
 async function buildCurrentStatus(args: VitDArgs, fetcher: WeatherFetcher) {
   const now = new Date();
   const doy = dayOfYear(now);
@@ -747,6 +760,10 @@ async function buildCurrentStatus(args: VitDArgs, fetcher: WeatherFetcher) {
     chart: {
       state: status.state,
       intensity: status.intensity,
+      // The sky the app would be painting at those coordinates right now. Only
+      // the server knows the hour there, and the widget has no clock it can
+      // trust — the iframe runs in the reader's zone, not the location's.
+      phase: currentSolarPhase(args.lat, args.lon, doy, now),
       uvIndex: text.currentUVIndex,
       minutesNeeded: text.minutesNeededNow,
       windowStart: status.window ? status.window.start : null,

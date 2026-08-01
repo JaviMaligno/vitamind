@@ -84,6 +84,12 @@ duración), no fiarse de que coincidan.
 `ctx.styles`, fusionados al cambiar y nunca reemplazados: el host envía solo el
 campo que cambió, y un reemplazo ingenuo borra el idioma al cambiar de tema.
 
+**Pero la hora del sitio la manda el servidor.** El cielo del póster sigue la
+fase solar del lugar, como el hero de la app: no es tema, es contenido — dice qué
+hora es *allí*. El widget no puede deducirlo, porque el iframe corre en la zona
+horaria de quien lee, no en la de la ciudad. Va en el `_meta`. Confundir las dos
+cosas dejó el póster pintado de noche a mediodía durante seis widgets.
+
 **El widget no pide nada a la red.** Bundle autocontenido, `csp: {}`, y el dato
 llega en el `_meta` del resultado. Nunca en `structuredContent`, que los clientes
 sí muestran al modelo.
@@ -100,20 +106,37 @@ seguro se ha colado una dependencia.
 
 ## Antes de darlo por bueno
 
-Renderízalo y **míralo**. Las funciones de render son puras y devuelven HTML: se
-pintan con datos de ejemplo y se publican como artefacto en un minuto, sin
-desplegar y sin abrir un chat de prueba. Hacerlo al final, después de un
-despliegue, es trabajo de más para ver algo que ya existía.
+Renderízalo y **míralo**:
+
+```
+PREVIEW_OUT=preview.html npx vitest run scripts/preview-widgets.test.ts
+```
+
+Las funciones de render son puras y devuelven HTML, así que eso pinta la página
+con datos de ejemplo sin desplegar y sin abrir un chat de prueba. Hacerlo al
+final, después de un despliegue, es trabajo de más para ver algo que ya existía.
 
 Vale la pena mirarlo en los cinco estados, en dos idiomas y en los dos temas.
 
+**Y mirarlo de verdad, no comprobar que sale.** El estado `unlogged` del
+historial salió de esa mirada: al rellenar el calendario, los días sin registro
+heredaron el gris de «sin sol útil», o sea que la rejilla afirmaba algo que no
+sabía — y en julio, algo falso. Los tests estaban verdes; el fallo era una
+casilla que decía de más.
+
+**Datos de ejemplo con la forma de los reales.** La muestra del historial lleva
+huecos porque los perfiles reales los tienen: solo hay registro de los días que
+alguien abrió la app. Una muestra de días consecutivos habría enseñado un
+calendario perfecto y habría escondido los dos fallos que tenía.
+
 ---
 
-## Los cinco actuales, y por qué
+## Los seis actuales, y por qué
 
 | Widget | Tool | Justificación |
 |---|---|---|
 | Ahora mismo | `get_current_status` | Veredicto y cifras, como «mi día». Sin gráfico. |
+| Los próximos días | `get_sun_forecast` | Elegir día es comparar filas. Con el titular decidiendo por ti. |
 | El año | `get_vitamin_d_year` | La tira muestra los bordes exactos de temporada que los meses redondean. Con titular encima. |
 | Comparativa | `compare_vitamin_d_year` | Comparar formas de año es tarea visual. Cada tira rotulada; sin titular, porque uno no habla por cinco. |
 | Perfil | `configure_sun_profile` | Manipular. Un formulario no se aprende. |
