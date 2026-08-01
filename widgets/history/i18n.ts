@@ -9,6 +9,8 @@ interface Copy {
   declined: string;
   viable: string;
   missed: string;
+  /** No record for that day — not a verdict about it. */
+  unlogged: string;
   tapHint: string;
   signedOut: string;
   signedOutHint: string;
@@ -19,7 +21,7 @@ interface Copy {
 const COPY: Record<WidgetLocale, Copy> = {
   en: {
     title: "Your sun history", streak: "day streak", tracked: "days tracked",
-    confirmed: "went outside", declined: "stayed in", viable: "sun was viable", missed: "no viable sun",
+    confirmed: "went outside", declined: "stayed in", viable: "sun was viable", missed: "no viable sun", unlogged: "no data",
     tapHint: "Tap a day: went out → stayed in → no answer",
     signedOut: "Connect your account to see your history",
     signedOutHint: "Reconnect this server with the account connector and the calendar fills in.",
@@ -28,7 +30,7 @@ const COPY: Record<WidgetLocale, Copy> = {
   },
   es: {
     title: "Tu historial de sol", streak: "días seguidos", tracked: "días registrados",
-    confirmed: "saliste", declined: "no saliste", viable: "hubo sol útil", missed: "sin sol útil",
+    confirmed: "saliste", declined: "no saliste", viable: "hubo sol útil", missed: "sin sol útil", unlogged: "sin datos",
     tapHint: "Toca un día: saliste → no saliste → sin respuesta",
     signedOut: "Conecta tu cuenta para ver tu historial",
     signedOutHint: "Reconecta este servidor con el conector de cuenta y el calendario se rellena.",
@@ -37,7 +39,7 @@ const COPY: Record<WidgetLocale, Copy> = {
   },
   fr: {
     title: "Votre historique solaire", streak: "jours d'affilée", tracked: "jours suivis",
-    confirmed: "sorti", declined: "resté dedans", viable: "soleil suffisant", missed: "soleil insuffisant",
+    confirmed: "sorti", declined: "resté dedans", viable: "soleil suffisant", missed: "soleil insuffisant", unlogged: "pas de données",
     tapHint: "Touchez un jour : sorti → resté dedans → sans réponse",
     signedOut: "Connectez votre compte pour voir votre historique",
     signedOutHint: "Reconnectez ce serveur avec le connecteur de compte et le calendrier se remplit.",
@@ -46,7 +48,7 @@ const COPY: Record<WidgetLocale, Copy> = {
   },
   de: {
     title: "Deine Sonnen-Historie", streak: "Tage in Folge", tracked: "Tage erfasst",
-    confirmed: "warst draußen", declined: "drinnen geblieben", viable: "Sonne reichte", missed: "Sonne reichte nicht",
+    confirmed: "warst draußen", declined: "drinnen geblieben", viable: "Sonne reichte", missed: "Sonne reichte nicht", unlogged: "keine Daten",
     tapHint: "Tippe einen Tag: draußen → drinnen → keine Angabe",
     signedOut: "Verbinde dein Konto, um die Historie zu sehen",
     signedOutHint: "Verbinde diesen Server über den Konto-Connector, dann füllt sich der Kalender.",
@@ -55,7 +57,7 @@ const COPY: Record<WidgetLocale, Copy> = {
   },
   ru: {
     title: "Ваша история солнца", streak: "дней подряд", tracked: "дней отмечено",
-    confirmed: "выходили", declined: "остались дома", viable: "солнца хватало", missed: "солнца не хватало",
+    confirmed: "выходили", declined: "остались дома", viable: "солнца хватало", missed: "солнца не хватало", unlogged: "нет данных",
     tapHint: "Нажмите на день: вышли → остались → без ответа",
     signedOut: "Подключите аккаунт, чтобы увидеть историю",
     signedOutHint: "Переподключите сервер через коннектор с аккаунтом — календарь заполнится.",
@@ -64,7 +66,7 @@ const COPY: Record<WidgetLocale, Copy> = {
   },
   lt: {
     title: "Jūsų saulės istorija", streak: "dienų iš eilės", tracked: "dienų sekama",
-    confirmed: "buvote lauke", declined: "likote viduje", viable: "saulės pakako", missed: "saulės nepakako",
+    confirmed: "buvote lauke", declined: "likote viduje", viable: "saulės pakako", missed: "saulės nepakako", unlogged: "nėra duomenų",
     tapHint: "Bakstelėkite dieną: lauke → viduje → be atsakymo",
     signedOut: "Prijunkite paskyrą, kad matytumėte istoriją",
     signedOutHint: "Prijunkite šį serverį per paskyros jungtį ir kalendorius užsipildys.",

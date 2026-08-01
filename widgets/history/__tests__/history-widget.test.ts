@@ -263,3 +263,129 @@ describe("the legend and what is tappable", () => {
     }
   });
 });
+
+/**
+ * The grid chained records together instead of laying them on a calendar. A
+ * profile with gaps — the normal shape, since records only exist for days the
+ * app was opened — drew 30 squares for a span of 104 days, so it read as a
+ * single month, and every column after the first gap sat under the wrong
+ * weekday. `from`/`to` now come from the tool, and the grid is drawn from them.
+ */
+describe("the grid is a calendar, not a strip of records", () => {
+  const sparse = {
+    authenticated: true,
+    // Two bursts a fortnight apart, and nothing since.
+    days: [day("2026-07-13"), day("2026-07-14", { wentOutside: true }), day("2026-07-27")],
+    streak: 0,
+    daysTracked: 3,
+    from: "2026-07-03",
+    to: "2026-08-01",
+  };
+
+  const cellDates = (html: string) => [...html.matchAll(/data-date="([\d-]+)"/g)].map((m) => m[1]);
+
+  it("carries the window through from the payload", () => {
+    const meta = readHistoryMeta(wrap(sparse));
+    expect(meta?.from).toBe("2026-07-03");
+    expect(meta?.to).toBe("2026-08-01");
+  });
+
+  it("draws every day in the window, not just the logged ones", () => {
+    const html = renderHistory({ meta: readHistoryMeta(wrap(sparse)), locale: "es" });
+    const dates = cellDates(html);
+    expect(dates).toHaveLength(30);
+    expect(dates[0]).toBe("2026-07-03");
+    expect(dates[dates.length - 1]).toBe("2026-08-01");
+  });
+
+  it("keeps the columns honest across a gap", () => {
+    // 3 July 2026 is a Friday, so it sits in column 4 (Mon = 0). Every later
+    // cell must land on its own weekday; before the fix they slid left by the
+    // size of each gap.
+    const html = renderHistory({ meta: readHistoryMeta(wrap(sparse)), locale: "es" });
+    const leadBlanks = (html.match(/<span><\/span>/g) ?? []).length;
+    expect(leadBlanks).toBe(4);
+    const dates = cellDates(html);
+    for (const [i, date] of dates.entries()) {
+      expect((leadBlanks + i) % 7, `${date} is in the wrong column`).toBe(weekdayIndex(date));
+    }
+  });
+
+  it("reaches today even though today has no record", () => {
+    // The first place anyone looks. Before the fix the grid stopped at the last
+    // logged day and today was simply absent.
+    const html = renderHistory({ meta: readHistoryMeta(wrap(sparse)), locale: "es" });
+    expect(html).toContain('data-date="2026-08-01"');
+  });
+
+  it("spells the window from the range, not from the first and last record", () => {
+    const html = renderHistory({ meta: readHistoryMeta(wrap(sparse)), locale: "es" });
+    expect(html).toContain("3 jul");
+    expect(html).toContain("1 ago");
+  });
+
+  it("leaves a day with no record unanswerable", () => {
+    const html = renderHistory({ meta: readHistoryMeta(wrap(sparse)), locale: "es" });
+    const today = html.slice(html.indexOf('data-date="2026-08-01"'));
+    expect(today.slice(0, 400)).toContain("disabled");
+  });
+
+  it("still works for a payload with no window, drawing first to last", () => {
+    // Older clients, and the frozen-payload path.
+    const meta = readHistoryMeta(wrap({ ...sparse, from: undefined, to: undefined }));
+    const dates = cellDates(renderHistory({ meta, locale: "es" }));
+    expect(dates[0]).toBe("2026-07-13");
+    expect(dates[dates.length - 1]).toBe("2026-07-27");
+    expect(dates).toHaveLength(15);
+  });
+});
+
+/**
+ * Filling the calendar created a state that did not exist before: a day with no
+ * record at all. Rendering those as "no viable sun" made the widget assert
+ * something it does not know — and in July that assertion is simply wrong.
+ * Absence of a record is absence of information.
+ */
+describe("a day with no record says nothing", () => {
+  const meta = readHistoryMeta(wrap({
+    authenticated: true,
+    days: [day("2026-07-13", { wentOutside: true })],
+    streak: 1, daysTracked: 1,
+    from: "2026-07-13", to: "2026-07-16",
+  }));
+
+  const cellFor = (html: string, date: string) => {
+    const at = html.indexOf(`data-date="${date}"`);
+    return html.slice(at, at + 500);
+  };
+
+  it("draws it apart from a day that genuinely had no sun", () => {
+    const html = renderHistory({ meta, locale: "es" });
+    // 14 July has no record; a logged day with viableSun false is a different claim.
+    const withRecord = renderHistory({
+      meta: readHistoryMeta(wrap({
+        authenticated: true, days: [day("2026-07-14", { viableSun: false })],
+        from: "2026-07-14", to: "2026-07-14",
+      })), locale: "es",
+    });
+    const unlogged = cellFor(html, "2026-07-14").match(/background:([^;]+)/)?.[1];
+    const noSun = cellFor(withRecord, "2026-07-14").match(/background:([^;]+)/)?.[1];
+    expect(unlogged).not.toBe(noSun);
+  });
+
+  it("labels it as unknown rather than as a verdict", () => {
+    const html = renderHistory({ meta, locale: "es" });
+    expect(cellFor(html, "2026-07-14")).toContain(historyStrings("es").unlogged);
+    expect(cellFor(html, "2026-07-14")).not.toContain(historyStrings("es").missed);
+  });
+
+  it("cannot be tapped — there is nothing to answer about", () => {
+    expect(cellFor(renderHistory({ meta, locale: "es" }), "2026-07-14")).toContain("disabled");
+  });
+
+  it("names the state in every language", () => {
+    for (const locale of WIDGET_LOCALES) {
+      expect(historyStrings(locale).unlogged.length, locale).toBeGreaterThan(0);
+    }
+  });
+});

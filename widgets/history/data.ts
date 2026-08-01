@@ -22,6 +22,14 @@ export interface HistoryMeta {
   days: HistoryDay[];
   streak: number;
   daysTracked: number;
+  /**
+   * The calendar window the tool looked at, YYYY-MM-DD. Records exist only for
+   * days the app was opened, so without this the grid can only span the logged
+   * days and silently omits everything else — today included. Optional: a client
+   * pinned to the older payload still renders, just without the empty days.
+   */
+  from?: string | null;
+  to?: string | null;
 }
 
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
@@ -51,12 +59,30 @@ export function readHistoryMeta(result: unknown): HistoryMeta | null {
     ? p.days.slice(0, 366).map(readDay).filter((d): d is HistoryDay => d !== null)
     : [];
 
+  const window = (v: unknown) => (typeof v === "string" && DATE_RE.test(v) ? v : null);
+
   return {
     authenticated: p.authenticated === true,
     days,
     streak: typeof p.streak === "number" ? p.streak : 0,
     daysTracked: typeof p.daysTracked === "number" ? p.daysTracked : days.length,
+    from: window(p.from),
+    to: window(p.to),
   };
+}
+
+/** Every YYYY-MM-DD from `from` to `to` inclusive, walked in UTC. */
+export function datesBetween(from: string, to: string): string[] {
+  const out: string[] = [];
+  const end = Date.parse(`${to}T00:00:00Z`);
+  let cursor = Date.parse(`${from}T00:00:00Z`);
+  // A year of days is the tool's own ceiling; the guard is against a malformed
+  // window rather than a legitimate one.
+  while (cursor <= end && out.length < 400) {
+    out.push(new Date(cursor).toISOString().slice(0, 10));
+    cursor += 86400000;
+  }
+  return out;
 }
 
 /**

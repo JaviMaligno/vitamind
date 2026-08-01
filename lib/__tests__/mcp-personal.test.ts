@@ -57,13 +57,67 @@ describe("personal tools", () => {
 
   it("get_my_history summarizes confirmed days and streaks", async () => {
     const store = memoryStore({ u1: structuredClone(PROFILE) });
-    const r = await myHistoryTool(store, "u1", { days: 30 });
+    const r = await myHistoryTool(store, "u1", { days: 30 }, new Date("2026-07-20T09:00:00Z"));
     if ("daysTracked" in r) {
       expect(r.daysTracked).toBe(3);
       expect(r.daysConfirmedOutside).toBe(2);
       // Most recent day (07-19) is unconfirmed, so the streak is 0.
       expect(r.currentConfirmedStreak).toBe(0);
     }
+  });
+
+  /**
+   * `days` counted stored records rather than calendar days, so a user who opens
+   * the app in bursts got a window as long as their gaps: 30 records spread over
+   * 18 April – 30 July came back for `days: 30`, and the widget drew them as 30
+   * consecutive squares. Someone reading it saw a month that was really three
+   * and a half.
+   */
+  describe("the window is calendar days, not records", () => {
+    // Three bursts with long gaps, the shape a real profile has.
+    const SPARSE: ProfileRow = {
+      ...PROFILE,
+      history: [
+        record("2026-04-18", true), record("2026-04-19", true), record("2026-04-20", null),
+        record("2026-05-04", true), record("2026-05-05", null),
+        record("2026-07-13", true), record("2026-07-14", true), record("2026-07-15", null),
+      ],
+    };
+    const NOW = new Date("2026-08-01T10:00:00Z");
+
+    it("drops records older than the window, however few records that leaves", async () => {
+      const store = memoryStore({ u1: structuredClone(SPARSE) });
+      const r = await myHistoryTool(store, "u1", { days: 30 }, NOW);
+      if (!("records" in r)) throw new Error("expected records");
+      // 30 days back from 1 August is 3 July: only the July burst survives.
+      // Records stay newest-first, as they always were.
+      expect(r.records.map((x) => x.date)).toEqual(["2026-07-15", "2026-07-14", "2026-07-13"]);
+      expect(r.daysTracked).toBe(3);
+    });
+
+    it("reports the window it actually covered, ending today", async () => {
+      const store = memoryStore({ u1: structuredClone(SPARSE) });
+      const r = await myHistoryTool(store, "u1", { days: 30 }, NOW);
+      // Without these the widget cannot draw the days that have no record —
+      // including today, which is exactly where someone looks first.
+      expect(r).toMatchObject({ from: "2026-07-03", to: "2026-08-01" });
+    });
+
+    it("reaches back far enough when asked for a year", async () => {
+      const store = memoryStore({ u1: structuredClone(SPARSE) });
+      const r = await myHistoryTool(store, "u1", { days: 365 }, NOW);
+      if (!("records" in r)) throw new Error("expected records");
+      expect(r.records).toHaveLength(8);
+      expect(r.from).toBe("2025-08-02");
+    });
+
+    it("counts the streak from today's end of the window, not from the last record", async () => {
+      // The most recent record is 15 July, unconfirmed — and two weeks stale.
+      const store = memoryStore({ u1: structuredClone(SPARSE) });
+      const r = await myHistoryTool(store, "u1", { days: 30 }, NOW);
+      if (!("currentConfirmedStreak" in r)) throw new Error("expected streak");
+      expect(r.currentConfirmedStreak).toBe(0);
+    });
   });
 
   it("log_sun_session confirms an existing day and creates missing ones", async () => {

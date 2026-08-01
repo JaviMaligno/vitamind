@@ -137,6 +137,10 @@ function historyChartMeta(payload: unknown, authenticated: boolean) {
       }),
       streak: typeof p.currentConfirmedStreak === "number" ? p.currentConfirmedStreak : 0,
       daysTracked: typeof p.daysTracked === "number" ? p.daysTracked : records.length,
+      // The calendar window, so the grid can draw the days with no record — the
+      // majority of them, for anyone who does not open the app daily.
+      from: typeof p.from === "string" ? p.from : null,
+      to: typeof p.to === "string" ? p.to : null,
     },
   };
 }

@@ -1,6 +1,6 @@
 import { historyStrings } from "./i18n";
 import { monthLabel } from "../shared/months";
-import type { HistoryMeta } from "./data";
+import { datesBetween, type HistoryMeta } from "./data";
 
 const escapeHtml = (value: string) => value
   .replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;")
@@ -17,6 +17,9 @@ const COLORS = {
   viable: "rgba(255,176,32,0.28)",
   declined: "rgba(255,255,255,0.07)",
   missed: "rgba(255,255,255,0.10)",
+  // Fainter than "no viable sun": that is a finding about the day, this is the
+  // absence of one.
+  unlogged: "rgba(255,255,255,0.035)",
   pending: "rgba(255,255,255,0.05)",
 };
 
@@ -25,6 +28,7 @@ const INK = {
   viable: "rgba(255,255,255,0.86)",
   declined: "rgba(255,255,255,0.7)",
   missed: "rgba(255,255,255,0.45)",
+  unlogged: "rgba(255,255,255,0.22)",
 };
 
 const OUTLINE = {
@@ -32,12 +36,20 @@ const OUTLINE = {
   viable: "none",
   declined: "inset 0 0 0 1px rgba(255,176,32,0.45)",
   missed: "none",
+  unlogged: "none",
 };
 
-export type CellState = "confirmed" | "viable" | "declined" | "missed";
+export type CellState = "confirmed" | "viable" | "declined" | "missed" | "unlogged";
 
-/** The four appearances, from the day's sun and the user's answer. */
-export function cellState(day: { viableSun: boolean; wentOutside: boolean | null }): CellState {
+/**
+ * The five appearances, from the day's sun and the user's answer.
+ *
+ * `unlogged` is not a verdict: records exist only for days the app was opened,
+ * so most squares in a filled calendar are days nobody measured. Drawing them as
+ * "no viable sun" claimed a fact — and in midsummer, a false one.
+ */
+export function cellState(day: { viableSun: boolean; wentOutside: boolean | null; logged?: boolean }): CellState {
+  if (day.logged === false) return "unlogged";
   if (day.wentOutside === true) return "confirmed";
   if (day.wentOutside === false && day.viableSun) return "declined";
   return day.viableSun ? "viable" : "missed";
@@ -103,7 +115,23 @@ export function renderHistory({ meta, pending = [], locale, theme }: RenderHisto
     ].join("");
   }
 
-  const days = [...meta.days].sort((a, b) => (a.date < b.date ? -1 : 1));
+  const logged = [...meta.days].sort((a, b) => (a.date < b.date ? -1 : 1));
+  if (logged.length === 0 && !meta.from) {
+    return `<p style="margin:0;color:${p.muted};font:14px/1.5 system-ui,sans-serif">${escapeHtml(copy.empty)}</p>`;
+  }
+
+  /**
+   * One cell per calendar day, not per record. Records exist only for days the
+   * app was opened, so chaining them made a sparse history look dense: a span of
+   * 104 days drew as 30 adjacent squares, reading as a single month, with every
+   * column after the first gap sitting under the wrong weekday.
+   */
+  const byDate = new Map(logged.map((d) => [d.date, d]));
+  const from = meta.from ?? logged[0].date;
+  const to = meta.to ?? logged[logged.length - 1].date;
+  const days = datesBetween(from, to).map(
+    (date) => byDate.get(date) ?? { date, viableSun: false, wentOutside: null, logged: false },
+  );
   if (days.length === 0) {
     return `<p style="margin:0;color:${p.muted};font:14px/1.5 system-ui,sans-serif">${escapeHtml(copy.empty)}</p>`;
   }
@@ -117,16 +145,17 @@ export function renderHistory({ meta, pending = [], locale, theme }: RenderHisto
     const state = cellState(day);
     const stateWord = state === "confirmed" ? copy.confirmed
       : state === "declined" ? copy.declined
-        : state === "viable" ? copy.viable : copy.missed;
+        : state === "viable" ? copy.viable
+          : state === "unlogged" ? copy.unlogged : copy.missed;
     const label = `${day.date} — ${stateWord}`;
     const text = cellLabel(day.date, locale);
     const isMonthStart = dayParts(day.date).day === 1;
     return `<button type="button" data-date="${day.date}" title="${escapeHtml(label)}" aria-label="${escapeHtml(label)}" `
       + `aria-pressed="${day.wentOutside === true}" `
       // A day with no usable sun is not answerable, exactly as in the app.
-      + `${day.viableSun ? "" : "disabled "}`
+      + `${day.viableSun && state !== "unlogged" ? "" : "disabled "}`
       + `style="width:100%;aspect-ratio:1;border:0;border-radius:6px;padding:0;`
-      + `cursor:${day.viableSun ? "pointer" : "default"};box-shadow:${OUTLINE[state]};`
+      + `cursor:${day.viableSun && state !== "unlogged" ? "pointer" : "default"};box-shadow:${OUTLINE[state]};`
       + `display:flex;align-items:center;justify-content:center;`
       + `font:${isMonthStart ? "600 9px" : "500 11px"}/1 system-ui,sans-serif;`
       + `color:${isPending ? "transparent" : INK[state]};`
@@ -140,13 +169,14 @@ export function renderHistory({ meta, pending = [], locale, theme }: RenderHisto
   const last = dayParts(days[days.length - 1].date);
   const range = `${first.day} ${monthLabel(locale, first.month)} – ${last.day} ${monthLabel(locale, last.month)}`;
 
-  // Four swatches: what the colours mean, in the widget rather than in a caption
+  // Five swatches: what the colours mean, in the widget rather than in a caption
   // someone has to remember. Without it the grid is a code you have to crack.
   const legend = ([
     ["confirmed", copy.confirmed],
     ["declined", copy.declined],
     ["viable", copy.viable],
     ["missed", copy.missed],
+    ["unlogged", copy.unlogged],
   ] as Array<[CellState, string]>).map(([state, text]) =>
     `<span style="display:inline-flex;align-items:center;gap:5px">`
     + `<span style="width:10px;height:10px;border-radius:3px;background:${COLORS[state]};box-shadow:${OUTLINE[state]}"></span>`

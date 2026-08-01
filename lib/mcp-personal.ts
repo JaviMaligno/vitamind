@@ -73,12 +73,29 @@ export async function myCitiesTool(store: ProfileStore, userId: string) {
   };
 }
 
-export async function myHistoryTool(store: ProfileStore, userId: string, args: { days?: number }) {
+/** YYYY-MM-DD `offset` days before `now`, read in UTC so the string is stable. */
+function isoDaysBefore(now: Date, offset: number): string {
+  const d = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() - offset));
+  return d.toISOString().slice(0, 10);
+}
+
+/**
+ * `days` is a span of calendar days ending today — not a count of stored records.
+ *
+ * Slicing the record list instead meant the window stretched to cover whatever
+ * gaps the user's history had: eight records spread over three months came back
+ * for `days: 30`, and a calendar drawn from them showed a month that was really
+ * a season. `from`/`to` travel with the answer so the widget can draw the days
+ * nobody logged, today included.
+ */
+export async function myHistoryTool(store: ProfileStore, userId: string, args: { days?: number }, now: Date = new Date()) {
   const p = await store.getProfile(userId);
   if (!p) return NO_PROFILE;
   const days = Math.min(365, Math.max(1, Math.round(args.days ?? 30)));
+  const to = isoDaysBefore(now, 0);
+  const from = isoDaysBefore(now, days - 1);
   const history = [...(p.history ?? [])].sort((a, b) => (a.date < b.date ? 1 : -1));
-  const recent = history.slice(0, days);
+  const recent = history.filter((r) => r.date >= from && r.date <= to);
 
   const confirmed = recent.filter((r) => r.userOverride === true).length;
   const sufficient = recent.filter((r) => r.sufficient).length;
@@ -92,6 +109,8 @@ export async function myHistoryTool(store: ProfileStore, userId: string, args: {
 
   return {
     daysRequested: days,
+    from,
+    to,
     daysTracked: recent.length,
     daysConfirmedOutside: confirmed,
     daysWithViableSun: sufficient,
