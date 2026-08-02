@@ -203,6 +203,19 @@ export function useHistory(
     return locationSpans(derived, resolveCity).map((s) => ({ ...s, name: nameFor(s.cityId) }));
   }, [derived, customLocations, resolveCity]);
 
+  /**
+   * The dates whose location was inherited rather than recorded.
+   *
+   * By date, not by stretch: a view showing one week of a three-month stretch
+   * has to count the inherited days *in that week*, and scaling the stretch's
+   * total down to the clip reported seven of seven inherited on a week where
+   * every day had been recorded.
+   */
+  const assumedDates = useMemo(
+    () => derived.filter((d) => d.locationAssumed).map((d) => d.date),
+    [derived],
+  );
+
   const toggleOverride = useCallback((date: string) => {
     const day = derived.find((d) => d.date === date);
     toggleOverrideStorage(date, day?.cityId ? { cityId: day.cityId, sufficient: day.sufficient } : undefined);
@@ -237,5 +250,5 @@ export function useHistory(
     return records.find((r) => r.date === todayStr) ?? null;
   }, [records]);
 
-  return { records, locations, loading, getRecordsForWeek, getRecordsForMonth, getToday, toggleOverride };
+  return { records, locations, assumedDates, loading, getRecordsForWeek, getRecordsForMonth, getToday, toggleOverride };
 }

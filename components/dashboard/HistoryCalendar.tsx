@@ -24,6 +24,8 @@ interface Props {
   records: DayRecord[];
   /** Where the user was, in stretches. Empty until the window is derived. */
   locations?: LocationSpan[];
+  /** Dates whose location was inherited rather than recorded. */
+  assumedDates?: string[];
   onToggleOverride: (date: string) => void;
 }
 
@@ -127,7 +129,7 @@ function computeSummary(records: DayRecord[]): { favorable: number; total: numbe
   return { favorable, total: records.length, confirmed };
 }
 
-export default function HistoryCalendar({ records, locations = [], onToggleOverride }: Props) {
+export default function HistoryCalendar({ records, locations = [], assumedDates = [], onToggleOverride }: Props) {
   const t = useTranslations("dashboard");
   const locale = useLocale();
   const today = new Date();
@@ -252,14 +254,13 @@ export default function HistoryCalendar({ records, locations = [], onToggleOverr
       : `${viewYear}-${String(viewMonth + 1).padStart(2, "0")}-${String(daysInMonth(viewYear, viewMonth)).padStart(2, "0")}`;
 
     const clipped = spansInRange(locations, from, to);
-    // Recount within the clip: a stretch may be mostly inherited outside the
-    // view and fully recorded inside it, or the other way round.
+    // Counted by date inside the clip. Scaling a stretch's total down to the
+    // visible slice reported seven of seven inherited on a week where every day
+    // had in fact been recorded.
     const days = clipped.reduce((n, s) => n + spanLength(s), 0);
-    const assumed = clipped.reduce(
-      (n, s) => n + Math.min(spanLength(s), s.assumedDays), 0,
-    );
+    const assumed = assumedDates.filter((d) => d >= from && d <= to).length;
     return { visibleSpans: clipped, assumedInView: assumed, daysInView: days };
-  }, [locations, viewMode, viewMonday, viewYear, viewMonth]);
+  }, [locations, assumedDates, viewMode, viewMonday, viewYear, viewMonth]);
 
   const headerLabel = viewMode === "week"
     ? (() => {

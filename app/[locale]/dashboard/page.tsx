@@ -47,7 +47,7 @@ export default function DashboardPage() {
   const handleAreaChange = useCallback((v: number) => setAreaOverride(v), []);
   const handleAreaReset = useCallback(() => setAreaOverride(null), []);
 
-  const { records, locations, loading, getToday, toggleOverride } = useHistory(
+  const { records, locations, assumedDates, loading, getToday, toggleOverride } = useHistory(
     app.lat, app.lon, app.cityId, app.skinType, effectiveArea, app.age, app.targetIU, app.authUser,
     app.customLocations,
   );
@@ -239,6 +239,7 @@ export default function DashboardPage() {
       <HistoryCalendar
         records={records}
         locations={locations}
+        assumedDates={assumedDates}
         onToggleOverride={toggleOverride}
       />
       </>}
