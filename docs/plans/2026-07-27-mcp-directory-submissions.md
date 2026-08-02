@@ -235,10 +235,22 @@ enlace puede traer uso real.
 `cursor.directory/plugins/new` redirige a login con GitHub o Google. El envío es un
 formulario de «plugin», no específico de MCP.
 
-### mcp.so — bajo la línea
+### mcp.so — ahora de pago
 
-`nofollow ugc`. Envío web en `mcp.so`, sin login aparente. Aporta descubrimiento y nada de
-autoridad; hacerlo solo si sobra tiempo, después de los dos de arriba.
+`nofollow ugc` en el listado normal, y comprobado el 2/8 que **ya no hay envío gratuito**:
+la única opción es «Paid submission $39, one-time publishing fee», cuyo reclamo incluye
+literalmente *Dofollow project link*. Es decir, el enlace que interesa es justo lo que se
+vende. Mismo patrón que el Premium de mcpservers.org.
+
+Decisión del owner. Es el único de la lista que se puede cerrar hoy mismo sin depender de
+nadie, pero 39 $ por un enlace de un solo dominio no se justifica solo.
+
+### Textos listos
+
+Las fichas rellenables (descripciones corta/media/larga, endpoints, lista real de
+herramientas) están en `docs/mcp-listing-copy.md`, verificadas contra producción el 2/8.
+**Ojo: este plan decía «10 herramientas» y hoy son 15** — el dato viejo está en las fichas
+ya publicadas y conviene corregirlo al tocarlas.
 
 ### Lo que bloquea
 
