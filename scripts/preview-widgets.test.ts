@@ -20,21 +20,31 @@ const day = (phase: SolarPhase): DayMeta => ({
   bestHour: 15, bestMinutes: 9, cloudCoverPercent: 20, cloudDegraded: false,
 });
 
-/** The user's real shape: bursts of use with long gaps, nothing logged today. */
+/**
+ * The user's real shape, as the tool now answers it: every day in the span has a
+ * verdict, and only "did you go out" can be blank. Amber days are answerable,
+ * emerald ones were answered.
+ */
+const histDay = (date: string, over: Partial<HistoryMeta["days"][number]> = {}) =>
+  ({ date, viableSun: true, wentOutside: null, known: true, ...over });
+
 const sparse: HistoryMeta = {
   authenticated: true,
-  from: "2026-07-03",
-  to: "2026-08-01",
+  from: "2026-07-04",
+  to: "2026-08-02",
   streak: 0,
   daysTracked: 11,
   days: [
-    ...["2026-07-13", "2026-07-14", "2026-07-15", "2026-07-16"].map((date) => ({ date, viableSun: true, wentOutside: true as const })),
-    { date: "2026-07-17", viableSun: true, wentOutside: false as const },
-    { date: "2026-07-18", viableSun: true, wentOutside: null },
-    ...["2026-07-27", "2026-07-28", "2026-07-29"].map((date) => ({ date, viableSun: true, wentOutside: true as const })),
-    { date: "2026-07-30", viableSun: true, wentOutside: null },
-    { date: "2026-07-06", viableSun: false, wentOutside: null },
-  ],
+    ...Array.from({ length: 30 }, (_, i) =>
+      histDay(new Date(Date.UTC(2026, 6, 4 + i)).toISOString().slice(0, 10))),
+    // What the history actually recorded, laid over the derived days.
+    ...["2026-07-13", "2026-07-14", "2026-07-15", "2026-07-16"].map((date) => histDay(date, { wentOutside: true })),
+    histDay("2026-07-17", { wentOutside: false }),
+    ...["2026-07-27", "2026-07-28", "2026-07-29"].map((date) => histDay(date, { wentOutside: true })),
+    // A genuinely dim day, and one that could not be placed at all.
+    histDay("2026-07-23", { viableSun: false }),
+    histDay("2026-07-06", { viableSun: false, known: false }),
+  ].filter((d, i, all) => all.findLastIndex((x) => x.date === d.date) === i),
 };
 
 const panel = (title: string, body: string) =>
@@ -51,10 +61,10 @@ it("writes the preview page", () => {
       .frame{background:#1b1e26;border-radius:14px;padding:16px}
     </style>`,
     `<h1>Widgets — vista previa</h1>`,
-    `<p class="lead">Datos de ejemplo, render real. Los cuatro cielos son la fase solar; el calendario lleva huecos a propósito.</p>`,
+    `<p class="lead">Datos de ejemplo, render real. Los cuatro cielos son la fase solar; el calendario tiene un día sin ubicación (6 jul) y otro sin sol útil (23 jul).</p>`,
     `<div class="grid">`,
     ...phases.map((p) => panel(p, renderDay({ meta: day(p), locale: "es", theme: "dark" }))),
-    panel("historial — 3 jul a 1 ago, con huecos", renderHistory({ meta: sparse, locale: "es", theme: "dark" })),
+    panel("historial — cada día del tramo, respondido o no", renderHistory({ meta: sparse, locale: "es", theme: "dark" })),
     `</div>`,
   ].join("\n");
   writeFileSync(OUT, html);

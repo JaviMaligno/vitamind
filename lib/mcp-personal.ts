@@ -1,6 +1,12 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import { BUILTIN_CITIES } from "./cities";
+import { buildHistoryWindow, parseGpsCityId } from "./history-window";
+import type { WeatherRangeFetcher } from "./weather-range";
+import type { SkinType } from "./vitd";
 import type { City, DayRecord } from "./types";
+
+/** Whole hours as HH:MM, matching how the other tools spell a window. */
+const hhFromHour = (hour: number) => `${String(Math.floor(hour)).padStart(2, "0")}:${String(Math.round((hour % 1) * 60)).padStart(2, "0")}`;
 
 /**
  * Personal (OAuth-scoped) MCP tools. Everything a user has lives in their
@@ -85,10 +91,20 @@ function isoDaysBefore(now: Date, offset: number): string {
  * Slicing the record list instead meant the window stretched to cover whatever
  * gaps the user's history had: eight records spread over three months came back
  * for `days: 30`, and a calendar drawn from them showed a month that was really
- * a season. `from`/`to` travel with the answer so the widget can draw the days
- * nobody logged, today included.
+ * a season.
+ *
+ * Every day in the span is answered, whether or not the app was open that day:
+ * the window and the minutes are derived from the current profile and the
+ * weather that actually happened, and only "did you go outside" comes from the
+ * stored record. See lib/history-window.ts for why.
  */
-export async function myHistoryTool(store: ProfileStore, userId: string, args: { days?: number }, now: Date = new Date()) {
+export async function myHistoryTool(
+  store: ProfileStore,
+  userId: string,
+  args: { days?: number },
+  now: Date = new Date(),
+  fetchRange?: WeatherRangeFetcher,
+) {
   const p = await store.getProfile(userId);
   if (!p) return NO_PROFILE;
   const days = Math.min(365, Math.max(1, Math.round(args.days ?? 30)));
@@ -97,13 +113,28 @@ export async function myHistoryTool(store: ProfileStore, userId: string, args: {
   const history = [...(p.history ?? [])].sort((a, b) => (a.date < b.date ? 1 : -1));
   const recent = history.filter((r) => r.date >= from && r.date <= to);
 
-  const confirmed = recent.filter((r) => r.userOverride === true).length;
-  const sufficient = recent.filter((r) => r.sufficient).length;
+  const custom = p.custom_locations ?? [];
+  const window = await buildHistoryWindow({
+    from, to, records: recent,
+    profile: {
+      skinType: (p.skin_type ?? 3) as SkinType,
+      area: p.area_fraction ?? 0.25,
+      targetIU: p.target_iu ?? 1000,
+      age: p.age ?? null,
+    },
+    resolveCity: (cityId) => cityRef(cityId, custom) ?? parseGpsCityId(cityId),
+    fetchRange,
+  });
 
-  // Streak of consecutive confirmed days ending at the most recent record.
+  // Newest first, as the answer has always been.
+  const ordered = [...window].reverse();
+  const confirmed = ordered.filter((d) => d.wentOutside === true).length;
+  const sufficient = ordered.filter((d) => d.sufficient).length;
+
+  // Streak of consecutive confirmed days ending today.
   let streak = 0;
-  for (const r of recent) {
-    if (r.userOverride === true) streak += 1;
+  for (const d of ordered) {
+    if (d.wentOutside === true) streak += 1;
     else break;
   }
 
@@ -112,20 +143,27 @@ export async function myHistoryTool(store: ProfileStore, userId: string, args: {
     from,
     to,
     daysTracked: recent.length,
-    daysWithoutRecord: days - recent.length,
-    // Without this the model reads a gap as unknowable and says so, which is
-    // both unhelpful and wrong: absence has a meaning here, and the server knows
-    // it. The widget draws these days as a distinct fifth state.
-    recordsCover: "only days the app was open. A date in from..to that is absent from records means nothing was measured that day — not that the sun was insufficient.",
+    daysNotAnswered: ordered.filter((d) => d.wentOutside === null).length,
+    // The window and the minutes are computed, not remembered, so they always
+    // match the profile in force now. Stored records only ever answer one
+    // question, and a day with no record is a day with no answer — not a day
+    // with no sun.
+    howToRead: "Every day in from..to is answered. `window`, `minutesNeeded` and `peakUVI` are computed from the current profile and that day's weather; `uvSource` says whether the cloud cover was measured or modelled. `wentOutside` is null unless the user said so — never infer it. `locationAssumed` means the place was carried over from a neighbouring day.",
     daysConfirmedOutside: confirmed,
     daysWithViableSun: sufficient,
     currentConfirmedStreak: streak,
-    records: recent.map((r) => ({
+    records: ordered.map((r) => ({
       date: r.date,
       cityId: r.cityId,
+      locationAssumed: r.locationAssumed,
+      uvSource: r.uvSource,
+      peakUVI: r.peakUVI,
+      window: r.windowStart !== null && r.windowEnd !== null
+        ? { start: hhFromHour(r.windowStart), end: hhFromHour(r.windowEnd) }
+        : null,
       viableSun: r.sufficient,
-      wentOutside: r.userOverride,
-      minutesNeeded: Math.round(r.minutesNeeded),
+      wentOutside: r.wentOutside,
+      minutesNeeded: r.minutesNeeded,
     })),
   };
 }

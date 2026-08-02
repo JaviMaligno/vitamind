@@ -8,7 +8,7 @@ const wrap = (payload: unknown) => ({ content: [], _meta: { [HISTORY_META_KEY]: 
 // Default answer is null, not false: with three states, false stopped meaning
 // "unconfirmed" and started meaning "had sun and stayed in".
 const day = (date: string, over: Partial<HistoryDay> = {}): HistoryDay =>
-  ({ date, viableSun: true, wentOutside: null, ...over });
+  ({ date, viableSun: true, wentOutside: null, known: true, ...over });
 
 describe("readHistoryMeta", () => {
   it("reads a signed-in payload", () => {
@@ -61,7 +61,7 @@ describe("withDayConfirmed", () => {
   it("adds a day the history had never recorded", () => {
     const days = withDayConfirmed([day("2026-07-01")], "2026-07-05");
     expect(days).toHaveLength(2);
-    expect(days[1]).toEqual({ date: "2026-07-05", viableSun: false, wentOutside: true });
+    expect(days[1]).toEqual({ date: "2026-07-05", viableSun: false, wentOutside: true, known: true });
   });
 
   it("clears a day when asked, like the app's own calendar", () => {
@@ -341,46 +341,57 @@ describe("the grid is a calendar, not a strip of records", () => {
 });
 
 /**
- * Filling the calendar created a state that did not exist before: a day with no
- * record at all. Rendering those as "no viable sun" made the widget assert
- * something it does not know — and in July that assertion is simply wrong.
- * Absence of a record is absence of information.
+ * The server now works out every day in the span, so a day nobody logged still
+ * has a verdict. What is left for `unlogged` is the narrow case where the day
+ * could not be placed at all — no location anywhere in the history — and there
+ * genuinely is nothing to say about its sun.
  */
-describe("a day with no record says nothing", () => {
+describe("a day that could not be placed says nothing", () => {
   const meta = readHistoryMeta(wrap({
     authenticated: true,
-    days: [day("2026-07-13", { wentOutside: true })],
+    days: [
+      { date: "2026-07-13", viableSun: true, wentOutside: true, known: true },
+      // Derived by the server: nobody logged it, but the sun is known.
+      { date: "2026-07-14", viableSun: true, wentOutside: null, known: true },
+      // Genuinely unplaceable.
+      { date: "2026-07-15", viableSun: false, wentOutside: null, known: false },
+      { date: "2026-07-16", viableSun: false, wentOutside: null, known: true },
+    ],
     streak: 1, daysTracked: 1,
     from: "2026-07-13", to: "2026-07-16",
   }));
 
+  /** Just that day's button — a fixed slice spills into the next cell. */
   const cellFor = (html: string, date: string) => {
     const at = html.indexOf(`data-date="${date}"`);
-    return html.slice(at, at + 500);
+    return html.slice(at, html.indexOf("</button>", at));
   };
 
   it("draws it apart from a day that genuinely had no sun", () => {
     const html = renderHistory({ meta, locale: "es" });
-    // 14 July has no record; a logged day with viableSun false is a different claim.
-    const withRecord = renderHistory({
-      meta: readHistoryMeta(wrap({
-        authenticated: true, days: [day("2026-07-14", { viableSun: false })],
-        from: "2026-07-14", to: "2026-07-14",
-      })), locale: "es",
-    });
-    const unlogged = cellFor(html, "2026-07-14").match(/background:([^;]+)/)?.[1];
-    const noSun = cellFor(withRecord, "2026-07-14").match(/background:([^;]+)/)?.[1];
-    expect(unlogged).not.toBe(noSun);
+    const unplaceable = cellFor(html, "2026-07-15").match(/background:([^;]+)/)?.[1];
+    const noSun = cellFor(html, "2026-07-16").match(/background:([^;]+)/)?.[1];
+    expect(unplaceable).not.toBe(noSun);
   });
 
   it("labels it as unknown rather than as a verdict", () => {
     const html = renderHistory({ meta, locale: "es" });
-    expect(cellFor(html, "2026-07-14")).toContain(historyStrings("es").unlogged);
-    expect(cellFor(html, "2026-07-14")).not.toContain(historyStrings("es").missed);
+    expect(cellFor(html, "2026-07-15")).toContain(historyStrings("es").unlogged);
+    expect(cellFor(html, "2026-07-15")).not.toContain(historyStrings("es").missed);
+  });
+
+  it("gives an unanswered day with sun its amber cell back", () => {
+    // This is the change: it used to be drawn as "no data" because no record
+    // existed. The sun that day is knowable, so it reads as a day you could
+    // still answer for.
+    const html = renderHistory({ meta, locale: "es" });
+    const cell = cellFor(html, "2026-07-14");
+    expect(cell).toContain(historyStrings("es").viable);
+    expect(cell).not.toContain("disabled");
   });
 
   it("cannot be tapped — there is nothing to answer about", () => {
-    expect(cellFor(renderHistory({ meta, locale: "es" }), "2026-07-14")).toContain("disabled");
+    expect(cellFor(renderHistory({ meta, locale: "es" }), "2026-07-15")).toContain("disabled");
   });
 
   it("names the state in every language", () => {

@@ -133,6 +133,10 @@ function historyChartMeta(payload: unknown, authenticated: boolean) {
           // Passed through as three values, not coerced: "stayed in" and "never
           // said" are different answers and the widget draws them differently.
           wentOutside: rec.wentOutside === true ? true : rec.wentOutside === false ? false : null,
+          // False only when the day could not be worked out at all — no location
+          // anywhere in the history to place it. Every other day now has a real
+          // verdict, whether or not the app was ever open that day.
+          known: rec.cityId !== null && rec.cityId !== undefined,
         };
       }),
       streak: typeof p.currentConfirmedStreak === "number" ? p.currentConfirmedStreak : 0,

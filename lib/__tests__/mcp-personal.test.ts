@@ -22,6 +22,13 @@ const record = (date: string, over: boolean | null, sufficient = true): DayRecor
   minutesNeeded: 10, sufficient, userOverride: over,
 });
 
+/**
+ * No provider, so every day falls back to the clear-sky model. Keeps these tests
+ * off the network and deterministic; the weather path has its own tests in
+ * history-window.test.ts.
+ */
+const NO_WEATHER = async () => null;
+
 const PROFILE: ProfileRow = {
   skin_type: 2, area_fraction: 0.18, age: 38, target_iu: 1000,
   favorites: ["builtin:madrid", "builtin:londres", "custom:home"],
@@ -85,57 +92,69 @@ describe("personal tools", () => {
     };
     const NOW = new Date("2026-08-01T10:00:00Z");
 
-    it("drops records older than the window, however few records that leaves", async () => {
+    it("answers every calendar day, not only the ones with a record", async () => {
       const store = memoryStore({ u1: structuredClone(SPARSE) });
-      const r = await myHistoryTool(store, "u1", { days: 30 }, NOW);
+      const r = await myHistoryTool(store, "u1", { days: 30 }, NOW, NO_WEATHER);
       if (!("records" in r)) throw new Error("expected records");
-      // 30 days back from 1 August is 3 July: only the July burst survives.
-      // Records stay newest-first, as they always were.
-      expect(r.records.map((x) => x.date)).toEqual(["2026-07-15", "2026-07-14", "2026-07-13"]);
+      // 3 July – 1 August, newest first, gaps included.
+      expect(r.records).toHaveLength(30);
+      expect(r.records[0].date).toBe("2026-08-01");
+      expect(r.records.at(-1)!.date).toBe("2026-07-03");
+      // Three of those thirty days were ever measured by the app.
       expect(r.daysTracked).toBe(3);
     });
 
     it("reports the window it actually covered, ending today", async () => {
       const store = memoryStore({ u1: structuredClone(SPARSE) });
-      const r = await myHistoryTool(store, "u1", { days: 30 }, NOW);
-      // Without these the widget cannot draw the days that have no record —
-      // including today, which is exactly where someone looks first.
+      const r = await myHistoryTool(store, "u1", { days: 30 }, NOW, NO_WEATHER);
       expect(r).toMatchObject({ from: "2026-07-03", to: "2026-08-01" });
     });
 
     it("reaches back far enough when asked for a year", async () => {
       const store = memoryStore({ u1: structuredClone(SPARSE) });
-      const r = await myHistoryTool(store, "u1", { days: 365 }, NOW);
+      const r = await myHistoryTool(store, "u1", { days: 365 }, NOW, NO_WEATHER);
       if (!("records" in r)) throw new Error("expected records");
-      expect(r.records).toHaveLength(8);
+      expect(r.records).toHaveLength(365);
       expect(r.from).toBe("2025-08-02");
     });
 
     /**
-     * The widget got a fifth state for days with no record; the model's channel
-     * did not, so it read a gap as unknowable and said so: "no se puede
-     * distinguir si no hubo sol útil o simplemente no se registró". The server
-     * knows the difference — records exist only for days the app was opened —
-     * and had simply never said it.
+     * A day nobody logged is a day with no *answer*, not a day with no data. The
+     * model used to read the gap as unknowable and say so; now every day in the
+     * span carries a window, and only "did you go out" can be blank.
      */
-    it("says what a missing day means, rather than leaving the model to guess", async () => {
+    it("counts the days still unanswered, and says how to read the rest", async () => {
       const store = memoryStore({ u1: structuredClone(SPARSE) });
-      const r = await myHistoryTool(store, "u1", { days: 30 }, NOW);
-      if (!("daysWithoutRecord" in r)) throw new Error("expected the gap count");
-      // 3 July – 1 August is 30 days; three of them have records.
-      expect(r.daysWithoutRecord).toBe(27);
-      expect(r.recordsCover).toMatch(/not that the sun was insufficient/i);
+      const r = await myHistoryTool(store, "u1", { days: 30 }, NOW, NO_WEATHER);
+      if (!("daysNotAnswered" in r)) throw new Error("expected the unanswered count");
+      // Of thirty days, two were confirmed (13 and 14 July); the rest are blank.
+      expect(r.daysNotAnswered).toBe(28);
+      expect(r.howToRead).toMatch(/never infer it/i);
     });
 
-    it("reports no gaps when every day in the window was logged", async () => {
-      const dense: ProfileRow = {
-        ...PROFILE,
-        history: ["2026-07-30", "2026-07-31", "2026-08-01"].map((d) => record(d, true)),
-      };
-      const store = memoryStore({ u1: dense });
-      const r = await myHistoryTool(store, "u1", { days: 3 }, NOW);
-      if (!("daysWithoutRecord" in r)) throw new Error("expected the gap count");
-      expect(r.daysWithoutRecord).toBe(0);
+    it("derives a day the app never saw, instead of leaving it empty", async () => {
+      // 23 July: no record, no measurement, and still a perfectly knowable sun.
+      const store = memoryStore({ u1: structuredClone(SPARSE) });
+      const r = await myHistoryTool(store, "u1", { days: 30 }, NOW, NO_WEATHER);
+      if (!("records" in r)) throw new Error("expected records");
+      const gap = r.records.find((x) => x.date === "2026-07-23")!;
+      expect(gap.window).not.toBeNull();
+      expect(gap.minutesNeeded).toBeGreaterThan(0);
+      expect(gap.locationAssumed).toBe(true);
+      expect(gap.wentOutside).toBeNull();
+      // And it admits the cloud cover was modelled, not measured.
+      expect(gap.uvSource).toBe("clear-sky");
+    });
+
+    it("stops reporting the minutes a stale profile produced", async () => {
+      // The stored records claim 10 minutes; the profile in this store is what
+      // decides now, and both the logged and the unlogged days agree with it.
+      const store = memoryStore({ u1: structuredClone(SPARSE) });
+      const r = await myHistoryTool(store, "u1", { days: 30 }, NOW, NO_WEATHER);
+      if (!("records" in r)) throw new Error("expected records");
+      const logged = r.records.find((x) => x.date === "2026-07-13")!;
+      const derived = r.records.find((x) => x.date === "2026-07-23")!;
+      expect(logged.minutesNeeded).toBe(derived.minutesNeeded);
     });
 
     it("counts the streak from today's end of the window, not from the last record", async () => {

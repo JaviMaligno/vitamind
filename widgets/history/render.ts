@@ -44,12 +44,13 @@ export type CellState = "confirmed" | "viable" | "declined" | "missed" | "unlogg
 /**
  * The five appearances, from the day's sun and the user's answer.
  *
- * `unlogged` is not a verdict: records exist only for days the app was opened,
- * so most squares in a filled calendar are days nobody measured. Drawing them as
- * "no viable sun" claimed a fact — and in midsummer, a false one.
+ * `unlogged` is not a verdict but the absence of one: the day could not be
+ * placed anywhere, so nothing can be said about its sun. It used to cover every
+ * day the app was not opened, which was most of them; the server now works
+ * those out, so this is the rare residue.
  */
-export function cellState(day: { viableSun: boolean; wentOutside: boolean | null; logged?: boolean }): CellState {
-  if (day.logged === false) return "unlogged";
+export function cellState(day: { viableSun: boolean; wentOutside: boolean | null; known?: boolean }): CellState {
+  if (day.known === false) return "unlogged";
   if (day.wentOutside === true) return "confirmed";
   if (day.wentOutside === false && day.viableSun) return "declined";
   return day.viableSun ? "viable" : "missed";
@@ -130,7 +131,7 @@ export function renderHistory({ meta, pending = [], locale, theme }: RenderHisto
   const from = meta.from ?? logged[0].date;
   const to = meta.to ?? logged[logged.length - 1].date;
   const days = datesBetween(from, to).map(
-    (date) => byDate.get(date) ?? { date, viableSun: false, wentOutside: null, logged: false },
+    (date) => byDate.get(date) ?? { date, viableSun: false, wentOutside: null, known: false },
   );
   if (days.length === 0) {
     return `<p style="margin:0;color:${p.muted};font:14px/1.5 system-ui,sans-serif">${escapeHtml(copy.empty)}</p>`;

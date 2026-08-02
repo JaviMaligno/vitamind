@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { endpointFor, hoursFromPayload, FORECAST_URL } from "@/lib/weather-range";
 
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 const UPSTREAM_TIMEOUT_MS = 8000;
@@ -29,21 +30,10 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    // Decide whether to use archive or forecast endpoint
-    // Open-Meteo forecast only has ~7 days of past data
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const sevenDaysAgo = new Date(today);
-    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-
+    // Which host carries the requested dates is decided in lib/weather-range.ts,
+    // so the MCP server reconstructing a past day applies the same rule.
     const startDate = start || date || null;
-    const needsArchive = startDate && new Date(startDate + "T00:00:00") < sevenDaysAgo;
-
-    const baseUrl = needsArchive
-      ? "https://archive-api.open-meteo.com/v1/archive"
-      : "https://api.open-meteo.com/v1/forecast";
-
-    const url = new URL(baseUrl);
+    const url = new URL(startDate ? endpointFor(startDate) : FORECAST_URL);
     url.searchParams.set("latitude", String(lat));
     url.searchParams.set("longitude", String(lon));
     url.searchParams.set("hourly", "uv_index,cloud_cover");
@@ -69,18 +59,12 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Upstream weather service error" }, { status: 502 });
     }
 
-    const data = await res.json();
+    const hours = hoursFromPayload(await res.json());
 
-    if (!data.hourly?.time) {
+    if (!hours) {
       console.error(`[api/weather] Open-Meteo returned no hourly data for lat=${lat} lon=${lon}`);
       return NextResponse.json({ error: "No hourly data" }, { status: 502 });
     }
-
-    const hours = data.hourly.time.map((t: string, i: number) => ({
-      time: t,
-      uvIndex: data.hourly.uv_index?.[i] ?? 0,
-      cloudCover: data.hourly.cloud_cover?.[i] ?? 0,
-    }));
 
     return NextResponse.json({ hours }, {
       headers: { "Cache-Control": "public, s-maxage=1800, stale-while-revalidate=3600" },

@@ -14,6 +14,13 @@ export interface HistoryDay {
   viableSun: boolean;
   /** What the user answered, if anything. */
   wentOutside: DayAnswer;
+  /**
+   * False when the day could not be worked out — no location anywhere in the
+   * history to place it. Everything else has a real verdict, whether or not the
+   * app was ever open that day, so `viableSun: false` means the sun was weak
+   * rather than that nobody looked.
+   */
+  known: boolean;
 }
 
 export interface HistoryMeta {
@@ -44,6 +51,8 @@ function readDay(raw: unknown): HistoryDay | null {
     // Only the two real answers survive; anything else is "never said", which is
     // what an absent or malformed value actually means.
     wentOutside: r.wentOutside === true ? true : r.wentOutside === false ? false : null,
+    // Absent means known: an older payload only ever carried days it could place.
+    known: r.known !== false,
   };
 }
 
@@ -94,8 +103,10 @@ export function datesBetween(from: string, to: string): string[] {
  * would mean "the user says they did NOT go out" — a different claim.
  */
 export function withDayConfirmed(days: HistoryDay[], date: string, answer: DayAnswer = true): HistoryDay[] {
-  const known = days.some((d) => d.date === date);
-  if (!known) return answer === true ? [...days, { date, viableSun: false, wentOutside: true }] : days;
+  const present = days.some((d) => d.date === date);
+  if (!present) {
+    return answer === true ? [...days, { date, viableSun: false, wentOutside: true, known: true }] : days;
+  }
   return days.map((d) => (d.date === date ? { ...d, wentOutside: answer } : d));
 }
 
