@@ -1,6 +1,6 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import { BUILTIN_CITIES } from "./cities";
-import { buildHistoryWindow, locationSpans, parseGpsCityId } from "./history-window";
+import { buildHistoryWindow, datesBetween, locationSpans, parseGpsCityId } from "./history-window";
 import { nearestCityWithin } from "./nearest-city";
 import type { WeatherRangeFetcher } from "./weather-range";
 import type { SkinType } from "./vitd";
@@ -192,6 +192,118 @@ export async function myHistoryTool(
 }
 
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
+
+/** A correction covers a trip, not a decade. */
+export const MAX_LOCATION_RANGE_DAYS = 366;
+
+/**
+ * Records where the user was over a range of days.
+ *
+ * The other half of the widget's location line: tapping a stretch asks the
+ * conversation "which city?", and this is what the answer calls. Location is one
+ * of the two things nobody can reconstruct after the fact, so it is one of the
+ * two things worth storing — unlike the window and the minutes, which are
+ * derived from it.
+ *
+ * It writes days the app never saw. Their derived fields are filled in rather
+ * than zeroed, because the app's own calendar still reads them and a row of
+ * zeroes would show up there as a day with no usable sun.
+ */
+export async function setHistoryLocationTool(
+  store: ProfileStore,
+  userId: string,
+  args: { from: string; to: string; cityId?: string; lat?: number; lon?: number },
+  now: Date = new Date(),
+  fetchRange?: WeatherRangeFetcher,
+) {
+  const p = await store.getProfile(userId);
+  if (!p) return NO_PROFILE;
+
+  const { from, to } = args;
+  const today = isoDaysBefore(now, 0);
+  if (!DATE_RE.test(from) || !DATE_RE.test(to) || from > to || to > today) {
+    return {
+      error: "bad_range" as const,
+      hint: `from..to must be YYYY-MM-DD, in order, and no later than ${today}. The user cannot have been anywhere tomorrow.`,
+    };
+  }
+  const spanDays = Math.round((Date.parse(`${to}T00:00:00Z`) - Date.parse(`${from}T00:00:00Z`)) / 86400000) + 1;
+  if (spanDays > MAX_LOCATION_RANGE_DAYS) {
+    return { error: "bad_range" as const, hint: `At most ${MAX_LOCATION_RANGE_DAYS} days at a time.` };
+  }
+
+  const custom = p.custom_locations ?? [];
+  let cityId: string;
+  if (typeof args.lat === "number" && typeof args.lon === "number") {
+    if (Math.abs(args.lat) > 90 || Math.abs(args.lon) > 180) {
+      return { error: "unknown_city" as const, hint: "lat must be within ±90 and lon within ±180." };
+    }
+    // Same shape the app writes when it uses the device location.
+    cityId = `gps:${args.lat.toFixed(4)},${args.lon.toFixed(4)}`;
+  } else if (args.cityId) {
+    // Refusing beats writing an id nothing can resolve: the day would come back
+    // with no window at all and no way to tell why.
+    if (!cityRef(args.cityId, custom) && !parseGpsCityId(args.cityId)) {
+      return {
+        error: "unknown_city" as const,
+        hint: "No city with that id. Use search_city to find one, or pass lat/lon.",
+      };
+    }
+    cityId = args.cityId;
+  } else {
+    return { error: "unknown_city" as const, hint: "Pass either cityId or lat and lon." };
+  }
+
+  const history = [...(p.history ?? [])];
+  const byDate = new Map(history.map((r) => [r.date, r]));
+
+  // Derived from the place just set, so the app's calendar reads these days too.
+  const derived = await buildHistoryWindow({
+    from, to,
+    records: datesBetween(from, to).map((date) => ({
+      ...(byDate.get(date) ?? { peakUVI: 0, windowStart: 0, windowEnd: 0, minutesNeeded: 0, sufficient: false, userOverride: null }),
+      date, cityId,
+    })),
+    profile: {
+      skinType: (p.skin_type ?? 3) as SkinType,
+      area: p.area_fraction ?? 0.25,
+      targetIU: p.target_iu ?? 1000,
+      age: p.age ?? null,
+    },
+    resolveCity: (id) => cityRef(id, custom) ?? parseGpsCityId(id),
+    fetchRange,
+  });
+
+  for (const day of derived) {
+    const existing = byDate.get(day.date);
+    const row: DayRecord = {
+      date: day.date,
+      cityId,
+      peakUVI: day.peakUVI ?? 0,
+      windowStart: day.windowStart ?? 0,
+      windowEnd: day.windowEnd ?? 0,
+      minutesNeeded: day.minutesNeeded ?? 0,
+      sufficient: day.sufficient,
+      // The answer is the user's other fact, and this call is not about it.
+      userOverride: existing?.userOverride ?? null,
+    };
+    if (existing) Object.assign(existing, row);
+    else history.push(row);
+  }
+
+  history.sort((a, b) => (a.date < b.date ? 1 : -1));
+  await store.updateHistory(userId, history);
+
+  return {
+    updated: true,
+    from,
+    to,
+    days: spanDays,
+    cityId,
+    name: cityRef(cityId, custom)?.name ?? cityId,
+    note: "Only the location changed. Whether the user went outside on those days is untouched.",
+  };
+}
 
 /**
  * Sets a day's answer in the history calendar — the same edit the app's own

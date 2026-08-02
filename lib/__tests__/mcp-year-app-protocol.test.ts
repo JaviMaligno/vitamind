@@ -68,9 +68,10 @@ describe("MCP App metadata on the wire", () => {
       (tool: { _meta?: Record<string, unknown> }) => tool._meta?.ui ?? tool._meta?.["ui/resourceUri"],
     );
 
-    // The tool set stays at ten for every client; only the tools whose answer is
-    // genuinely worse as prose carry a widget, and the others must stay clean.
-    expect(result.tools).toHaveLength(14);
+    // Only the tools whose answer is genuinely worse as prose carry a widget;
+    // the rest must stay clean. `set_history_location` is the newest and has
+    // none: it takes a range and a city and answers in a sentence.
+    expect(result.tools).toHaveLength(15);
     expect(withUi.map((t) => t.name).sort()).toEqual([
       "compare_vitamin_d_year", "configure_sun_profile",
       "get_current_status", "get_my_history", "get_sun_forecast", "get_vitamin_d_year",

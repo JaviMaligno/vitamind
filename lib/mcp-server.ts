@@ -19,6 +19,7 @@ import { FORECAST_WIDGET_HTML } from "@/widgets/forecast/generated";
 import { getOAuthDb, verifyAccessToken, type OAuthScope } from "@/lib/oauth";
 import {
   getProfileStore, myProfileTool, myCitiesTool, myHistoryTool, logSunSessionTool, updateMyProfileTool,
+  setHistoryLocationTool,
 } from "@/lib/mcp-personal";
 
 /**
@@ -480,6 +481,24 @@ export function initMcpServer(server: McpServer) {
       },
       personal("log_sun_session", "history:write",
         (userId, args: { date?: string; minutes?: number; confirmed?: boolean | null }) => logSunSessionTool(store(), userId, args)),
+    );
+
+    server.tool(
+      "set_history_location",
+      "Records where the signed-in user was over a range of past days, so their history stops assuming. "
+      + "Use it when the user corrects a stretch — get_my_history marks inherited days with `locationAssumed`, "
+      + "and the history calendar offers those stretches for correction. Pass a cityId from search_city, or lat/lon. "
+      + "Changes only the location: whether they went outside that day is untouched. Requires OAuth (scope history:write).",
+      {
+        from: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).describe("First day of the stretch, YYYY-MM-DD"),
+        to: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).describe("Last day of the stretch, YYYY-MM-DD; same as `from` for one day"),
+        cityId: z.string().max(80).optional().describe("City id from search_city, e.g. 'builtin:londres'"),
+        lat: z.number().min(-90).max(90).optional().describe("Latitude, for a place not in the database"),
+        lon: z.number().min(-180).max(180).optional().describe("Longitude, paired with lat"),
+      },
+      personal("set_history_location", "history:write",
+        (userId, args: { from: string; to: string; cityId?: string; lat?: number; lon?: number }) =>
+          setHistoryLocationTool(store(), userId, args)),
     );
 }
 

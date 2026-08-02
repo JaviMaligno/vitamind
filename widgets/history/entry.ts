@@ -78,7 +78,7 @@ function correctLocation(from: string, to: string) {
   const text =
     `The user wants to correct where they were from ${range}, currently recorded as "${span.name}"`
     + `${span.assumedDays > 0 ? ` (${span.assumedDays} of those ${span.days} days were inherited from a neighbouring day rather than recorded)` : ""}.`
-    + ` Ask which city they were in, and say the correction is not stored yet.`;
+    + ` Ask which city they were in, then call set_history_location for exactly that range.`;
   void bridge.updateModelContext({
     content: [{ type: "text", text }],
     structuredContent: { correctingLocation: { from, to, currentName: span.name } },

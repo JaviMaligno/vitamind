@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import {
   myProfileTool, myCitiesTool, myHistoryTool, logSunSessionTool, updateMyProfileTool,
-  type ProfileStore, type ProfileRow,
+  setHistoryLocationTool, type ProfileStore, type ProfileRow,
 } from "../mcp-personal";
 import type { DayRecord } from "../types";
 
@@ -316,5 +316,90 @@ describe("logSunSessionTool: three answers", () => {
       expect(result).toMatchObject({ logged: false });
     }
     expect(rows.u.history).toHaveLength(0);
+  });
+});
+
+/**
+ * Tapping a stretch in the widget hands the range to the conversation; this is
+ * what the conversation calls back. Until it existed the widget could only ask
+ * the question and then admit nothing would be saved.
+ *
+ * Location is one of the two things that cannot be reconstructed, so it is one of
+ * the two things worth storing. Writing it fills in days the app never saw.
+ */
+describe("setHistoryLocationTool", () => {
+  const NOW = new Date("2026-08-02T10:00:00Z");
+  const BASE: ProfileRow = {
+    ...PROFILE,
+    last_city_id: "builtin:londres",
+    history: [
+      { ...record("2026-07-19", true), cityId: "gps:51.56,-0.10" },
+      { ...record("2026-07-20", null), cityId: "builtin:valencia" },
+    ],
+  };
+
+  it("writes the place across the whole range, days included that had no record", async () => {
+    const rows = { u1: structuredClone(BASE) };
+    const r = await setHistoryLocationTool(memoryStore(rows), "u1", {
+      from: "2026-07-20", to: "2026-07-23", cityId: "builtin:londres",
+    }, NOW);
+    expect(r).toMatchObject({ updated: true, days: 4 });
+    for (const date of ["2026-07-20", "2026-07-21", "2026-07-22", "2026-07-23"]) {
+      expect(rows.u1.history!.find((h) => h.date === date)?.cityId, date).toBe("builtin:londres");
+    }
+  });
+
+  it("leaves the answer alone — that is the user's other fact, not this one", async () => {
+    const rows = { u1: structuredClone(BASE) };
+    await setHistoryLocationTool(memoryStore(rows), "u1", {
+      from: "2026-07-19", to: "2026-07-19", cityId: "builtin:madrid",
+    }, NOW);
+    expect(rows.u1.history!.find((h) => h.date === "2026-07-19")?.userOverride).toBe(true);
+  });
+
+  it("fills the derived fields so the app's calendar still reads the day", async () => {
+    // The app has not moved to computing these yet; a row of zeroes would show
+    // up there as a day with no usable sun.
+    const rows = { u1: structuredClone(BASE) };
+    await setHistoryLocationTool(memoryStore(rows), "u1", {
+      from: "2026-07-22", to: "2026-07-22", cityId: "builtin:madrid",
+    }, NOW, async () => null);
+    const written = rows.u1.history!.find((h) => h.date === "2026-07-22")!;
+    expect(written.minutesNeeded).toBeGreaterThan(0);
+    expect(written.sufficient).toBe(true);
+  });
+
+  it("refuses a city it cannot place, instead of writing a dead id", async () => {
+    const rows = { u1: structuredClone(BASE) };
+    const r = await setHistoryLocationTool(memoryStore(rows), "u1", {
+      from: "2026-07-22", to: "2026-07-22", cityId: "builtin:atlantis",
+    }, NOW);
+    expect(r).toHaveProperty("error", "unknown_city");
+    expect(rows.u1.history!.find((h) => h.date === "2026-07-22")).toBeUndefined();
+  });
+
+  it("refuses a range that runs backwards or into the future", async () => {
+    const store = memoryStore({ u1: structuredClone(BASE) });
+    const args = { cityId: "builtin:madrid" };
+    expect(await setHistoryLocationTool(store, "u1", { ...args, from: "2026-07-23", to: "2026-07-20" }, NOW))
+      .toHaveProperty("error", "bad_range");
+    // Tomorrow has not happened; there is nowhere the user was.
+    expect(await setHistoryLocationTool(store, "u1", { ...args, from: "2026-08-03", to: "2026-08-04" }, NOW))
+      .toHaveProperty("error", "bad_range");
+  });
+
+  it("caps the range rather than rewriting a decade", async () => {
+    const store = memoryStore({ u1: structuredClone(BASE) });
+    expect(await setHistoryLocationTool(store, "u1", { from: "2020-01-01", to: "2026-08-02", cityId: "builtin:madrid" }, NOW))
+      .toHaveProperty("error", "bad_range");
+  });
+
+  it("accepts coordinates for a place that is not in the database", async () => {
+    const rows = { u1: structuredClone(BASE) };
+    const r = await setHistoryLocationTool(memoryStore(rows), "u1", {
+      from: "2026-07-22", to: "2026-07-22", lat: 51.5, lon: -0.12,
+    }, NOW);
+    expect(r).toMatchObject({ updated: true });
+    expect(rows.u1.history!.find((h) => h.date === "2026-07-22")?.cityId).toBe("gps:51.5000,-0.1200");
   });
 });

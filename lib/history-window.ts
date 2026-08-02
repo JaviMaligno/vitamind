@@ -66,7 +66,7 @@ export function parseGpsCityId(cityId: string): Place | null {
 }
 
 /** Every YYYY-MM-DD from `from` to `to` inclusive, walked in UTC. */
-function datesBetween(from: string, to: string): string[] {
+export function datesBetween(from: string, to: string): string[] {
   const out: string[] = [];
   const end = Date.parse(`${to}T00:00:00Z`);
   let cursor = Date.parse(`${from}T00:00:00Z`);
