@@ -43,18 +43,34 @@ function buildDayRecord(
   };
 }
 
-function datesToFill(startStr: string, endStr: string, existing: DayRecord[], cityId: string): string[] {
+/**
+ * Days in the range with no record at all.
+ *
+ * It used to ask for days with no record *for the currently selected city*, so
+ * switching the picker made the whole week look missing and rewrote it with that
+ * city. Checking Valencia once from London relabelled the week as Valencia, and
+ * that is where the wrong locations in the history came from.
+ *
+ * A day that already has a record is already answered, whatever place it names.
+ * Correcting one is `set_history_location`'s job, not a side effect of looking
+ * at a map.
+ */
+export function datesToFill(
+  startStr: string,
+  endStr: string,
+  existing: DayRecord[],
+  now: Date = new Date(),
+): string[] {
   const missing: string[] = [];
   const d = new Date(startStr + "T12:00:00");
   const end = new Date(endStr + "T12:00:00");
-  const today = new Date();
+  const today = new Date(now);
   today.setHours(23, 59, 59, 999);
+  const known = new Set(existing.map((r) => r.date));
 
   while (d <= end && d <= today) {
     const ds = toDateStr(d);
-    if (!existing.find((r) => r.date === ds && r.cityId === cityId)) {
-      missing.push(ds);
-    }
+    if (!known.has(ds)) missing.push(ds);
     d.setDate(d.getDate() + 1);
   }
   return missing;
@@ -89,10 +105,11 @@ export function useHistory(
     const todayStr = toDateStr(today);
     const mondayStr = toDateStr(monday);
 
-    // Only fills missing dates — existing records are intentional snapshots
-    // and are not recalculated when targetIU changes.
+    // Only fills dates with no record at all. The stored derived fields are
+    // legacy weight: the calendar computes the window and the minutes from the
+    // current profile, so a stale snapshot is never read. See lib/history-window.ts.
     const stored = loadHistory();
-    const missing = datesToFill(mondayStr, todayStr, stored, cityId);
+    const missing = datesToFill(mondayStr, todayStr, stored);
     if (missing.length === 0) {
       queueMicrotask(() => setLoading(false));
       return;
@@ -125,7 +142,7 @@ export function useHistory(
     if (activeRequests.current.has(key)) return;
 
     const stored = loadHistory();
-    const missing = datesToFill(startStr, endStr, stored, cityId);
+    const missing = datesToFill(startStr, endStr, stored);
     if (missing.length === 0) return;
 
     activeRequests.current.add(key);
@@ -172,8 +189,11 @@ export function useHistory(
 
   const getToday = useCallback((): DayRecord | null => {
     const todayStr = toDateStr(new Date());
-    return records.find((r) => r.date === todayStr && r.cityId === cityId) ?? null;
-  }, [records, cityId]);
+    // Not filtered by the selected city: today is today wherever the picker
+    // happens to be pointing, and requiring a match made the day vanish from the
+    // dashboard the moment someone looked up somewhere else.
+    return records.find((r) => r.date === todayStr) ?? null;
+  }, [records]);
 
   return { records, loading, getRecordsForWeek, getRecordsForMonth, getToday, toggleOverride, requestBackfill };
 }

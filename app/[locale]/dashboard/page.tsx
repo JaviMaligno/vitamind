@@ -62,10 +62,6 @@ export default function DashboardPage() {
       .filter((c): c is NonNullable<typeof c> => Boolean(c));
   }, [app.allCities]);
 
-  const cityRecords = useMemo(
-    () => records.filter((r) => r.cityId === app.cityId),
-    [records, app.cityId],
-  );
   const todayRecord = getToday();
 
   // Hydration guard: hasCity (localStorage) and several child components
@@ -235,9 +231,12 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {/* History calendar (replaces WeekTracker + MonthSummary) */}
+      {/* History calendar. It gets the whole history, not the selected city's
+          slice: `records` used to be filtered by `app.cityId`, so looking up
+          another city emptied the calendar — and the backfill then rewrote the
+          week under that city's name. Days carry where you were. */}
       <HistoryCalendar
-        records={cityRecords}
+        records={records}
         onToggleOverride={toggleOverride}
         onNavigate={requestBackfill}
       />
