@@ -1,6 +1,7 @@
 import { historyStrings } from "./i18n";
 import { monthLabel } from "../shared/months";
 import { datesBetween, type HistoryMeta } from "./data";
+import { oddDaysOut } from "../../lib/odd-day-out";
 
 const escapeHtml = (value: string) => value
   .replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;")
@@ -95,30 +96,6 @@ export function dayParts(date: string): { day: number; month: number } {
 export function cellLabel(date: string, locale: unknown): string {
   const { day, month } = dayParts(date);
   return day === 1 ? monthLabel(locale, month) : String(day);
-}
-
-/**
- * Single days sitting in a different place from the stretches on both sides,
- * mapped to that place's name.
- *
- * This is the one case where a per-cell mark pays: on real data it is one square
- * in thirty — a city checked once during a fortnight elsewhere — so it reads as
- * an exception. Marking every inherited day instead would cover 60% of the grid.
- *
- * A lone day at either end does not count: with nothing before it, starting a
- * new stretch is just moving.
- */
-function oddDaysOut(spans: HistoryMeta["locations"]): Map<string, string> {
-  const out = new Map<string, string>();
-  const all = spans ?? [];
-  for (let i = 1; i < all.length - 1; i++) {
-    const span = all[i];
-    if (span.days !== 1) continue;
-    if (all[i - 1].name !== all[i + 1].name) continue;
-    if (all[i - 1].name === span.name) continue;
-    out.set(span.from, span.name);
-  }
-  return out;
 }
 
 /**

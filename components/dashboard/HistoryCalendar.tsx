@@ -5,6 +5,7 @@ import { useTranslations, useLocale } from "next-intl";
 import { ChevronLeft, ChevronRight, Check } from "lucide-react";
 import { useSwipe } from "@/hooks/useSwipe";
 import PartnerBadge from "@/components/PartnerBadge";
+import { oddDaysOut } from "@/lib/odd-day-out";
 import type { DayRecord } from "@/lib/types";
 
 type ViewMode = "week" | "month";
@@ -242,6 +243,8 @@ export default function HistoryCalendar({ records, locations = [], assumedDates 
 
   const summary = computeSummary(viewRecords);
 
+  const oddOnes = useMemo(() => oddDaysOut(locations), [locations]);
+
   // What the location line talks about: the days actually on screen.
   const { visibleSpans, assumedInView, daysInView } = useMemo(() => {
     const from = viewMode === "week"
@@ -284,20 +287,30 @@ export default function HistoryCalendar({ records, locations = [], assumedDates 
     const status = getDayStatus(record, isFuture);
     const cellClasses = getCellClasses(status, isToday);
     const canTap = !isFuture && !!record;
+    // A day sitting in a different place from the stretches either side of it.
+    // The place goes in the label too: a dot nobody can read is decoration.
+    const oddPlace = oddOnes.get(ds);
 
     return (
       <button
         key={ds}
         onClick={() => handleDayTap(ds, record, isFuture)}
         disabled={isFuture || !record}
-        aria-label={ds}
+        data-odd-one={oddPlace || undefined}
+        aria-label={oddPlace ? `${ds} · ${oddPlace}` : ds}
         className={`relative flex items-center justify-center rounded-xl ${heightClass} transition-colors ${cellClasses} ${
-          canTap ? "cursor-pointer active:scale-95" : "cursor-default"
-        }`}
+          oddPlace ? "ring-1 ring-inset ring-sky-300/60" : ""
+        } ${canTap ? "cursor-pointer active:scale-95" : "cursor-default"}`}
       >
         <span className="font-mono text-body font-semibold leading-none">{dayNum}</span>
         {status === "confirmed" && (
           <Check className="absolute right-1 top-1 h-3 w-3 text-emerald-200" strokeWidth={3} aria-hidden />
+        )}
+        {oddPlace && (
+          <span
+            className="absolute left-1 bottom-1 h-1.5 w-1.5 rounded-full bg-sky-300"
+            aria-hidden
+          />
         )}
       </button>
     );
