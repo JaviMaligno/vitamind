@@ -117,3 +117,26 @@ Pasó a **pago**: 39 $ únicos, y el enlace dofollow es precisamente lo que se c
 opción gratuita visible el 2/8. Mismo patrón que el Premium de mcpservers.org. Decisión
 del owner; por sí solo no justifica el gasto, pero es el único de la lista que se puede
 cerrar hoy sin esperar a nadie.
+
+---
+
+## Para mañana (2026-08-03): dónde está el número viejo
+
+El «10 herramientas» hay que corregirlo en cada sitio ya publicado. Comprobado el 2/8:
+
+- **`CLAUDE.md:113`** — «10 tools (6 public…)». En el repo, se arregla con un commit.
+- **Registro MCP oficial** — `server.json` no enumera herramientas, así que puede que no
+  haga falta republicar; el registro las introspecciona. **Verificar** en la ficha antes
+  de tocar nada: republicar exige el binario Go y login de GitHub.
+- **Glama** — la pestaña Schema se rellena introspeccionando el contenedor. Si muestra 10,
+  hace falta un **Make Release** nuevo para que vuelva a leer. Su descripción sí es texto
+  editable a mano.
+- **mcpservers.org** — ficha editable; comprobar qué dice.
+- **npm `vitamind-mcp`** — mirar si su README menciona el número. Republicar exige OTP, así
+  que lo hace el owner en una terminal real.
+- **PR #11026 de punkpeye** — su entrada es una línea; comprobar si cita el número.
+
+Las descripciones nuevas, ya dimensionadas a cada tope, están arriba en este documento.
+
+Y lo que quedó pendiente de hacer con sesión iniciada: **Smithery** (`npx @smithery/cli
+login` + `publish`) y **Cursor Directory** (`cursor.directory/plugins/new` con GitHub).
