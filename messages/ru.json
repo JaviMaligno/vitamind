@@ -288,7 +288,9 @@
     "exposureFaceArms": "Лицо+руки полн.",
     "exposureTshirt": "Футболка",
     "exposureSwimsuit": "Купальник",
-    "exposureResetDefault": "Вернуть по умолчанию из профиля"
+    "exposureResetDefault": "Вернуть по умолчанию из профиля",
+    "whereYouWere": "Где вы были",
+    "locationAssumedNote": "{assumed} из {total} дней не записаны; взят ближайший отрезок."
   },
   "learn": {
     "eyebrow": "Гид по витамину D",

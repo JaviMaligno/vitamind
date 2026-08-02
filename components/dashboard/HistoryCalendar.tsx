@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect, useMemo, useRef } from "react";
+import { useState, useCallback, useMemo, useRef } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { ChevronLeft, ChevronRight, Check } from "lucide-react";
 import { useSwipe } from "@/hooks/useSwipe";
@@ -9,10 +9,22 @@ import type { DayRecord } from "@/lib/types";
 
 type ViewMode = "week" | "month";
 
+/** A stretch of "you were here", as `useHistory` grouped it. */
+export interface LocationSpan {
+  name: string;
+  cityId: string | null;
+  from: string;
+  to: string;
+  days: number;
+  /** Of those days, how many inherited the place rather than recording it. */
+  assumedDays: number;
+}
+
 interface Props {
   records: DayRecord[];
+  /** Where the user was, in stretches. Empty until the window is derived. */
+  locations?: LocationSpan[];
   onToggleOverride: (date: string) => void;
-  onNavigate: (startStr: string, endStr: string) => void;
 }
 
 function toDateStr(d: Date): string {
@@ -74,6 +86,35 @@ function getCellClasses(status: DayStatus, isToday: boolean): string {
   }
 }
 
+/** Days a stretch covers, inclusive. */
+function spanLength(span: { from: string; to: string }): number {
+  return Math.round(
+    (Date.parse(`${span.to}T00:00:00Z`) - Date.parse(`${span.from}T00:00:00Z`)) / 86400000,
+  ) + 1;
+}
+
+/** `4 – 19 Julio`, or `21 Julio – 2 Agosto` when the stretch crosses a month. */
+function spanDates(span: { from: string; to: string }, monthNames: string[]): string {
+  const [, fm, fd] = span.from.split("-").map(Number);
+  const [, tm, td] = span.to.split("-").map(Number);
+  if (span.from === span.to) return `${fd} ${monthNames[fm - 1]}`;
+  if (fm === tm) return `${fd} – ${td} ${monthNames[tm - 1]}`;
+  return `${fd} ${monthNames[fm - 1]} – ${td} ${monthNames[tm - 1]}`;
+}
+
+/**
+ * The stretches that overlap what is on screen, clipped to it.
+ *
+ * The window is derived three months deep, but the grid shows a week or a month;
+ * listing every place of the last ninety days under a single week would say
+ * nothing about that week.
+ */
+function spansInRange(spans: LocationSpan[], from: string, to: string): LocationSpan[] {
+  return spans
+    .filter((s) => s.from <= to && s.to >= from)
+    .map((s) => ({ ...s, from: s.from < from ? from : s.from, to: s.to > to ? to : s.to }));
+}
+
 function computeSummary(records: DayRecord[]): { favorable: number; total: number; confirmed: number } {
   let favorable = 0;
   let confirmed = 0;
@@ -86,7 +127,7 @@ function computeSummary(records: DayRecord[]): { favorable: number; total: numbe
   return { favorable, total: records.length, confirmed };
 }
 
-export default function HistoryCalendar({ records, onToggleOverride, onNavigate }: Props) {
+export default function HistoryCalendar({ records, locations = [], onToggleOverride }: Props) {
   const t = useTranslations("dashboard");
   const locale = useLocale();
   const today = new Date();
@@ -130,9 +171,13 @@ export default function HistoryCalendar({ records, onToggleOverride, onNavigate 
     onToggleOverride(date);
   }, [onToggleOverride, showFeedback, t]);
 
-  const currentMonday = getMonday(today);
-  const viewMonday = new Date(currentMonday);
-  viewMonday.setDate(viewMonday.getDate() + weekOffset * 7);
+  // Memoised because the location line derives from it: a fresh Date every
+  // render would recompute the stretches on every keystroke elsewhere.
+  const viewMonday = useMemo(() => {
+    const monday = getMonday(new Date());
+    monday.setDate(monday.getDate() + weekOffset * 7);
+    return monday;
+  }, [weekOffset]);
 
   const minDate = new Date(today);
   minDate.setDate(minDate.getDate() - 90);
@@ -175,21 +220,6 @@ export default function HistoryCalendar({ records, onToggleOverride, onNavigate 
 
   const swipeHandlers = useSwipe(goForward, goBack);
 
-  useEffect(() => {
-    if (viewMode === "week") {
-      const monday = getMonday(new Date());
-      monday.setDate(monday.getDate() + weekOffset * 7);
-      const start = toDateStr(monday);
-      const endDate = new Date(monday);
-      endDate.setDate(endDate.getDate() + 6);
-      onNavigate(start, toDateStr(endDate));
-    } else {
-      const start = `${viewYear}-${String(viewMonth + 1).padStart(2, "0")}-01`;
-      const lastDay = daysInMonth(viewYear, viewMonth);
-      const end = `${viewYear}-${String(viewMonth + 1).padStart(2, "0")}-${String(lastDay).padStart(2, "0")}`;
-      onNavigate(start, end);
-    }
-  }, [viewMode, weekOffset, viewYear, viewMonth, onNavigate]);
 
   const viewRecords = viewMode === "week"
     ? (() => {
@@ -209,6 +239,27 @@ export default function HistoryCalendar({ records, onToggleOverride, onNavigate 
       });
 
   const summary = computeSummary(viewRecords);
+
+  // What the location line talks about: the days actually on screen.
+  const { visibleSpans, assumedInView, daysInView } = useMemo(() => {
+    const from = viewMode === "week"
+      ? toDateStr(viewMonday)
+      : `${viewYear}-${String(viewMonth + 1).padStart(2, "0")}-01`;
+    const lastDay = new Date(viewMonday);
+    lastDay.setDate(lastDay.getDate() + 6);
+    const to = viewMode === "week"
+      ? toDateStr(lastDay)
+      : `${viewYear}-${String(viewMonth + 1).padStart(2, "0")}-${String(daysInMonth(viewYear, viewMonth)).padStart(2, "0")}`;
+
+    const clipped = spansInRange(locations, from, to);
+    // Recount within the clip: a stretch may be mostly inherited outside the
+    // view and fully recorded inside it, or the other way round.
+    const days = clipped.reduce((n, s) => n + spanLength(s), 0);
+    const assumed = clipped.reduce(
+      (n, s) => n + Math.min(spanLength(s), s.assumedDays), 0,
+    );
+    return { visibleSpans: clipped, assumedInView: assumed, daysInView: days };
+  }, [locations, viewMode, viewMonday, viewYear, viewMonth]);
 
   const headerLabel = viewMode === "week"
     ? (() => {
@@ -392,6 +443,33 @@ export default function HistoryCalendar({ records, onToggleOverride, onNavigate 
             <span className="inline-block w-3 h-3 rounded-md bg-surface-elevated" />
             {t("legendUnfavorable")}
           </span>
+        </div>
+      )}
+
+      {/*
+        Where you were, under the grid rather than inside it: it is a different
+        question from how the day went, so it does not belong in the cell
+        colours. A sentence rather than a proportional bar, because a one-day
+        stretch between two fortnights collapses into an unreadable sliver in a
+        bar and reads as "20 jul" in a sentence — and it wraps on a phone.
+      */}
+      {visibleSpans.length > 0 && (
+        <div className="mt-3 border-t border-glass-border pt-3 text-caption text-text-muted">
+          <span className="uppercase tracking-wider text-text-faint">{t("whereYouWere")}</span>
+          <p className="mt-1 text-text-secondary">
+            {"\u{1F4CD} "}
+            {visibleSpans.map((s, i) => (
+              <span key={`${s.from}-${s.cityId}`}>
+                {i > 0 && <span className="text-text-faint"> · </span>}
+                {s.name} <span className="text-text-faint">{spanDates(s, monthNames)}</span>
+              </span>
+            ))}
+          </p>
+          {assumedInView > 0 && (
+            <p className="mt-1 text-text-faint">
+              {t("locationAssumedNote", { assumed: assumedInView, total: daysInView })}
+            </p>
+          )}
         </div>
       )}
     </div>

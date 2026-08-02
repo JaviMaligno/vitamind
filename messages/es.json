@@ -288,7 +288,9 @@
     "exposureFaceArms": "Cara+brazos",
     "exposureTshirt": "Camiseta",
     "exposureSwimsuit": "Bañador",
-    "exposureResetDefault": "Volver al perfil por defecto"
+    "exposureResetDefault": "Volver al perfil por defecto",
+    "whereYouWere": "Dónde estabas",
+    "locationAssumedNote": "{assumed} de {total} días no se registraron; se han asignado al tramo más cercano."
   },
   "learn": {
     "eyebrow": "Guía de la vitamina D",

@@ -288,7 +288,9 @@
     "exposureFaceArms": "Veidas+rankos pilnai",
     "exposureTshirt": "Marškinėliai",
     "exposureSwimsuit": "Maudymosi k.",
-    "exposureResetDefault": "Grąžinti profilio numatytąjį"
+    "exposureResetDefault": "Grąžinti profilio numatytąjį",
+    "whereYouWere": "Kur buvote",
+    "locationAssumedNote": "{assumed} iš {total} dienų neužfiksuota; priskirta artimiausiam ruožui."
   },
   "learn": {
     "eyebrow": "Vitamino D vadovas",

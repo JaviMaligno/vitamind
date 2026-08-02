@@ -141,13 +141,37 @@ export function upsertDayRecord(record: DayRecord): void {
   saveHistory(records);
 }
 
-export function toggleDayOverride(date: string): void {
+/**
+ * Cycles a day's answer, creating the row if the day was never recorded.
+ *
+ * The calendar now shows every day in the window, derived rather than stored, so
+ * most of the answerable days have no row yet. Refusing to create one would make
+ * two thirds of the grid look tappable and do nothing.
+ *
+ * `place` comes from the derived day, which knows where the user was even when
+ * nothing was written that day.
+ */
+export function toggleDayOverride(date: string, place?: { cityId: string; sufficient: boolean }): void {
   const records = loadHistory();
   const record = records.find((r) => r.date === date);
-  if (!record) return;
 
-  // Only allow toggling on favorable days
-  if (!record.sufficient) return;
+  if (!record) {
+    // Nothing to answer about on a day with no usable sun.
+    if (!place?.sufficient) return;
+    records.push({
+      date, cityId: place.cityId,
+      // Derived on read; stored only so an older build still renders the row.
+      peakUVI: 0, windowStart: 0, windowEnd: 0, minutesNeeded: 0,
+      sufficient: true, userOverride: true,
+    });
+    saveHistory(records);
+    return;
+  }
+
+  // Only allow toggling on favorable days. The derived verdict wins when there
+  // is one: the stored `sufficient` was computed with whatever profile was in
+  // force the day it was written.
+  if (!(place?.sufficient ?? record.sufficient)) return;
 
   // 3-state cycle: null (no answer) → true (went out) → false (did not) → null.
   // The third state is not decoration: a day with sun that you deliberately spent

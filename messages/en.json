@@ -288,7 +288,9 @@
     "exposureFaceArms": "Face+arms",
     "exposureTshirt": "T-shirt",
     "exposureSwimsuit": "Swimsuit",
-    "exposureResetDefault": "Reset to profile default"
+    "exposureResetDefault": "Reset to profile default",
+    "whereYouWere": "Where you were",
+    "locationAssumedNote": "{assumed} of {total} days were not recorded; they take the nearest stretch."
   },
   "learn": {
     "eyebrow": "Vitamin D guide",

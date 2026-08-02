@@ -288,7 +288,9 @@
     "exposureFaceArms": "Gesicht+Arme",
     "exposureTshirt": "T-Shirt",
     "exposureSwimsuit": "Badeanzug",
-    "exposureResetDefault": "Auf Profilstandard zurücksetzen"
+    "exposureResetDefault": "Auf Profilstandard zurücksetzen",
+    "whereYouWere": "Wo du warst",
+    "locationAssumedNote": "{assumed} von {total} Tagen wurden nicht erfasst; sie übernehmen den nächstgelegenen Abschnitt."
   },
   "learn": {
     "eyebrow": "Vitamin-D-Leitfaden",

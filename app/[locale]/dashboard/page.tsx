@@ -47,8 +47,9 @@ export default function DashboardPage() {
   const handleAreaChange = useCallback((v: number) => setAreaOverride(v), []);
   const handleAreaReset = useCallback(() => setAreaOverride(null), []);
 
-  const { records, loading, getToday, toggleOverride, requestBackfill } = useHistory(
+  const { records, locations, loading, getToday, toggleOverride } = useHistory(
     app.lat, app.lon, app.cityId, app.skinType, effectiveArea, app.age, app.targetIU, app.authUser,
+    app.customLocations,
   );
   const forecast = useForecast(app.lat, app.lon);
   const nowStatus = useNowStatus(app.lat, app.lon, app.tz, app.timezone, app.skinType, effectiveArea, app.age, app.targetIU);
@@ -237,8 +238,8 @@ export default function DashboardPage() {
           week under that city's name. Days carry where you were. */}
       <HistoryCalendar
         records={records}
+        locations={locations}
         onToggleOverride={toggleOverride}
-        onNavigate={requestBackfill}
       />
       </>}
     </div>
