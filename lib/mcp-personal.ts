@@ -143,7 +143,8 @@ export async function myHistoryTool(
     return nearestCityWithin(gps.lat, gps.lon)?.name ?? `${gps.lat.toFixed(1)}, ${gps.lon.toFixed(1)}`;
   };
 
-  const locations = locationSpans(window).map((span) => ({ ...span, name: nameFor(span.cityId) }));
+  const locations = locationSpans(window, (id) => cityRef(id, custom) ?? parseGpsCityId(id))
+    .map((span) => ({ ...span, name: nameFor(span.cityId) }));
 
   // Newest first, as the answer has always been.
   const ordered = [...window].reverse();

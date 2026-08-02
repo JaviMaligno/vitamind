@@ -274,9 +274,67 @@ describe("parseGpsCityId", () => {
     expect(parseGpsCityId("gps:51.5644,-0.1069")).toMatchObject({ lat: 51.5644, lon: -0.1069 });
   });
 
+  it("also reads the reverse-geocoded form, which uses colons", () => {
+    // A real profile carries all three shapes: `gps:lat,lon`, `nominatim:lat:lon`
+    // and `builtin:`. Missing one leaves those days unplaceable.
+    expect(parseGpsCityId("nominatim:37.5406007:-5.0795890")).toMatchObject({ lat: 37.5406007, lon: -5.079589 });
+  });
+
   it("ignores anything that is not one", () => {
     expect(parseGpsCityId("builtin:madrid")).toBeNull();
     expect(parseGpsCityId("gps:over-there")).toBeNull();
     expect(parseGpsCityId("gps:91,0")).toBeNull();
+  });
+});
+
+/**
+ * The device writes four decimals, so eleven metres of drift mints a new id:
+ * one real profile had `gps:51.5878,-0.0976` and `gps:51.5877,-0.0976` as if
+ * they were different places, plus a `nominatim:` id for a third point a few
+ * hundred metres from the first two.
+ *
+ * Grouped by string, a fortnight sitting still becomes a dozen stretches and the
+ * location line turns into a list of coordinates.
+ */
+describe("locationSpans groups places that are the same place", () => {
+  const day = (date: string, cityId: string) =>
+    ({ date, cityId, locationAssumed: false }) as HistoryWindowDay;
+
+  const resolve = (id: string) => parseGpsCityId(id) ?? CITIES[id] ?? null;
+
+  it("keeps GPS drift inside one stretch", () => {
+    const spans = locationSpans([
+      day("2026-07-19", "gps:51.5878,-0.0976"),
+      day("2026-07-20", "gps:51.5877,-0.0976"),
+      day("2026-07-21", "gps:51.5644,-0.1069"),
+    ], resolve);
+    expect(spans).toHaveLength(1);
+    // The stretch keeps the id it started with; they all name the same place.
+    expect(spans[0]).toMatchObject({ from: "2026-07-19", to: "2026-07-21", days: 3 });
+  });
+
+  it("treats a different form of the same coordinates as the same place", () => {
+    const spans = locationSpans([
+      day("2026-07-19", "gps:37.5365,-5.0802"),
+      day("2026-07-20", "nominatim:37.5406007:-5.0795890"),
+    ], resolve);
+    expect(spans).toHaveLength(1);
+  });
+
+  it("still splits when the places are genuinely apart", () => {
+    const spans = locationSpans([
+      day("2026-07-19", "gps:51.5878,-0.0976"),
+      day("2026-07-20", "builtin:valencia"),
+      day("2026-07-21", "gps:51.5877,-0.0976"),
+    ], resolve);
+    expect(spans).toHaveLength(3);
+  });
+
+  it("falls back to comparing ids when a place cannot be resolved", () => {
+    const spans = locationSpans([
+      day("2026-07-19", "custom:unknown"),
+      day("2026-07-20", "custom:unknown"),
+    ], () => null);
+    expect(spans).toHaveLength(1);
   });
 });

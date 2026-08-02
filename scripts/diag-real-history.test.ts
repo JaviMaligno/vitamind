@@ -18,10 +18,15 @@ it.skipIf(!process.env.PROFILE_JSON)("answers the July gap with the real weather
     async updateProfile() {},
   };
 
-  const r = await myHistoryTool(store, "u", { days: 30 }, new Date("2026-08-02T12:00:00Z"));
+  const days = Number(process.env.PROFILE_DAYS ?? 30);
+  const r = await myHistoryTool(store, "u", { days }, new Date("2026-08-02T12:00:00Z"));
   if (!("records" in r)) throw new Error(JSON.stringify(r));
 
   console.log(`ventana ${r.from} → ${r.to} | ${r.records.length} días | ${r.daysNotAnswered} sin respuesta`);
+  console.log(`tramos: ${r.locations.length}`);
+  for (const l of r.locations) {
+    console.log(`   ${l.name.padEnd(22)} ${l.from} → ${l.to}  (${l.days} días, ${l.assumedDays} supuestos)`);
+  }
   console.log("fecha       ubicación                  supuesta  uv    ventana        min  fuente     saliste");
   for (const d of [...r.records].reverse()) {
     if (d.date < "2026-07-12") continue;

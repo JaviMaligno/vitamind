@@ -2,6 +2,7 @@ import { computeExposure, computeExposureFromCurve, type SkinType } from "./vitd
 import { getCurve, dayOfYear } from "./solar";
 import { ozoneDU } from "./uv-model";
 import { fetchWeatherRange, type WeatherRangeFetcher } from "./weather-range";
+import { haversineKm } from "./nearest-city";
 import type { DayRecord, WeatherHour } from "./types";
 
 /**
@@ -48,13 +49,14 @@ export interface Place {
   timezone?: string;
 }
 
-const GPS_RE = /^gps:(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)$/;
-
 /**
- * The `gps:lat,lon` id the app writes whenever it uses the device location —
- * which is what every real record in production carries. `cityRef` knew only the
- * builtin and custom forms, so those days resolved to no place at all.
+ * Both coordinate forms a real profile carries: `gps:lat,lon` from the device
+ * and `nominatim:lat:lon` from reverse geocoding. `cityRef` knew only the
+ * builtin and custom ids, so days written by either of these resolved to no
+ * place at all — which is most days in production.
  */
+const GPS_RE = /^(?:gps|nominatim):(-?\d+(?:\.\d+)?)[,:](-?\d+(?:\.\d+)?)$/;
+
 export function parseGpsCityId(cityId: string): Place | null {
   const m = GPS_RE.exec(cityId);
   if (!m) return null;
@@ -77,8 +79,11 @@ export function datesBetween(from: string, to: string): string[] {
   return out;
 }
 
-/** A `gps:` id came from the device; anything else was picked in the app. */
-const isMeasured = (cityId: string) => cityId.startsWith("gps:");
+/**
+ * A coordinate id came from the device — either raw (`gps:`) or reverse
+ * geocoded from it (`nominatim:`). Anything else was picked in the app.
+ */
+const isMeasured = (cityId: string) => cityId.startsWith("gps:") || cityId.startsWith("nominatim:");
 
 /**
  * Which place each date belongs to: its own record's if it has one, otherwise
@@ -141,6 +146,19 @@ export interface LocationSpan {
 }
 
 /**
+ * How far apart two coordinates may be and still count as the same place.
+ *
+ * The device writes four decimals, so eleven metres of drift mints a new id:
+ * one real profile held `gps:51.5878,-0.0976` and `gps:51.5877,-0.0976` as
+ * separate places, plus a `nominatim:` id a few hundred metres away. Compared as
+ * strings, a fortnight sitting still becomes a dozen stretches.
+ *
+ * Twenty-five kilometres is the same figure the elevation lookup uses, and for
+ * the sun's purposes anything inside it is the same place.
+ */
+export const SAME_PLACE_KM = 25;
+
+/**
  * The window collapsed into stretches of "you were here".
  *
  * Where you were is a separate axis from how the day went, so it is shown
@@ -148,11 +166,25 @@ export interface LocationSpan {
  * per-cell marker: on real data 18 of 30 days inherit their place, and a mark on
  * 60% of the squares reads as texture. Spans are three or four.
  */
-export function locationSpans(days: Pick<HistoryWindowDay, "date" | "cityId" | "locationAssumed">[]): LocationSpan[] {
+export function locationSpans(
+  days: Pick<HistoryWindowDay, "date" | "cityId" | "locationAssumed">[],
+  resolveCity?: (cityId: string) => Place | null,
+): LocationSpan[] {
+  const samePlace = (a: string | null, b: string | null): boolean => {
+    if (a === b) return true;
+    if (!a || !b || !resolveCity) return false;
+    const pa = resolveCity(a);
+    const pb = resolveCity(b);
+    // Unresolvable ids fall back to comparing the ids, which is what a caller
+    // without a resolver gets anyway.
+    if (!pa || !pb) return false;
+    return haversineKm(pa.lat, pa.lon, pb.lat, pb.lon) <= SAME_PLACE_KM;
+  };
+
   const spans: LocationSpan[] = [];
   for (const day of days) {
     const last = spans[spans.length - 1];
-    if (last && last.cityId === day.cityId) {
+    if (last && samePlace(last.cityId, day.cityId)) {
       last.to = day.date;
       last.days += 1;
       if (day.locationAssumed) last.assumedDays += 1;
