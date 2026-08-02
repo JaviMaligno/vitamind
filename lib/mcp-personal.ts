@@ -112,6 +112,11 @@ export async function myHistoryTool(store: ProfileStore, userId: string, args: {
     from,
     to,
     daysTracked: recent.length,
+    daysWithoutRecord: days - recent.length,
+    // Without this the model reads a gap as unknowable and says so, which is
+    // both unhelpful and wrong: absence has a meaning here, and the server knows
+    // it. The widget draws these days as a distinct fifth state.
+    recordsCover: "only days the app was open. A date in from..to that is absent from records means nothing was measured that day — not that the sun was insufficient.",
     daysConfirmedOutside: confirmed,
     daysWithViableSun: sufficient,
     currentConfirmedStreak: streak,

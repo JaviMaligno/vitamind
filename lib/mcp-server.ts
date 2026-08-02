@@ -450,7 +450,7 @@ export function initMcpServer(server: McpServer) {
       server,
       "get_my_history",
       {
-        description: "The signed-in user's sun history from the app's calendar: which recent days had viable sun, which they confirmed going outside, and their current streak. Requires OAuth (scope history:read). Renders as a calendar the user can tap to confirm a day.",
+        description: "The signed-in user's sun history from the app's calendar: which recent days had viable sun, which they confirmed going outside, and their current streak. Covers the calendar days from `from` to `to`; records exist only for days the app was open, so a date missing from `records` means nothing was measured, not that the sun was insufficient. Requires OAuth (scope history:read). Renders as a calendar the user can tap to confirm a day.",
         inputSchema: { days: z.number().int().min(1).max(365).optional().describe("How many recent days to return; default 30") },
         _meta: { ui: { resourceUri: HISTORY_RESOURCE_URI } },
       },

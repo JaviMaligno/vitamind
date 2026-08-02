@@ -111,6 +111,33 @@ describe("personal tools", () => {
       expect(r.from).toBe("2025-08-02");
     });
 
+    /**
+     * The widget got a fifth state for days with no record; the model's channel
+     * did not, so it read a gap as unknowable and said so: "no se puede
+     * distinguir si no hubo sol útil o simplemente no se registró". The server
+     * knows the difference — records exist only for days the app was opened —
+     * and had simply never said it.
+     */
+    it("says what a missing day means, rather than leaving the model to guess", async () => {
+      const store = memoryStore({ u1: structuredClone(SPARSE) });
+      const r = await myHistoryTool(store, "u1", { days: 30 }, NOW);
+      if (!("daysWithoutRecord" in r)) throw new Error("expected the gap count");
+      // 3 July – 1 August is 30 days; three of them have records.
+      expect(r.daysWithoutRecord).toBe(27);
+      expect(r.recordsCover).toMatch(/not that the sun was insufficient/i);
+    });
+
+    it("reports no gaps when every day in the window was logged", async () => {
+      const dense: ProfileRow = {
+        ...PROFILE,
+        history: ["2026-07-30", "2026-07-31", "2026-08-01"].map((d) => record(d, true)),
+      };
+      const store = memoryStore({ u1: dense });
+      const r = await myHistoryTool(store, "u1", { days: 3 }, NOW);
+      if (!("daysWithoutRecord" in r)) throw new Error("expected the gap count");
+      expect(r.daysWithoutRecord).toBe(0);
+    });
+
     it("counts the streak from today's end of the window, not from the last record", async () => {
       // The most recent record is 15 July, unconfirmed — and two weeks stale.
       const store = memoryStore({ u1: structuredClone(SPARSE) });
