@@ -181,3 +181,67 @@ está en el nav, está en los 6 idiomas y explica los pasos por cliente.
   métrica a batir es **7 enlaces / 2 dominios**.
 - No enviar el mismo día que un cambio grande en producción: si el endpoint falla cuando un
   mantenedor lo prueba, la ficha se rechaza y volver a entrar cuesta más que entrar.
+
+---
+
+## Segunda tanda de directorios (2026-08-02)
+
+Los cuatro que faltaban, **verificados en el navegador** — no con `curl`, que Cloudflare
+bloquea (ver la lección de Glama arriba).
+
+### Lo primero: quién pasa autoridad y quién no
+
+El objetivo es dominios enlazantes, así que el `rel` decide si merece la pena el trabajo.
+Comprobado abriendo una ficha real de cada sitio y leyendo los enlaces salientes:
+
+| Directorio | `rel` del enlace al sitio del proveedor | Sirve para |
+|---|---|---|
+| **PulseMCP** | *(ninguno)* y `noopener noreferrer` → **dofollow** | Autoridad **y** descubrimiento |
+| **Smithery** | `noopener noreferrer` → **dofollow** | Autoridad, y aloja remotos |
+| **mcp.so** | `nofollow ugc noopener noreferrer` | Solo descubrimiento |
+| mcpservers.org | `nofollow` (verificado el 28/7) | Solo descubrimiento |
+
+`noopener` y `noreferrer` **no** son `nofollow`: no afectan al PageRank. Solo cuenta
+`nofollow` (y `ugc`, que Google trata como pista del mismo tipo).
+
+### PulseMCP — nada que enviar, hay que esperar
+
+Su página `/submit` → *MCP Server* no ofrece formulario. Dice literalmente:
+
+> We ingest entries from the Official MCP Registry daily and publish weekly. If it has
+> been a week since you published there […] please email hello@pulsemcp.com
+
+Estamos en el registro oficial desde el **27/7**, así que la semana se cumple el **3/8**.
+Comprobado el 2/8: `pulsemcp.com/servers?q=vitamind` → *No servers found*.
+
+**Acción:** volver a buscar allí a partir del 3/8. Si sigue sin aparecer, escribir a
+`hello@pulsemcp.com` citando `io.github.JaviMaligno/vitamind`. Es el directorio de mayor
+valor de los cuatro: dofollow, 22.000 servidores y actualización diaria.
+
+### Smithery — requiere sesión
+
+Publicación por CLI, y pide autenticarse:
+
+```
+npx @smithery/cli login          # abre navegador
+npx @smithery/cli mcp publish "https://getvitamind.app/api/mcp/mcp" -n javimaligno/vitamind
+```
+
+También hay alta por web en `smithery.ai`. Aloja servidores remotos, así que además del
+enlace puede traer uso real.
+
+### Cursor Directory — requiere sesión
+
+`cursor.directory/plugins/new` redirige a login con GitHub o Google. El envío es un
+formulario de «plugin», no específico de MCP.
+
+### mcp.so — bajo la línea
+
+`nofollow ugc`. Envío web en `mcp.so`, sin login aparente. Aporta descubrimiento y nada de
+autoridad; hacerlo solo si sobra tiempo, después de los dos de arriba.
+
+### Lo que bloquea
+
+Tres de los cuatro piden **iniciar sesión**, y eso lo tiene que hacer el owner: no se
+crean cuentas ni se autentica en su nombre. Los datos para rellenarlos están en «Hechos
+verificados» más arriba en este mismo documento — no inventar ninguno.
