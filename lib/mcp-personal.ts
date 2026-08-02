@@ -1,6 +1,7 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import { BUILTIN_CITIES } from "./cities";
-import { buildHistoryWindow, parseGpsCityId } from "./history-window";
+import { buildHistoryWindow, locationSpans, parseGpsCityId } from "./history-window";
+import { nearestCityWithin } from "./nearest-city";
 import type { WeatherRangeFetcher } from "./weather-range";
 import type { SkinType } from "./vitd";
 import type { City, DayRecord } from "./types";
@@ -126,6 +127,24 @@ export async function myHistoryTool(
     fetchRange,
   });
 
+  /**
+   * A `gps:` id names nothing to anybody. The nearest builtin city does, when
+   * there is one close enough to vouch for; otherwise the coordinate itself,
+   * which at least does not claim to be somewhere it is not.
+   */
+  const nameFor = (cityId: string | null): string => {
+    if (!cityId) return "";
+    const ref = cityRef(cityId, custom);
+    if (ref) return ref.name;
+    const gps = parseGpsCityId(cityId);
+    if (!gps) return cityId;
+    // One decimal is about 11 km — enough to place it, and visibly a coordinate
+    // rather than a claim to be anywhere in particular.
+    return nearestCityWithin(gps.lat, gps.lon)?.name ?? `${gps.lat.toFixed(1)}, ${gps.lon.toFixed(1)}`;
+  };
+
+  const locations = locationSpans(window).map((span) => ({ ...span, name: nameFor(span.cityId) }));
+
   // Newest first, as the answer has always been.
   const ordered = [...window].reverse();
   const confirmed = ordered.filter((d) => d.wentOutside === true).length;
@@ -149,6 +168,10 @@ export async function myHistoryTool(
     // question, and a day with no record is a day with no answer — not a day
     // with no sun.
     howToRead: "Every day in from..to is answered. `window`, `minutesNeeded` and `peakUVI` are computed from the current profile and that day's weather; `uvSource` says whether the cloud cover was measured or modelled. `wentOutside` is null unless the user said so — never infer it. `locationAssumed` means the place was carried over from a neighbouring day.",
+    // Where you were, in stretches rather than one entry per day: a marker on
+    // 60% of the days would be texture, and this is a different axis from how
+    // any given day went.
+    locations,
     daysConfirmedOutside: confirmed,
     daysWithViableSun: sufficient,
     currentConfirmedStreak: streak,

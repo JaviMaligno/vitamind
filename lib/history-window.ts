@@ -77,6 +77,9 @@ function datesBetween(from: string, to: string): string[] {
   return out;
 }
 
+/** A `gps:` id came from the device; anything else was picked in the app. */
+const isMeasured = (cityId: string) => cityId.startsWith("gps:");
+
 /**
  * Which place each date belongs to: its own record's if it has one, otherwise
  * the nearest earlier record's, and failing that the nearest later one.
@@ -84,16 +87,27 @@ function datesBetween(from: string, to: string): string[] {
  * Falling backwards first is the honest default — you were somewhere before you
  * stopped opening the app, and staying put is likelier than the alternative.
  * Falling forwards only covers the leading edge, where there is no earlier day.
+ *
+ * What gets carried is the last *measured* location. Looking a city up in the
+ * picker is the same gesture whether you live there or were merely curious, so
+ * it fixes that day and nothing after it: checking Valencia once on 20 July put
+ * the following six days of a London fortnight in Spain. A picked city is still
+ * carried when it is all there is, which is the case for anyone who never grants
+ * location permission.
  */
 function locateDays(dates: string[], records: DayRecord[]): Array<{ cityId: string | null; assumed: boolean }> {
   const own = new Map(records.map((r) => [r.date, r.cityId]));
   const out: Array<{ cityId: string | null; assumed: boolean }> = [];
 
-  let carried: string | null = null;
+  let measured: string | null = null;
+  let picked: string | null = null;
   for (const date of dates) {
     const mine = own.get(date);
-    if (mine) carried = mine;
-    out.push({ cityId: mine ?? carried, assumed: !mine });
+    if (mine) {
+      if (isMeasured(mine)) measured = mine;
+      else picked = mine;
+    }
+    out.push({ cityId: mine ?? measured ?? picked, assumed: !mine });
   }
 
   // The leading edge: days before the first record borrow the first one going forward.
@@ -115,6 +129,41 @@ function hoursByDate(hours: WeatherHour[]): Map<string, WeatherHour[]> {
     else map.set(date, [h]);
   }
   return map;
+}
+
+export interface LocationSpan {
+  cityId: string | null;
+  from: string;
+  to: string;
+  days: number;
+  /** Of those days, how many inherited the place rather than recording it. */
+  assumedDays: number;
+}
+
+/**
+ * The window collapsed into stretches of "you were here".
+ *
+ * Where you were is a separate axis from how the day went, so it is shown
+ * separately rather than folded into the grid's colours. It also cannot be a
+ * per-cell marker: on real data 18 of 30 days inherit their place, and a mark on
+ * 60% of the squares reads as texture. Spans are three or four.
+ */
+export function locationSpans(days: Pick<HistoryWindowDay, "date" | "cityId" | "locationAssumed">[]): LocationSpan[] {
+  const spans: LocationSpan[] = [];
+  for (const day of days) {
+    const last = spans[spans.length - 1];
+    if (last && last.cityId === day.cityId) {
+      last.to = day.date;
+      last.days += 1;
+      if (day.locationAssumed) last.assumedDays += 1;
+    } else {
+      spans.push({
+        cityId: day.cityId, from: day.date, to: day.date, days: 1,
+        assumedDays: day.locationAssumed ? 1 : 0,
+      });
+    }
+  }
+  return spans;
 }
 
 export async function buildHistoryWindow(opts: {

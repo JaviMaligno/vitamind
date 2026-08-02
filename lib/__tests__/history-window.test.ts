@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { buildHistoryWindow, parseGpsCityId } from "../history-window";
+import { buildHistoryWindow, locationSpans, parseGpsCityId, type HistoryWindowDay } from "../history-window";
 import type { DayRecord, WeatherHour } from "../types";
 
 /**
@@ -68,6 +68,61 @@ describe("buildHistoryWindow", () => {
     expect(gap.locationAssumed).toBe(true);
     // A day that has its own record is not an assumption.
     expect(days[0].locationAssumed).toBe(false);
+  });
+
+  /**
+   * A `gps:` id was written by the device: it says where you were. A
+   * `builtin:`/`custom:` one was chosen in the picker, which is the same gesture
+   * whether you live there or were merely looking it up.
+   *
+   * Carrying the latter forward put six days of the user's London fortnight in
+   * Valencia, because on 20 July they had checked Valencia once.
+   */
+  it("carries a measured location over a looked-up one", async () => {
+    const days = await buildHistoryWindow({
+      from: "2026-07-19", to: "2026-07-24",
+      records: [
+        record("2026-07-19", "gps:51.56,-0.10"),
+        record("2026-07-20", "builtin:valencia"),
+      ],
+      profile: PROFILE, resolveCity, fetchRange: fetcherFor(6),
+    });
+    // The looked-up day keeps its own id — it is a record, not an assumption.
+    expect(days.find((d) => d.date === "2026-07-20")).toMatchObject({
+      cityId: "builtin:valencia", locationAssumed: false,
+    });
+    // But the days after it inherit the last place the device actually reported.
+    for (const date of ["2026-07-21", "2026-07-22", "2026-07-23", "2026-07-24"]) {
+      expect(days.find((d) => d.date === date), date).toMatchObject({
+        cityId: "gps:51.56,-0.10", locationAssumed: true,
+      });
+    }
+  });
+
+  it("still inherits a chosen city when that is all there is", async () => {
+    // Someone who never grants location permission has only picker ids, and
+    // those are the best available answer rather than a worse one.
+    const days = await buildHistoryWindow({
+      from: "2026-07-20", to: "2026-07-22",
+      records: [record("2026-07-20", "builtin:valencia")],
+      profile: PROFILE, resolveCity, fetchRange: fetcherFor(7),
+    });
+    expect(days.map((d) => d.cityId)).toEqual(
+      ["builtin:valencia", "builtin:valencia", "builtin:valencia"],
+    );
+  });
+
+  it("prefers the most recent measurement, not the first", async () => {
+    const days = await buildHistoryWindow({
+      from: "2026-07-20", to: "2026-07-23",
+      records: [
+        record("2026-07-20", "gps:51.56,-0.10"),
+        record("2026-07-22", "gps:39.47,-0.38"),
+      ],
+      profile: PROFILE, resolveCity, fetchRange: fetcherFor(6),
+    });
+    expect(days.find((d) => d.date === "2026-07-21")!.cityId).toBe("gps:51.56,-0.10");
+    expect(days.find((d) => d.date === "2026-07-23")!.cityId).toBe("gps:39.47,-0.38");
   });
 
   it("falls forward when the gap comes before any record", async () => {
@@ -162,6 +217,53 @@ describe("buildHistoryWindow", () => {
       profile: PROFILE, resolveCity, fetchRange: fetcherFor(6),
     });
     expect(days).toHaveLength(1);
+  });
+});
+
+/**
+ * Where you were is its own axis: it is not about how the day went, so it does
+ * not belong in the grid's colours. And it cannot be a per-cell marker either —
+ * on real data 18 of 30 days are inherited, and a mark on 60% of the squares is
+ * texture, not signal. Spans are 3 or 4, so spans are what gets shown.
+ */
+describe("locationSpans", () => {
+  const day = (date: string, cityId: string | null, assumed = false) =>
+    ({ date, cityId, locationAssumed: assumed }) as HistoryWindowDay;
+
+  it("groups consecutive days in the same place", () => {
+    const spans = locationSpans([
+      day("2026-07-19", "gps:51.56,-0.10"),
+      day("2026-07-20", "builtin:valencia"),
+      day("2026-07-21", "gps:51.56,-0.10", true),
+      day("2026-07-22", "gps:51.56,-0.10", true),
+    ]);
+    expect(spans).toEqual([
+      { cityId: "gps:51.56,-0.10", from: "2026-07-19", to: "2026-07-19", days: 1, assumedDays: 0 },
+      { cityId: "builtin:valencia", from: "2026-07-20", to: "2026-07-20", days: 1, assumedDays: 0 },
+      { cityId: "gps:51.56,-0.10", from: "2026-07-21", to: "2026-07-22", days: 2, assumedDays: 2 },
+    ]);
+  });
+
+  it("counts how much of a span was inherited rather than recorded", () => {
+    const spans = locationSpans([
+      day("2026-07-19", "gps:51.56,-0.10"),
+      day("2026-07-20", "gps:51.56,-0.10", true),
+      day("2026-07-21", "gps:51.56,-0.10", true),
+    ]);
+    expect(spans).toHaveLength(1);
+    expect(spans[0]).toMatchObject({ days: 3, assumedDays: 2 });
+  });
+
+  it("keeps a day with no place as its own span, so it is not hidden", () => {
+    const spans = locationSpans([
+      day("2026-07-19", null),
+      day("2026-07-20", "builtin:valencia"),
+    ]);
+    expect(spans[0].cityId).toBeNull();
+  });
+
+  it("returns nothing for an empty window", () => {
+    expect(locationSpans([])).toEqual([]);
   });
 });
 

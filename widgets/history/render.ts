@@ -97,6 +97,89 @@ export function cellLabel(date: string, locale: unknown): string {
   return day === 1 ? monthLabel(locale, month) : String(day);
 }
 
+/**
+ * Single days sitting in a different place from the stretches on both sides,
+ * mapped to that place's name.
+ *
+ * This is the one case where a per-cell mark pays: on real data it is one square
+ * in thirty — a city checked once during a fortnight elsewhere — so it reads as
+ * an exception. Marking every inherited day instead would cover 60% of the grid.
+ *
+ * A lone day at either end does not count: with nothing before it, starting a
+ * new stretch is just moving.
+ */
+function oddDaysOut(spans: HistoryMeta["locations"]): Map<string, string> {
+  const out = new Map<string, string>();
+  const all = spans ?? [];
+  for (let i = 1; i < all.length - 1; i++) {
+    const span = all[i];
+    if (span.days !== 1) continue;
+    if (all[i - 1].name !== all[i + 1].name) continue;
+    if (all[i - 1].name === span.name) continue;
+    out.set(span.from, span.name);
+  }
+  return out;
+}
+
+/**
+ * `12 jul` for one day, `4 – 19 jul` within a month, `21 jul – 2 ago` across one.
+ * The month is named once when it does not change: "4 jul – 19 jul" spends a word
+ * on saying the same thing twice.
+ */
+function spanDates(from: string, to: string, locale: unknown): string {
+  const a = dayParts(from);
+  const b = dayParts(to);
+  const month = (m: number) => monthLabel(locale, m);
+  if (from === to) return `${a.day} ${month(a.month)}`;
+  if (a.month === b.month) return `${a.day} – ${b.day} ${month(b.month)}`;
+  return `${a.day} ${month(a.month)} – ${b.day} ${month(b.month)}`;
+}
+
+/**
+ * Where you were, under the grid.
+ *
+ * Deliberately a sentence and not a proportional bar: on real data one stretch
+ * was a single day between two fortnights, and a bar collapses that into an
+ * unreadable sliver, while a sentence just says "20 jul". It also wraps on a
+ * 390px screen instead of truncating.
+ *
+ * And deliberately not a marker inside the cells: 18 of 30 days inherit their
+ * location, so a per-cell dot would cover 60% of the grid and mean nothing.
+ */
+function locationLine(meta: HistoryMeta, locale: unknown, copy: ReturnType<typeof historyStrings>, p: { muted: string }): string {
+  const spans = meta.locations ?? [];
+  if (spans.length === 0) return "";
+
+  const total = spans.reduce((n, s) => n + s.days, 0);
+  const assumed = spans.reduce((n, s) => n + s.assumedDays, 0);
+
+  const parts = spans.map((s) =>
+    `<button type="button" data-span-from="${s.from}" data-span-to="${s.to}" `
+    + `title="${escapeHtml(`${s.name} · ${spanDates(s.from, s.to, locale)}`)}" `
+    + `style="border:0;background:none;padding:2px 0;margin:0;cursor:pointer;font:inherit;color:#bfdbfe;`
+    + `border-bottom:1px dotted rgba(191,219,254,0.45)">${escapeHtml(s.name)} `
+    + `<span style="color:${p.muted}">${escapeHtml(spanDates(s.from, s.to, locale))}</span></button>`,
+  ).join(`<span style="color:${p.muted};margin:0 6px">·</span>`);
+
+  // The caveat only when there is something to caveat: someone who opens the app
+  // daily has nothing to correct, and a permanent note would describe a problem
+  // they do not have.
+  const note = assumed > 0
+    ? `<div style="margin-top:3px;font-size:11px;color:${p.muted}">`
+      + escapeHtml(interpolate(copy.assumedNote, { assumed: String(assumed), total: String(total) }))
+      + `</div>`
+    : "";
+
+  return `<div style="margin-top:10px;font:12px/1.7 system-ui,sans-serif">`
+    + `<div style="font-size:10px;letter-spacing:.07em;text-transform:uppercase;color:${p.muted};margin-bottom:2px">${escapeHtml(copy.whereLabel)}</div>`
+    + `<div>\u{1F4CD} ${parts}</div>${note}</div>`;
+}
+
+/** Fills `{assumed}` / `{total}` the way next-intl would, without shipping it. */
+function interpolate(template: string, values: Record<string, string>): string {
+  return template.replace(/\{(\w+)\}/g, (_, k) => values[k] ?? `{${k}}`);
+}
+
 export function renderHistory({ meta, pending = [], locale, theme }: RenderHistoryOptions): string {
   const copy = historyStrings(locale);
   const p = palette(theme);
@@ -141,27 +224,35 @@ export function renderHistory({ meta, pending = [], locale, theme }: RenderHisto
   const lead = weekdayIndex(days[0].date);
   const blanks = Array.from({ length: lead }, () => `<span></span>`).join("");
 
+  const oddOnes = oddDaysOut(meta.locations);
+
   const cells = days.map((day) => {
     const isPending = pending.includes(day.date);
+    const oddPlace = oddOnes.get(day.date);
     const state = cellState(day);
     const stateWord = state === "confirmed" ? copy.confirmed
       : state === "declined" ? copy.declined
         : state === "viable" ? copy.viable
           : state === "unlogged" ? copy.unlogged : copy.missed;
-    const label = `${day.date} — ${stateWord}`;
+    // The place goes in the label too: a dot nobody can name is decoration.
+    const label = oddPlace ? `${day.date} — ${stateWord} · ${oddPlace}` : `${day.date} — ${stateWord}`;
     const text = cellLabel(day.date, locale);
     const isMonthStart = dayParts(day.date).day === 1;
     return `<button type="button" data-date="${day.date}" title="${escapeHtml(label)}" aria-label="${escapeHtml(label)}" `
+      + `${oddPlace ? `data-odd-one="${escapeHtml(oddPlace)}" ` : ""}`
       + `aria-pressed="${day.wentOutside === true}" `
       // A day with no usable sun is not answerable, exactly as in the app.
       + `${day.viableSun && state !== "unlogged" ? "" : "disabled "}`
-      + `style="width:100%;aspect-ratio:1;border:0;border-radius:6px;padding:0;`
+      + `style="position:relative;width:100%;aspect-ratio:1;border:0;border-radius:6px;padding:0;`
       + `cursor:${day.viableSun && state !== "unlogged" ? "pointer" : "default"};box-shadow:${OUTLINE[state]};`
       + `display:flex;align-items:center;justify-content:center;`
       + `font:${isMonthStart ? "600 9px" : "500 11px"}/1 system-ui,sans-serif;`
       + `color:${isPending ? "transparent" : INK[state]};`
       + `background:${isPending ? COLORS.pending : COLORS[state]};`
-      + `${isPending ? "animation:pulse 1s ease-in-out infinite;" : ""}">${escapeHtml(text)}</button>`;
+      + `${isPending ? "animation:pulse 1s ease-in-out infinite;" : ""}`
+      + `${oddPlace ? "box-shadow:inset 0 0 0 1px rgba(147,197,253,0.65);" : ""}">${escapeHtml(text)}`
+      + `${oddPlace ? `<span style="position:absolute;left:3px;bottom:3px;width:4px;height:4px;border-radius:50%;background:#93c5fd"></span>` : ""}`
+      + `</button>`;
   }).join("");
 
   // The span the grid covers, spelled out above it. Reassurance that the squares
@@ -203,6 +294,7 @@ export function renderHistory({ meta, pending = [], locale, theme }: RenderHisto
     `</div>`,
     `<div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:8px;font-size:11px;color:${p.muted}">${legend}</div>`,
     `<figcaption style="margin-top:6px;font-size:12px;color:${p.muted}">${escapeHtml(copy.tapHint)}</figcaption>`,
+    locationLine(meta, locale, copy, p),
     `</figure>`,
   ].join("");
 }

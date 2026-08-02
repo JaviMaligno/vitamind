@@ -141,6 +141,9 @@ function historyChartMeta(payload: unknown, authenticated: boolean) {
       }),
       streak: typeof p.currentConfirmedStreak === "number" ? p.currentConfirmedStreak : 0,
       daysTracked: typeof p.daysTracked === "number" ? p.daysTracked : records.length,
+      // Where you were, as stretches. A separate axis from how each day went, so
+      // the widget prints it under the grid rather than colouring cells with it.
+      locations: Array.isArray(p.locations) ? p.locations : [],
       // The calendar window, so the grid can draw the days with no record — the
       // majority of them, for anyone who does not open the app daily.
       from: typeof p.from === "string" ? p.from : null,

@@ -34,6 +34,13 @@ const sparse: HistoryMeta = {
   to: "2026-08-02",
   streak: 0,
   daysTracked: 11,
+  // Three stretches, one of them a single day between two fortnights in the
+  // same place — the case a proportional bar cannot draw.
+  locations: [
+    { name: "Londres", from: "2026-07-04", to: "2026-07-19", days: 16, assumedDays: 9 },
+    { name: "Valencia", from: "2026-07-20", to: "2026-07-20", days: 1, assumedDays: 0 },
+    { name: "Londres", from: "2026-07-21", to: "2026-08-02", days: 13, assumedDays: 9 },
+  ],
   days: [
     ...Array.from({ length: 30 }, (_, i) =>
       histDay(new Date(Date.UTC(2026, 6, 4 + i)).toISOString().slice(0, 10))),

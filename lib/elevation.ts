@@ -1,4 +1,5 @@
 import { BUILTIN_CITIES } from "./cities";
+import { haversineKm } from "./nearest-city";
 
 /**
  * How close a known city has to be for its altitude to describe a coordinate.
@@ -8,18 +9,6 @@ import { BUILTIN_CITIES } from "./cities";
  * borrowing it would be worse than admitting we do not know.
  */
 export const ELEVATION_MATCH_KM = 25;
-
-const EARTH_KM = 6371;
-const rad = (deg: number) => (deg * Math.PI) / 180;
-
-function haversineKm(aLat: number, aLon: number, bLat: number, bLon: number): number {
-  const dLat = rad(bLat - aLat);
-  const dLon = rad(bLon - aLon);
-  const h =
-    Math.sin(dLat / 2) ** 2 +
-    Math.cos(rad(aLat)) * Math.cos(rad(bLat)) * Math.sin(dLon / 2) ** 2;
-  return 2 * EARTH_KM * Math.asin(Math.sqrt(h));
-}
 
 /**
  * Ground elevation for a coordinate, taken from the nearest known city, or null.

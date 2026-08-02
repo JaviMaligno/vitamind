@@ -61,10 +61,36 @@ async function cycleDay(date: string) {
   }
 }
 
+/**
+ * Correcting where you were is a different gesture from answering a day, and it
+ * works on a stretch: nobody travels for exactly one day, and the location was
+ * inherited across the whole run.
+ *
+ * There is no city picker inside the iframe and building one would be a second
+ * app, so this hands the range to the conversation instead — the model already
+ * knows how to ask "which city?" and has the tool to write it. Tapping a stretch
+ * puts the request in front of it; the answer comes back through the chat.
+ */
+function correctLocation(from: string, to: string) {
+  const span = meta?.locations?.find((s) => s.from === from && s.to === to);
+  if (!span) return;
+  const range = from === to ? from : `${from} to ${to}`;
+  const text =
+    `The user wants to correct where they were from ${range}, currently recorded as "${span.name}"`
+    + `${span.assumedDays > 0 ? ` (${span.assumedDays} of those ${span.days} days were inherited from a neighbouring day rather than recorded)` : ""}.`
+    + ` Ask which city they were in, and say the correction is not stored yet.`;
+  void bridge.updateModelContext({
+    content: [{ type: "text", text }],
+    structuredContent: { correctingLocation: { from, to, currentName: span.name } },
+  });
+}
+
 root.addEventListener("click", (event) => {
   const button = (event.target as HTMLElement | null)?.closest("button");
-  const date = button?.dataset.date;
+  if (!button) return;
+  const { date, spanFrom, spanTo } = button.dataset;
   if (date) void cycleDay(date);
+  else if (spanFrom && spanTo) correctLocation(spanFrom, spanTo);
 });
 
 const bridge = new HostBridge({

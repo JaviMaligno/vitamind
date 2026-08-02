@@ -400,3 +400,140 @@ describe("a day that could not be placed says nothing", () => {
     }
   });
 });
+
+/**
+ * Where you were is a different question from how the day went, so it sits under
+ * the grid rather than inside it. It also cannot be a per-cell dot: on real data
+ * 18 of 30 days inherit their location, and a mark on 60% of the squares reads
+ * as texture. Spans are three or four.
+ */
+describe("where you were", () => {
+  const withSpans = (locations: unknown, over: Record<string, unknown> = {}) =>
+    readHistoryMeta(wrap({
+      authenticated: true, from: "2026-07-04", to: "2026-08-02", streak: 0, daysTracked: 3,
+      days: [day("2026-07-13", { wentOutside: true })],
+      locations, ...over,
+    }));
+
+  const SPANS = [
+    { name: "Londres", from: "2026-07-04", to: "2026-07-19", days: 16, assumedDays: 9 },
+    { name: "Valencia", from: "2026-07-20", to: "2026-07-20", days: 1, assumedDays: 0 },
+    { name: "Londres", from: "2026-07-21", to: "2026-08-02", days: 13, assumedDays: 9 },
+  ];
+
+  it("names every stretch, with its dates", () => {
+    const html = renderHistory({ meta: withSpans(SPANS), locale: "es" });
+    expect(html).toContain("Londres");
+    expect(html).toContain("Valencia");
+    // Dates spelled out rather than implied by the width of a bar: a one-day
+    // stretch in a proportional strip collapses into an unreadable sliver.
+    expect(html).toContain("20 jul");
+  });
+
+  it("names the month once when the stretch does not leave it", () => {
+    const html = renderHistory({ meta: withSpans(SPANS), locale: "es" });
+    expect(html).toContain("4 – 19 jul");
+    expect(html).not.toContain("4 jul – 19 jul");
+    // Across a month boundary both are named, or the range is ambiguous.
+    expect(html).toContain("21 jul – 2 ago");
+  });
+
+  it("says how many days were inherited, and how many there are", () => {
+    const html = renderHistory({ meta: withSpans(SPANS), locale: "es" });
+    expect(html).toContain("18");
+    expect(html).toContain("30");
+    expect(html).not.toContain("{assumed}");
+  });
+
+  it("makes each stretch tappable so it can be corrected", () => {
+    const html = renderHistory({ meta: withSpans(SPANS), locale: "es" });
+    expect(html).toContain('data-span-from="2026-07-21"');
+    expect(html).toContain('data-span-to="2026-08-02"');
+  });
+
+  it("prints nothing at all when the payload has no stretches", () => {
+    // Older clients, and the signed-out path. An empty heading is worse than none.
+    const html = renderHistory({ meta: withSpans([]), locale: "es" });
+    expect(html).not.toContain(historyStrings("es").whereLabel);
+  });
+
+  it("stays quiet when nothing was inherited", () => {
+    // Someone who opens the app daily has nothing to correct; the note would be
+    // a permanent caveat about a problem they do not have.
+    const solid = [{ name: "Madrid", from: "2026-07-04", to: "2026-08-02", days: 30, assumedDays: 0 }];
+    const html = renderHistory({ meta: withSpans(solid), locale: "es" });
+    expect(html).toContain("Madrid");
+    expect(html).not.toContain(historyStrings("es").assumedNote.slice(0, 12));
+  });
+
+  it("drops a nameless stretch rather than leaving a hole", () => {
+    const meta = withSpans([{ name: "", from: "2026-07-04", to: "2026-07-10" }, SPANS[1]]);
+    expect(meta?.locations).toHaveLength(1);
+  });
+
+  it("has the copy in every language, with no unfilled placeholders", () => {
+    for (const locale of WIDGET_LOCALES) {
+      const copy = historyStrings(locale);
+      expect(copy.whereLabel.length, locale).toBeGreaterThan(0);
+      expect(copy.assumedNote, locale).toContain("{assumed}");
+      expect(renderHistory({ meta: withSpans(SPANS), locale }), locale).not.toContain("{total}");
+    }
+  });
+});
+
+/**
+ * The one place a per-cell mark earns its keep: a single day sitting in a
+ * different place from the stretches on both sides of it. On real data that is
+ * one square in thirty — checking Valencia once during a London fortnight —
+ * so it reads as an exception rather than as texture.
+ */
+describe("the day that breaks its stretch", () => {
+  const build = (locations: unknown) => readHistoryMeta(wrap({
+    authenticated: true, from: "2026-07-18", to: "2026-07-22", streak: 0, daysTracked: 1,
+    days: ["2026-07-18", "2026-07-19", "2026-07-20", "2026-07-21", "2026-07-22"].map((d) => day(d)),
+    locations,
+  }));
+
+  const SANDWICHED = [
+    { name: "Londres", from: "2026-07-18", to: "2026-07-19", days: 2, assumedDays: 0 },
+    { name: "Valencia", from: "2026-07-20", to: "2026-07-20", days: 1, assumedDays: 0 },
+    { name: "Londres", from: "2026-07-21", to: "2026-07-22", days: 2, assumedDays: 2 },
+  ];
+
+  const cellFor = (html: string, date: string) => {
+    const at = html.indexOf(`data-date="${date}"`);
+    return html.slice(at, html.indexOf("</button>", at));
+  };
+
+  it("marks it, and only it", () => {
+    const html = renderHistory({ meta: build(SANDWICHED), locale: "es" });
+    expect(cellFor(html, "2026-07-20")).toContain("data-odd-one");
+    for (const other of ["2026-07-18", "2026-07-19", "2026-07-21", "2026-07-22"]) {
+      expect(cellFor(html, other), other).not.toContain("data-odd-one");
+    }
+  });
+
+  it("names the place in the cell's own label, so the mark is legible", () => {
+    const html = renderHistory({ meta: build(SANDWICHED), locale: "es" });
+    expect(cellFor(html, "2026-07-20")).toContain("Valencia");
+  });
+
+  it("says nothing when the day merely starts a new stretch", () => {
+    // Moving house is not an anomaly; it only counts when the same place
+    // resumes straight after.
+    const moved = [
+      { name: "Londres", from: "2026-07-18", to: "2026-07-19", days: 2, assumedDays: 0 },
+      { name: "Valencia", from: "2026-07-20", to: "2026-07-22", days: 3, assumedDays: 2 },
+    ];
+    expect(renderHistory({ meta: build(moved), locale: "es" })).not.toContain("data-odd-one");
+  });
+
+  it("says nothing when a lone day sits at either end", () => {
+    // Nothing before it to disagree with.
+    const atEdge = [
+      { name: "Valencia", from: "2026-07-18", to: "2026-07-18", days: 1, assumedDays: 0 },
+      { name: "Londres", from: "2026-07-19", to: "2026-07-22", days: 4, assumedDays: 3 },
+    ];
+    expect(renderHistory({ meta: build(atEdge), locale: "es" })).not.toContain("data-odd-one");
+  });
+});

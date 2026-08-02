@@ -23,6 +23,16 @@ export interface HistoryDay {
   known: boolean;
 }
 
+/** A stretch of "you were here", as the tool grouped it. */
+export interface LocationSpan {
+  name: string;
+  from: string;
+  to: string;
+  days: number;
+  /** Of those days, how many inherited the place rather than recording it. */
+  assumedDays: number;
+}
+
 export interface HistoryMeta {
   /** False when the client connected without an account: the widget says so. */
   authenticated: boolean;
@@ -37,6 +47,8 @@ export interface HistoryMeta {
    */
   from?: string | null;
   to?: string | null;
+  /** Empty on older payloads; the widget simply prints nothing then. */
+  locations?: LocationSpan[];
 }
 
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
@@ -56,6 +68,23 @@ function readDay(raw: unknown): HistoryDay | null {
   };
 }
 
+function readSpan(raw: unknown): LocationSpan | null {
+  if (!raw || typeof raw !== "object") return null;
+  const s = raw as Record<string, unknown>;
+  // A span with no name has nothing to say, and printing an empty one would
+  // leave a gap the reader has to interpret.
+  if (typeof s.name !== "string" || s.name.length === 0) return null;
+  if (typeof s.from !== "string" || !DATE_RE.test(s.from)) return null;
+  if (typeof s.to !== "string" || !DATE_RE.test(s.to)) return null;
+  return {
+    name: s.name.slice(0, 40),
+    from: s.from,
+    to: s.to,
+    days: typeof s.days === "number" ? s.days : 0,
+    assumedDays: typeof s.assumedDays === "number" ? s.assumedDays : 0,
+  };
+}
+
 export function readHistoryMeta(result: unknown): HistoryMeta | null {
   if (!result || typeof result !== "object") return null;
   const meta = (result as { _meta?: unknown })._meta;
@@ -70,7 +99,12 @@ export function readHistoryMeta(result: unknown): HistoryMeta | null {
 
   const window = (v: unknown) => (typeof v === "string" && DATE_RE.test(v) ? v : null);
 
+  const locations = Array.isArray(p.locations)
+    ? p.locations.slice(0, 12).map(readSpan).filter((s): s is LocationSpan => s !== null)
+    : [];
+
   return {
+    locations,
     authenticated: p.authenticated === true,
     days,
     streak: typeof p.streak === "number" ? p.streak : 0,

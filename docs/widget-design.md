@@ -71,6 +71,21 @@ voces. `scripts/build-widgets.mjs` extrae las claves necesarias de
 `messages/*.json` en los seis idiomas y las mete en el bundle, y **falla el build**
 si falta una. No copiar cadenas a mano.
 
+**Mide cuántas casillas se marcarían antes de diseñar la marca.** Una señal que
+aparece en la mayoría de los elementos deja de ser señal y pasa a ser textura. Al
+querer indicar «esta ubicación es supuesta», la idea natural era un punto en cada
+día — hasta contar que con datos reales eran **18 de 30**. Los tramos de
+ubicación eran tres. Se marcan tres cosas, no dieciocho. El punto por celda se
+quedó solo para el día que rompe su tramo: uno de treinta, y por eso legible.
+
+**Un eje distinto va en un sitio distinto.** El color de la rejilla dice cómo fue
+el día. Dónde estabas no es eso, así que va debajo, en una frase, no en el color
+ni dentro de la casilla.
+
+**Frase antes que barra proporcional.** Un tramo de un día entre dos quincenas se
+convierte en una astilla ilegible («V…») en una barra, y en `20 jul` en una
+frase. La frase además envuelve en 390 px en vez de truncar.
+
 **Los estados los define la app.** Si la app distingue cinco casos, el widget
 distingue cinco. El primer widget de «ahora mismo» colapsó `optimal` y `moderate`
 en uno, y con ello perdió la diferencia entre «esto es lo mejor que va a estar» y

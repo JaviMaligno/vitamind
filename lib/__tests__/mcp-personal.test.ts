@@ -157,6 +157,59 @@ describe("personal tools", () => {
       expect(logged.minutesNeeded).toBe(derived.minutesNeeded);
     });
 
+    /**
+     * `gps:51.5644,-0.1069` names nothing to anyone — not the reader, not the
+     * model. The spans carry a name so the answer can say "London" instead of a
+     * coordinate, and say which stretches were inherited.
+     */
+    describe("where you were", () => {
+      const TRAVELLED: ProfileRow = {
+        ...PROFILE,
+        history: [
+          { ...record("2026-07-13", true), cityId: "gps:51.5644,-0.1069" },
+          { ...record("2026-07-20", null), cityId: "builtin:valencia" },
+          { ...record("2026-07-28", true), cityId: "gps:51.5644,-0.1069" },
+        ],
+      };
+
+      it("reports the stretches, not one entry per day", async () => {
+        const store = memoryStore({ u1: structuredClone(TRAVELLED) });
+        const r = await myHistoryTool(store, "u1", { days: 30 }, NOW, NO_WEATHER);
+        if (!("locations" in r)) throw new Error("expected locations");
+        // Thirty days, three stretches: London, the day in Valencia, London again.
+        expect(r.locations).toHaveLength(3);
+        expect(r.locations.map((l) => l.days).reduce((a, b) => a + b)).toBe(30);
+      });
+
+      it("names a coordinate after the nearest city it can vouch for", async () => {
+        const store = memoryStore({ u1: structuredClone(TRAVELLED) });
+        const r = await myHistoryTool(store, "u1", { days: 30 }, NOW, NO_WEATHER);
+        if (!("locations" in r)) throw new Error("expected locations");
+        expect(r.locations[0].name).toMatch(/london|londres/i);
+        expect(r.locations[1].name).toMatch(/valencia/i);
+      });
+
+      it("falls back to the coordinate rather than naming a city 500 km away", async () => {
+        const middleOfNowhere: ProfileRow = {
+          ...PROFILE,
+          history: [{ ...record("2026-07-20", null), cityId: "gps:12.5,-58.0" }],
+        };
+        const store = memoryStore({ u1: middleOfNowhere });
+        const r = await myHistoryTool(store, "u1", { days: 30 }, NOW, NO_WEATHER);
+        if (!("locations" in r)) throw new Error("expected locations");
+        expect(r.locations[0].name).toBe("12.5, -58.0");
+      });
+
+      it("says how much of each stretch was inherited", async () => {
+        const store = memoryStore({ u1: structuredClone(TRAVELLED) });
+        const r = await myHistoryTool(store, "u1", { days: 30 }, NOW, NO_WEATHER);
+        if (!("locations" in r)) throw new Error("expected locations");
+        // Only three days in the whole window were ever recorded.
+        const inherited = r.locations.map((l) => l.assumedDays).reduce((a, b) => a + b);
+        expect(inherited).toBe(27);
+      });
+    });
+
     it("counts the streak from today's end of the window, not from the last record", async () => {
       // The most recent record is 15 July, unconfirmed — and two weeks stale.
       const store = memoryStore({ u1: structuredClone(SPARSE) });
