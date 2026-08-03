@@ -89,8 +89,8 @@ server replies 406 before running anything.
 | punkpeye/awesome-mcp-servers | dofollow | ⏸️ PR #11026, esperando mantenedores |
 | **PulseMCP** | **dofollow** | ⏳ ingiere del registro oficial; ausente el 2/8 |
 | **Smithery** | **dofollow** ×2 | ✅ 3/8 — `smithery.ai/server/javimaligno/vitamind` |
-| **Cursor Directory** | por comprobar | 🔑 requiere login |
-| mcp.so | dofollow **solo pagando 39 $** | 💸 descartado salvo decisión |
+| **Cursor Directory** | por comprobar | ✅ enviado 3/8 — `cursor.directory/plugins/vitamin-d-explorer`, en revisión |
+| mcp.so | dofollow **solo pagando 39 $** | ❌ **descartado** por el owner el 3/8 |
 
 ### PulseMCP
 
@@ -126,17 +126,37 @@ el número viejo no llegó a colarse. Ficha con **dos enlaces dofollow** a `getv
 Solo funcionó un clic real sobre sus coordenadas. Verificar siempre **recargando**, no
 leyendo el DOM justo después: los dos primeros intentos parecían haber funcionado.
 
-### Cursor Directory
+### Cursor Directory — ✅ enviado el 2026-08-03
 
-`cursor.directory/plugins/new`, entrando con GitHub. Es un formulario de «plugin», no
-específico de MCP.
+`cursor.directory/plugins/new` con sesión de GitHub. Sigue el estándar **Open Plugins**, no
+el del registro MCP.
 
-### mcp.so
+**Su escaneo automático falló al principio**: busca `.mcp.json` (o `mcp.json`) en la raíz
+del repo, y `vitamind-mcp` solo tenía `server.json` — mismo nombre de idea, formatos
+distintos para consumidores distintos. `server.json` describe la entrada del **registro**;
+`.mcp.json` es la **configuración de cliente**.
+
+Se resolvió añadiendo `.mcp.json` al repo del paquete
+([commit](https://github.com/JaviMaligno/vitamind-mcp/commit/9134287)):
+
+```json
+{ "mcpServers": { "vitamind": { "command": "npx", "args": ["-y", "vitamind-mcp"] } } }
+```
+
+Sirve más allá de este directorio: cualquier cliente que siga Open Plugins lo lee.
+
+El escaneo rellena nombre y descripción con plantillas pobres («vitamind-mcp plugin for
+Cursor») — hay que reescribirlos a mano antes de publicar.
+
+**Queda pendiente:** la ficha dice *«Scanning your plugin… it will appear publicly once the
+security agent finishes»* y *«This plugin is unpublished and hidden from the directory»*.
+Mismo patrón que Smithery: enviado no es visible. **Volver a comprobarlo.**
+
+### mcp.so — descartado
 
 Pasó a **pago**: 39 $ únicos, y el enlace dofollow es precisamente lo que se compra. Sin
-opción gratuita visible el 2/8. Mismo patrón que el Premium de mcpservers.org. Decisión
-del owner; por sí solo no justifica el gasto, pero es el único de la lista que se puede
-cerrar hoy sin esperar a nadie.
+opción gratuita el 2/8. **El owner decidió no pagarlo** el 3/8. No volver a proponerlo sin
+que cambie el precio o el modelo.
 
 ---
 
