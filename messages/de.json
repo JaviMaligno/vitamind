@@ -1062,7 +1062,11 @@
     "toolLogSession": "Einen Sonnentag eintragen: „heute war ich 20 Minuten draußen“",
     "privacyHeading": "Datenschutz",
     "privacyText": "Die öffentliche URL nutzt kein Konto und speichert nichts über dich. Mit der Konto-URL läuft der Zugriff über OAuth mit expliziten Berechtigungen, die du genehmigst; Tokens laufen von selbst ab und deine Daten werden nie an Dritte weitergegeben.",
-    "memoryTip": "Tipp: Sag deinem Assistenten auch ohne Konto einmal deinen Hauttyp und deine Stadt — sein Gedächtnis erledigt den Rest."
+    "memoryTip": "Tipp: Sag deinem Assistenten auch ohne Konto einmal deinen Hauttyp und deine Stadt — sein Gedächtnis erledigt den Rest.",
+    "toolForecast": "get_sun_forecast — die nächsten Tage auf einen Blick, mit dem besten markiert",
+    "toolSetLocation": "set_history_location — korrigiert, wo du an mehreren Tagen warst",
+    "reconnectHeading": "Werkzeuge, die nach deiner Verbindung dazukamen",
+    "reconnectText": "Clients merken sich die Werkzeugliste beim Hinzufügen des Connectors, und dieser Server kann ihnen nicht mitteilen, dass sie sich geändert hat. Zeigt dein Assistent weniger als 15 Werkzeuge, entferne den Connector und füge ihn erneut hinzu — es geht nichts verloren und dein Konto bleibt verbunden."
   },
   "sunrisePage": {
     "eyebrow": "Die Sonne Monat für Monat",

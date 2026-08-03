@@ -10,6 +10,7 @@ import {
   initMcpServer, SERVER_INFO,
   YEAR_STRIP_RESOURCE_URI, DAY_CURVE_RESOURCE_URI, PROFILE_RESOURCE_URI, HISTORY_RESOURCE_URI,
   FORECAST_RESOURCE_URI,
+  TOOL_COUNT,
 } from "../mcp-server";
 import { YEAR_STRIP_META_KEY } from "@/widgets/year-strip/data";
 import { DAY_CURVE_META_KEY } from "@/widgets/day-curve/data";
@@ -71,7 +72,9 @@ describe("MCP App metadata on the wire", () => {
     // Only the tools whose answer is genuinely worse as prose carry a widget;
     // the rest must stay clean. `set_history_location` is the newest and has
     // none: it takes a range and a city and answers in a sentence.
-    expect(result.tools).toHaveLength(15);
+    // Pinned to the constant the stale-list hint quotes: adding a tool without
+    // updating TOOL_COUNT would have the server tell clients a wrong number.
+    expect(result.tools).toHaveLength(TOOL_COUNT);
     expect(withUi.map((t) => t.name).sort()).toEqual([
       "compare_vitamin_d_year", "configure_sun_profile",
       "get_current_status", "get_my_history", "get_sun_forecast", "get_vitamin_d_year",

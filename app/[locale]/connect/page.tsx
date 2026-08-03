@@ -65,10 +65,11 @@ export default async function ConnectPage({ params }: { params: Promise<{ locale
   const publicTools = [
     t("toolSearchCity"), t("toolSunTimes"), t("toolWindow"),
     t("toolYear"), t("toolCompare"), t("toolStatus"), t("toolEstimate"), t("toolProfile"),
+    t("toolForecast"),
   ];
   const personalTools = [
     t("toolMyProfile"), t("toolSaveProfile"), t("toolMyCities"),
-    t("toolMyHistory"), t("toolLogSession"),
+    t("toolMyHistory"), t("toolLogSession"), t("toolSetLocation"),
   ];
   const consentScopes = [
     tOauth("scopeProfileRead"), tOauth("scopeProfileWrite"),
@@ -202,6 +203,17 @@ export default async function ConnectPage({ params }: { params: Promise<{ locale
             </ul>
           </Card>
         </div>
+      </section>
+
+      {/*
+        Reconnecting is the only way a client learns about tools added after it
+        connected: the transport is stateless, so `tools/listChanged` — which the
+        SDK advertises regardless — can never actually be delivered. Someone who
+        connected in July has no other way to find out.
+      */}
+      <section className="space-y-3 border-t border-border-subtle pt-8">
+        <h2 className="font-display text-title sm:text-2xl font-bold">{t("reconnectHeading")}</h2>
+        <p className="text-body text-text-secondary max-w-[70ch]">{t("reconnectText")}</p>
       </section>
 
       {/* Privacy + memory tip */}

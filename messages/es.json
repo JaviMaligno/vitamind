@@ -1062,7 +1062,11 @@
     "toolLogSession": "Apuntar un día de sol: «hoy he salido 20 minutos»",
     "privacyHeading": "Privacidad",
     "privacyText": "La URL pública no usa cuenta ni guarda nada tuyo. Con la URL de cuenta, el acceso usa OAuth con permisos explícitos que apruebas tú; los tokens caducan solos y tus datos no se comparten con terceros.",
-    "memoryTip": "Consejo: incluso sin cuenta, dile una vez a tu asistente tu tipo de piel y tu ciudad — su memoria hará el resto."
+    "memoryTip": "Consejo: incluso sin cuenta, dile una vez a tu asistente tu tipo de piel y tu ciudad — su memoria hará el resto.",
+    "toolForecast": "get_sun_forecast — los próximos días de un vistazo, con el mejor elegido",
+    "toolSetLocation": "set_history_location — corrige dónde estabas en un tramo de días",
+    "reconnectHeading": "Herramientas añadidas después de conectarte",
+    "reconnectText": "Los clientes fijan la lista de herramientas al añadir el conector, y este servidor no tiene forma de avisarles de que ha cambiado. Si tu asistente enumera menos de 15 herramientas, quita el conector y vuelve a añadirlo — no se pierde nada y tu cuenta sigue conectada."
   },
   "sunrisePage": {
     "eyebrow": "El sol mes a mes",

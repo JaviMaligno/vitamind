@@ -58,7 +58,12 @@ function personal<A>(
 ) {
   const wrap = (payload: unknown, authenticated: boolean): ToolResult => {
     const built = meta?.(payload, authenticated);
-    return built ? { ...json(payload), _meta: built } : json(payload);
+    // Rides along on every personal answer: a stale client keeps calling the
+    // tools it already knows, so this is the one place the news can reach it.
+    const withHint = payload && typeof payload === "object"
+      ? { ...payload, serverTools: STALE_LIST_HINT }
+      : payload;
+    return built ? { ...json(withHint), _meta: built } : json(withHint);
   };
 
   return async (args: A, extra: { authInfo?: AuthInfo }): Promise<ToolResult> => {
@@ -109,6 +114,30 @@ const PROFILE = {
 };
 
 export const SERVER_INFO = { name: "vitamind-explorer", version: "1.0.0" };
+
+/**
+ * How many tools this server exposes. Kept as a constant so it can be told to
+ * the model, and pinned by the protocol test — add a tool without updating it
+ * and the suite fails.
+ */
+export const TOOL_COUNT = 15;
+
+/**
+ * Told to the model on every personal answer, because a client that connected
+ * before a tool existed will never learn about it any other way.
+ *
+ * `initialize` advertises `tools.listChanged: true` — the SDK sets that
+ * unconditionally when tools are registered — but this transport is stateless:
+ * no session id, no SSE, no channel to push a notification down. Clients trust
+ * the promise, cache the list from the day they connected, and go stale.
+ *
+ * Observed on 2026-08-03: ChatGPT listed 13 of 15, missing exactly the two
+ * added after the connector was set up, and told the user it had no way to
+ * correct a location. The model can compare this number against its own list
+ * and say so, which is the only channel we actually have.
+ */
+export const STALE_LIST_HINT =
+  `This server exposes ${TOOL_COUNT} tools. If you can see fewer than that, your client cached its tool list when the connector was added — tell the user to reconnect it to pick up the newest ones.`;
 export const YEAR_STRIP_RESOURCE_URI = "ui://getvitamind/year-strip.html";
 export const DAY_CURVE_RESOURCE_URI = "ui://getvitamind/day-curve.html";
 export const PROFILE_RESOURCE_URI = "ui://getvitamind/profile.html";

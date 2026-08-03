@@ -1062,7 +1062,11 @@
     "toolLogSession": "Įrašyti saulės dieną: „šiandien buvau lauke 20 minučių“",
     "privacyHeading": "Privatumas",
     "privacyText": "Viešasis URL nenaudoja paskyros ir nieko apie jus nesaugo. Su paskyros URL prieiga vyksta per OAuth su aiškiais leidimais, kuriuos patvirtinate jūs; žetonai nustoja galioti savaime, o jūsų duomenimis niekada nesidalijama su trečiosiomis šalimis.",
-    "memoryTip": "Patarimas: net be paskyros vieną kartą pasakykite asistentui savo odos tipą ir miestą — jo atmintis padarys visa kita."
+    "memoryTip": "Patarimas: net be paskyros vieną kartą pasakykite asistentui savo odos tipą ir miestą — jo atmintis padarys visa kita.",
+    "toolForecast": "get_sun_forecast — artimiausios dienos vienu žvilgsniu, su geriausia diena",
+    "toolSetLocation": "set_history_location — pataiso, kur buvote tam tikru laikotarpiu",
+    "reconnectHeading": "Įrankiai, pridėti po prisijungimo",
+    "reconnectText": "Klientai užfiksuoja įrankių sąrašą pridedant jungtį, o šis serveris negali pranešti, kad jis pasikeitė. Jei asistentas rodo mažiau nei 15 įrankių, pašalinkite jungtį ir pridėkite iš naujo — niekas neprarandama, paskyra lieka prijungta."
   },
   "sunrisePage": {
     "eyebrow": "Saulė mėnuo po mėnesio",

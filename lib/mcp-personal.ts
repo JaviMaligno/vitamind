@@ -303,6 +303,11 @@ export async function setHistoryLocationTool(
     cityId,
     name: cityRef(cityId, custom)?.name ?? cityId,
     note: "Only the location changed. Whether the user went outside on those days is untouched.",
+    // Observed on 2026-08-03: after a successful correction the model said it
+    // "only received the confirmation" and stopped, leaving the user to ask for
+    // the calendar again. The window and the minutes for those days are now
+    // different, so showing them is the natural end of the exchange.
+    hint: "Call get_my_history to show the corrected calendar: the window and the minutes for those days were recomputed from the new location.",
   };
 }
 

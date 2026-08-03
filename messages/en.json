@@ -1062,7 +1062,11 @@
     "toolLogSession": "Log a sun day: “I went outside for 20 minutes today”",
     "privacyHeading": "Privacy",
     "privacyText": "The public URL uses no account and stores nothing about you. With the account URL, access uses OAuth with explicit permissions you approve; tokens expire on their own and your data is never shared with third parties.",
-    "memoryTip": "Tip: even without an account, tell your assistant your skin type and city once — its memory does the rest."
+    "memoryTip": "Tip: even without an account, tell your assistant your skin type and city once — its memory does the rest.",
+    "toolForecast": "get_sun_forecast — the next few days at a glance, with the best one picked",
+    "toolSetLocation": "set_history_location — correct where you were over a range of days",
+    "reconnectHeading": "Tools added after you connected",
+    "reconnectText": "Clients fix the list of tools when the connector is added, and this server has no way to tell them it has changed. If your assistant lists fewer than 15 tools, remove the connector and add it again — nothing else is lost, and your account stays connected."
   },
   "sunrisePage": {
     "eyebrow": "The sun, month by month",

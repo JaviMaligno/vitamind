@@ -1062,7 +1062,11 @@
     "toolLogSession": "Noter une journée de soleil : « aujourd'hui je suis sorti 20 minutes »",
     "privacyHeading": "Confidentialité",
     "privacyText": "L'URL publique n'utilise aucun compte et n'enregistre rien de vous. Avec l'URL de compte, l'accès passe par OAuth avec des permissions explicites que vous approuvez ; les jetons expirent d'eux-mêmes et vos données ne sont jamais partagées avec des tiers.",
-    "memoryTip": "Astuce : même sans compte, indiquez une fois à votre assistant votre type de peau et votre ville — sa mémoire fera le reste."
+    "memoryTip": "Astuce : même sans compte, indiquez une fois à votre assistant votre type de peau et votre ville — sa mémoire fera le reste.",
+    "toolForecast": "get_sun_forecast — les prochains jours en un coup d'œil, avec le meilleur choisi",
+    "toolSetLocation": "set_history_location — corrige où vous étiez sur une période",
+    "reconnectHeading": "Outils ajoutés après votre connexion",
+    "reconnectText": "Les clients figent la liste des outils au moment d'ajouter le connecteur, et ce serveur n'a aucun moyen de les prévenir qu'elle a changé. Si votre assistant en liste moins de 15, supprimez le connecteur et rajoutez-le — rien n'est perdu et votre compte reste connecté."
   },
   "sunrisePage": {
     "eyebrow": "Le soleil mois par mois",
