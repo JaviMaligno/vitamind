@@ -88,7 +88,7 @@ server replies 406 before running anything.
 | mcpservers.org | `nofollow` | ✅ 28/7 |
 | punkpeye/awesome-mcp-servers | dofollow | ⏸️ PR #11026, esperando mantenedores |
 | **PulseMCP** | **dofollow** | ⏳ ingiere del registro oficial; ausente el 2/8 |
-| **Smithery** | **dofollow** | 🔑 requiere login |
+| **Smithery** | **dofollow** ×2 | ✅ 3/8 — `smithery.ai/server/javimaligno/vitamind` |
 | **Cursor Directory** | por comprobar | 🔑 requiere login |
 | mcp.so | dofollow **solo pagando 39 $** | 💸 descartado salvo decisión |
 
@@ -99,12 +99,32 @@ en el registro desde el 27/7 y el 2/8 aún no aparecíamos. **Volver a buscar
 `pulsemcp.com/servers?q=vitamind` a partir del 3/8**; si sigue sin salir, escribir a
 `hello@pulsemcp.com` citando `io.github.JaviMaligno/vitamind`.
 
-### Smithery
+### Smithery — ✅ hecho el 2026-08-03
 
 ```
 npx @smithery/cli login
 npx @smithery/cli mcp publish "https://getvitamind.app/api/mcp/mcp" -n javimaligno/vitamind
 ```
+
+Introspecciona solo: salieron **15 herramientas y 5 recursos** sin tocar nada, así que aquí
+el número viejo no llegó a colarse. Ficha con **dos enlaces dofollow** a `getvitamind.app`
+— tercer dominio enlazante.
+
+**Dos trampas que costaron tiempo:**
+
+1. **Publicar deja el servidor `unlisted` por defecto.** Sale un banner («This server is
+   unlisted and won't appear in search results») **que solo se ve con sesión iniciada**.
+   Sin entrar al panel, habría quedado publicado y invisible en las búsquedas. Se desactiva
+   en Settings → General → *Unlisted*.
+2. **El CLI no pone metadatos.** `mcp publish` solo acepta `--name` y `--config-schema`; no
+   hay comando de descripción. Display name, descripción, homepage y repositorio se
+   rellenan en Settings → General, y **el campo `homepage` es el que produce el backlink**.
+   Sin él la ficha no enlaza a la app en absoluto.
+
+**Y el checkbox de `Unlisted` no responde a JavaScript**: ni asignar la propiedad ni
+`element.click()` ni el clic por referencia del navegador cambiaron el estado de React.
+Solo funcionó un clic real sobre sus coordenadas. Verificar siempre **recargando**, no
+leyendo el DOM justo después: los dos primeros intentos parecían haber funcionado.
 
 ### Cursor Directory
 
