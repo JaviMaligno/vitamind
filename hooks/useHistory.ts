@@ -74,6 +74,27 @@ export function datesToFill(
   return missing;
 }
 
+/** A coordinate id came from the device; anything else was picked in the app. */
+const isMeasured = (cityId: string) => cityId.startsWith("gps:") || cityId.startsWith("nominatim:");
+
+/**
+ * Whether today's row should be written or corrected.
+ *
+ * Today is not settled the way yesterday is. Dropping the by-city backfill
+ * stopped the past being rewritten every time someone looked at a map, but it
+ * also froze today at whatever place happened to be selected when the row was
+ * first created: one profile had the device reporting London and today's row
+ * saying Valencia, with no way back.
+ *
+ * So today follows the device, and only the device. A city picked in the search
+ * box is a lookup, not a move, and must never overwrite a stored day — that was
+ * the original bug and it is not worth trading one for the other.
+ */
+export function shouldRewriteToday(existing: DayRecord | undefined, cityId: string): boolean {
+  if (!existing) return true;
+  return isMeasured(cityId) && existing.cityId !== cityId;
+}
+
 function syncHistoryToSupabase(user: User): void {
   const updated = loadHistory();
   updateProfile(user.id, { history: updated }).catch(() => {});
@@ -134,7 +155,7 @@ export function useHistory(
   useEffect(() => {
     if (!cityId) return;
     const todayStr = toDateStr(new Date());
-    if (loadHistory().some((r) => r.date === todayStr)) return;
+    if (!shouldRewriteToday(loadHistory().find((r) => r.date === todayStr), cityId)) return;
 
     const controller = new AbortController();
     fetch(`/api/weather?lat=${lat.toFixed(2)}&lon=${lon.toFixed(2)}&start=${todayStr}&end=${todayStr}`,
