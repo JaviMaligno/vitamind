@@ -70,13 +70,38 @@ Meanwhile the raw material for that trust already exists, buried in `messages/*.
 Holick 1982 *Science* 216(4549):1001-1003, Holick 2013 *Dermato-Endocrinology* 5(1):51-108,
 de Gruijl 2016, Madronich, van Heuklon.
 
-## Goal
+## Goal, and what it is worth
 
 Be cited by Google's AI Overview for sun-timing and vitamin D queries.
 
 We do not control the ranking system, so the operational goal is to **maximise every known
 source-selection factor and measure the citation as the outcome metric**. Every phase below
 carries a signal that says whether its lever worked, and a named next lever if it did not.
+
+**What a citation is worth in clicks, stated up front so the project is judged against
+something real.** The 2026 figures do not agree with each other, and the disagreement is
+itself informative:
+
+- Pew (March 2025): users click a source *inside* the AI summary about **1 %** of the time.
+  The attribution is not a traffic channel.
+- Being cited returns roughly **35 % more organic clicks** than not being cited, plus ~12 %
+  more direct traffic and ~9 % more brand search.
+- With an AI Overview present, users click some organic result in **8 %** of visits; without
+  one, **15 %**.
+
+Applied here: from a base of 75 clicks per 90 days, winning citations plausibly moves us to
+the order of **100 clicks per 90 days, not 700**. The compounding gains — direct traffic and
+brand search — are real but slower and harder to attribute.
+
+This is stated because the alternative is to ship three phases against an unstated
+expectation nothing supports. The citation target stands; it is the owner's explicit call.
+What changes is that success is measured as *citation count first, click delta second*.
+
+**And there is no way around the AI Overview.** A 2026-08-09 sample of five of our own
+highest-impression GSC queries returned **5 out of 5 with an AI Overview and 0 citations for
+us**; in the only query where we appear at all (`puesta de sol barcelona diciembre`) we are
+organic, at 1335 px down a 2758 px page. Alpenglow appears in 2 of the 5. There is no
+AIO-free segment to retreat to, so improving classic CTR is not an available strategy.
 
 ## Decisions taken
 
@@ -94,14 +119,55 @@ carries a signal that says whether its lever worked, and a named next lever if i
 ## Delivery shape
 
 **One phase, one implementation plan, one PR, with a checkpoint between them** — the
-project's standing rule. The three phases below are not a single plan: phase 1 ships and is
-reviewed before phase 2 is written. Phase 3's baseline capture is the exception and runs
-*before* phase 1 lands, because a baseline taken after the changes measures nothing.
+project's standing rule. The phases below are not a single plan: 1a ships and is reviewed
+before 1b is written, and so on. Phase 3's baseline capture is the exception and runs
+*before* phase 1a lands, because a baseline taken after the changes measures nothing.
+
+Order, cheapest-evidence-first: **3-baseline → 1a → 1b → 2 → 3-recurring**. Phase 1a is
+deliberately first among the code changes because it is the only authority work with direct
+evidence behind it (see phase 1), it is small, and it makes every later phase attributable.
 
 ## Phase 1 — Authority foundations
 
 Ships first because the E-E-A-T filter runs *before* passage re-ranking. Extractable prose
 on a site with no authorship signals is written for a filter that already discarded it.
+
+**The gate is not the same height in both territories, and that was measured.** Alpenglow —
+cited for sun-timing queries — serves this in its global layout:
+
+```json
+"author": { "@id": "https://alpenglowapp.com/#organization" }
+```
+
+`Organization` + `Person` + `author`, and that is all: **no methodology page, no `reviewedBy`,
+no `dateModified`**, and the only trust-shaped links in its chrome are Contact and Privacy.
+Meanwhile the sources cited for vitamin D queries are dermatologists and clinics. So:
+
+- **Phase 1a — entity graph.** The demonstrated minimum for the sun-timing territory, and
+  cheap: `Organization`, `Person`, `author` with stable `@id`s, `sameAs`. This is the part
+  with direct evidence behind it, so it ships first and alone.
+- **Phase 1b — methodology and bibliography.** The bet for the health territory, where the
+  cleared sources hold clinical credentials. Higher cost, weaker evidence, still worth doing
+  because it is also what makes the `reviewedBy` slot meaningful when a clinician exists.
+
+`dateModified` drops from "required" to "worth having": alpenglow is cited without it. The
+freshness that demonstrably matters is the one visible in the text ("Aug 8"), not the one in
+the markup — which reinforces phase 2 and de-prioritises schema plumbing.
+
+### Phase 1a — entity graph and the author page
+
+**Schema**, extracted into a new `lib/schema.ts` (today's JSON-LD is inline and scattered):
+`Organization` as publisher with stable `@id` and `sameAs`; `Person` as `author`, referenced
+from content pages by `@id`; `reviewedBy` emitted only when a reviewer constant is present.
+`dateModified` is included because it is nearly free, not because it is required.
+
+**`/about`**: short. The person behind it, why it exists, link to `javieraguilar.ai`. This is
+what the `Person` node points at — a schema `Person` with no page behind it is an assertion
+with nothing to verify.
+
+This is the whole of 1a: one module, one page, one navigation change. It is small on purpose.
+
+### Phase 1b — methodology and bibliography
 
 **`/methodology`** (unlocalised route, localised content, matching `/learn` and `/connect`):
 how every number is produced — solar geometry (`solar.ts`), the Madronich UV model with van
@@ -111,25 +177,23 @@ above, visible and linked. **Known limits** (clear-sky, no shade or albedo, popu
 estimate not individual advice) and a **model changelog** — July's UV model correction is
 real material and is precisely the signal that separates a source from a page generator.
 
-**`/about`**: short. The person behind it, why it exists, link to `javieraguilar.ai`. This
-anchors the schema `Person`.
-
-Both pages go in the top navigation and the mobile menu as well as the footer. The mobile
-header is already tight — see the July UI audits — so this needs care, not just an extra
-link.
-
-**Schema**, extracted into a new `lib/schema.ts` (today's JSON-LD is inline and scattered):
-`Organization` as publisher with `sameAs`; `Person` as `author`, referenced from content
-pages; real `dateModified` per page; `citation` pointing at the references on pages that use
-the model; `reviewedBy` emitted only when the reviewer constant is present.
+Plus `citation` on the pages that use the model, pointing at those references.
 
 Every data page links to `/methodology` with text that says what is there, not "learn more".
 Authority nothing links to is authority on an island.
 
-**Tests:** JSON-LD emitted and shape-valid (author present, ISO `dateModified`, `reviewedBy`
-absent without a reviewer and present with one); bibliography present in all six locales;
-`messages/__tests__/health-claims.test.ts` stays green — that guard already exists and this
-phase edits medical copy.
+**Navigation.** Each subphase adds its own page to the top navigation, the mobile menu and
+the footer as it ships — `/about` with 1a, `/methodology` with 1b. The mobile header is
+already tight (see the July UI audits), so adding two entries is a layout decision, not an
+extra `<li>`.
+
+**Tests, 1a:** JSON-LD emitted and shape-valid — `Organization` and `Person` present with
+stable `@id`s, `author` resolving to the `Person`, ISO `dateModified`, and `reviewedBy`
+absent while no reviewer constant exists and present once one does.
+
+**Tests, 1b:** bibliography present and identical across the six locales; the methodology
+copy renders in all six; `messages/__tests__/health-claims.test.ts` stays green — that guard
+already exists and 1b edits medical copy.
 
 ## Phase 2 — Extractable content, freshness, the wedge
 
@@ -168,12 +232,26 @@ not only the table, which is the entire point.
 
 ### Experimental evidence (measured 2026-08-09, blocking for the design)
 
+Transport:
+
 | Channel | Measured result |
 |---|---|
 | `curl` with a Chrome UA | HTTP 200, 91 KB anti-scraping shell. No results, no AIO |
 | Chromium headless (Playwright) | `/sorry/index` on **query 1** |
 | Real Chrome, headed (`channel: chrome`) | `/sorry/index` on **query 1** |
-| User's Chrome, real profile and session, via extension | 8 queries in one sitting, no block |
+| User's Chrome, real profile and session, via extension | 13 queries across the day, no block |
+
+SERP landscape, five of our own highest-impression GSC queries:
+
+| Query (GSC impressions) | AIO | Cited | Organic |
+|---|---|---|---|
+| what time is sunset in tokyo in may (55) | yes | no | absent |
+| a que hora anochece en londres en marzo (47) | yes | no | absent |
+| a que hora anochece sevilla (23) | yes | no | absent |
+| a qué hora amanece en tenerife (22) | yes | no | absent |
+| puesta de sol barcelona diciembre (14) | yes | no | present, 1335 px into a 2758 px page |
+
+Alpenglow appears in 2 of the 5. timeanddate in 3. We appear in 1, below the fold.
 
 The rejection is not about pacing and not about headless — it is about being automated. No
 interval tuning fixes it. **Phase 3 therefore cannot run in CI, in cron, or on a runner.**
@@ -214,13 +292,22 @@ weeks**, and the first sign of progress is recrawl and position movement, not th
 
 Each phase has a signal and a named successor lever:
 
-- Phase 1 shows nothing → E-E-A-T was not our gate; next lever is entity coverage
-  (alpenglow-style granularity: districts and municipalities, not just capitals).
+- Phase 1a shows nothing → the entity graph was not the gate either; next lever is entity
+  *coverage* (alpenglow-style granularity: districts and municipalities, not just capitals —
+  it is the other structural difference we measured, and the one we chose not to buy yet).
+- Phase 1b shows nothing in the health territory → clinical credentials are the real gate
+  there, and the answer is the medical reviewer, not more content.
 - Phase 2 shows nothing in 12 weeks → the constraint is raw domain authority; next lever is
   links, known outstanding since July (7 links from 2 domains).
 - Citation earned in one territory only → double down on the one that worked.
 
 None of these branches is "it could not be done". Each is the next thing to do.
+
+**One honest caveat about attribution.** With a weekly 10-query sample we can detect whether
+citations appear, not attribute them cleanly to one phase — Google recrawls on its own
+schedule and the phases ship weeks apart, not in a controlled experiment. The sequencing
+above (cheapest-evidence-first, one phase per PR, baseline before anything) is what buys as
+much attribution as this setup allows. Claiming more would be dressing up a guess.
 
 ## Out of scope
 
