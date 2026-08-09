@@ -7,7 +7,7 @@ import AppShell from "@/components/AppShell";
 import { routing } from "@/i18n/routing";
 import { buildAlternates } from "@/i18n/metadata";
 import { SITE_URL, IS_PRODUCTION_DEPLOY } from "@/lib/site";
-import { siteGraph } from "@/lib/schema";
+import SchemaScript from "@/components/SchemaScript";
 import "../globals.css";
 import "flag-icons/css/flag-icons.min.css";
 
@@ -99,14 +99,7 @@ export default async function LocaleLayout(
           href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Playfair+Display:wght@700;800&display=swap"
           rel="stylesheet"
         />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(
-              siteGraph({ locale, description: DESCRIPTIONS[locale] ?? DESCRIPTIONS.en }),
-            ),
-          }}
-        />
+        <SchemaScript locale={locale} description={DESCRIPTIONS[locale] ?? DESCRIPTIONS.en} />
       </head>
       <body style={{ margin: 0 }}>
         <NextIntlClientProvider messages={messages} locale={locale}>
