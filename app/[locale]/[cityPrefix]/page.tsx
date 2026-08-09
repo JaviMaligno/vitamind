@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { authorship } from "@/lib/schema";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
@@ -113,6 +114,7 @@ export default async function CityIndexPage({ params }: { params: Promise<Params
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "CollectionPage",
+            ...authorship(),
             name: t("indexTitle"),
             hasPart: cities.map((c) => ({
               "@type": "WebPage",

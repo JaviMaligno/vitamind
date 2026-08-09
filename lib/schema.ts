@@ -86,6 +86,18 @@ export function siteGraph({
   return { "@context": "https://schema.org", "@graph": [organization, person, application] };
 }
 
+/**
+ * The attribution edges every other JSON-LD block on the site should carry.
+ *
+ * Spread into a page's own node (`{ "@type": "FAQPage", ...authorship() }`) so
+ * that block points at the same entities the root graph declares instead of
+ * standing alone. A FAQPage naming no author says a question was answered, not
+ * who answered it.
+ */
+export function authorship(): { author: { "@id": string }; publisher: { "@id": string } } {
+  return { author: { "@id": PERSON_ID }, publisher: { "@id": ORGANIZATION_ID } };
+}
+
 function reviewerNode(reviewer: Reviewer): Node {
   return {
     "@type": "Person",

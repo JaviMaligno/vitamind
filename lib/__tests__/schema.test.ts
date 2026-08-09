@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { ORGANIZATION_ID, PERSON_ID, siteGraph } from "@/lib/schema";
+import { ORGANIZATION_ID, PERSON_ID, siteGraph, authorship } from "@/lib/schema";
 import { SITE_URL } from "@/lib/site";
 
 const nodeOfType = (graph: ReturnType<typeof siteGraph>, type: string) =>
@@ -72,5 +72,26 @@ describe("siteGraph", () => {
     const app = nodeOfType(g, "WebApplication")!;
     expect(app.reviewedBy).toEqual({ "@type": "Person", name: "Dr. Ejemplo", jobTitle: "Endocrino" });
     expect(JSON.stringify(app.reviewedBy)).not.toContain("url");
+  });
+});
+
+describe("authorship", () => {
+  it("points at the same entities the root graph declares, by @id", () => {
+    expect(authorship()).toEqual({
+      author: { "@id": PERSON_ID },
+      publisher: { "@id": ORGANIZATION_ID },
+    });
+  });
+
+  it("spreads into a page node without disturbing it", () => {
+    const faq = { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: [], ...authorship() };
+    expect(faq["@type"]).toBe("FAQPage");
+    expect(faq.author).toEqual({ "@id": PERSON_ID });
+  });
+
+  it("declares no anonymous entity of its own", () => {
+    // The failure this guards: inlining {"@type":"Person", name:...} per page,
+    // which creates a new entity per block instead of referencing the one.
+    expect(JSON.stringify(authorship())).not.toContain("@type");
   });
 });

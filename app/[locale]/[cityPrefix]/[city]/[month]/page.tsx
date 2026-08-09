@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { authorship } from "@/lib/schema";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
@@ -129,7 +130,7 @@ export default async function SunriseMonthPage({ params }: { params: Promise<Par
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify({ "@context": "https://schema.org", "@type": "FAQPage", mainEntity: faq }),
+          __html: JSON.stringify({ "@context": "https://schema.org", "@type": "FAQPage", mainEntity: faq, ...authorship() }),
         }}
       />
 
