@@ -36,6 +36,18 @@ for (const path of PAGES) {
   if (app?.author?.["@id"] !== person?.["@id"]) fail(`${path} author does not resolve to the Person`);
   if (JSON.stringify(graph).includes("reviewedBy")) fail(`${path} claims a reviewer that does not exist`);
 
+  // Every other JSON-LD block on the page must point at those same entities by
+  // @id. An unattributed FAQPage says a question was answered, not who answered
+  // it — which is the whole claim this phase is making.
+  for (const block of blocks) {
+    if (Array.isArray(block["@graph"])) continue;
+    const t = block["@type"];
+    if (!t) continue;
+    if (block.author?.["@id"] !== person?.["@id"]) {
+      fail(`${path} ${t} block is not attributed to the Person`);
+    }
+  }
+
   console.log(`ok   ${path}`);
 }
 
