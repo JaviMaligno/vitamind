@@ -102,9 +102,25 @@ export function todayDoy(now: Date = new Date()): number {
 }
 
 export function fmtTime(h: number): string {
-  const hr = Math.floor(h);
-  const mn = Math.round((h - hr) * 60);
+  let hr = Math.floor(h);
+  let mn = Math.round((h - hr) * 60);
+  // Rounding 59.7 gives 60, which is not a minute of any hour: carry it.
+  if (mn === 60) {
+    mn = 0;
+    hr = (hr + 1) % 24;
+  }
   return `${String(hr).padStart(2, "0")}:${String(mn).padStart(2, "0")}`;
+}
+
+/** "13 h 46 min" from a duration in minutes, carrying a rounded 60 into the hour. */
+export function fmtDayLength(min: number): string {
+  let h = Math.floor(min / 60);
+  let m = Math.round(min - h * 60);
+  if (m === 60) {
+    m = 0;
+    h += 1;
+  }
+  return `${h} h ${String(m).padStart(2, "0")} min`;
 }
 
 const MONTH_NAMES = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
