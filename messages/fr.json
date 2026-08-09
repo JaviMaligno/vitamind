@@ -1171,5 +1171,15 @@
     "title": "Page introuvable",
     "message": "La page que vous cherchez n'existe pas ou a été déplacée.",
     "home": "Retour à l'accueil"
+  },
+  "about": {
+    "metaTitle": "Qui est derrière Vitamina D Explorer",
+    "metaDescription": "Qui construit Vitamina D Explorer, pourquoi il existe et comment sont calculées ses données solaires et de synthèse de la vitamine D.",
+    "heading": "Qui est derrière",
+    "body": "Vitamina D Explorer est construit et maintenu par Javier Aguilar. Il n'y a ni entreprise ni équipe éditoriale derrière : il y a une personne qui a décidé que la question « de combien de soleil ai-je besoin aujourd'hui ? » méritait une réponse calculée et non une règle générale.",
+    "whyHeading": "Pourquoi il existe",
+    "whyBody": "La réponse habituelle — « dix ou quinze minutes par jour » — est la même à Oslo en décembre qu'à Nairobi en juin, et dans l'un de ces deux endroits elle est impossible. La synthèse de la vitamine D dépend de l'élévation solaire, de l'ozone, du phototype et de la surface de peau exposée. Tout cela peut se calculer, et c'est ce que fait cet outil.",
+    "contactHeading": "Contact et code",
+    "contactBody": "Le modèle, ses sources et ses limites sont publiés. Si vous trouvez une erreur dans un calcul, je veux le savoir."
   }
 }

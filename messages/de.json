@@ -1171,5 +1171,15 @@
     "title": "Seite nicht gefunden",
     "message": "Die gesuchte Seite existiert nicht oder wurde verschoben.",
     "home": "Zur Startseite"
+  },
+  "about": {
+    "metaTitle": "Wer hinter Vitamina D Explorer steht",
+    "metaDescription": "Wer Vitamina D Explorer entwickelt, warum es die App gibt und wie ihre Sonnen- und Vitamin-D-Synthesewerte berechnet werden.",
+    "heading": "Wer dahintersteht",
+    "body": "Vitamina D Explorer wird von Javier Aguilar entwickelt und gepflegt. Dahinter steht kein Unternehmen und kein Redaktionsteam: Dahinter steht eine Person, die entschieden hat, dass die Frage „Wie viel Sonne brauche ich heute?“ eine berechnete Antwort verdient und keine Faustregel.",
+    "whyHeading": "Warum es die App gibt",
+    "whyBody": "Die übliche Antwort — „zehn oder fünfzehn Minuten am Tag“ — gilt in Oslo im Dezember genauso wie in Nairobi im Juni, und an einem dieser beiden Orte ist sie unmöglich. Die Vitamin-D-Synthese hängt von der Sonnenhöhe, vom Ozon, vom Hauttyp und von der Fläche der unbedeckten Haut ab. All das lässt sich berechnen, und genau das tut dieses Werkzeug.",
+    "contactHeading": "Kontakt und Code",
+    "contactBody": "Das Modell, seine Quellen und seine Grenzen sind veröffentlicht. Wenn du einen Fehler in einer Berechnung findest, möchte ich davon erfahren."
   }
 }
