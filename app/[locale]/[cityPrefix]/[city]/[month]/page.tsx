@@ -12,7 +12,7 @@ import { baseSlug, cityPathname, localizedCityName } from "@/lib/city-routes";
 import { nearbyCities } from "@/lib/city-nearby";
 import { capFirst, monthName } from "@/lib/city-copy";
 import { dailySunTimes, getSunTimes } from "@/lib/sun-times";
-import { getCurve, doyFromMonthDay, dateFromDoy, fmtTime } from "@/lib/solar";
+import { getCurve, doyFromMonthDay, dateFromDoy, fmtTime, fmtDayLength } from "@/lib/solar";
 import { computeExposureFromCurve } from "@/lib/vitd";
 import { ozoneDU } from "@/lib/uv-model";
 
@@ -30,7 +30,6 @@ export function generateStaticParams() {
 
 type Params = { locale: string; cityPrefix: string; city: string; month: string };
 
-const fmtDayLen = (min: number) => `${Math.floor(min / 60)} h ${String(Math.round(min % 60)).padStart(2, "0")} min`;
 const t2 = (h: number | null) => (h !== null ? fmtTime(h) : "—");
 
 function monthData(lat: number, lon: number, tz: number, timezone: string | undefined, elevationM: number, monthIndex: number) {
@@ -103,7 +102,7 @@ export default async function SunriseMonthPage({ params }: { params: Promise<Par
     minutes: Math.abs(deltaMin),
   });
 
-  const midLen = dayLen(mid) !== null ? fmtDayLen(dayLen(mid)!) : "—";
+  const midLen = dayLen(mid) !== null ? fmtDayLength(dayLen(mid)!) : "—";
 
   const faq = [
     {
@@ -192,7 +191,7 @@ export default async function SunriseMonthPage({ params }: { params: Promise<Par
                     <td className="px-2 py-1.5 sm:px-4 font-mono">{t2(d.sunrise)}</td>
                     <td className="px-2 py-1.5 sm:px-4 font-mono">{t2(d.sunset)}</td>
                     <td className="px-2 py-1.5 sm:px-4 font-mono text-text-muted">{t2(d.civilDusk)}</td>
-                    <td className="px-2 py-1.5 sm:px-4 whitespace-nowrap">{len !== null ? fmtDayLen(len) : "—"}</td>
+                    <td className="px-2 py-1.5 sm:px-4 whitespace-nowrap">{len !== null ? fmtDayLength(len) : "—"}</td>
                   </tr>
                 );
               })}

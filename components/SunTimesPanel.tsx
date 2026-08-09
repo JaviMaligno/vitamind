@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import { Sunrise, Sunset, Sun, Hourglass } from "lucide-react";
 import { useMounted } from "@/hooks/useMounted";
 import { getSunTimes, type SunTimes } from "@/lib/sun-times";
-import { fmtTime, dayOfYear, todayDoy } from "@/lib/solar";
+import { fmtTime, fmtDayLength, dayOfYear, todayDoy } from "@/lib/solar";
 import { tzOffsetForDate } from "@/lib/timezone";
 import PhaseWindow from "@/components/PhaseWindow";
 
@@ -19,12 +19,6 @@ interface Props {
   /** Show sun times for this date instead of "today" (Explore's date scrubber).
       The live sun dot only renders when the date is actually today. */
   date?: Date;
-}
-
-function fmtDayLength(min: number): string {
-  const h = Math.floor(min / 60);
-  const m = Math.round(min - h * 60);
-  return `${h} h ${String(m).padStart(2, "0")} min`;
 }
 
 /** Quadratic Bézier for the sun path: horizon (40,150) → apex → horizon (560,150). */

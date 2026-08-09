@@ -1,7 +1,7 @@
 import { BUILTIN_CITIES } from "./cities";
 import { CITY_SLUGS } from "./city-slugs";
 import { getSunTimes } from "./sun-times";
-import { getCurve, dayOfYear, fmtTime, dateFromDoy, doyFromMonthDay, daysInMonth, solarElev } from "./solar";
+import { getCurve, dayOfYear, fmtTime, fmtDayLength, dateFromDoy, doyFromMonthDay, daysInMonth, solarElev } from "./solar";
 import { solarPhase, type SolarPhase } from "./solar-phase";
 import {
   computeExposureFromCurve, getCurrentStatus, maxSessionIU, MIN_UVI,
@@ -95,7 +95,6 @@ const t = (h: number | null) => (h !== null ? fmtTime(h) : null);
 /** "11:00" with zero-padded hours, for whole-hour window bounds. */
 const hh = (hour: number) => `${String(hour).padStart(2, "0")}:00`;
 
-const fmtDayLen = (min: number) => `${Math.floor(min / 60)} h ${String(Math.round(min % 60)).padStart(2, "0")} min`;
 
 /** Clear-sky UV at a local hour, from the day's elevation curve. */
 function uvAtLocalHour(curve: SolarPoint[], localHour: number, ctx: { ozoneDu?: number; elevationM?: number }): number {
@@ -145,7 +144,7 @@ export function sunTimesTool(args: SunTimesArgs) {
     goldenHourEvening: st.goldenEveningStart !== null && st.sunset !== null
       ? { start: t(st.goldenEveningStart), end: t(st.sunset) }
       : null,
-    dayLength: fmtDayLen(st.dayLengthMin),
+    dayLength: fmtDayLength(st.dayLengthMin),
     dayLengthMinutes: Math.round(st.dayLengthMin),
     dayLengthChangeVsYesterdayMinutes: Math.round(st.dayLengthDeltaMin),
     ...(notes.length ? { notes } : {}),

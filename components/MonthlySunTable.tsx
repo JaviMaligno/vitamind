@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { dailySunTimes, type MonthlySunTimes } from "@/lib/sun-times";
-import { fmtTime } from "@/lib/solar";
+import { fmtTime, fmtDayLength } from "@/lib/solar";
 import Card from "@/components/ui/Card";
 
 interface Labels {
@@ -27,12 +27,6 @@ interface Props {
   tz: number;
   timezone?: string;
   labels: Labels;
-}
-
-function fmtDayLen(min: number): string {
-  const h = Math.floor(min / 60);
-  const m = Math.round(min - h * 60);
-  return `${h} h ${String(m).padStart(2, "0")} min`;
 }
 
 const time = (h: number | null) => (h !== null ? fmtTime(h) : "—");
@@ -85,7 +79,7 @@ export default function MonthlySunTable({ monthly, monthNames, lat, lon, tz, tim
                 </td>
                 <td className="px-3 py-2.5 sm:px-6 font-mono">{time(m.sunrise)}</td>
                 <td className="px-3 py-2.5 sm:px-6 font-mono">{time(m.sunset)}</td>
-                <td className="hidden sm:table-cell px-3 py-2.5 sm:px-6 whitespace-nowrap">{fmtDayLen(m.dayLengthMin)}</td>
+                <td className="hidden sm:table-cell px-3 py-2.5 sm:px-6 whitespace-nowrap">{fmtDayLength(m.dayLengthMin)}</td>
               </tr>,
               isOpen && days && (
                 <tr key={`${m.monthIndex}-days`} className="border-t border-border-subtle">
