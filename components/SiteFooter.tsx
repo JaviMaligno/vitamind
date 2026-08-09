@@ -38,6 +38,7 @@ export default function SiteFooter() {
     { href: "/profile", label: t("nav.profile") },
     { href: "/learn", label: t("footer.learn") },
     { href: "/partners", label: t("footer.partners") },
+    { href: "/about", label: t("footer.about") },
   ];
 
   return (
