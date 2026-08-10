@@ -214,6 +214,7 @@
     "citiesHeading": "Vitamina D por ciudad",
     "learn": "Guía",
     "partners": "Colabora",
+    "about": "Quién está detrás",
     "allCities": "Todas las ciudades"
   },
   "dashboard": {
@@ -1171,5 +1172,15 @@
     "title": "Página no encontrada",
     "message": "La página que buscas no existe o se ha movido.",
     "home": "Volver al inicio"
+  },
+  "about": {
+    "metaTitle": "Quién está detrás de Vitamina D Explorer",
+    "metaDescription": "Quién construye Vitamina D Explorer, por qué existe y cómo se calculan sus datos solares y de síntesis de vitamina D.",
+    "heading": "Quién está detrás",
+    "body": "Vitamina D Explorer lo construye y mantiene Javier Aguilar. No hay una empresa detrás ni un equipo de contenidos: hay una persona que decidió que la pregunta «¿cuánto sol necesito hoy?» merecía una respuesta calculada y no una regla general.",
+    "whyHeading": "Por qué existe",
+    "whyBody": "La respuesta habitual —«diez o quince minutos al día»— es la misma en Oslo en diciembre que en Nairobi en junio, y en uno de esos dos sitios es imposible. La síntesis de vitamina D depende de la elevación solar, del ozono, del fototipo y de la superficie de piel expuesta. Todo eso se puede calcular, y eso es lo que hace esta herramienta.",
+    "contactHeading": "Contacto y código",
+    "contactBody": "El modelo, sus fuentes y sus límites están publicados. Si encuentras un error en un cálculo, quiero saberlo."
   }
 }

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { authorship } from "@/lib/schema";
 import { getMessages, setRequestLocale } from "next-intl/server";
 import { buildAlternates } from "@/i18n/metadata";
 import { routing } from "@/i18n/routing";
@@ -88,6 +89,7 @@ export default async function LearnLayout({
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "FAQPage",
+            ...authorship(),
             mainEntity,
           }),
         }}

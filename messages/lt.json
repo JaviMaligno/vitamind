@@ -214,6 +214,7 @@
     "citiesHeading": "Vitaminas D pagal miestą",
     "learn": "Gidas",
     "partners": "Partneriams",
+    "about": "Apie",
     "allCities": "Visi miestai"
   },
   "dashboard": {
@@ -1171,5 +1172,15 @@
     "title": "Puslapis nerastas",
     "message": "Ieškomas puslapis neegzistuoja arba buvo perkeltas.",
     "home": "Grįžti į pradžią"
+  },
+  "about": {
+    "metaTitle": "Kas kuria Vitamina D Explorer",
+    "metaDescription": "Kas kuria Vitamina D Explorer, kodėl jis egzistuoja ir kaip apskaičiuojami jo saulės bei vitamino D sintezės duomenys.",
+    "heading": "Kas slypi už šio projekto",
+    "body": "Vitamina D Explorer kuria ir prižiūri Javier Aguilar. Už jo nestovi nei įmonė, nei turinio komanda: yra vienas žmogus, nusprendęs, kad klausimas „kiek saulės man reikia šiandien?“ nusipelno apskaičiuoto atsakymo, o ne bendros taisyklės.",
+    "whyHeading": "Kodėl jis egzistuoja",
+    "whyBody": "Įprastas atsakymas — „dešimt ar penkiolika minučių per dieną“ — vienodas ir Osle gruodį, ir Nairobyje birželį, o vienoje iš tų dviejų vietų jis neįmanomas. Vitamino D sintezė priklauso nuo saulės aukščio, ozono, odos fototipo ir atviros odos ploto. Visa tai galima apskaičiuoti, ir būtent tai daro šis įrankis.",
+    "contactHeading": "Kontaktai ir kodas",
+    "contactBody": "Modelis, jo šaltiniai ir jo ribos yra paskelbti. Jei radote klaidą skaičiavime, noriu apie tai sužinoti."
   }
 }

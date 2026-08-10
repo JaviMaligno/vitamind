@@ -32,6 +32,10 @@ describe("SiteNav", () => {
     expect(within(nav).getByRole("link", { name: "nav.cities" }).getAttribute("href")).toBe("/vitamin-d");
     // Learn is a primary bottom tab now — no longer duplicated here.
     expect(within(nav).queryByRole("link", { name: "footer.learn" })).toBeNull();
+    // About is drawer-only: as a third inline link it ellipsises the logo
+    // wordmark between 1024 and 1039 px, where lg engages and the bar is
+    // tightest. The footer carries it on desktop instead.
+    expect(within(nav).queryByRole("link", { name: "footer.about" })).toBeNull();
     expect(screen.queryByRole("dialog")).toBeNull();
   });
 
@@ -41,6 +45,7 @@ describe("SiteNav", () => {
 
     const dialog = screen.getByRole("dialog", { name: "nav.menu" });
     expect(within(dialog).getByRole("link", { name: "footer.partners" }).getAttribute("href")).toBe("/partners");
+    expect(within(dialog).getByRole("link", { name: "footer.about" }).getAttribute("href")).toBe("/about");
     expect(within(dialog).queryByRole("link", { name: "footer.learn" })).toBeNull();
     // Locale-local city shortcuts from CITY_SLUGS (SEO + human quick access).
     expect(within(dialog).getByRole("link", { name: "cities.madrid" }).getAttribute("href")).toBe("/vitamin-d/madrid");

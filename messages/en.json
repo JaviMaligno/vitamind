@@ -214,6 +214,7 @@
     "citiesHeading": "Vitamin D by city",
     "learn": "Learn",
     "partners": "Partners",
+    "about": "About",
     "allCities": "All cities"
   },
   "dashboard": {
@@ -1171,5 +1172,15 @@
     "title": "Page not found",
     "message": "The page you are looking for does not exist or has moved.",
     "home": "Back to home"
+  },
+  "about": {
+    "metaTitle": "Who is behind Vitamina D Explorer",
+    "metaDescription": "Who builds Vitamina D Explorer, why it exists, and how its sun and vitamin D synthesis figures are calculated.",
+    "heading": "Who is behind this",
+    "body": "Vitamina D Explorer is built and maintained by Javier Aguilar. There is no company behind it and no content team: there is one person who decided the question \"how much sun do I need today?\" deserved a calculated answer rather than a rule of thumb.",
+    "whyHeading": "Why it exists",
+    "whyBody": "The usual answer — \"ten or fifteen minutes a day\" — is the same in Oslo in December as in Nairobi in June, and in one of those places it is impossible. Vitamin D synthesis depends on solar elevation, ozone, phototype and the area of skin exposed. All of that can be computed, and that is what this tool does.",
+    "contactHeading": "Contact and code",
+    "contactBody": "The model, its sources and its limits are published. If you find an error in a calculation, I want to hear about it."
   }
 }
