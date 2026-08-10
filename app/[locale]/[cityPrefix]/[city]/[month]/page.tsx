@@ -16,6 +16,8 @@ import { dailySunTimes, getSunTimes } from "@/lib/sun-times";
 import { getCurve, doyFromMonthDay, dateFromDoy, fmtTime, fmtDayLength } from "@/lib/solar";
 import { computeExposureFromCurve } from "@/lib/vitd";
 import { ozoneDU } from "@/lib/uv-model";
+import { sunProse } from "@/lib/sun-prose";
+import { isTreated } from "@/lib/phase2-cities";
 
 /**
  * Programmatic SEO page: sunrise/sunset for one city and one month
@@ -28,6 +30,14 @@ import { ozoneDU } from "@/lib/uv-model";
 export function generateStaticParams() {
   return sunStaticParams();
 }
+
+/**
+ * Daily ISR. The tables are astronomy and do not change, but the served HTML
+ * carrying a current date is the difference between a page that reads as this
+ * year's and one that reads as an archive — the freshness gap measured against
+ * alpenglow, whose pages say "Aug 8".
+ */
+export const revalidate = 86400;
 
 type Params = { locale: string; cityPrefix: string; city: string; month: string };
 
@@ -91,6 +101,14 @@ export default async function SunriseMonthPage({ params }: { params: Promise<Par
     city.lat, city.lon, city.tz, city.timezone, city.elevation ?? 0, monthIndex,
   );
 
+  /**
+   * Phase 2 ships the extractable passage to half the sunrise cities; the other
+   * half is the control group and must render exactly what it rendered before,
+   * or the comparison answers nothing. `isTreated` is the only gate — there is
+   * deliberately no query param or env override to peek with.
+   */
+  const prose = isTreated(base) ? sunProse(city, monthIndex) : null;
+
   const intro = t("intro", {
     city: cityName,
     month,
@@ -139,6 +157,33 @@ export default async function SunriseMonthPage({ params }: { params: Promise<Par
         {t("title", { city: cityName, month })}
       </h1>
       <p className="mt-4 text-body sm:text-heading text-text-secondary max-w-2xl leading-relaxed">{intro}</p>
+
+      {/* The extractable passage: every figure computed above, at render time. */}
+      {prose && (
+        <p className="mt-4 text-body text-text-secondary leading-relaxed">
+          {t(
+            prose.regime === "synthesis" ? "proseSynthesis"
+            : prose.regime === "none" ? "proseNone"
+            : "prosePolar",
+            {
+              city: cityName,
+              month,
+              year: new Date().getUTCFullYear(),
+              lat: prose.lat.toFixed(1),
+              days: prose.days,
+              firstSunrise: t2(prose.firstSunrise),
+              firstSunset: t2(prose.firstSunset),
+              lastSunrise: t2(prose.lastSunrise),
+              lastSunset: t2(prose.lastSunset),
+              dayLength: prose.midDayLengthMin !== null ? fmtDayLength(prose.midDayLengthMin) : "—",
+              peak: Math.round(prose.peakElevationDeg),
+              windowStart: prose.vitD ? t2(prose.vitD.windowStart) : "",
+              windowEnd: prose.vitD ? t2(prose.vitD.windowEnd) : "",
+              minutes: prose.vitD ? prose.vitD.minutesNeeded : 0,
+            },
+          )}
+        </p>
+      )}
 
       {/* Mid-month snapshot */}
       <PhaseWindow lat={city.lat} lon={city.lon} className="mt-8 p-5 sm:p-6 text-on-window">
