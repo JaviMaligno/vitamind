@@ -269,6 +269,11 @@ export default async function SunriseMonthPage({ params }: { params: Promise<Par
             {t("vitdCta", { city: cityName })}
           </Link>
         </p>
+        {/* Every page that states a figure says where the figure comes from;
+            the bibliography lives on /methodology, not repeated here. */}
+        <p className="mt-6 text-caption text-text-muted">
+          <A href="/methodology">{t("howCalculated")}</A>
+        </p>
       </nav>
     </main>
   );

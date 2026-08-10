@@ -10,13 +10,13 @@ describe("sitemap", () => {
   const entries = sitemap();
 
   it("emits the static, city and sunrise-month URLs", () => {
-    // 8 pages ×6 + 73 cities ×6 + every sunrise city ×12 months ×6.
+    // 9 pages ×6 + 73 cities ×6 + every sunrise city ×12 months ×6.
     //
     // The sunrise term is derived from SUNRISE_CITIES rather than hardcoded, so adding
     // a wave does not require editing this number. What it still pins is the shape —
     // twelve months in six locales for each configured city — which is what would break
     // if a locale or a month were ever dropped from the generator.
-    expect(entries).toHaveLength(48 + 438 + SUNRISE_CITIES.length * 12 * 6);
+    expect(entries).toHaveLength(54 + 438 + SUNRISE_CITIES.length * 12 * 6);
   });
 
   it("covers every configured sunrise city in every locale", () => {
