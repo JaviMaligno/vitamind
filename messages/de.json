@@ -320,7 +320,7 @@
       },
       "q4": {
         "q": "Was bedeutet der UV-Index, und warum verwendet die App 3 als Mindestwert?",
-        "a": "Der UV-Index (UVI) ist ein internationaler Standard, der die erythemgewichtete UV-Intensität auf Bodenniveau misst. Er reicht von 0 (keine Strahlung) bis 11+ (extrem). Die App verwendet UVI ≥ 3 als Syntheseschwelle, weil unterhalb dieses Wertes die UVB-Intensität für eine nennenswerte Vitamin-D-Produktion zu gering ist — unabhängig davon, wie lange du draußen bleibst. Diese Schwelle stimmt mit den Forschungsergebnissen von Holick und Kollegen überein und entspricht in etwa einer Sonnenhöhe von mehr als 30–35° über dem Horizont."
+        "a": "Der UV-Index (UVI) ist ein internationaler Standard, der die erythemgewichtete UV-Intensität auf Bodenniveau misst. Er reicht von 0 (keine Strahlung) bis 11+ (extrem). Die App verwendet UVI ≥ 3 als Syntheseschwelle, weil unterhalb dieses Wertes die UVB-Intensität für eine nennenswerte Vitamin-D-Produktion zu gering ist — unabhängig davon, wie lange du draußen bleibst. Diese Schwelle stimmt mit den Forschungsergebnissen von Holick und Kollegen überein. Die dafür nötige Sonnenhöhe ist nicht fest: Sie hängt vom Ozon ab, das mit Breitengrad und Jahreszeit schwankt, und reicht von etwa 29° bis etwa 42°."
       },
       "q5": {
         "q": "Unterdrücken Wolken UVB vollständig?",

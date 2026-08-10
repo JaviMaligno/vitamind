@@ -320,7 +320,7 @@
       },
       "q4": {
         "q": "¿Qué significa el índice UV y por qué la app usa 3 como mínimo?",
-        "a": "El Índice UV (UVI) es un estándar internacional que mide la intensidad UV a nivel del suelo ponderada por el espectro eritémico. Va de 0 (nulo) a 11+ (extremo). La app usa UVI ≥ 3 como umbral de síntesis porque por debajo de ese nivel la intensidad de UVB es demasiado baja para producir vitamina D de forma significativa, independientemente del tiempo que pases al aire libre. Este umbral es coherente con la investigación de Holick y colaboradores, y corresponde aproximadamente a un ángulo solar superior a 30–35°."
+        "a": "El Índice UV (UVI) es un estándar internacional que mide la intensidad UV a nivel del suelo ponderada por el espectro eritémico. Va de 0 (nulo) a 11+ (extremo). La app usa UVI ≥ 3 como umbral de síntesis porque por debajo de ese nivel la intensidad de UVB es demasiado baja para producir vitamina D de forma significativa, independientemente del tiempo que pases al aire libre. Este umbral es coherente con la investigación de Holick y colaboradores. La elevación solar que hace falta para llegar a ese UVI no es fija: depende del ozono, que cambia con la latitud y la estación, y va de unos 29° a unos 42°."
       },
       "q5": {
         "q": "¿Las nubes anulan el UVB?",

@@ -692,3 +692,24 @@ git commit -m "test(schema): assert the identity graph reaches served HTML"
 - The prose passage, ISR and the vitamin D wedge — phase 2.
 - `dateModified` — phase 2, for the reason recorded at the top.
 - Any change to page content, rendering model or city coverage.
+
+---
+
+## Deviation, recorded after implementation (2026-08-10)
+
+**`/about` is not in the desktop header, contrary to Task 4's acceptance criteria.** The task
+allowed this fallback if the link broke the logo at 1024px, and it does: measured in a real
+viewport, the logo wordmark's `scrollWidth` is 150px against a `clientWidth` of 142px with the
+link present, and removing it in the live DOM restores it. The broken band is 1024–1039px.
+
+So the reachability criteria are, as shipped:
+- **Below `lg`**: in the navigation drawer.
+- **All widths**: in the footer.
+- **Desktop header**: deliberately absent.
+
+Note the failure mode has changed since the July UI audit recorded it: the header gained a
+`truncate` class, so the logo now ellipsises rather than wrapping. Same regression class,
+quieter symptom — which is why it needed measuring rather than eyeballing.
+
+Phase 1b adds `/methodology` to the drawer for the same reason: it would have been a fourth
+inline link.

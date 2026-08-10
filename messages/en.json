@@ -320,7 +320,7 @@
       },
       "q4": {
         "q": "What does the UV index mean, and why does the app use 3 as the minimum?",
-        "a": "The UV Index (UVI) is an international standard that measures the erythemally-weighted UV intensity at ground level. It runs from 0 (none) to 11+ (extreme). The app uses UVI ≥ 3 as the synthesis threshold because below that level UVB intensity is too low for meaningful vitamin D production, regardless of how long you stay outside. This threshold is consistent with the research of Holick and colleagues, and corresponds roughly to the sun being more than 30–35° above the horizon."
+        "a": "The UV Index (UVI) is an international standard that measures the erythemally-weighted UV intensity at ground level. It runs from 0 (none) to 11+ (extreme). The app uses UVI ≥ 3 as the synthesis threshold because below that level UVB intensity is too low for meaningful vitamin D production, regardless of how long you stay outside. This threshold is consistent with the research of Holick and colleagues. The solar elevation needed to reach that UVI is not fixed: it depends on ozone, which varies with latitude and season, and ranges from about 29° to about 42°."
       },
       "q5": {
         "q": "Do clouds cancel UVB?",
@@ -803,10 +803,10 @@
     "home": "Back to home"
   },
   "about": {
-    "metaTitle": "Who is behind Vitamina D Explorer",
-    "metaDescription": "Who builds Vitamina D Explorer, why it exists, and how its sun and vitamin D synthesis figures are calculated.",
+    "metaTitle": "Who is behind Vitamin D Explorer",
+    "metaDescription": "Who builds Vitamin D Explorer, why it exists, and how its sun and vitamin D synthesis figures are calculated.",
     "heading": "Who is behind this",
-    "body": "Vitamina D Explorer is built and maintained by Javier Aguilar. There is no company behind it and no content team: there is one person who decided the question \"how much sun do I need today?\" deserved a calculated answer rather than a rule of thumb.",
+    "body": "Vitamin D Explorer is built and maintained by Javier Aguilar. There is no company behind it and no content team: there is one person who decided the question \"how much sun do I need today?\" deserved a calculated answer rather than a rule of thumb.",
     "whyHeading": "Why it exists",
     "whyBody": "The usual answer — \"ten or fifteen minutes a day\" — is the same in Oslo in December as in Nairobi in June, and in one of those places it is impossible. Vitamin D synthesis depends on solar elevation, ozone, phototype and the area of skin exposed. All of that can be computed, and that is what this tool does.",
     "contactHeading": "Contact and code",

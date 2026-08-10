@@ -672,3 +672,31 @@ git commit -m "test(methodology): assert the page and its bibliography ship in H
 - Finding an actual medical reviewer. The page states the absence honestly; filling it is not a code task.
 - Any change to `/learn`'s copy, layout or question set — only where it reads citations from.
 - Rewriting the model. This documents what the code already does; if writing it up reveals a discrepancy, that is a finding to report, not to fix here.
+
+---
+
+## Correction, recorded after implementation (2026-08-10)
+
+**This plan's central premise was wrong, and following it verbatim would have shipped
+incorrect citations.** It states "the 18 references live under `learn.block4.q*.sources`".
+They do not: the citations are spread across `learn.block1` to `block4` — **80 citation
+slots over 27 questions, resolving to 51 unique papers**.
+
+Two consequences, both caught during implementation:
+
+- The Task 1 step 1 extraction command only walks `m.learn.block4`, so it would have built a
+  module holding a quarter of the bibliography, and the Task 2 step 4 strip script would have
+  left three blocks' `sources` untouched.
+- Worse, the Task 2 step 3 code derives the lookup key with `q.qKey.split(".")[1]`, which
+  discards the block. `block1.q1`, `block2.q1` and `block3.q1` would all have resolved to
+  `block4.q1`'s citations — **wrong citations under 20 questions**, rendered as fact on a
+  health page.
+
+What shipped instead: 51 references, `BY_QUESTION` keyed by the full `block1.q1` form, and
+the page passing `qKey.replace(/\.q$/, "")`. The counts in Task 1's tests are 51 and the
+slot total is 80.
+
+**The lesson for the next plan:** the extraction script and the assertion that depends on it
+were written from the same wrong assumption, so they agreed with each other and neither
+caught it. Verify the shape of the data before writing the migration that moves it —
+`git grep` for the key across the whole file, not just the subtree the symptom pointed at.
