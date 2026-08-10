@@ -57,6 +57,15 @@ export default function SiteNav() {
     { href: "/connect", label: t("nav.connect") },
     { href: "/partners", label: t("footer.partners") },
   ];
+  // About is drawer-only. As a third inline link it widens the action cluster
+  // enough to ellipsise the logo wordmark and subtitle between 1024 and
+  // 1039 px — measured 150 px of title squeezed into 142 px at exactly the
+  // width where lg engages. The footer carries it on every page, so desktop
+  // loses no reachability. Methodology joins it for the same reason.
+  const drawerOnly = [
+    { href: "/about", label: t("footer.about") },
+    { href: "/methodology", label: t("footer.methodology") },
+  ];
 
   return (
     <>
@@ -113,7 +122,7 @@ export default function SiteNav() {
               </button>
             </div>
 
-            {secondary.map((l) => (
+            {[...secondary, ...drawerOnly].map((l) => (
               <Link key={l.href} href={l.href} onClick={() => setOpen(false)} className={drawerLinkClass}>
                 {l.label}
               </Link>

@@ -15,6 +15,10 @@ const PAGES = [
   { path: "/connect", changeFrequency: "monthly" as const, priority: 0.7 },
   { path: "/profile", changeFrequency: "monthly" as const, priority: 0.4 },
   { path: "/partners", changeFrequency: "monthly" as const, priority: 0.6 },
+  // The page the schema Person node points at. Low churn, but it has to be
+  // discoverable: an identity anchor nothing crawls anchors nothing.
+  { path: "/about", changeFrequency: "yearly" as const, priority: 0.5 },
+  { path: "/methodology", changeFrequency: "monthly" as const, priority: 0.6 },
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { authorship } from "@/lib/schema";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import CityCta from "@/components/CityCta";
@@ -198,7 +199,7 @@ export default async function CityPage({ params }: { params: Promise<Params> }) 
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify({ "@context": "https://schema.org", "@type": "FAQPage", mainEntity: faq }),
+          __html: JSON.stringify({ "@context": "https://schema.org", "@type": "FAQPage", mainEntity: faq, ...authorship() }),
         }}
       />
 
@@ -386,6 +387,11 @@ export default async function CityPage({ params }: { params: Promise<Params> }) 
           <A href={indexPathname(p.locale)} className="font-semibold">
             {t("allCitiesLink")}
           </A>
+        </p>
+        {/* Every page that states a figure says where the figure comes from;
+            the bibliography lives on /methodology, not repeated here. */}
+        <p className="mt-6 text-caption text-text-muted">
+          <A href="/methodology">{t("howCalculated")}</A>
         </p>
       </nav>
     </main>

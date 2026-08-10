@@ -1,0 +1,59 @@
+{
+  "$comment": [
+    "BASELINE — captured before phase 1a reached production, which is the only",
+    "reason it is worth anything. Taken through the user's own profiled Chrome",
+    "(the only transport Google does not block; see the phase-3 design), 10 queries",
+    "in one sitting, no block encountered.",
+    "",
+    "METHOD LIMITATION, recorded because it bit during this very capture: detecting",
+    "'cited inside the AI Overview' by DOM containment gives false positives — the",
+    "matched container wrapped both the overview and the organic results, so a link",
+    "1880px below the overview read as cited. Position is the reliable signal: the",
+    "link's absolute top versus the overview block's bottom. The one apparent hit",
+    "here (sun-nyc-sep) was refuted that way and is organic, far below the fold.",
+    "",
+    "Also note aioBottom clusters at ~208px because the smallest element containing",
+    "the label is the label itself, not the whole block. Good enough to separate",
+    "'in the overview' from 'two thousand pixels down', which is the distinction that",
+    "mattered here, but the phase-3 analyser should bound the block properly."
+  ],
+  "capturedOn": "2026-08-10",
+  "capturedVia": "user-profiled Chrome via extension",
+  "querySet": "queries.json@fixedOn=2026-08-10",
+  "summary": {
+    "queries": 10,
+    "withAiOverview": 9,
+    "citedInAiOverview": 0,
+    "presentAnywhere": 1,
+    "blocked": 0
+  },
+  "observations": [
+    { "id": "sun-tokyo-may", "aiOverview": true, "cited": false, "present": false,
+      "topDomains": ["digi-joho.com", "timeanddate.com", "gotokyo.org", "livejapan.com", "eco.mtk.nao.ac.jp", "sunrisesunset.com"] },
+    { "id": "sun-toronto-aug", "aiOverview": false, "cited": false, "present": false,
+      "note": "No AI Overview at all — the first counterexample to the 5/5 sample of 2026-08-09.",
+      "topDomains": ["timeanddate.com", "almanac.com", "sunrisesunset.com", "timebie.com", "toronto.weatherstats.ca"] },
+    { "id": "sun-london-mar", "aiOverview": true, "cited": false, "present": false,
+      "topDomains": ["tourlondres.com", "timeanddate.com", "en.wschody-zachody.pl", "sunrisesunset.com", "rmg.co.uk"] },
+    { "id": "sun-nyc-sep", "aiOverview": true, "cited": false, "present": true,
+      "organicTopPx": 2088, "aioBottomPx": 208, "pageHeightPx": 2772,
+      "note": "Containment check said cited; position refuted it. Organic, below the fold.",
+      "topDomains": ["anuevayork.com", "newyorktickets.com", "newyorkwelcome.net", "calendario-info.es", "sunrise-and-sunset.com"] },
+    { "id": "sun-tenerife", "aiOverview": true, "cited": false, "present": false,
+      "topDomains": ["clubcanary.com", "sunrise-and-sunset.com", "alpenglowapp.com", "timeanddate.com", "meteogram.es"] },
+    { "id": "sun-barcelona-dec", "aiOverview": true, "cited": false, "present": false,
+      "note": "We were present organically on 2026-08-09 and absent today — day-to-day SERP variance, worth watching before reading any single reading as a trend.",
+      "topDomains": ["calendario-info.es", "elperiodico.com", "astronomia.ign.es", "timeanddate.com", "sunrise-and-sunset.com"] },
+    { "id": "vitd-how-long", "aiOverview": true, "cited": false, "present": false },
+    { "id": "vitd-sun", "aiOverview": true, "cited": false, "present": false },
+    { "id": "vitd-winter", "aiOverview": true, "cited": false, "present": false },
+    { "id": "vitd-which", "aiOverview": true, "cited": false, "present": false }
+  ],
+  "competitors": {
+    "$comment": "How often each appears across the 10 queries. The comparison that matters is alpenglow: a small app, cited where we are not.",
+    "timeanddate.com": 5,
+    "sunrise-and-sunset.com": 4,
+    "sunrisesunset.com": 3,
+    "alpenglowapp.com": 1
+  }
+}
