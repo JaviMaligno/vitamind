@@ -1,0 +1,25 @@
+{
+  "$comment": [
+    "The fixed query set for AI Overview citation tracking. Fixed on purpose: the",
+    "series is only comparable against itself, so changing this file starts a new",
+    "baseline rather than continuing the old one.",
+    "",
+    "Selection rule (from the phase-3 design): the highest-impression queries in the",
+    "Search Console 3-month report that already return an AI Overview, spanning several",
+    "cities and two languages, plus vitamin D queries with measurable Trends volume.",
+    "The gscImpressions figures are from the 2026-05-08 to 2026-08-07 report."
+  ],
+  "fixedOn": "2026-08-10",
+  "queries": [
+    { "id": "sun-tokyo-may", "q": "what time is sunset in tokyo in may", "hl": "en", "gl": "us", "territory": "sun", "gscImpressions": 55 },
+    { "id": "sun-toronto-aug", "q": "what time is sunset in toronto in august", "hl": "en", "gl": "us", "territory": "sun", "gscImpressions": 26 },
+    { "id": "sun-london-mar", "q": "a que hora anochece en londres en marzo", "hl": "es", "gl": "es", "territory": "sun", "gscImpressions": 47 },
+    { "id": "sun-nyc-sep", "q": "a que hora anochece en nueva york en septiembre", "hl": "es", "gl": "es", "territory": "sun", "gscImpressions": 31 },
+    { "id": "sun-tenerife", "q": "a qué hora amanece en tenerife", "hl": "es", "gl": "es", "territory": "sun", "gscImpressions": 22 },
+    { "id": "sun-barcelona-dec", "q": "puesta de sol barcelona diciembre", "hl": "es", "gl": "es", "territory": "sun", "gscImpressions": 14 },
+    { "id": "vitd-how-long", "q": "cuanto tiempo al sol para vitamina d", "hl": "es", "gl": "es", "territory": "vitd", "gscImpressions": 0 },
+    { "id": "vitd-sun", "q": "vitamina d sol", "hl": "es", "gl": "es", "territory": "vitd", "gscImpressions": 0 },
+    { "id": "vitd-winter", "q": "se puede tomar vitamina d del sol en invierno", "hl": "es", "gl": "es", "territory": "vitd", "gscImpressions": 0 },
+    { "id": "vitd-which", "q": "cuál es la vitamina del sol", "hl": "es", "gl": "es", "territory": "vitd", "gscImpressions": 0 }
+  ]
+}

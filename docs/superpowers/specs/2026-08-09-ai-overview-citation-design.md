@@ -45,7 +45,7 @@ anyway.
 
 | | getvitamind | Alpenglow |
 |---|---|---|
-| Granularity | 28 cities | thousands, down to districts (Chamartín, Les Corts) |
+| Granularity | 40 cities | thousands, down to districts (Chamartín, Les Corts) |
 | Time frame | generic month, fixed reference year | **today**, "updated daily" |
 | Snippet | "Amanecer y atardecer en Madrid en agosto" | "El amanecer en Madrid es a las 7:18 AM en Aug 8" |
 | Unique datum | vitamin D window (invisible) | sunset quality forecast |
@@ -97,11 +97,12 @@ This is stated because the alternative is to ship three phases against an unstat
 expectation nothing supports. The citation target stands; it is the owner's explicit call.
 What changes is that success is measured as *citation count first, click delta second*.
 
-**And there is no way around the AI Overview.** A 2026-08-09 sample of five of our own
-highest-impression GSC queries returned **5 out of 5 with an AI Overview and 0 citations for
-us**; in the only query where we appear at all (`puesta de sol barcelona diciembre`) we are
-organic, at 1335 px down a 2758 px page. Alpenglow appears in 2 of the 5. There is no
-AIO-free segment to retreat to, so improving classic CTR is not an available strategy.
+**And there is almost no way around the AI Overview.** The 2026-08-10 baseline (10 fixed
+queries, `data/aio-tracking/`) returned **9 of 10 with an AI Overview and 0 citations for
+us**. One query — `what time is sunset in toronto in august` — carried no overview at all,
+which corrects the "5 out of 5" reading of the day before: an AIO-free segment exists, it is
+just small enough that it cannot carry the strategy. We appear at all in exactly one of the
+ten, organically, 2088 px into a 2772 px page.
 
 ## Decisions taken
 
@@ -111,7 +112,7 @@ AIO-free segment to retreat to, so improving classic CTR is not an available str
 2. **Freshness via daily ISR in the served HTML.** Not client-side, because the datum has to
    be in the HTML that gets crawled and extracted.
 3. **Vitamin D as a wedge inside the solar pages.** One asset attacks both territories:
-   the 2016 month pages already draw the impressions; the synthesis window is what nobody
+   the 2880 month pages already draw the impressions; the synthesis window is what nobody
    else can compute.
 4. **Own citation checker in the repo**, not a paid provider — with the transport kept
    swappable (see phase 3).
@@ -215,7 +216,7 @@ equally honest, now dated.
 **ISR.** `export const revalidate = 86400` on the month and city pages. On-demand
 regeneration, not a daily rebuild of 2496 pages.
 
-**Template-mass risk, mitigated by design rather than by volume.** 2016 pages carrying a
+**Template-mass risk, mitigated by design rather than by volume.** 2880 pages carrying a
 generated paragraph can read as bulk generation. The wording branches on the real solar
 regime of that city and month: wide synthesis window, no synthesis possible at any hour, or
 polar day/night. Three structurally different texts because the facts differ. That variation
@@ -258,6 +259,14 @@ interval tuning fixes it. **Phase 3 therefore cannot run in CI, in cron, or on a
 
 ### Design
 
+**Detecting "cited" is harder than it looks, and the baseline capture proved it.** Deciding
+whether our link sits inside the overview by DOM containment produces false positives: the
+matched container wrapped both the overview and the organic results, so a link 1880 px below
+the overview reported as cited. The reliable signal is geometric — the link's absolute top
+against the overview block's bottom — and the analyser must bound the block properly rather
+than matching the smallest element carrying the label. Any claim of a citation gets refuted
+by position before it is recorded.
+
 **The checker is an analyser, not a scraper.** The browser obtains the SERP through the human
 channel; a pure repo module receives that text and extracts AIO presence, cited domains,
 whether we are among them, and organic position. Splitting transport from analysis is what
@@ -287,7 +296,7 @@ the transport and preserves the entire historical series.
 
 ## Horizon and failure criteria
 
-Google must crawl, index and re-evaluate 2016 pages. The realistic judging window is **4–12
+Google must crawl, index and re-evaluate 2880 pages. The realistic judging window is **4–12
 weeks**, and the first sign of progress is recrawl and position movement, not the citation.
 
 Each phase has a signal and a named successor lever:
