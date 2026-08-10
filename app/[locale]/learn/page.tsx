@@ -3,6 +3,7 @@ import { Sun, Pill, FlaskConical, Sunrise, ArrowLeft } from "lucide-react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
+import { referencesFor } from "@/lib/references";
 import PosterHero from "@/components/PosterHero";
 import LearnQA from "@/components/LearnQA";
 import LearnSearch from "@/components/LearnSearch";
@@ -54,15 +55,9 @@ export default async function LearnPage({ params }: { params: Promise<{ locale: 
   const blocks = BLOCKS.map((block) => ({
     ...block,
     items: block.questions.map((q) => {
-      const baseKey = q.qKey.replace(/\.q$/, "");
-      let sources: { label: string; url: string }[] | undefined;
-      try {
-        const raw = t.raw(`${baseKey}.sources`);
-        if (Array.isArray(raw)) sources = raw as { label: string; url: string }[];
-      } catch {
-        // No sources for this question — leave undefined.
-      }
-      return { q: t(q.qKey), a: t(q.aKey), sources };
+      // "block4.q3.q" → "block4.q3". Citations are keyed by question, not by locale.
+      const cited = referencesFor(q.qKey.replace(/\.q$/, ""));
+      return { q: t(q.qKey), a: t(q.aKey), sources: cited.length ? cited : undefined };
     }),
   }));
 
