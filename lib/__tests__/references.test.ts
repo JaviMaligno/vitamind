@@ -36,4 +36,36 @@ describe("REFERENCES", () => {
     expect(referencesFor("block4.q7")).toEqual([]);
     expect(referencesFor("block4.q9")).toEqual([]);
   });
+
+  /**
+   * `referencesFor` fails silently: an unrecognised key returns [] rather than
+   * throwing. The learn page derives that key at runtime from its own `qKey`
+   * scheme, so a change on either side — renaming the blocks, dropping the
+   * prefix — would empty 21 of the 27 cited questions with the suite still
+   * green. This is the test that would notice.
+   */
+  it("answers for every question the learn page will ask about", () => {
+    const BLOCK_SIZES = { block1: 9, block2: 5, block3: 6, block4: 9 } as const;
+    const cited: string[] = [];
+    for (const [block, count] of Object.entries(BLOCK_SIZES)) {
+      for (let i = 1; i <= count; i++) {
+        if (referencesFor(`${block}.q${i}`).length > 0) cited.push(`${block}.q${i}`);
+      }
+    }
+    // 27 questions carried citations before the move; that number is the contract.
+    expect(cited).toHaveLength(27);
+    // And every block must contribute — a prefix bug would empty three of four.
+    for (const block of Object.keys(BLOCK_SIZES)) {
+      expect(cited.filter((k) => k.startsWith(block)).length, block).toBeGreaterThan(0);
+    }
+  });
+
+  it("accounts for all 80 citation slots the message files used to hold", () => {
+    const BLOCK_SIZES = { block1: 9, block2: 5, block3: 6, block4: 9 } as const;
+    let slots = 0;
+    for (const [block, count] of Object.entries(BLOCK_SIZES)) {
+      for (let i = 1; i <= count; i++) slots += referencesFor(`${block}.q${i}`).length;
+    }
+    expect(slots).toBe(80);
+  });
 });

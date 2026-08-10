@@ -101,7 +101,7 @@ export function authorship(): { author: { "@id": string }; publisher: { "@id": s
 
 /**
  * `citation` edges for the methodology page — the one place that states the
- * bibliography. Data pages link to it rather than repeating eighteen nodes each,
+ * bibliography. Data pages link to it rather than repeating 51 nodes each,
  * which on 3360 pages would be weight without information.
  */
 export function modelCitations(): { citation: { "@type": string; name: string; url: string }[] } {

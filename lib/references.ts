@@ -30,6 +30,11 @@ export const REFERENCES = {
       "Holick MF (2013) — Sunlight and Vitamin D: A global perspective for health. Dermato-Endocrinology 5(1):51-108",
     url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC3897598/",
   },
+  // Cited twice in the old message files under two different labels — one with the
+  // full subtitle about Boston and Edmonton, one without, and with the journal
+  // abbreviated differently. Same paper, same URL, so the move collapsed them to
+  // this one. `/learn` block1.q2 shows this shorter label where it used to show
+  // the longer one; the citation is unchanged, the wording is not.
   webb1988: {
     label:
       "Webb AR, Kline L, Holick MF (1988) — Influence of season and latitude on the cutaneous synthesis of vitamin D3. J Clin Endocrinol Metab 67(2):373-378",
@@ -94,6 +99,9 @@ export const REFERENCES = {
       "Schindl A et al. (2022) — Bunsen-Roscoe reciprocity: Is it still valid? Indian J Ophthalmol",
     url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC9672781/",
   },
+  // Also cited under two labels before the move, differing in how many authors
+  // were listed. This is the full one. `/learn` block1.q9 gains the longer author
+  // list it previously showed abbreviated.
   liu2014: {
     label:
       "Liu D, Fernandez BO, Hamilton A, Lang NN, Gallagher JMC, Newby DE, Feelisch M, Weller RB (2014) — UVA Irradiation of Human Skin Vasodilates Arterial Vasculature and Lowers Blood Pressure Independently of Nitric Oxide Synthase. J Invest Dermatol 134(7):1839-1846",
