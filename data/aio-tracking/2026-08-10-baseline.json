@@ -15,7 +15,17 @@
     "Also note aioBottom clusters at ~208px because the smallest element containing",
     "the label is the label itself, not the whole block. Good enough to separate",
     "'in the overview' from 'two thousand pixels down', which is the distinction that",
-    "mattered here, but the phase-3 analyser should bound the block properly."
+    "mattered here, but the phase-3 analyser should bound the block properly.",
+    "",
+    "KNOWN GAP IN THIS BASELINE, so nobody reads more into it than it holds:",
+    "`topDomains` lists domains linked anywhere on the SERP — it is NOT scoped to",
+    "the AI Overview's source box, so it cannot answer 'who did the overview cite'.",
+    "And no screenshot or HTML snapshot was kept per query, so an individual row",
+    "cannot be re-audited after the fact; only re-measured, against a SERP that will",
+    "have changed. `citedInAiOverview: 0` is therefore sound for us (we verified our",
+    "own absence directly) but the competitor picture is indicative, not evidence.",
+    "The phase-3 analyser must record `aioCitedDomains` separately from page-wide",
+    "domains and keep a per-query artifact keyed by `id`."
   ],
   "capturedOn": "2026-08-10",
   "capturedVia": "user-profiled Chrome via extension",
