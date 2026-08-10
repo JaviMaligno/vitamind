@@ -8,7 +8,7 @@
  */
 const BASE_URL = process.env.BASE_URL ?? "http://localhost:3000";
 
-const PAGES = ["/", "/about", "/en/about", "/vitamina-d/madrid", "/amanecer/madrid/agosto"];
+const PAGES = ["/", "/about", "/methodology", "/en/about", "/en/methodology", "/vitamina-d/madrid", "/amanecer/madrid/agosto"];
 
 let failures = 0;
 const fail = (msg) => { console.error(`FAIL ${msg}`); failures++; };
