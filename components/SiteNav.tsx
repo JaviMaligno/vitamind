@@ -61,8 +61,11 @@ export default function SiteNav() {
   // enough to ellipsise the logo wordmark and subtitle between 1024 and
   // 1039 px — measured 150 px of title squeezed into 142 px at exactly the
   // width where lg engages. The footer carries it on every page, so desktop
-  // loses no reachability.
-  const drawerOnly = [{ href: "/about", label: t("footer.about") }];
+  // loses no reachability. Methodology joins it for the same reason.
+  const drawerOnly = [
+    { href: "/about", label: t("footer.about") },
+    { href: "/methodology", label: t("footer.methodology") },
+  ];
 
   return (
     <>

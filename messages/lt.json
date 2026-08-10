@@ -215,6 +215,7 @@
     "learn": "Gidas",
     "partners": "Partneriams",
     "about": "Apie",
+    "methodology": "Metodika",
     "allCities": "Visi miestai"
   },
   "dashboard": {
@@ -713,7 +714,8 @@
     "faqSunriseA": "1 d. ({month}) saulė teka {first}, o {lastDay} d. — {last} (visada vietos laiku).",
     "faqDayQ": "Kokia dienos trukmė ({city}, {month})?",
     "faqDayA": "Apie {dayLength} mėnesio viduryje.",
-    "note": "Astronominės reikšmės yra orientacinės: priklausomai nuo metų jos gali skirtis viena–dviem minutėmis."
+    "note": "Astronominės reikšmės yra orientacinės: priklausomai nuo metų jos gali skirtis viena–dviem minutėmis.",
+    "howCalculated": "Kaip apskaičiuoti šie laikai"
   },
   "cityPage": {
     "title": "Vitaminas D iš saulės: {city}",
@@ -748,6 +750,7 @@
     "indexEyebrow": "Miestų katalogas",
     "indexCitiesLabel": "miestai",
     "allCitiesLink": "Visi miestai",
+    "howCalculated": "Kaip apskaičiuoti šie laikai",
     "viewCityPage": "Žiūrėti visą {city} puslapį",
     "indexBandVeryHigh": "Kraštutinės platumos (55°+) — ilgos žiemos be naudingos saulės",
     "indexBandHigh": "Aukštos platumos (45–55°)",

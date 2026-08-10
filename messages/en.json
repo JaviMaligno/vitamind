@@ -215,6 +215,7 @@
     "learn": "Learn",
     "partners": "Partners",
     "about": "About",
+    "methodology": "Methodology",
     "allCities": "All cities"
   },
   "dashboard": {
@@ -713,7 +714,8 @@
     "faqSunriseA": "On {month} 1 it rises at {first} and on day {lastDay} at {last}, always in local time.",
     "faqDayQ": "How long is the day in {city} in {month}?",
     "faqDayA": "Around {dayLength} at mid-month.",
-    "note": "Approximate astronomical values: they can shift a minute or two from year to year."
+    "note": "Approximate astronomical values: they can shift a minute or two from year to year.",
+    "howCalculated": "How these times are calculated"
   },
   "cityPage": {
     "title": "Vitamin D from the sun in {city}",
@@ -748,6 +750,7 @@
     "indexEyebrow": "City directory",
     "indexCitiesLabel": "cities",
     "allCitiesLink": "Browse all cities",
+    "howCalculated": "How these times are calculated",
     "viewCityPage": "View the full {city} page",
     "indexBandVeryHigh": "Extreme latitudes (55°+) — long winters with no useful sun",
     "indexBandHigh": "High latitudes (45–55°)",

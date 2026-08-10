@@ -215,6 +215,7 @@
     "learn": "Guide",
     "partners": "Partenaires",
     "about": "À propos",
+    "methodology": "Méthodologie",
     "allCities": "Toutes les villes"
   },
   "dashboard": {
@@ -713,7 +714,8 @@
     "faqSunriseA": "Le 1er {month}, il se lève à {first} et le {lastDay} à {last}, toujours en heure locale.",
     "faqDayQ": "Combien de temps dure le jour à {city} en {month} ?",
     "faqDayA": "Environ {dayLength} à la mi-mois.",
-    "note": "Valeurs astronomiques indicatives : elles peuvent varier d'une ou deux minutes selon l'année."
+    "note": "Valeurs astronomiques indicatives : elles peuvent varier d'une ou deux minutes selon l'année.",
+    "howCalculated": "Comment ces horaires sont calculés"
   },
   "cityPage": {
     "title": "Vitamine D du soleil {atCity}",
@@ -748,6 +750,7 @@
     "indexEyebrow": "Répertoire des villes",
     "indexCitiesLabel": "villes",
     "allCitiesLink": "Voir toutes les villes",
+    "howCalculated": "Comment ces horaires sont calculés",
     "viewCityPage": "Voir la page complète de {city}",
     "indexBandVeryHigh": "Latitudes extrêmes (55°+) — longs hivers sans soleil utile",
     "indexBandHigh": "Latitudes élevées (45–55°)",

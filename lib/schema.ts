@@ -1,4 +1,5 @@
 import { SITE_URL } from "@/lib/site";
+import { REFERENCES } from "@/lib/references";
 
 /**
  * The site's JSON-LD identity graph.
@@ -96,6 +97,21 @@ export function siteGraph({
  */
 export function authorship(): { author: { "@id": string }; publisher: { "@id": string } } {
   return { author: { "@id": PERSON_ID }, publisher: { "@id": ORGANIZATION_ID } };
+}
+
+/**
+ * `citation` edges for the methodology page — the one place that states the
+ * bibliography. Data pages link to it rather than repeating eighteen nodes each,
+ * which on 3360 pages would be weight without information.
+ */
+export function modelCitations(): { citation: { "@type": string; name: string; url: string }[] } {
+  return {
+    citation: Object.values(REFERENCES).map((r) => ({
+      "@type": "ScholarlyArticle",
+      name: r.label,
+      url: r.url,
+    })),
+  };
 }
 
 function reviewerNode(reviewer: Reviewer): Node {

@@ -215,6 +215,7 @@
     "learn": "Ratgeber",
     "partners": "Partner",
     "about": "Über uns",
+    "methodology": "Methodik",
     "allCities": "Alle Städte"
   },
   "dashboard": {
@@ -713,7 +714,8 @@
     "faqSunriseA": "Am 1. {month} geht sie um {first} auf, am {lastDay}. um {last} — jeweils Ortszeit.",
     "faqDayQ": "Wie lang ist der Tag in {city} im {month}?",
     "faqDayA": "Rund {dayLength} zur Monatsmitte.",
-    "note": "Astronomische Richtwerte: Sie können je nach Jahr um ein bis zwei Minuten abweichen."
+    "note": "Astronomische Richtwerte: Sie können je nach Jahr um ein bis zwei Minuten abweichen.",
+    "howCalculated": "Wie diese Zeiten berechnet werden"
   },
   "cityPage": {
     "title": "Vitamin D durch Sonne in {city}",
@@ -748,6 +750,7 @@
     "indexEyebrow": "Städteverzeichnis",
     "indexCitiesLabel": "Städte",
     "allCitiesLink": "Alle Städte ansehen",
+    "howCalculated": "Wie diese Zeiten berechnet werden",
     "viewCityPage": "Vollständige {city}-Seite ansehen",
     "indexBandVeryHigh": "Extreme Breiten (55°+) — lange Winter ohne nutzbare Sonne",
     "indexBandHigh": "Hohe Breiten (45–55°)",

@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { ORGANIZATION_ID, PERSON_ID, siteGraph, authorship } from "@/lib/schema";
+import { ORGANIZATION_ID, PERSON_ID, siteGraph, authorship, modelCitations } from "@/lib/schema";
+import { REFERENCES } from "@/lib/references";
 import { SITE_URL } from "@/lib/site";
 
 const nodeOfType = (graph: ReturnType<typeof siteGraph>, type: string) =>
@@ -93,5 +94,17 @@ describe("authorship", () => {
     // The failure this guards: inlining {"@type":"Person", name:...} per page,
     // which creates a new entity per block instead of referencing the one.
     expect(JSON.stringify(authorship())).not.toContain("@type");
+  });
+});
+
+describe("modelCitations", () => {
+  it("emits one ScholarlyArticle per reference", () => {
+    const { citation } = modelCitations();
+    expect(citation).toHaveLength(Object.keys(REFERENCES).length);
+    expect(citation[0]["@type"]).toBe("ScholarlyArticle");
+  });
+
+  it("carries the url of each paper", () => {
+    for (const c of modelCitations().citation) expect(c.url).toMatch(/^https:\/\//);
   });
 });

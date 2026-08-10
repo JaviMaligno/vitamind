@@ -215,6 +215,7 @@
     "learn": "Guía",
     "partners": "Colabora",
     "about": "Quién está detrás",
+    "methodology": "Cómo se calcula",
     "allCities": "Todas las ciudades"
   },
   "dashboard": {
@@ -713,7 +714,8 @@
     "faqSunriseA": "El 1 de {month} amanece a las {first} y el día {lastDay} a las {last}, siempre en hora local.",
     "faqDayQ": "¿Cuánto dura el día en {city} en {month}?",
     "faqDayA": "En torno a {dayLength} a mitad de mes.",
-    "note": "Valores astronómicos orientativos: pueden variar uno o dos minutos según el año."
+    "note": "Valores astronómicos orientativos: pueden variar uno o dos minutos según el año.",
+    "howCalculated": "Cómo se calculan estas horas"
   },
   "cityPage": {
     "title": "Vitamina D del sol en {city}",
@@ -748,6 +750,7 @@
     "indexEyebrow": "Directorio de ciudades",
     "indexCitiesLabel": "ciudades",
     "allCitiesLink": "Ver todas las ciudades",
+    "howCalculated": "Cómo se calculan estas horas",
     "viewCityPage": "Ver la página completa de {city}",
     "indexBandVeryHigh": "Latitudes extremas (55°+) — inviernos largos sin sol útil",
     "indexBandHigh": "Latitudes altas (45–55°)",

@@ -3,6 +3,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { routing } from "@/i18n/routing";
 import { buildAlternates } from "@/i18n/metadata";
 import { REFERENCES } from "@/lib/references";
+import { authorship, modelCitations } from "@/lib/schema";
 import A from "@/components/ui/A";
 import Card from "@/components/ui/Card";
 
@@ -47,6 +48,22 @@ export default async function MethodologyPage({ params }: { params: Promise<{ lo
 
   return (
     <main className="mx-auto max-w-[760px] px-4 py-6 sm:py-10">
+      {/* TechArticle rather than WebPage: it documents how a system works. This
+          is the site's one statement of its bibliography — the data pages link
+          here instead of repeating eighteen nodes each. */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "TechArticle",
+            name: t("metaTitle"),
+            description: t("metaDescription"),
+            ...authorship(),
+            ...modelCitations(),
+          }),
+        }}
+      />
       <h1 className="font-display text-3xl sm:text-5xl font-bold tracking-tight text-text-primary">
         {t("heading")}
       </h1>
