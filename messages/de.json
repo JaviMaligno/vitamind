@@ -808,5 +808,28 @@
     "whyBody": "Die übliche Antwort — „zehn oder fünfzehn Minuten am Tag“ — gilt in Oslo im Dezember genauso wie in Nairobi im Juni, und an einem dieser beiden Orte ist sie unmöglich. Die Vitamin-D-Synthese hängt von der Sonnenhöhe, vom Ozon, vom Hauttyp und von der Fläche der unbedeckten Haut ab. All das lässt sich berechnen, und genau das tut dieses Werkzeug.",
     "contactHeading": "Kontakt und Code",
     "contactBody": "Das Modell, seine Quellen und seine Grenzen sind veröffentlicht. Wenn du einen Fehler in einer Berechnung findest, möchte ich davon erfahren."
+  },
+  "methodology": {
+    "metaTitle": "Wie diese Sonnen- und Vitamin-D-Werte berechnet werden",
+    "metaDescription": "Das vollständige Modell: Sonnengeometrie, UV-Index bei klarem Himmel (Madronich, Ozon nach van Heuklon), Synthese nach Hauttyp, seine Schwellen, seine Grenzen und seine Korrekturen.",
+    "heading": "Wie das alles berechnet wird",
+    "intro": "Keine Zahl auf dieser Seite ist über den Daumen geschätzt. Alle stammen aus einem veröffentlichten Modell, und hier steht, aus welchem – mit dem, was es weiß, und dem, was es nicht weiß.",
+    "sunHeading": "Sonnengeometrie",
+    "sunBody": "Die Position der Sonne wird mit den Standardgleichungen für Deklination und Stundenwinkel berechnet: für eine Breite, eine Länge und einen Tag im Jahr die Sonnenhöhe zu jedem Zeitpunkt. Daraus ergeben sich Sonnenaufgang, Sonnenuntergang, bürgerliche Dämmerung und Tageslänge. Das ist Astronomie, keine Statistik: Es hängt nicht vom Wetter ab.",
+    "uvHeading": "UV-Index bei klarem Himmel",
+    "uvBody": "Der UV-Wert wird mit dem Modell von Madronich (2007) geschätzt, korrigiert um das saisonale Ozon nach van Heuklon. Ozon ist entscheidend, weil genau es die UVB-Strahlung schluckt, wenn die Sonne tief steht – und dieser Bereich entscheidet, ob es einen Winter ohne Vitamin D gibt. Alle Werte gelten für klaren Himmel: Wolken können sie nur verringern.",
+    "vitdHeading": "Vitamin-D-Synthese",
+    "vitdBody": "Aus dem UV-Wert wird die minimale Erythemdosis für den Fitzpatrick-Hauttyp berechnet, angepasst an das Alter und an die unbedeckte Hautfläche. Das Ergebnis sind die Minuten, die für eine Zieldosis nötig sind. Es ist eine Schätzung für die Bevölkerung, keine Diagnose.",
+    "thresholdHeading": "Die zwei Schwellen",
+    "thresholdBody": "Für die Synthese muss die Sonne eine bestimmte Höhe überschreiten. In-vitro-Studien setzen sie bei etwa 45° an; auf echter Haut sind die Felddaten vorsichtiger und deuten auf 50°. Die Seite verwendet 45° als optimistische und 50° als konservative Schwelle und sagt in jedem Fall, welche sie gerade benutzt, statt eine auszuwählen und darüber zu schweigen.",
+    "limitsHeading": "Was dieses Modell nicht weiß",
+    "limitsBody": "Es weiß nicht, ob in dem Moment, in dem du nachsiehst, Wolken da sind. Es berücksichtigt weder den Schatten von Gebäuden oder Bergen noch die Rückstrahlung von Schnee oder Wasser, die die Exposition deutlich erhöhen kann. Es behandelt die Haut als ebene, zum Himmel gerichtete Fläche. Und es beschreibt eine durchschnittliche Person je Hauttyp, nicht dich: Medikamente, Schwangerschaft, hohes Alter und mehrere Krankheiten verändern die Synthese. Es ersetzt weder eine Blutuntersuchung noch den Rat einer medizinischen Fachkraft.",
+    "changelogHeading": "Korrekturen am Modell",
+    "changelogBody": "Ein Modell, das sich nie geändert hat, ist ein Modell, das niemand überprüft hat. Dies sind seine Korrekturen.",
+    "changelog1Date": "9. Juli 2026",
+    "changelog1Body": "Der frühere UV-Schätzer lag bei tief stehender Sonne um das 3- bis 4-Fache zu hoch, weil er das Ozon ignorierte. Die Folge war gravierend und veröffentlicht: Die Seite behauptete, in Boston, New York, Madrid, Chicago und Toronto werde zwölf Monate im Jahr Vitamin D gebildet, im Widerspruch zu Webb, Kline und Holick (1988). Er wurde durch Madronich mit Ozon nach van Heuklon ersetzt, und 51 der 73 Städte werden seitdem nicht mehr als „ganzjährig“ geführt.",
+    "referencesHeading": "Quellen",
+    "reviewHeading": "Prüfung",
+    "reviewPending": "Die medizinischen Inhalte dieser Seite wurden noch nicht von einer medizinischen Fachkraft geprüft. Sobald das geschieht, erscheinen hier ihr Name und ihre Registrierungsnummer."
   }
 }

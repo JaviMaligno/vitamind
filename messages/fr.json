@@ -808,5 +808,28 @@
     "whyBody": "La réponse habituelle — « dix ou quinze minutes par jour » — est la même à Oslo en décembre qu'à Nairobi en juin, et dans l'un de ces deux endroits elle est impossible. La synthèse de la vitamine D dépend de l'élévation solaire, de l'ozone, du phototype et de la surface de peau exposée. Tout cela peut se calculer, et c'est ce que fait cet outil.",
     "contactHeading": "Contact et code",
     "contactBody": "Le modèle, ses sources et ses limites sont publiés. Si vous trouvez une erreur dans un calcul, je veux le savoir."
+  },
+  "methodology": {
+    "metaTitle": "Comment sont calculées ces données solaires et de vitamine D",
+    "metaDescription": "Le modèle complet : géométrie solaire, indice UV par ciel clair (Madronich, ozone de van Heuklon), synthèse par phototype, ses seuils, ses limites et ses corrections.",
+    "heading": "Comment tout cela est calculé",
+    "intro": "Aucun chiffre de ce site n'est une estimation à vue d'œil. Ils sortent tous d'un modèle publié, et voici lequel, avec ce qu'il sait et ce qu'il ne sait pas.",
+    "sunHeading": "Géométrie solaire",
+    "sunBody": "La position du soleil est calculée avec les équations standard de déclinaison et d'angle horaire : pour une latitude, une longitude et un jour de l'année, l'élévation solaire à chaque instant. C'est de là que viennent le lever, le coucher, le crépuscule civil et la durée du jour. C'est de l'astronomie, pas de la statistique : cela ne dépend pas du temps qu'il fait.",
+    "uvHeading": "Indice UV par ciel clair",
+    "uvBody": "L'UV est estimé avec le modèle de Madronich (2007), corrigé de l'ozone saisonnier d'après van Heuklon. L'ozone compte parce que c'est précisément lui qui absorbe le rayonnement UVB lorsque le soleil est bas, et c'est ce régime qui décide s'il existe un hiver sans vitamine D. Toutes les valeurs sont par ciel clair : les nuages ne peuvent que les réduire.",
+    "vitdHeading": "Synthèse de la vitamine D",
+    "vitdBody": "À partir de l'UV, on calcule la dose érythémateuse minimale selon le phototype de Fitzpatrick, ajustée selon l'âge et la surface de peau exposée. Le résultat, ce sont les minutes nécessaires pour une dose cible. C'est une estimation de population, pas un diagnostic.",
+    "thresholdHeading": "Les deux seuils",
+    "thresholdBody": "La synthèse exige que le soleil dépasse une certaine élévation. Les études in vitro la situent autour de 45° ; sur la peau réelle, les données de terrain sont plus prudentes et indiquent 50°. Le site utilise 45° comme seuil optimiste et 50° comme seuil conservateur, et indique lequel il emploie dans chaque cas au lieu d'en choisir un et de le taire.",
+    "limitsHeading": "Ce que ce modèle ne sait pas",
+    "limitsBody": "Il ne sait pas s'il y a des nuages au moment où vous regardez. Il ne tient compte ni de l'ombre des bâtiments ou des montagnes, ni de la réflexion de la neige ou de l'eau, qui peut augmenter l'exposition de façon notable. Il traite la peau comme une surface plane orientée vers le ciel. Et il décrit une personne moyenne de chaque phototype, pas vous : les médicaments, la grossesse, l'âge avancé et plusieurs maladies modifient la synthèse. Il ne remplace ni une analyse de sang ni l'avis d'un professionnel de santé.",
+    "changelogHeading": "Corrections du modèle",
+    "changelogBody": "Un modèle qui n'a jamais changé est un modèle que personne n'a vérifié. Voici ses corrections.",
+    "changelog1Date": "9 juillet 2026",
+    "changelog1Body": "L'estimateur d'UV précédent surestimait de 3 à 4 fois lorsque le soleil était bas, parce qu'il ignorait l'ozone. La conséquence était grave et publiée : le site affirmait qu'à Boston, New York, Madrid, Chicago et Toronto la vitamine D se synthétise douze mois par an, contredisant Webb, Kline et Holick (1988). Il a été remplacé par Madronich avec l'ozone de van Heuklon, et 51 des 73 villes ont cessé de figurer comme « toute l'année ».",
+    "referencesHeading": "Références",
+    "reviewHeading": "Relecture",
+    "reviewPending": "Le contenu médical de ce site n'a pas encore été relu par un professionnel de santé. Lorsqu'il le sera, son nom et son numéro d'inscription à l'ordre apparaîtront ici."
   }
 }

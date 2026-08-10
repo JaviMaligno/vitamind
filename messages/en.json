@@ -808,5 +808,28 @@
     "whyBody": "The usual answer — \"ten or fifteen minutes a day\" — is the same in Oslo in December as in Nairobi in June, and in one of those places it is impossible. Vitamin D synthesis depends on solar elevation, ozone, phototype and the area of skin exposed. All of that can be computed, and that is what this tool does.",
     "contactHeading": "Contact and code",
     "contactBody": "The model, its sources and its limits are published. If you find an error in a calculation, I want to hear about it."
+  },
+  "methodology": {
+    "metaTitle": "How these sun and vitamin D figures are calculated",
+    "metaDescription": "The full model: solar geometry, clear-sky UV index (Madronich, van Heuklon ozone), synthesis by skin type, its thresholds, its limits and its corrections.",
+    "heading": "How all of this is calculated",
+    "intro": "No figure on this site is an eyeball estimate. They all come out of a published model, and here is which one, with what it knows and what it does not.",
+    "sunHeading": "Solar geometry",
+    "sunBody": "The position of the sun is computed with the standard declination and hour-angle equations: for a latitude, a longitude and a day of the year, the solar elevation at every instant. Sunrise, sunset, civil twilight and day length all come from that. It is astronomy, not statistics: it does not depend on the weather.",
+    "uvHeading": "Clear-sky UV index",
+    "uvBody": "UV is estimated with the Madronich (2007) model, corrected for seasonal ozone after van Heuklon. Ozone matters because it is precisely what absorbs UVB radiation when the sun is low, and that is the regime that decides whether a winter without vitamin D exists. All values are clear-sky: clouds can only reduce them.",
+    "vitdHeading": "Vitamin D synthesis",
+    "vitdBody": "From the UV, the minimal erythemal dose is calculated for the Fitzpatrick skin type, adjusted for age and for the area of skin exposed. The result is the minutes needed for a target dose. It is a population estimate, not a diagnosis.",
+    "thresholdHeading": "The two thresholds",
+    "thresholdBody": "Synthesis requires the sun to be above a certain elevation. In vitro studies place it at around 45°; on real skin, field data are more conservative and point to 50°. The site uses 45° as the optimistic threshold and 50° as the conservative one, and says which one it is using in each case instead of picking one and keeping quiet about it.",
+    "limitsHeading": "What this model does not know",
+    "limitsBody": "It does not know whether there are clouds at the moment you look. It does not account for shade from buildings or mountains, nor for reflection off snow or water, which can increase exposure appreciably. It treats skin as a flat surface facing the sky. And it describes an average person of each skin type, not you: medication, pregnancy, advanced age and several illnesses change synthesis. It is not a substitute for a blood test or for the advice of a healthcare professional.",
+    "changelogHeading": "Model corrections",
+    "changelogBody": "A model that has never changed is a model nobody has checked. These are its corrections.",
+    "changelog1Date": "9 July 2026",
+    "changelog1Body": "The previous UV estimator overestimated by 3 to 4 times when the sun was low, because it ignored ozone. The consequence was serious and published: the site claimed that Boston, New York, Madrid, Chicago and Toronto synthesise vitamin D twelve months a year, contradicting Webb, Kline and Holick (1988). It was replaced by Madronich with van Heuklon ozone, and 51 of the 73 cities stopped being listed as “all year round”.",
+    "referencesHeading": "References",
+    "reviewHeading": "Review",
+    "reviewPending": "The medical content of this site has not yet been reviewed by a healthcare professional. When it is, their name and professional registration will appear here."
   }
 }

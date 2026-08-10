@@ -808,5 +808,28 @@
     "whyBody": "La respuesta habitual —«diez o quince minutos al día»— es la misma en Oslo en diciembre que en Nairobi en junio, y en uno de esos dos sitios es imposible. La síntesis de vitamina D depende de la elevación solar, del ozono, del fototipo y de la superficie de piel expuesta. Todo eso se puede calcular, y eso es lo que hace esta herramienta.",
     "contactHeading": "Contacto y código",
     "contactBody": "El modelo, sus fuentes y sus límites están publicados. Si encuentras un error en un cálculo, quiero saberlo."
+  },
+  "methodology": {
+    "metaTitle": "Cómo se calculan estos datos solares y de vitamina D",
+    "metaDescription": "El modelo completo: geometría solar, índice UV de cielo despejado (Madronich, ozono de van Heuklon), síntesis por fototipo, sus umbrales, sus límites y sus correcciones.",
+    "heading": "Cómo se calcula todo esto",
+    "intro": "Ninguna cifra de este sitio es una estimación a ojo. Todas salen de un modelo publicado, y aquí está cuál, con lo que sabe y lo que no.",
+    "sunHeading": "Geometría solar",
+    "sunBody": "La posición del sol se calcula con las ecuaciones estándar de declinación y ángulo horario: para una latitud, una longitud y un día del año, la elevación solar en cada instante. De ahí salen el amanecer, el atardecer, el crepúsculo civil y la duración del día. Es astronomía, no estadística: no depende del tiempo que haga.",
+    "uvHeading": "Índice UV con cielo despejado",
+    "uvBody": "El UV se estima con el modelo de Madronich (2007), corregido por el ozono estacional según van Heuklon. El ozono importa porque es justo lo que absorbe la radiación UVB cuando el sol está bajo, que es el régimen que decide si existe un invierno sin vitamina D. Todos los valores son de cielo despejado: las nubes solo pueden reducirlos.",
+    "vitdHeading": "Síntesis de vitamina D",
+    "vitdBody": "A partir del UV se calcula la dosis eritemática mínima según el fototipo de Fitzpatrick, ajustada por edad y por la superficie de piel expuesta. El resultado son los minutos necesarios para una dosis objetivo. Es una estimación poblacional, no un diagnóstico.",
+    "thresholdHeading": "Los dos umbrales",
+    "thresholdBody": "La síntesis requiere que el sol supere cierta elevación. Los estudios in vitro la sitúan en torno a 45°; sobre la piel real, los datos de campo son más conservadores y apuntan a 50°. El sitio usa 45° como umbral optimista y 50° como conservador, y dice cuál está usando en cada caso en lugar de elegir uno y callarlo.",
+    "limitsHeading": "Lo que este modelo no sabe",
+    "limitsBody": "No sabe si hay nubes en el momento en que miras. No tiene en cuenta la sombra de edificios ni montañas, ni la reflexión de la nieve o el agua, que puede aumentar la exposición de forma notable. Trata la piel como una superficie plana orientada al cielo. Y describe a una persona promedio de cada fototipo, no a ti: la medicación, el embarazo, la edad avanzada y varias enfermedades cambian la síntesis. No sustituye a un análisis de sangre ni al consejo de un profesional sanitario.",
+    "changelogHeading": "Correcciones del modelo",
+    "changelogBody": "Un modelo que nunca ha cambiado es un modelo que nadie ha revisado. Estas son sus correcciones.",
+    "changelog1Date": "9 de julio de 2026",
+    "changelog1Body": "El estimador anterior de UV sobreestimaba entre 3 y 4 veces con el sol bajo, porque ignoraba el ozono. La consecuencia era grave y publicada: el sitio afirmaba que en Boston, Nueva York, Madrid, Chicago y Toronto se sintetiza vitamina D los doce meses del año, contradiciendo a Webb, Kline y Holick (1988). Se sustituyó por Madronich con ozono de van Heuklon, y 51 de las 73 ciudades dejaron de figurar como «todo el año».",
+    "referencesHeading": "Referencias",
+    "reviewHeading": "Revisión",
+    "reviewPending": "El contenido médico de este sitio todavía no ha sido revisado por un profesional sanitario. Cuando lo sea, aparecerá aquí su nombre y su colegiación."
   }
 }

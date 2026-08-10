@@ -808,5 +808,28 @@
     "whyBody": "Įprastas atsakymas — „dešimt ar penkiolika minučių per dieną“ — vienodas ir Osle gruodį, ir Nairobyje birželį, o vienoje iš tų dviejų vietų jis neįmanomas. Vitamino D sintezė priklauso nuo saulės aukščio, ozono, odos fototipo ir atviros odos ploto. Visa tai galima apskaičiuoti, ir būtent tai daro šis įrankis.",
     "contactHeading": "Kontaktai ir kodas",
     "contactBody": "Modelis, jo šaltiniai ir jo ribos yra paskelbti. Jei radote klaidą skaičiavime, noriu apie tai sužinoti."
+  },
+  "methodology": {
+    "metaTitle": "Kaip apskaičiuojami šie saulės ir vitamino D duomenys",
+    "metaDescription": "Visas modelis: saulės geometrija, giedro dangaus UV indeksas (Madronich, van Heuklon ozonas), sintezė pagal fototipą, jo slenksčiai, jo ribos ir jo pataisymai.",
+    "heading": "Kaip visa tai apskaičiuojama",
+    "intro": "Nė vienas šio tinklalapio skaičius nėra spėjimas iš akies. Visi jie gaunami iš paskelbto modelio, ir čia parašyta, iš kokio – su tuo, ką jis žino, ir ko nežino.",
+    "sunHeading": "Saulės geometrija",
+    "sunBody": "Saulės padėtis skaičiuojama standartinėmis deklinacijos ir valandinio kampo lygtimis: pagal platumą, ilgumą ir metų dieną – saulės aukštis kiekvieną akimirką. Iš to gaunami saulėtekis, saulėlydis, civilinė prieblanda ir dienos ilgumas. Tai astronomija, o ne statistika: nuo oro tai nepriklauso.",
+    "uvHeading": "Giedro dangaus UV indeksas",
+    "uvBody": "UV vertinamas pagal Madronich (2007) modelį, pataisytą pagal sezoninį ozoną remiantis van Heuklon. Ozonas svarbus todėl, kad būtent jis sugeria UVB spinduliuotę, kai saulė žemai, o būtent šis režimas nulemia, ar būna žiema be vitamino D. Visos vertės yra giedro dangaus: debesys jas gali tik sumažinti.",
+    "vitdHeading": "Vitamino D sintezė",
+    "vitdBody": "Iš UV apskaičiuojama minimali eriteminė dozė pagal Fitzpatrick fototipą, pakoreguota pagal amžių ir atidengtos odos plotą. Rezultatas – minutės, reikalingos tikslinei dozei. Tai populiacijos įvertis, o ne diagnozė.",
+    "thresholdHeading": "Du slenksčiai",
+    "thresholdBody": "Sintezei saulė turi pakilti aukščiau tam tikro aukščio. In vitro tyrimai jį nustato ties maždaug 45°; ant tikros odos lauko duomenys yra konservatyvesni ir rodo 50°. Tinklalapis naudoja 45° kaip optimistinį slenkstį ir 50° kaip konservatyvų, ir kiekvienu atveju nurodo, kurį naudoja, užuot pasirinkęs vieną ir apie tai nutylėjęs.",
+    "limitsHeading": "Ko šis modelis nežino",
+    "limitsBody": "Jis nežino, ar tuo metu, kai žiūrite, danguje yra debesų. Jis neatsižvelgia nei į pastatų ar kalnų šešėlį, nei į atspindį nuo sniego ar vandens, kuris gali pastebimai padidinti ekspoziciją. Odą jis laiko plokščiu, į dangų atsuktu paviršiumi. Ir jis aprašo vidutinį kiekvieno fototipo žmogų, o ne jus: vaistai, nėštumas, senyvas amžius ir kelios ligos keičia sintezę. Jis nepakeičia nei kraujo tyrimo, nei sveikatos priežiūros specialisto patarimo.",
+    "changelogHeading": "Modelio pataisymai",
+    "changelogBody": "Modelis, kuris niekada nesikeitė, yra modelis, kurio niekas netikrino. Štai jo pataisymai.",
+    "changelog1Date": "2026 m. liepos 9 d.",
+    "changelog1Body": "Ankstesnis UV vertinimas, saulei esant žemai, viršydavo tikrovę 3–4 kartus, nes ignoravo ozoną. Pasekmė buvo rimta ir paskelbta: tinklalapis teigė, kad Bostone, Niujorke, Madride, Čikagoje ir Toronte vitaminas D sintetinamas dvylika mėnesių per metus, o tai prieštarauja Webb, Kline ir Holick (1988). Jis pakeistas Madronich modeliu su van Heuklon ozonu, ir 51 miestas iš 73 nustojo būti nurodomas kaip „ištisus metus“.",
+    "referencesHeading": "Šaltiniai",
+    "reviewHeading": "Peržiūra",
+    "reviewPending": "Šio tinklalapio medicininis turinys dar nėra peržiūrėtas sveikatos priežiūros specialisto. Kai bus, čia atsiras jo vardas ir profesinės registracijos numeris."
   }
 }
