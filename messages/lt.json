@@ -2,7 +2,7 @@
   "app": {
     "title": "Vitaminas D",
     "subtitle": "Globalus saulės tyrinėtojas",
-    "footer": "Astronominiai skaičiavimai + realūs UV duomenys (Open-Meteo). Vitamino D įvertinimas pagal Holick/Dowdy (2010). Žemėlapis: Natural Earth. Paieška: OpenStreetMap Nominatim. Riba 45° (in vitro) / 50° (konservatyvus).",
+    "footer": "Astronominiai skaičiavimai + realūs UV duomenys (Open-Meteo). Vitamino D įvertinimas pagal Holick/Dowdy (2010). Žemėlapis: Natural Earth. Paieška: OpenStreetMap Nominatim. Sintezės riba: UV indeksas 3 (reikiamas saulės aukštis priklauso nuo platumos ir sezono).",
     "builtBy": "Sukūrė Javier Aguilar"
   },
   "hero": {

@@ -2,7 +2,7 @@
   "app": {
     "title": "Vitamina D",
     "subtitle": "Explorador Solar Global",
-    "footer": "Cálculos astronómicos + datos UV reales (Open-Meteo). Estimación Vit D basada en Holick/Dowdy (2010). Mapa: Natural Earth. Búsqueda: OpenStreetMap Nominatim. Umbral 45° (in vitro) / 50° (conservador).",
+    "footer": "Cálculos astronómicos + datos UV reales (Open-Meteo). Estimación Vit D basada en Holick/Dowdy (2010). Mapa: Natural Earth. Búsqueda: OpenStreetMap Nominatim. Umbral de síntesis: índice UV 3 (la elevación solar necesaria varía con la latitud y la estación).",
     "builtBy": "Creado por Javier Aguilar"
   },
   "hero": {
