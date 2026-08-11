@@ -73,9 +73,12 @@ jobs:
       - uses: actions/github-script@v7
         with:
           script: |
+            // Its own label, not the shared `aio-measurement` one. The first run
+            // matched the one-off Bing issue and commented there instead of opening
+            // its own — the job reported success while doing the wrong thing.
             const title = 'Weekly: AI Overview citation check';
             const { data: open } = await github.rest.issues.listForRepo({
-              ...context.repo, state: 'open', labels: 'aio-measurement',
+              ...context.repo, state: 'open', labels: 'aio-weekly',
             });
             const week = new Date().toISOString().slice(0, 10);
             const body = [
@@ -106,5 +109,5 @@ jobs:
             if (open.length) {
               await github.rest.issues.createComment({ ...context.repo, issue_number: open[0].number, body });
             } else {
-              await github.rest.issues.create({ ...context.repo, title, body, labels: ['aio-measurement'] });
+              await github.rest.issues.create({ ...context.repo, title, body, labels: ['aio-weekly'] });
             }
