@@ -73,6 +73,30 @@ Vitest (`vitest.config.ts`, jsdom): test files under `lib/__tests__`, `app/api/_
 - Manifest at `public/manifest.json` for standalone mobile install.
 - Icons generated via `scripts/generate-icons.mjs` (SVG → PNG via Sharp).
 
+## Copy that states a number must be checked against the code that computes it
+
+**Any factual claim in `messages/*.json` is a claim about `lib/`.** Before shipping copy that
+names a threshold, an angle, a duration or a criterion, open the module that computes it and
+confirm. Never copy a figure from elsewhere on the site — that is how the wrong ones spread.
+
+This is not a hypothetical. Five stale claims shipped to production and lived there for
+weeks or months, all found in August 2026, none by the person who wrote them:
+
+| Claim | Where | Reality |
+|---|---|---|
+| "Umbral 45° (in vitro) / 50°" | site footer, every page, 6 locales | `MIN_UVI = 3`; the elevation reaching it varies ~29–42° with ozone |
+| "un ángulo solar superior a 30–35°" | `learn.block1.q4.a` | same |
+| synthesis impossible *because* peak elevation | `sunrisePage.proseNone` | it is impossible because UVI never reaches 3; Rome at 38.5° has a window, Oslo at 39.5° does not |
+| "cuando el índice UV supera 3" | `sunrisePage.proseSynthesis` | `uvi >= MIN_UVI` includes exactly 3 |
+| `20:60`, `13 h 60 min` | every sunrise page | minute rounded without carrying into the hour |
+
+The footer's version was then copied into `/methodology`, so writing a new page propagated
+the error rather than catching it.
+
+**What actually works:** when dispatching a review, instruct it explicitly to *read the copy
+against the module that computes the figure* — naming the files. That instruction found a
+blocker in every one of the three AI-Overview phases. A general "review this" did not.
+
 ## Key Technical Details
 
 - **Path alias:** `@/*` maps to repo root (`tsconfig.json`)

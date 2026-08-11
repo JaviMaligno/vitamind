@@ -1,0 +1,110 @@
+name: Phase 2 experiment guard
+
+# Two jobs, weekly, both cheap.
+#
+# The guard exists because the phase 2 split can break silently: a refactor that
+# drops `isTreated`, or a copy change that leaks the passage into a control page,
+# renders perfectly and quietly makes the experiment unable to answer anything.
+# Nothing else would notice — the pages look fine.
+#
+# The reminder exists because the measurement it asks for CANNOT be automated:
+# Google blocks automation (curl gets an anti-scraping shell, headless Chromium
+# and headed real Chrome both get /sorry on the first query — measured 2026-08-09).
+# Only the owner's own profiled browser works, so a human has to do it.
+
+on:
+  schedule:
+    - cron: "0 9 * * 1" # Mondays 09:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  split-integrity:
+    name: Treated pages carry the passage, control pages do not
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Check both halves against production
+        id: check
+        run: |
+          set +e
+          BASE_URL=https://getvitamind.app node tests/e2e/prose-passage.spec.mjs 2>&1 | tee guard.log
+          echo "status=${PIPESTATUS[0]}" >> "$GITHUB_OUTPUT"
+          set -e
+
+      - name: Open an issue if the split broke
+        if: steps.check.outputs.status != '0'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const log = fs.readFileSync('guard.log', 'utf8').slice(0, 4000);
+            const title = 'Phase 2 experiment: treated/control split is broken';
+            const { data: open } = await github.rest.issues.listForRepo({
+              ...context.repo, state: 'open', labels: 'experiment-guard',
+            });
+            const body = [
+              'The weekly guard found the phase 2 split no longer holds in production.',
+              '',
+              'This matters even though every page still renders: if the passage leaked into a',
+              'control city, or vanished from a treated one, the comparison in',
+              '`data/aio-tracking/phase2-assignment.json` can no longer attribute anything.',
+              '',
+              '```', log, '```',
+              '',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+            ].join('\n');
+            if (open.length) {
+              await github.rest.issues.createComment({ ...context.repo, issue_number: open[0].number, body });
+            } else {
+              await github.rest.issues.create({ ...context.repo, title, body, labels: ['experiment-guard'] });
+            }
+
+  measurement-reminder:
+    name: Weekly manual measurement reminder
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const title = 'Weekly: AI Overview citation check';
+            const { data: open } = await github.rest.issues.listForRepo({
+              ...context.repo, state: 'open', labels: 'aio-measurement',
+            });
+            const week = new Date().toISOString().slice(0, 10);
+            const body = [
+              `### Week of ${week}`,
+              '',
+              'Google blocks every automated path to a SERP, so this is a human task. Cadence',
+              'agreed in the phase 3 design: **10 queries max, >=15s apart, one session a week,',
+              'hard stop on the first /sorry or captcha** — the limit is deliberately not probed,',
+              'because finding it means getting the owner\'s own Google account blocked.',
+              '',
+              '- [ ] Run the 10 fixed queries in `data/aio-tracking/queries.json` from your own',
+              '      profiled Chrome',
+              '- [ ] Record: AI Overview present, cited domains, whether getvitamind.app is among',
+              '      them, organic position. Decide "cited" by POSITION (link top vs overview',
+              '      block bottom), never by DOM containment — that gave a false positive in the',
+              '      baseline',
+              '- [ ] Save the observation as `data/aio-tracking/YYYY-MM-DD.json`, same shape as the',
+              '      2026-08-10 baseline',
+              '- [ ] Compare treated vs control cities per `phase2-assignment.json`, and apply the',
+              '      `readOut` written there **before** the data existed',
+              '',
+              'Baseline (2026-08-10): 9 of 10 queries carried an AI Overview, 0 cited us, we',
+              'appeared in exactly 1 — organically, 2088px down a 2772px page.',
+              '',
+              'Deadline in the design: if the treated group has not moved 12 weeks after Google',
+              'recrawls it, ship the passage to the control group anyway.',
+            ].join('\n');
+            if (open.length) {
+              await github.rest.issues.createComment({ ...context.repo, issue_number: open[0].number, body });
+            } else {
+              await github.rest.issues.create({ ...context.repo, title, body, labels: ['aio-measurement'] });
+            }
