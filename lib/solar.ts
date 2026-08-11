@@ -58,6 +58,15 @@ export function getWindow(curve: SolarPoint[], threshold: number): VitDWindow | 
 }
 
 /**
+ * The year every table on this site is computed for.
+ *
+ * Exported so copy can state it instead of guessing. A passage that says "this
+ * year" beside figures pinned here becomes false on 1 January, and wrong about
+ * February in a leap year.
+ */
+export const DOY_REFERENCE_YEAR = 2026;
+
+/**
  * The day-of-year calendar is a pure UTC convention, and every function here
  * builds and reads its dates in UTC on purpose.
  *
@@ -72,8 +81,6 @@ export function getWindow(curve: SolarPoint[], threshold: number): VitDWindow | 
  * For "what day is it where the USER is", normalise their local calendar date
  * first — that is what `todayDoy()` is for.
  */
-const DOY_REFERENCE_YEAR = 2026;
-
 export function dayOfYear(d: Date): number {
   return Math.floor((d.getTime() - Date.UTC(d.getUTCFullYear(), 0, 0)) / 86400000);
 }
