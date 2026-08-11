@@ -13,7 +13,7 @@ import { baseSlug, cityPathname, localizedCityName } from "@/lib/city-routes";
 import { nearbyCities } from "@/lib/city-nearby";
 import { capFirst, monthName } from "@/lib/city-copy";
 import { dailySunTimes, getSunTimes } from "@/lib/sun-times";
-import { getCurve, doyFromMonthDay, dateFromDoy, fmtTime, fmtDayLength, DOY_REFERENCE_YEAR } from "@/lib/solar";
+import { getCurve, doyFromMonthDay, dateFromDoy, fmtTime, fmtDayLength, dayLengthMinutes, DOY_REFERENCE_YEAR } from "@/lib/solar";
 import { computeExposureFromCurve } from "@/lib/vitd";
 import { ozoneDU } from "@/lib/uv-model";
 import { sunProse } from "@/lib/sun-prose";
@@ -48,7 +48,7 @@ function monthData(lat: number, lon: number, tz: number, timezone: string | unde
   const first = days[0];
   const last = days[days.length - 1];
   const dayLen = (d: { sunrise: number | null; sunset: number | null }) =>
-    d.sunrise !== null && d.sunset !== null ? (d.sunset - d.sunrise) * 60 : null;
+    dayLengthMinutes(d.sunrise, d.sunset);
 
   const firstLen = dayLen(first);
   const lastLen = dayLen(last);

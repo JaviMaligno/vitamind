@@ -119,6 +119,22 @@ export function fmtTime(h: number): string {
   return `${String(hr).padStart(2, "0")}:${String(mn).padStart(2, "0")}`;
 }
 
+/**
+ * Minutes of daylight between a local sunrise and sunset, in minutes.
+ *
+ * Both come back wrapped into 0–24, so above roughly 63° in midsummer a sunset
+ * after local midnight is a *smaller* number than the sunrise. Subtracting
+ * naively then gives a negative day length, which is what
+ * `/amanecer/reikiavik/junio` rendered on 13 of its 30 rows — a table saying the
+ * day lasted minus three hours. The modulo is the whole fix.
+ *
+ * Returns null when either end is missing, which is how a polar day arrives.
+ */
+export function dayLengthMinutes(sunrise: number | null, sunset: number | null): number | null {
+  if (sunrise === null || sunset === null) return null;
+  return (((sunset - sunrise) % 24) + 24) % 24 * 60;
+}
+
 /** "13 h 46 min" from a duration in minutes, carrying a rounded 60 into the hour. */
 export function fmtDayLength(min: number): string {
   let h = Math.floor(min / 60);

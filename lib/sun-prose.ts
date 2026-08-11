@@ -1,7 +1,7 @@
 import type { City } from "@/lib/types";
 import type { SkinType } from "@/lib/vitd";
 import { dailySunTimes, getSunTimes } from "@/lib/sun-times";
-import { getCurve, doyFromMonthDay, dateFromDoy } from "@/lib/solar";
+import { getCurve, doyFromMonthDay, dateFromDoy, dayLengthMinutes } from "@/lib/solar";
 import { computeExposureFromCurve } from "@/lib/vitd";
 import { ozoneDU } from "@/lib/uv-model";
 
@@ -50,10 +50,6 @@ const TARGET_IU = 1000;
  * span. Below the sub-arctic the two agree exactly, so every treated city gets
  * the same figure its table shows.
  */
-function dayLengthMin(d: { sunrise: number | null; sunset: number | null }): number | null {
-  if (d.sunrise === null || d.sunset === null) return null;
-  return (((d.sunset - d.sunrise) % 24 + 24) % 24) * 60;
-}
 
 export function sunProse(city: City, monthIndex: number): SunProse {
   const days = dailySunTimes(city.lat, city.lon, monthIndex, city.timezone, city.tz);
@@ -78,8 +74,8 @@ export function sunProse(city: City, monthIndex: number): SunProse {
   const polar = days.some((d) => d.polar !== null);
   const hasWindow = exposure !== null && exposure.windowEnd > exposure.windowStart;
 
-  const firstLen = dayLengthMin(first);
-  const lastLen = dayLengthMin(last);
+  const firstLen = dayLengthMinutes(first.sunrise, first.sunset);
+  const lastLen = dayLengthMinutes(last.sunrise, last.sunset);
 
   return {
     regime: polar ? "polar" : hasWindow ? "synthesis" : "none",
@@ -89,7 +85,7 @@ export function sunProse(city: City, monthIndex: number): SunProse {
     firstSunset: first.sunset,
     lastSunrise: last.sunrise,
     lastSunset: last.sunset,
-    midDayLengthMin: dayLengthMin(mid),
+    midDayLengthMin: dayLengthMinutes(mid.sunrise, mid.sunset),
     dayLengthDeltaMin: firstLen !== null && lastLen !== null ? Math.round(lastLen - firstLen) : 0,
     peakElevationDeg: Math.max(...curve.map((p) => p.elevation)),
     vitD: hasWindow
