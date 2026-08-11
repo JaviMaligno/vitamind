@@ -58,6 +58,15 @@ export function getWindow(curve: SolarPoint[], threshold: number): VitDWindow | 
 }
 
 /**
+ * The year every table on this site is computed for.
+ *
+ * Exported so copy can state it instead of guessing. A passage that says "this
+ * year" beside figures pinned here becomes false on 1 January, and wrong about
+ * February in a leap year.
+ */
+export const DOY_REFERENCE_YEAR = 2026;
+
+/**
  * The day-of-year calendar is a pure UTC convention, and every function here
  * builds and reads its dates in UTC on purpose.
  *
@@ -72,8 +81,6 @@ export function getWindow(curve: SolarPoint[], threshold: number): VitDWindow | 
  * For "what day is it where the USER is", normalise their local calendar date
  * first — that is what `todayDoy()` is for.
  */
-const DOY_REFERENCE_YEAR = 2026;
-
 export function dayOfYear(d: Date): number {
   return Math.floor((d.getTime() - Date.UTC(d.getUTCFullYear(), 0, 0)) / 86400000);
 }
@@ -110,6 +117,22 @@ export function fmtTime(h: number): string {
     hr = (hr + 1) % 24;
   }
   return `${String(hr).padStart(2, "0")}:${String(mn).padStart(2, "0")}`;
+}
+
+/**
+ * Minutes of daylight between a local sunrise and sunset, in minutes.
+ *
+ * Both come back wrapped into 0–24, so above roughly 63° in midsummer a sunset
+ * after local midnight is a *smaller* number than the sunrise. Subtracting
+ * naively then gives a negative day length, which is what
+ * `/amanecer/reikiavik/junio` rendered on 13 of its 30 rows — a table saying the
+ * day lasted minus three hours. The modulo is the whole fix.
+ *
+ * Returns null when either end is missing, which is how a polar day arrives.
+ */
+export function dayLengthMinutes(sunrise: number | null, sunset: number | null): number | null {
+  if (sunrise === null || sunset === null) return null;
+  return (((sunset - sunrise) % 24) + 24) % 24 * 60;
 }
 
 /** "13 h 46 min" from a duration in minutes, carrying a rounded 60 into the hour. */

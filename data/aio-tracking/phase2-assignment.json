@@ -1,0 +1,58 @@
+{
+  "$comment": [
+    "Which sunrise cities get phase 2's prose passage and which are held back as a",
+    "control. Recorded BEFORE shipping, because an assignment reconstructed afterwards",
+    "proves nothing.",
+    "",
+    "Assignment rule, in two parts:",
+    "1. The nine cities with measurable GSC impressions are assigned greedily — each in",
+    "   descending order goes to whichever group currently has the smaller total. That",
+    "   lands at 1914 vs 1945 impressions, a 1.6% gap, which pairwise splitting could not",
+    "   reach because Madrid alone is a quarter of the volume.",
+    "2. The other 31 have no measurable volume and alternate in SUNRISE_CITIES order — a",
+    "   stable ordering that predates this experiment and was not chosen for it.",
+    "",
+    "MEASUREMENT LIMIT, so the pairing is not read as more precise than it is: Search",
+    "Console's page table virtualises and would not render past 10 rows, so only those",
+    "nine cities have real numbers. The other 31 are each below 39 impressions in 90 days",
+    "— the lowest measured value — and are treated as equivalent. That is enough: the",
+    "split only has to balance where there is volume to balance.",
+    "",
+    "Note `londres` is the base slug; its English URL is /en/sunrise/london/... and the",
+    "489 impressions are the same city."
+  ],
+  "assignedOn": "2026-08-10",
+  "impressionsWindow": "2026-05-08 to 2026-08-07",
+  "measured": {
+    "madrid": 1085,
+    "valencia": 583,
+    "londres": 489,
+    "sevilla": 424,
+    "malaga": 406,
+    "barcelona": 384,
+    "nueva-york": 240,
+    "paris": 209,
+    "berlin": 39
+  },
+  "balance": { "treatedImpressions": 1914, "controlImpressions": 1945, "gap": 31 },
+  "treated": [
+    "madrid", "malaga", "barcelona", "berlin",
+    "las-palmas", "roma", "amsterdam", "edimburgo", "miami", "toronto",
+    "bogota", "santiago", "sidney", "singapur", "oslo", "helsinki",
+    "varsovia", "viena", "bruselas", "vancouver"
+  ],
+  "control": [
+    "valencia", "londres", "sevilla", "nueva-york", "paris",
+    "tenerife", "lisboa", "dublin", "los-angeles", "chicago",
+    "ciudad-de-mexico", "lima", "buenos-aires", "tokio", "reikiavik",
+    "estocolmo", "copenhague", "praga", "budapest", "seattle"
+  ],
+  "readOut": {
+    "$comment": "Written before the data arrives, so the reading is not chosen to fit whatever happens.",
+    "bothMove": "Something other than the passage caused it — an algorithm update, phase 1 landing, or seasonality. The passage is not shown to work.",
+    "treatedOnly": "The passage is the lever. Ship it to the control group immediately.",
+    "neitherMoves": "The passage is not the lever. Next candidate is authority, which is untouched and known to bind crawl.",
+    "controlOnly": "Something is wrong with the measurement or the split. Investigate before concluding anything.",
+    "deadline": "If the treated group has not moved 12 weeks after Google has recrawled it, ship the control group anyway. The experiment does not get to outlive its usefulness."
+  }
+}

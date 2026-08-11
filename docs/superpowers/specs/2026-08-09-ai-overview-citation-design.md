@@ -198,6 +198,41 @@ already exists and 1b edits medical copy.
 
 ## Phase 2 — Extractable content, freshness, the wedge
 
+### Split-city design, added 2026-08-10
+
+This spec admits above that a weekly 10-query sample detects citations but cannot attribute
+them to a phase. That is true of phase 2 as written — and phase 2 is the one worth knowing
+about, because it is the expensive one.
+
+So it ships to **half the sunrise cities**. 40 cities, 20 treated and 20 held back, matched
+in pairs by GSC impressions so the groups are comparable rather than split at random: the
+two highest-volume cities go one to each group, then the next two, and so on. Same dates,
+same domain, same crawl budget, same authority — the only difference is the passage.
+
+- Both groups move together → something else caused it (an algorithm update, the phase 1
+  work landing, seasonality).
+- Treated move, control does not → the passage is the lever, and the remaining 20 ship
+  immediately.
+- Neither moves → the passage is not the lever, and the next one is authority, which we
+  already know is untouched.
+
+Cost: half the potential benefit arrives later. Bought: the first answer in this project
+that is a cause rather than a correlation. Given that everything measured so far has
+contradicted the intuition that preceded it — 5/5 became 9/10, four locales to cut became
+two, an "18-reference" migration was 51 — that trade is worth taking.
+
+**Constraints on the split, so it stays honest:**
+
+- Pair by impressions, not alphabetically or by latitude. Madrid and Valencia must not land
+  in the same group.
+- Record the assignment in `data/aio-tracking/` before shipping, alongside each city's
+  impressions at assignment time. An assignment reconstructed afterwards proves nothing.
+- The control group is not "worse pages" — it is the current pages, unchanged. Nothing is
+  degraded to make a comparison look better.
+- One deadline: if the treated group has not moved 12 weeks after Google has recrawled it,
+  the passage is not working and the control group ships anyway rather than staying a
+  monument to an experiment.
+
 **The citable passage.** A new pure module, `lib/sun-prose.ts`, generating a self-contained
 ~150-word paragraph per city and month. Self-contained means it survives being torn out of
 the page, so it opens by naming city, month and year. It carries the data only we hold
