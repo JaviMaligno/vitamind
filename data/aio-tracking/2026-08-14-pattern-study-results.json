@@ -98,6 +98,38 @@
     { "id": "p-g-sep-times", "pattern": "G", "aiOverview": false, "firstOrganicTopPx": 196, "firstOrganicDomain": "timeanddate.com", "peopleAlsoAsk": true, "present": false, "viewportPx": 932,
       "note": "no overview — prediction for G held" }
   ],
+  "citedUrlFollowUp": {
+    "$comment": [
+      "Added later the same day, after the first pass recorded only domains and not URLs.",
+      "Two extra queries, the two whose overviews cited alpenglow, re-run 18s+ apart. That",
+      "puts the session at 12 rather than the 10 we had agreed; the owner asked where the",
+      "limit came from, and the honest answer is that we set it ourselves as a precaution —",
+      "what is actually measured is that curl, headless Chromium and plain headed Chrome all",
+      "get /sorry on the first query while the profiled browser does not. No block here.",
+      "",
+      "THE FINDING: both citations point at the same family, /{locale}/times/{city}, which is",
+      "NOT the /forecasts/sunset/{city} family the homepage links and which the first pass",
+      "examined. The pages are localised to the language of the query."
+    ],
+    "sonnenuntergang paris september": ["timeanddate.de/sonne/frankreich/paris", "paristouristinformation.fr/de/...", "web-calendar.org/en/world/europe/france/paris", "alpenglowapp.com/de/times/paris", "getyourguide.com/de-de/explorer/..."],
+    "a que hora amanece en septiembre": ["alpenglowapp.com/es/times/madrid", "diariosur.es/malaga/...", "madrid-ticket.com/es/travel-guide/..."],
+    "citedPageAnatomy": {
+      "url": "alpenglowapp.com/es/times/madrid",
+      "title": "Horarios de Amanecer y Atardecer en Madrid + Calidad | Alpenglow",
+      "metaDescription": "El amanecer en Madrid el 14 ago es a las 7:24 AM, el atardecer a las 9:13 PM. Ver horarios completos con hora dorada, hora azul y crepúsculo.",
+      "metaNote": "carries today's date and today's actual times — the description is regenerated, not boilerplate",
+      "jsonLd": ["WebSite", "Organization", "MobileApplication", "WebPage", "Event", "Event", "Event", "Event", "BreadcrumbList", "Place", "FAQPage"],
+      "events": [
+        { "name": "Autumn Equinox in Madrid 2026 (Day & Night Equal)", "startDate": "2026-09-22T08:02:15+02:00", "location": "Madrid" },
+        { "name": "Winter Solstice in Madrid 2026 (Shortest Day)", "startDate": "2026-12-21T08:34:20+01:00", "location": "Madrid" },
+        { "name": "Spring Equinox in Madrid 2027 (Day & Night Equal)", "startDate": "2027-03-20T07:18:50+01:00", "location": "Madrid" },
+        { "name": "Summer Solstice in Madrid 2027 (Longest Day)", "startDate": "2027-06-21T06:44:43+02:00", "location": "Madrid" }
+      ],
+      "eventsNote": "The Events are not sunrise/sunset — they are equinoxes and solstices, per city, to the second, with a Place. All of it is computable from our own lib/solar.ts.",
+      "faqSample": ["A que hora amanece en Madrid?"],
+      "faqNote": "phrased the way people type it, accent and all missing — not a restatement of the title"
+    }
+  },
   "aioCompetitors": {
     "$comment": "Domains seen inside an overview's source box across the 6 overviews. Not page-wide domains this time — the gap the baseline flagged is closed, except for p-a-roma-sep whose box was collapsed.",
     "timeanddate (.com/.de)": 3,
