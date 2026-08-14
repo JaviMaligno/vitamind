@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { authorship } from "@/lib/schema";
+import { sunPageGraph } from "@/lib/schema";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
@@ -94,6 +94,7 @@ export default async function SunriseMonthPage({ params }: { params: Promise<Par
   const { city, base, monthIndex } = resolved;
   const t = await getTranslations({ locale: p.locale, namespace: "sunrisePage" });
   const tSun = await getTranslations({ locale: p.locale, namespace: "sunTimes" });
+  const tNav = await getTranslations({ locale: p.locale, namespace: "nav" });
 
   const cityName = localizedCityName(p.locale, base);
   const month = monthName(p.locale, monthIndex);
@@ -143,18 +144,40 @@ export default async function SunriseMonthPage({ params }: { params: Promise<Par
     .filter((nb) => SUNRISE_CITIES.includes(baseSlug(nb.id)))
     .slice(0, 5);
 
+  const pageTitle = t("title", { city: cityName, month });
+
+  /**
+   * The structured counterpart of what the page states above. It is built from
+   * the same `first`/`last` objects the intro renders, not from a second
+   * computation and not by parsing the formatted strings — `fmtTime` rounds the
+   * minute without carrying ("20:60"), which a startDate cannot survive.
+   *
+   * The labels are the ones already on screen, so the graph adds no copy of its
+   * own and cannot drift from the visible text.
+   */
+  const graph = sunPageGraph({
+    city,
+    base,
+    cityName,
+    locale: p.locale,
+    monthIndex,
+    url: buildSunAlternates(p.locale, base, monthIndex).canonical,
+    pageName: pageTitle,
+    labels: { sunrise: tSun("sunrise"), sunset: tSun("sunset"), cities: tNav("cities") },
+    days: [first, last],
+    faq,
+  });
+
   return (
     <main className="mx-auto max-w-[900px] px-4 py-6 sm:py-10">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({ "@context": "https://schema.org", "@type": "FAQPage", mainEntity: faq, ...authorship() }),
-        }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(graph) }}
       />
 
       <p className="text-caption font-semibold uppercase tracking-[0.2em] text-accent">{t("eyebrow")}</p>
       <h1 className="mt-2 font-display text-3xl sm:text-5xl font-bold tracking-tight text-text-primary">
-        {t("title", { city: cityName, month })}
+        {pageTitle}
       </h1>
       <p className="mt-4 text-body sm:text-heading text-text-secondary max-w-2xl leading-relaxed">{intro}</p>
 

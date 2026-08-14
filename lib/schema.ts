@@ -1,5 +1,11 @@
 import { SITE_URL } from "@/lib/site";
 import { REFERENCES } from "@/lib/references";
+import { DOY_REFERENCE_YEAR } from "@/lib/solar";
+import { tzOffsetForDate } from "@/lib/timezone";
+import { cityUrl, indexUrl } from "@/lib/city-routes";
+import { getPathname } from "@/i18n/navigation";
+import type { routing } from "@/i18n/routing";
+import type { City } from "@/lib/types";
 
 /**
  * The site's JSON-LD identity graph.
@@ -17,6 +23,8 @@ import { REFERENCES } from "@/lib/references";
 
 export const ORGANIZATION_ID = `${SITE_URL}/#organization`;
 export const PERSON_ID = `${SITE_URL}/#author`;
+/** The app node every page-level block hangs off via `isPartOf`. */
+export const WEBAPP_ID = `${SITE_URL}/#webapp`;
 
 const AUTHOR_NAME = "Javier Aguilar";
 const AUTHOR_PROFILES = ["https://javieraguilar.ai", "https://github.com/JaviMaligno"];
@@ -69,7 +77,7 @@ export function siteGraph({
 
   const application: Node = {
     "@type": "WebApplication",
-    "@id": `${SITE_URL}/#webapp`,
+    "@id": WEBAPP_ID,
     name: "Vitamina D Explorer",
     url: SITE_URL,
     description,
@@ -121,4 +129,276 @@ function reviewerNode(reviewer: Reviewer): Node {
     jobTitle: reviewer.jobTitle,
     ...(reviewer.url ? { url: reviewer.url } : {}),
   };
+}
+
+/* ------------------------------------------------------------------------- *
+ * The sunrise/sunset month pages
+ * ------------------------------------------------------------------------- */
+
+/**
+ * A sunrise page used to serve a lone FAQPage: two answers floating with nothing
+ * behind them. The competitor Google does cite for these queries
+ * (alpenglowapp.com/es/times/madrid) serves the structure instead — the city as a
+ * Place, the page as a WebPage about that Place, a trail up to it, and the sun
+ * events as Events. That is what makes the page a statement about a known entity
+ * rather than a page that happens to contain times.
+ *
+ * Only nodes whose every field is already computed and rendered by the page are
+ * built here. Solstices and equinoxes are deliberately absent: alpenglow emits
+ * them to the second and we have no exact solstice calculation — `city-content`
+ * only carries approximate representative day numbers — and a timestamp we did
+ * not compute is exactly the kind of claim this repo has shipped wrong before.
+ */
+
+/** One day's stated figures, in local decimal hours (5.4 = 05:24), null on polar day/night. */
+export interface SunDayFigures {
+  /** Day of the month, 1-based. */
+  day: number;
+  sunrise: number | null;
+  sunset: number | null;
+}
+
+export interface SunPageGraphInput {
+  city: City;
+  /** Unlocalised city slug ("madrid"). Anchors the Place `@id` across months and locales. */
+  base: string;
+  /** The city's name in this page's locale — what the page prints. */
+  cityName: string;
+  locale: string;
+  /** 0-based month index, matching `dailySunTimes`. */
+  monthIndex: number;
+  /** The page's canonical URL. */
+  url: string;
+  /** The page's own heading, reused verbatim as the WebPage name and last crumb. */
+  pageName: string;
+  /**
+   * Labels lifted from strings the page already renders. Passing them in keeps
+   * this builder out of `messages/*.json`: the graph introduces no new copy, so
+   * it cannot drift from the visible text or disturb a running copy experiment.
+   */
+  labels: { sunrise: string; sunset: string; cities: string };
+  /** The days the page states in its intro — first and last of the month. */
+  days: readonly SunDayFigures[];
+  /** The Question nodes the page already builds, passed through unchanged. */
+  faq: readonly Record<string, unknown>[];
+}
+
+/**
+ * The Place `@id` for a city, keyed on the unlocalised slug rather than on the
+ * page URL. 12 months × 6 locales all describe one Madrid; giving each page its
+ * own Place would declare 72 of them.
+ */
+export function cityPlaceId(base: string): string {
+  return `${SITE_URL}/#place-${base}`;
+}
+
+export function sunPageGraph({
+  city, base, cityName, locale, monthIndex, url, pageName, labels, days, faq,
+}: SunPageGraphInput): { "@context": string; "@graph": Node[] } {
+  const placeId = cityPlaceId(base);
+
+  const place: Node = {
+    "@type": "Place",
+    "@id": placeId,
+    // One `@id` is described by six locales. The localised string is the `name`
+    // because it is what the page prints; the City record's own name rides along
+    // as `alternateName` so the entity is still findable under it.
+    name: cityName,
+    ...(city.name !== cityName ? { alternateName: city.name } : {}),
+    geo: { "@type": "GeoCoordinates", latitude: city.lat, longitude: city.lon },
+    // Google's Event spec requires `location.address` for a physical location:
+    // without it every Event in this graph is invalid and gets dropped, which
+    // is the whole point of the graph. `addressLocality` only restates the name
+    // the Place already asserts, so it introduces no claim the graph did not
+    // already make. `addressCountry` is emitted only where the record carries
+    // the field — never decoded from `flag`, since Edinburgh's is a subdivision
+    // tag (gbsct) rather than an ISO country code.
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: cityName,
+      ...(city.country ? { addressCountry: city.country } : {}),
+    },
+  };
+
+  const breadcrumbId = `${url}#breadcrumb`;
+
+  const webPage: Node = {
+    "@type": "WebPage",
+    "@id": url,
+    url,
+    name: pageName,
+    inLanguage: locale,
+    about: { "@id": placeId },
+    isPartOf: { "@id": WEBAPP_ID },
+    breadcrumb: { "@id": breadcrumbId },
+    ...authorship(),
+  };
+
+  // The page-level nodes reference each other by `@id`. Left unidentified, the
+  // FAQPage is a second anonymous page-level node describing the same URL as the
+  // WebPage — the exact ambiguity stable `@id`s exist to remove.
+  const breadcrumb: Node = {
+    "@type": "BreadcrumbList",
+    "@id": breadcrumbId,
+    itemListElement: breadcrumbTrail({ locale, base, cityName, pageName, url, labels }).map(
+      (crumb, i) => ({ "@type": "ListItem", position: i + 1, name: crumb.name, item: crumb.item }),
+    ),
+  };
+
+  const events = days.flatMap((d) => {
+    // `getSunTimes` returns `wrap24(...)`, so a sunset that genuinely falls after
+    // local midnight comes back as a small number and would be stamped on the day
+    // before — an instant 24 h out. It fires for no city currently shipped; it
+    // fires at the latitudes SUNRISE_CITIES is growing toward (Tromso, 69.65 N,
+    // is named as pending in lib/sun-routes.ts).
+    const sunsetPastMidnight = d.sunrise !== null && d.sunset !== null && d.sunset < d.sunrise;
+    return [
+      sunEvent({ city, monthIndex, day: d.day, hours: d.sunrise, kind: "sunrise", label: labels.sunrise, cityName, url, placeId }),
+      sunEvent({ city, monthIndex, day: d.day, dateDay: d.day + (sunsetPastMidnight ? 1 : 0), hours: d.sunset, kind: "sunset", label: labels.sunset, cityName, url, placeId }),
+    ];
+  }).filter((e): e is Node => e !== null);
+
+  const faqPage: Node = { "@type": "FAQPage", "@id": `${url}#faq`, isPartOf: { "@id": url }, mainEntity: faq, ...authorship() };
+
+  return { "@context": "https://schema.org", "@graph": [place, webPage, breadcrumb, ...events, faqPage] };
+}
+
+/**
+ * Home → city index → city → this page.
+ *
+ * The URL's own ancestors are NOT the trail. `app/[locale]/[cityPrefix]/page.tsx`
+ * and `.../[city]/page.tsx` both bail out unless the prefix equals
+ * `CITY_PREFIX[locale]`, so `/amanecer` and `/amanecer/madrid` are 404s — putting
+ * them in a BreadcrumbList would advertise two dead URLs per page. The city tree
+ * is the real parent and the page already links back into it.
+ */
+function breadcrumbTrail({
+  locale, base, cityName, pageName, url, labels,
+}: Pick<SunPageGraphInput, "locale" | "base" | "cityName" | "pageName" | "url" | "labels">) {
+  const home = `${SITE_URL}${getPathname({ href: "/", locale: locale as (typeof routing.locales)[number] })}`;
+  return [
+    { name: "Vitamina D Explorer", item: home },
+    { name: labels.cities, item: indexUrl(locale) },
+    { name: cityName, item: cityUrl(locale, base) },
+    { name: pageName, item: url },
+  ];
+}
+
+/**
+ * One sunrise or sunset as an Event, or `null` when the page has no figure for it
+ * and on the two days a year the offset label would not hold.
+ *
+ * Polar day and night print an em dash on the page; the node is dropped instead
+ * of being filled with a plausible-looking instant.
+ *
+ * No `eventStatus` or `eventAttendanceMode`: those describe scheduled gatherings
+ * that can be cancelled or attended online. A sunrise is neither, and asserting
+ * the vocabulary because competitors do would be a claim about nothing.
+ */
+function sunEvent({
+  city, monthIndex, day, dateDay = day, hours, kind, label, cityName, url, placeId,
+}: {
+  city: City;
+  monthIndex: number;
+  /** The day the page states the figure under; also the day the offset is probed for. */
+  day: number;
+  /** The calendar day the instant belongs to — `day + 1` for a sunset past midnight. */
+  dateDay?: number;
+  hours: number | null;
+  kind: "sunrise" | "sunset";
+  label: string;
+  cityName: string;
+  url: string;
+  placeId: string;
+}): Node | null {
+  if (hours === null) return null;
+  const offset = utcOffsetHours(city, monthIndex, day);
+  const startDate = localInstant(hours, monthIndex, dateDay, offset);
+  if (!offsetHoldsAtInstant(city, startDate, offset)) return null;
+  return {
+    "@type": "Event",
+    "@id": `${url}#${kind}-${startDate.slice(0, 10)}`,
+    name: `${label} — ${cityName}`,
+    startDate,
+    location: { "@id": placeId },
+  };
+}
+
+/**
+ * The offset the zone shows when probed at the *start* of that day — not, in
+ * general, the offset in force at the moment the sun rises or sets.
+ *
+ * `City.tz` is a fixed number that ignores DST — Madrid is `tz: 1` in the record
+ * and sits at +02:00 for all of August — so publishing it as the offset of an
+ * instant would be wrong for roughly half the year in most of the city list.
+ *
+ * The probe deliberately repeats the expression `dailySunTimes` uses
+ * (`tzOffsetForDate(timezone, new Date(YEAR, monthIndex, day))`, local-time
+ * constructor included) rather than a more careful one. The offset that turns a
+ * wall-clock time into an instant has to be the same offset that produced that
+ * wall-clock time; a "better" calculation here would emit a startDate the page's
+ * own table contradicts.
+ *
+ * With no IANA name we fall back to `City.tz` — which is precisely what
+ * `dailySunTimes` falls back to when placing the printed time, so the instant is
+ * exactly as accurate as the string beside it and no more. Every builtin city
+ * currently carries a zone, so this path is reachable only for records that come
+ * from elsewhere.
+ */
+function utcOffsetHours(city: City, monthIndex: number, day: number): number {
+  if (!city.timezone) return city.tz;
+  return tzOffsetForDate(city.timezone, new Date(DOY_REFERENCE_YEAR, monthIndex, day));
+}
+
+/**
+ * Does the offset that produced the wall clock still hold at the instant that
+ * wall clock designates?
+ *
+ * On the two DST transition days a year it does not: the probe above reads the
+ * pre-transition offset, so "2026-11-01T07:26:00-05:00" for America/Chicago
+ * names an instant at which the zone is already at -06:00. The label is a claim
+ * about the zone, and that claim is false, so the caller drops the Event —
+ * roughly 12 of the 1920 nodes the shipped 40 cities × 12 months produce.
+ *
+ * The alternative, probing the zone at the instant rather than at the start of
+ * the day, is not available: the wall clock came from the day-start probe, and
+ * relabelling it would move the instant an hour away from the time the page
+ * prints beside it. The Event is dropped, not corrected.
+ *
+ * With no IANA name there is no zone to disagree with the fallback, so nothing
+ * is skipped.
+ */
+function offsetHoldsAtInstant(city: City, startDate: string, offsetHours: number): boolean {
+  if (!city.timezone) return true;
+  return tzOffsetForDate(city.timezone, new Date(startDate)) === offsetHours;
+}
+
+const pad2 = (n: number) => String(n).padStart(2, "0");
+
+/** "+02:00" / "-02:30" / "+05:30" — fractional zones and negatives both survive. */
+function isoOffset(hours: number): string {
+  const total = Math.round(Math.abs(hours) * 60);
+  return `${hours < 0 ? "-" : "+"}${pad2(Math.floor(total / 60))}:${pad2(total % 60)}`;
+}
+
+/**
+ * Local decimal hours → an ISO 8601 instant.
+ *
+ * Built from the number, never from `fmtTime`. `fmtTime` rounds the minute
+ * without carrying and can emit "20:60", which on the page is ugly and in a
+ * startDate is unparseable — so the rounding happens once, in minutes, and the
+ * hour falls out of the division. A value that rounds up to 24:00 rolls into the
+ * next calendar day, which is what the instant actually is.
+ */
+function localInstant(hours: number, monthIndex: number, day: number, offsetHours: number): string {
+  let minutes = Math.round(hours * 60);
+  // UTC accessors throughout: the calendar label must not depend on the timezone
+  // of the machine that renders the page (issue #25).
+  const date = new Date(Date.UTC(DOY_REFERENCE_YEAR, monthIndex, day));
+  if (minutes >= 1440) {
+    minutes -= 1440;
+    date.setUTCDate(date.getUTCDate() + 1);
+  }
+  const ymd = `${date.getUTCFullYear()}-${pad2(date.getUTCMonth() + 1)}-${pad2(date.getUTCDate())}`;
+  return `${ymd}T${pad2(Math.floor(minutes / 60))}:${pad2(minutes % 60)}:00${isoOffset(offsetHours)}`;
 }
