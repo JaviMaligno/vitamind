@@ -1,0 +1,120 @@
+{
+  "$comment": [
+    "PATTERN STUDY — designed 2026-08-14, to be measured on the Monday session.",
+    "",
+    "WHY THIS EXISTS. The 28-day Search Console report to 2026-08-12 shows 101 clicks",
+    "on 35,200 impressions, and the click-through rate is flat across positions:",
+    "0.30% at positions 6-10 (22,852 impressions) against 0.31% at positions 11-20",
+    "(10,273). Ranking does not buy clicks here, so the question moved to what does.",
+    "",
+    "WHY BY PATTERN AND NOT BY QUERY. The query table lists 1000 queries totalling",
+    "3300 impressions and 5 clicks — 9% of impressions and 5% of clicks. The other",
+    "91% sits in the anonymised tail, and the largest single query has 55 impressions.",
+    "There is no head to measure. Queries here are therefore samples of a TEMPLATE,",
+    "and the finding we want generalises to the template, not to the instance.",
+    "",
+    "THE HYPOTHESIS, WRITTEN BEFORE MEASURING so it can actually be wrong: a query",
+    "asking for one exact clock time gets answered by the AI Overview and yields no",
+    "click; a query asking for a direction, a table, or a span leaves something for",
+    "the result to supply and does get clicks. The aggregate that suggested it is thin",
+    "and is stated as such below.",
+    "",
+    "PREDICTIONS, one per pattern, recorded now:",
+    "  A, B, D, E -> AI Overview present AND stating the time. Expect no click.",
+    "  F, G       -> no AI Overview, or one that does not answer. Expect clicks.",
+    "  C (German) -> AI Overview less often than the Spanish and English equivalents.",
+    "If A/B/D/E and F/G come out the same, the hypothesis is dead and the CTR ceiling",
+    "is not about query shape at all.",
+    "",
+    "BUDGET CONFLICT, resolved by the owner on 2026-08-14: run both sets rather than",
+    "skip either. The Monday reminder (.github/workflows/experiment-guard.yml) asks",
+    "for the 10 fixed queries of queries.json, and the agreed cadence was 10 a week.",
+    "Split into two sessions on different days instead of one 20-query sitting: this",
+    "set on 08-14, the fixed series on 08-17. That keeps the per-session limit — the",
+    "half of the rule that actually protects the account — and relaxes only the weekly",
+    "frequency. Spacing from the 08-10 baseline is 4 days, then 3.",
+    "",
+    "METHOD, carrying the two traps the baseline hit plus the gaps it recorded:",
+    "  - Owner's profiled Chrome only. 10 queries, >=15s apart, hard stop on the",
+    "    first block. Do not probe for the rate limit.",
+    "  - Decide 'cited' by geometry (link top vs overview block bottom), never by DOM",
+    "    containment — that gave a false positive at 2088px in the baseline.",
+    "  - Record aioCitedDomains (inside the overview's source box) SEPARATELY from",
+    "    page-wide topDomains. The baseline conflated them and says so.",
+    "  - Keep a screenshot per query keyed by id. The baseline kept none, so its rows",
+    "    can only be re-measured, never re-audited.",
+    "  - One reading per query is noisy: the baseline saw us organically on 08-09 and",
+    "    gone on 08-10 for the same query. Single rows are not trends.",
+    "",
+    "FIELDS TO CAPTURE PER QUERY: aiOverview, aioAnswersTheQuestion (does it state the",
+    "clock time outright), aioBottomPx, firstOrganicTopPx, viewportPx, present,",
+    "ourTopPx, aioCitedDomains[], topDomains[], peopleAlsoAsk, blocked.",
+    "",
+    "GSC figures below are the 28-day report, 2026-07-16 to 2026-08-12."
+  ],
+  "designedOn": "2026-08-14",
+  "measureOn": "2026-08-14",
+  "gscWindow": "2026-07-16/2026-08-12",
+  "gscTotals": { "clicks": 101, "impressions": 35200, "ctr": 0.003, "avgPosition": 9.5 },
+  "patterns": [
+    {
+      "id": "A",
+      "label": "Spanish, city + month, exact time",
+      "gsc": { "queries": 159, "impressions": 906, "clicks": 1, "ctr": 0.0011 },
+      "alreadyMeasured": "sun-london-mar and sun-nyc-sep in the 2026-08-10 baseline, both aiOverview: true",
+      "predict": "AI Overview present and answering"
+    },
+    {
+      "id": "B",
+      "label": "English, city + month, exact time",
+      "gsc": { "queries": 140, "impressions": 454, "clicks": 0, "ctr": 0 },
+      "alreadyMeasured": "sun-tokyo-may (true) and sun-toronto-aug (FALSE) in the baseline — the one known counterexample",
+      "predict": "AI Overview present and answering"
+    },
+    {
+      "id": "C",
+      "label": "German, sonnenuntergang + city + month",
+      "gsc": { "queries": 71, "impressions": 252, "clicks": 2, "ctr": 0.0079 },
+      "note": "Best CTR of any pattern with a non-trivial sample, and German is also the best-converting locale page-side (0.38% against 0.29% Spanish, 0.25% English). Never measured for AI Overview.",
+      "predict": "AI Overview less often than A/B"
+    },
+    {
+      "id": "D",
+      "label": "Spanish, exact calendar date, no city",
+      "gsc": { "queries": 27, "impressions": 126, "clicks": 0, "ctr": 0 },
+      "predict": "AI Overview present and answering"
+    },
+    {
+      "id": "E",
+      "label": "Month only, no city",
+      "gsc": { "queries": null, "impressions": null, "clicks": 0, "ctr": 0, "note": "counted inside pattern A in the aggregate; broken out here because the missing city may change what the overview can answer" },
+      "predict": "AI Overview present and answering"
+    },
+    {
+      "id": "F",
+      "label": "Direction / orientation of the sun, not a time",
+      "gsc": { "queries": 1, "impressions": 11, "clicks": 1, "ctr": 0.091 },
+      "warning": "One query, one click. Suggestive, not evidence.",
+      "predict": "no AI Overview, or one that does not answer"
+    },
+    {
+      "id": "G",
+      "label": "Table of times across a month, not one time",
+      "gsc": { "queries": 11, "impressions": 27, "clicks": 1, "ctr": 0.037 },
+      "warning": "27 impressions. Suggestive, not evidence.",
+      "predict": "no AI Overview, or one that does not answer"
+    }
+  ],
+  "queries": [
+    { "id": "p-a-roma-sep", "pattern": "A", "q": "a que hora oscurece en roma en septiembre", "hl": "es", "gl": "es", "gscImpressions": 19, "gscClicks": 0, "gscPosition": 8.7 },
+    { "id": "p-b-amsterdam-aug", "pattern": "B", "q": "sunset in amsterdam in august", "hl": "en", "gl": "us", "gscImpressions": 11, "gscClicks": 0, "gscPosition": 6.0 },
+    { "id": "p-c-nyc-sep", "pattern": "C", "q": "sonnenuntergang new york september", "hl": "de", "gl": "de", "gscImpressions": 22, "gscClicks": 0, "gscPosition": 9.1 },
+    { "id": "p-c-paris-sep", "pattern": "C", "q": "sonnenuntergang paris september", "hl": "de", "gl": "de", "gscImpressions": 18, "gscClicks": 0, "gscPosition": 8.4 },
+    { "id": "p-c-wien-sep", "pattern": "C", "q": "sonnenuntergang wien september", "hl": "de", "gl": "de", "gscImpressions": 8, "gscClicks": 1, "gscPosition": 6.4, "note": "one of the five queries that got a click" },
+    { "id": "p-d-12ago", "pattern": "D", "q": "a que hora anochece el 12 de agosto", "hl": "es", "gl": "es", "gscImpressions": 32, "gscClicks": 0, "gscPosition": 9.0 },
+    { "id": "p-d-puesta-12ago", "pattern": "D", "q": "hora puesta de sol 12 agosto", "hl": "es", "gl": "es", "gscImpressions": 14, "gscClicks": 0, "gscPosition": 8.6 },
+    { "id": "p-e-amanece-sep", "pattern": "E", "q": "a que hora amanece en septiembre", "hl": "es", "gl": "es", "gscImpressions": 22, "gscClicks": 0, "gscPosition": 9.1 },
+    { "id": "p-f-pordonde-ago", "pattern": "F", "q": "por donde se pone el sol en agosto", "hl": "es", "gl": "es", "gscImpressions": 11, "gscClicks": 1, "gscPosition": 5.7, "note": "highest-impression query that got a click" },
+    { "id": "p-g-sep-times", "pattern": "G", "q": "september sunset times", "hl": "en", "gl": "us", "gscImpressions": 8, "gscClicks": 0, "gscPosition": null }
+  ]
+}
