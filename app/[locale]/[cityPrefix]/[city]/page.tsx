@@ -23,10 +23,36 @@ import { nearbyCities } from "@/lib/city-nearby";
 import { capFirst, cityLabels, monthLabels, monthName, verdictMonths } from "@/lib/city-copy";
 import { fmtTime, dateFromDoy } from "@/lib/solar";
 import { getSunTimes, monthlySunTimes } from "@/lib/sun-times";
+import { resolveSunCityPage, sunCityStaticParams } from "@/lib/sun-routes";
+import SunTodayPage, { sunTodayMetadata } from "./SunTodayPage";
 
+/**
+ * TWO PAGE FAMILIES SHARE THIS SEGMENT.
+ *
+ * `/vitamina-d/madrid` is the vitamin D city page; `/amanecer/madrid` is the
+ * sunrise tree's city hub. Next allows one dynamic segment name per position,
+ * so both arrive here and are told apart by the PREFIX: `resolveCity` accepts
+ * only `CITY_PREFIX[locale]`, `resolveSunCityPage` only `SUN_PREFIX[locale]`,
+ * and each returns null for the other. Loosening either resolver silently
+ * takes a live page family down.
+ */
 export function generateStaticParams() {
-  return cityStaticParams();
+  return [...cityStaticParams(), ...sunCityStaticParams()];
 }
+
+/**
+ * Hourly ISR, for the hub's sake: its subject is today, and a build-time render
+ * would still be quoting June's window in December.
+ *
+ * It is a floor on freshness, not a guarantee — ISR serves the stale copy to
+ * the request that triggers regeneration, so a URL nobody has asked for in a
+ * week answers that week-old HTML once. The hub is built so that this cannot
+ * produce a false statement: it names no calendar date server-side, and its
+ * window is quantised to whole hours (see lib/sun-today.ts). The city pages
+ * share the setting and are unaffected — their content is deterministic, so
+ * every regeneration reproduces the same HTML.
+ */
+export const revalidate = 3600;
 
 type Params = { locale: string; cityPrefix: string; city: string };
 
@@ -40,6 +66,9 @@ function resolveCity({ locale, cityPrefix, city }: Params) {
 
 export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
   const p = await params;
+  const sun = resolveSunCityPage(p.locale, p.cityPrefix, p.city);
+  if (sun) return sunTodayMetadata(p.locale, sun);
+
   const city = resolveCity(p);
   if (!city) return {};
 
@@ -64,6 +93,14 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
 
 export default async function CityPage({ params }: { params: Promise<Params> }) {
   const p = await params;
+
+  // The sunrise tree's hub reaches this file through the shared segment.
+  const sun = resolveSunCityPage(p.locale, p.cityPrefix, p.city);
+  if (sun) {
+    setRequestLocale(p.locale);
+    return <SunTodayPage locale={p.locale} resolved={sun} />;
+  }
+
   const city = resolveCity(p);
   if (!city) notFound();
   setRequestLocale(p.locale);
