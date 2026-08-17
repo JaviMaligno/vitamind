@@ -727,6 +727,28 @@
     "todayIs": "Aujourd'hui, {date}",
     "recomputed": "Recalculé dans votre navigateur avec la date et l'heure de {city}."
   },
+  "compass": {
+    "name": {
+      "n": "nord",
+      "ne": "nord-est",
+      "e": "est",
+      "se": "sud-est",
+      "s": "sud",
+      "sw": "sud-ouest",
+      "w": "ouest",
+      "nw": "nord-ouest"
+    },
+    "in": {
+      "n": "au nord",
+      "ne": "au nord-est",
+      "e": "à l'est",
+      "se": "au sud-est",
+      "s": "au sud",
+      "sw": "au sud-ouest",
+      "w": "à l'ouest",
+      "nw": "au nord-ouest"
+    }
+  },
   "sunrisePage": {
     "eyebrow": "Le soleil mois par mois",
     "metaTitle": "Lever et coucher du soleil à {city} en {month} + vitamine D",
@@ -765,6 +787,13 @@
     "faqVitdAPolar": "En {month}, le soleil de {city} ne suit pas un cycle normal de jour et de nuit : il n'y a donc pas de plage horaire valable pour tout le mois, il faut regarder le détail jour par jour.",
     "faqPolarQ": "Pourquoi n'y a-t-il pas d'heure de lever du soleil à {city} en {month} ?",
     "faqPolarA": "Parce qu'en {month} à {city}, certains jours le soleil ne se lève pas, ou ne se couche pas. C'est pourquoi cette page ne donne pas une heure unique pour le mois, mais le détail jour par jour.",
+    "directionHeading": "Où se lève et où se couche le soleil à {city} en {month} ?",
+    "directionRiseLabel": "Où il se lève",
+    "directionSetLabel": "Où il se couche",
+    "directionBody": "À la mi-{month} à {city}, le soleil se lève {sunrisePoint} — un azimut de {sunriseBearing}°, mesuré depuis le nord géographique — et se couche {sunsetPoint}, à {sunsetBearing}°. {offSide, select, north {Soit {offDegrees}° au nord de l'est au lever, et les mêmes {offDegrees}° au nord de l'ouest au coucher.} south {Soit {offDegrees}° au sud de l'est au lever, et les mêmes {offDegrees}° au sud de l'ouest au coucher.} other {C'est pratiquement plein est au lever et plein ouest au coucher.}} {drift, select, north {Du 1er au dernier jour du mois, les deux points se décalent de {driftDegrees}° vers le nord.} south {Du 1er au dernier jour du mois, les deux points se décalent de {driftDegrees}° vers le sud.} other {Du 1er au dernier jour du mois, les deux points bougent à peine.}}",
+    "directionNote": "Azimuts indicatifs : ils peuvent varier d'un ou deux degrés. Ils sont comptés depuis le nord géographique, et non celui qu'indique la boussole d'un téléphone.",
+    "faqDirectionQ": "Où se couche le soleil à {city} en {month} ?",
+    "faqDirectionA": "À la mi-{month} à {city}, le soleil se couche {sunsetPoint} : un azimut de {sunsetBearing}°, mesuré depuis le nord géographique, {offSide, select, north {soit {offDegrees}° au nord de l'ouest} south {soit {offDegrees}° au sud de l'ouest} other {c'est-à-dire pratiquement plein ouest}}. Il se lève {sunrisePoint}, à {sunriseBearing}°. {drift, select, north {Au fil du mois, les deux points se décalent de {driftDegrees}° vers le nord.} south {Au fil du mois, les deux points se décalent de {driftDegrees}° vers le sud.} other {Au fil du mois, les deux points bougent à peine.}}",
     "note": "Valeurs astronomiques indicatives : elles peuvent varier d'une ou deux minutes selon l'année.",
     "howCalculated": "Comment ces horaires sont calculés"
   },

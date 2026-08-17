@@ -727,6 +727,28 @@
     "todayIs": "Heute, {date}",
     "recomputed": "Im Browser neu berechnet, mit Datum und Uhrzeit in {city}."
   },
+  "compass": {
+    "name": {
+      "n": "Norden",
+      "ne": "Nordosten",
+      "e": "Osten",
+      "se": "Südosten",
+      "s": "Süden",
+      "sw": "Südwesten",
+      "w": "Westen",
+      "nw": "Nordwesten"
+    },
+    "in": {
+      "n": "im Norden",
+      "ne": "im Nordosten",
+      "e": "im Osten",
+      "se": "im Südosten",
+      "s": "im Süden",
+      "sw": "im Südwesten",
+      "w": "im Westen",
+      "nw": "im Nordwesten"
+    }
+  },
   "sunrisePage": {
     "eyebrow": "Die Sonne Monat für Monat",
     "metaTitle": "Sonnenaufgang & Sonnenuntergang in {city} im {month} + Vitamin D",
@@ -765,6 +787,13 @@
     "faqVitdAPolar": "Im {month} folgt die Sonne in {city} keinem normalen Tag-und-Nacht-Rhythmus, deshalb gibt es keine Zeitspanne, die für den ganzen Monat gilt: Hier hilft nur der Blick auf die einzelnen Tage.",
     "faqPolarQ": "Warum gibt es in {city} im {month} keine feste Sonnenaufgangszeit?",
     "faqPolarA": "Weil die Sonne im {month} in {city} an manchen Tagen gar nicht aufgeht oder gar nicht untergeht. Deshalb nennt diese Seite keine einheitliche Zeit für den ganzen Monat, sondern die Werte Tag für Tag.",
+    "directionHeading": "Wo geht die Sonne in {city} im {month} auf und unter?",
+    "directionRiseLabel": "Wo sie aufgeht",
+    "directionSetLabel": "Wo sie untergeht",
+    "directionBody": "Mitte {month} geht die Sonne in {city} {sunrisePoint} auf — ein Azimut von {sunriseBearing}°, gemessen vom geografischen Norden aus — und {sunsetPoint} unter, bei {sunsetBearing}°. {offSide, select, north {Das sind beim Aufgang {offDegrees}° nördlich der Ostrichtung und beim Untergang dieselben {offDegrees}° nördlich der Westrichtung.} south {Das sind beim Aufgang {offDegrees}° südlich der Ostrichtung und beim Untergang dieselben {offDegrees}° südlich der Westrichtung.} other {Das ist beim Aufgang praktisch genau die Ostrichtung und beim Untergang genau die Westrichtung.}} {drift, select, north {Vom 1. bis zum letzten Tag des Monats wandern beide Punkte {driftDegrees}° nach Norden.} south {Vom 1. bis zum letzten Tag des Monats wandern beide Punkte {driftDegrees}° nach Süden.} other {Vom 1. bis zum letzten Tag des Monats wandern beide Punkte kaum.}}",
+    "directionNote": "Richtwerte: Die Azimute können ein bis zwei Grad abweichen. Sie beziehen sich auf den geografischen Norden, nicht auf den, den ein Handy-Kompass anzeigt.",
+    "faqDirectionQ": "Wo geht die Sonne in {city} im {month} unter?",
+    "faqDirectionA": "Mitte {month} geht die Sonne in {city} {sunsetPoint} unter: ein Azimut von {sunsetBearing}°, gemessen vom geografischen Norden aus, {offSide, select, north {also {offDegrees}° nördlich der Westrichtung} south {also {offDegrees}° südlich der Westrichtung} other {also praktisch genau die Westrichtung}}. Sie geht {sunrisePoint} auf, bei {sunriseBearing}°. {drift, select, north {Im Lauf des Monats wandern beide Punkte {driftDegrees}° nach Norden.} south {Im Lauf des Monats wandern beide Punkte {driftDegrees}° nach Süden.} other {Im Lauf des Monats wandern beide Punkte kaum.}}",
     "note": "Astronomische Richtwerte: Sie können je nach Jahr um ein bis zwei Minuten abweichen.",
     "howCalculated": "Wie diese Zeiten berechnet werden"
   },

@@ -25,6 +25,95 @@ export function equationOfTime(doy: number): number {
   return 9.87 * Math.sin(2 * B) - 7.53 * Math.cos(B) - 1.5 * Math.sin(B);
 }
 
+/**
+ * The altitude the sun's centre has when this site calls it risen or set:
+ * refraction at the horizon (~0.57°) plus the solar semidiameter (~0.27°), so
+ * the upper limb appears to touch a flat horizon while the centre is still
+ * below it.
+ *
+ * It lives here, next to the geometry, because two things now depend on it and
+ * they must not drift apart: `getSunTimes` decides WHEN the sun rises, and
+ * `sunDirection` decides WHERE. Copy that prints both in one sentence is
+ * describing a single instant, and a second copy of this number is how that
+ * stops being true.
+ */
+export const HORIZON_DEG = -0.833;
+
+/**
+ * Where on the compass the sun comes up and goes down, in degrees clockwise
+ * from true north (0 = N, 90 = E, 180 = S, 270 = W).
+ *
+ * Latitude and day only — no longitude, and no timezone. Longitude moves the
+ * clock time of a sunrise, not its bearing; the bearing is fixed by the
+ * declination and the observer's latitude alone. Feeding a longitude in would
+ * imply an accuracy the model does not have.
+ */
+export interface SunDirection {
+  sunriseBearing: number;
+  sunsetBearing: number;
+}
+
+/**
+ * The bearing of sunrise and sunset for a latitude and day of year, or `null`
+ * on a day the sun never crosses that altitude.
+ *
+ * ROUTE: solve the horizon crossing for the hour angle, then read the bearing
+ * off the sun's horizon-frame vector with `atan2`. The alternative — inverting
+ * `sin d = sin h sin lat + cos h cos lat cos A` with `acos` — needs a separate
+ * rule to decide which of the two crossings it just found, and loses precision
+ * exactly where the answer matters most, at the high latitudes where the
+ * bearing swings toward due north. `atan2` gets the quadrant from the signs.
+ *
+ * WHY THE POLAR TEST IS THE HOUR ANGLE'S AND NOT THE BEARING'S: the two are
+ * mathematically equivalent (both say the pole/zenith/sun triangle closes), but
+ * `halfDayAt` in `lib/sun-times.ts` draws the line with this expression, and a
+ * page that printed a sunrise time with no direction beside it — or a direction
+ * on a day with no sunrise — would be a visible contradiction. Sharing the
+ * test makes that agreement structural rather than a coincidence of rounding;
+ * `sun-azimuth.test.ts` sweeps every degree of latitude to hold it.
+ *
+ * `elevDeg` defaults to the same refracted horizon `getSunTimes` uses, so the
+ * bearing belongs to the instant the tables print. It is a parameter because
+ * the geometric horizon (0) is where the equinox identity — due east at every
+ * latitude — is exact, and that is the strongest check this maths has.
+ *
+ * ACCURACY: `declination` is the one-term approximation, one value per day,
+ * which puts the model's equinox on day 81 against a true equinox on 20 March
+ * and leaves declination off by up to ~1°. That is ~1-2° of bearing (more the
+ * further from the equator, since cos(lat) divides it), and it also means
+ * sunrise and sunset here are exact mirrors when the real pair differ by a few
+ * tenths of a degree. Fine for naming a compass sector; not for aiming
+ * anything.
+ */
+export function sunDirection(lat: number, doy: number, elevDeg: number = HORIZON_DEG): SunDirection | null {
+  const d = declination(doy) * RAD;
+  const lr = lat * RAD;
+  const hr = elevDeg * RAD;
+
+  const cd = Math.cos(lr) * Math.cos(d);
+  // At the poles cos(lat) collapses and the hour angle stops meaning anything —
+  // every direction is south, or north. Same guard, same constant as `halfDayAt`.
+  if (Math.abs(cd) < 1e-10) return null;
+  const cosH = (Math.sin(hr) - Math.sin(lr) * Math.sin(d)) / cd;
+  if (cosH <= -1 || cosH >= 1) return null;
+
+  // Hour angle of the crossing, negative in the morning by the usual convention.
+  const H = -Math.acos(cosH);
+  const east = -Math.cos(d) * Math.sin(H);
+  const north = Math.sin(d) * Math.cos(lr) - Math.cos(d) * Math.sin(lr) * Math.cos(H);
+  // `cosH` is strictly inside (-1, 1) by the check above, so H is strictly
+  // negative, `east` strictly positive, and `atan2` lands in (0, 180) — the
+  // eastern half, where a sunrise belongs. No wrap is needed and none is added:
+  // one that could never fire would imply a case that does not exist. The range
+  // is asserted over a full latitude sweep in `sun-azimuth.test.ts` instead.
+  const sunriseBearing = Math.atan2(east, north) / RAD;
+
+  // Sunset is the same crossing with the hour angle's sign flipped: `north` is
+  // even in H and `east` is odd, so the bearing mirrors about the north-south
+  // axis. Exact only because this model holds declination fixed across the day.
+  return { sunriseBearing, sunsetBearing: 360 - sunriseBearing };
+}
+
 export function solarElev(lat: number, lon: number, doy: number, utcH: number): number {
   const d = declination(doy) * RAD;
   const lr = lat * RAD;

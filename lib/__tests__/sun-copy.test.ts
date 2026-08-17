@@ -24,7 +24,12 @@ const city = (slug: string) => {
 const copyFor = (slug: string, monthIndex: number) => {
   const c = city(slug);
   const data = monthData(c.lat, c.lon, c.tz, c.timezone, c.elevation ?? 0, monthIndex);
-  return { data, copy: sunPageCopy({ cityName: "Ciudad", month: "mes", data }) };
+  // The real resolver reads `compass.in`; here the identifier stands in for the
+  // phrase, so an assertion can name the sector without importing a locale.
+  return {
+    data,
+    copy: sunPageCopy({ cityName: "Ciudad", month: "mes", data, compassIn: (p) => p }),
+  };
 };
 
 const answerKeys = (slug: string, monthIndex: number) =>
@@ -99,13 +104,32 @@ describe("sunPageCopy selects the metadata variant for the regime", () => {
 });
 
 describe("sunPageCopy routes the FAQ questions", () => {
-  it("asks the five day/twilight/vitamin D questions where the figures exist", () => {
+  it("leads with the direction question, then the day/twilight/vitamin D five", () => {
+    // Direction first because it is the measured highest-CTR query shape (9.1%
+    // against 0.17% for clock times) and the one no ephemeris rival answers.
     expect(questionKeys("madrid", 7)).toEqual([
-      "faqDeltaQ", "faqLightQ", "faqDawnQ", "faqDarkQ", "faqVitdQ",
+      "faqDirectionQ", "faqDeltaQ", "faqLightQ", "faqDawnQ", "faqDarkQ", "faqVitdQ",
     ]);
     expect(answerKeys("madrid", 7)).toEqual([
-      "faqDeltaA", "faqLightA", "faqDawnA", "faqDarkA", "faqVitdASynthesis",
+      "faqDirectionA", "faqDeltaA", "faqLightA", "faqDawnA", "faqDarkA", "faqVitdASynthesis",
     ]);
+  });
+
+  it("hands the direction answer the figures monthDirection computed", () => {
+    const { data, copy } = copyFor("madrid", 7);
+    const entry = copy.faq.find((e) => e.aKey === "faqDirectionA")!;
+    expect(entry.aValues.sunsetPoint).toBe(data.direction!.sunsetPoint);
+    expect(entry.aValues.sunsetBearing).toBe(data.direction!.sunsetBearing);
+    expect(entry.aValues.offDegrees).toBe(data.direction!.offDegrees);
+    expect(entry.aValues.offSide).toBe(data.direction!.offSide);
+    expect(entry.aValues.driftDegrees).toBe(data.direction!.driftDegrees);
+    expect(entry.aValues.drift).toBe(data.direction!.drift);
+  });
+
+  it("asks no direction question on a month with no single direction", () => {
+    // Tromso in June: `monthDirection` is null because the sun does not set.
+    expect(copyFor("tromso", 5).data.direction).toBeNull();
+    expect(questionKeys("tromso", 5)).not.toContain("faqDirectionQ");
   });
 
   it("answers the vitamin D question with the none variant where there is no window", () => {

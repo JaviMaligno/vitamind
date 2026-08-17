@@ -1,10 +1,8 @@
-import { declination, equationOfTime, dayOfYear, daysInMonth, DOY_REFERENCE_YEAR } from "./solar";
+import { declination, equationOfTime, dayOfYear, daysInMonth, DOY_REFERENCE_YEAR, HORIZON_DEG } from "./solar";
 import { tzOffsetForDate } from "./timezone";
 
 const RAD = Math.PI / 180;
 
-/** Standard sunrise/sunset altitude: refraction (~0.57°) + solar semidiameter. */
-const HORIZON_DEG = -0.833;
 /** Upper bound of the golden hour: sun below ~6° gives the warm, low light. */
 const GOLDEN_DEG = 6;
 /** Civil twilight bound: sun ≤6° below the horizon still gives usable light. */
