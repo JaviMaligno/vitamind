@@ -35,15 +35,22 @@ describe("JSON-LD authorship", () => {
     expect(emitters.length).toBeGreaterThanOrEqual(4);
   });
 
+  /**
+   * The marker is the shared-module call that carries the attribution. Most
+   * pages spread `authorship()` into a node they assemble themselves; the
+   * sunrise month page hands the whole graph to `sunPageGraph`, which spreads it
+   * into both the WebPage and the FAQPage — asserted directly, on the emitted
+   * nodes rather than on the source text, in lib/__tests__/schema.test.ts.
+   */
   it.each([
-    "app/[locale]/learn/layout.tsx",
-    "app/[locale]/[cityPrefix]/page.tsx",
-    "app/[locale]/[cityPrefix]/[city]/page.tsx",
-    "app/[locale]/[cityPrefix]/[city]/[month]/page.tsx",
-  ])("%s attributes its JSON-LD to the shared entities", (relative) => {
+    ["app/[locale]/learn/layout.tsx", "authorship()"],
+    ["app/[locale]/[cityPrefix]/page.tsx", "authorship()"],
+    ["app/[locale]/[cityPrefix]/[city]/page.tsx", "authorship()"],
+    ["app/[locale]/[cityPrefix]/[city]/[month]/page.tsx", "sunPageGraph("],
+  ])("%s attributes its JSON-LD to the shared entities", (relative, marker) => {
     const src = readFileSync(join(root, relative), "utf8");
     expect(src).toMatch(/from "@\/lib\/schema"/);
-    expect(src).toContain("authorship()");
+    expect(src).toContain(marker);
   });
 
   it("has no emitter that skips the shared module", () => {

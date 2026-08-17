@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { authorship } from "@/lib/schema";
+import { sunPageGraph } from "@/lib/schema";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
@@ -7,15 +7,14 @@ import Card from "@/components/ui/Card";
 import A from "@/components/ui/A";
 import PhaseWindow from "@/components/PhaseWindow";
 import {
-  SUNRISE_CITIES, MONTH_SLUGS, resolveSunPage, sunPathname, sunStaticParams, buildSunAlternates,
+  SUNRISE_CITIES, MONTH_SLUGS, resolveSunPage, sunPathname, sunCityPathname, sunStaticParams,
+  buildSunAlternates,
 } from "@/lib/sun-routes";
 import { baseSlug, cityPathname, localizedCityName } from "@/lib/city-routes";
 import { nearbyCities } from "@/lib/city-nearby";
 import { capFirst, monthName } from "@/lib/city-copy";
-import { dailySunTimes, getSunTimes } from "@/lib/sun-times";
-import { getCurve, doyFromMonthDay, dateFromDoy, fmtTime, fmtDayLength, dayLengthMinutes, DOY_REFERENCE_YEAR } from "@/lib/solar";
-import { computeExposureFromCurve } from "@/lib/vitd";
-import { ozoneDU } from "@/lib/uv-model";
+import { fmtTime, fmtDayLength, DOY_REFERENCE_YEAR } from "@/lib/solar";
+import { monthData, sunPageCopy } from "@/lib/sun-copy";
 import { sunProse } from "@/lib/sun-prose";
 import { isTreated } from "@/lib/phase2-cities";
 
@@ -43,40 +42,28 @@ type Params = { locale: string; cityPrefix: string; city: string; month: string 
 
 const t2 = (h: number | null) => (h !== null ? fmtTime(h) : "—");
 
-function monthData(lat: number, lon: number, tz: number, timezone: string | undefined, elevationM: number, monthIndex: number) {
-  const days = dailySunTimes(lat, lon, monthIndex, timezone, tz);
-  const first = days[0];
-  const last = days[days.length - 1];
-  const dayLen = (d: { sunrise: number | null; sunset: number | null }) =>
-    dayLengthMinutes(d.sunrise, d.sunset);
-
-  const firstLen = dayLen(first);
-  const lastLen = dayLen(last);
-  const deltaMin = firstLen !== null && lastLen !== null ? Math.round(lastLen - firstLen) : 0;
-
-  const mid = getSunTimes(lat, lon, dateFromDoy(doyFromMonthDay(monthIndex, 15)), timezone, tz);
-
-  const doy15 = doyFromMonthDay(monthIndex, 15);
-  const exposure = computeExposureFromCurve(
-    getCurve(lat, lon, doy15, tz, timezone), 3, 0.25, 1000, null,
-    { ozoneDu: ozoneDU(lat, lon, doy15), elevationM },
-  );
-
-  return { days, first, last, deltaMin, mid, exposure, dayLen };
-}
-
 export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
   const p = await params;
   const resolved = resolveSunPage(p.locale, p.cityPrefix, p.city, p.month);
   if (!resolved) return {};
   const t = await getTranslations({ locale: p.locale, namespace: "sunrisePage" });
-  const labels = {
-    city: localizedCityName(p.locale, resolved.base),
-    month: monthName(p.locale, resolved.monthIndex),
-  };
   const alternates = buildSunAlternates(p.locale, resolved.base, resolved.monthIndex);
-  const title = t("metaTitle", labels);
-  const description = t("metaDescription", labels);
+
+  /**
+   * The title and description are regime-dependent — a page whose answer is
+   * "no synthesis this month" must not promise vitamin D in the SERP — so the
+   * metadata needs the same figures the body renders. `monthData` is the page's
+   * own helper, called with the page's own arguments: the alternative is a
+   * second computation that can drift from what the reader then sees.
+   */
+  const { city } = resolved;
+  const copy = sunPageCopy({
+    cityName: localizedCityName(p.locale, resolved.base),
+    month: monthName(p.locale, resolved.monthIndex),
+    data: monthData(city.lat, city.lon, city.tz, city.timezone, city.elevation ?? 0, resolved.monthIndex),
+  });
+  const title = t(copy.metaTitleKey, copy.metaValues);
+  const description = t(copy.metaDescriptionKey, copy.metaValues);
   return {
     title,
     description,
@@ -94,12 +81,14 @@ export default async function SunriseMonthPage({ params }: { params: Promise<Par
   const { city, base, monthIndex } = resolved;
   const t = await getTranslations({ locale: p.locale, namespace: "sunrisePage" });
   const tSun = await getTranslations({ locale: p.locale, namespace: "sunTimes" });
+  const tNav = await getTranslations({ locale: p.locale, namespace: "nav" });
+  const tToday = await getTranslations({ locale: p.locale, namespace: "sunToday" });
 
   const cityName = localizedCityName(p.locale, base);
   const month = monthName(p.locale, monthIndex);
-  const { days, first, last, deltaMin, mid, exposure, dayLen } = monthData(
-    city.lat, city.lon, city.tz, city.timezone, city.elevation ?? 0, monthIndex,
-  );
+  const data = monthData(city.lat, city.lon, city.tz, city.timezone, city.elevation ?? 0, monthIndex);
+  const { days, first, last, deltaMin, mid, exposure, dayLen } = data;
+  const copy = sunPageCopy({ cityName, month, data });
 
   /**
    * Phase 2 ships the extractable passage to half the sunrise cities; the other
@@ -123,38 +112,62 @@ export default async function SunriseMonthPage({ params }: { params: Promise<Par
 
   const midLen = dayLen(mid) !== null ? fmtDayLength(dayLen(mid)!) : "—";
 
-  const faq = [
-    {
-      "@type": "Question",
-      name: t("faqSunriseQ", { city: cityName, month }),
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: t("faqSunriseA", { month, first: t2(first.sunrise), lastDay: days.length, last: t2(last.sunrise) }),
-      },
-    },
-    {
-      "@type": "Question",
-      name: t("faqDayQ", { city: cityName, month }),
-      acceptedAnswer: { "@type": "Answer", text: t("faqDayA", { dayLength: midLen }) },
-    },
-  ];
+  /**
+   * One list, rendered twice: as the visible <section> below and as the
+   * FAQPage markup inside the graph. Google requires the answers it marks up to
+   * be on the page — the previous FAQ was JSON-LD only, which is why Search
+   * Appearance reported no data for it — and building both from the same
+   * strings is what keeps them from drifting apart.
+   */
+  const faqEntries = copy.faq.map((entry) => ({
+    q: t(entry.qKey, entry.qValues),
+    a: t(entry.aKey, entry.aValues),
+  }));
+
+  const faq = faqEntries.map(({ q, a }) => ({
+    "@type": "Question",
+    name: q,
+    acceptedAnswer: { "@type": "Answer", text: a },
+  }));
 
   const nearby = nearbyCities(city.id)
     .filter((nb) => SUNRISE_CITIES.includes(baseSlug(nb.id)))
     .slice(0, 5);
 
+  const pageTitle = t("title", { city: cityName, month });
+
+  /**
+   * The structured counterpart of what the page states above. It is built from
+   * the same `first`/`last` objects the intro renders, not from a second
+   * computation and not by parsing the formatted strings — `fmtTime` rounds the
+   * minute without carrying ("20:60"), which a startDate cannot survive.
+   *
+   * The labels are the ones already on screen, so the graph adds no copy of its
+   * own and cannot drift from the visible text.
+   */
+  const graph = sunPageGraph({
+    city,
+    base,
+    cityName,
+    locale: p.locale,
+    monthIndex,
+    url: buildSunAlternates(p.locale, base, monthIndex).canonical,
+    pageName: pageTitle,
+    labels: { sunrise: tSun("sunrise"), sunset: tSun("sunset"), cities: tNav("cities") },
+    days: [first, last],
+    faq,
+  });
+
   return (
     <main className="mx-auto max-w-[900px] px-4 py-6 sm:py-10">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({ "@context": "https://schema.org", "@type": "FAQPage", mainEntity: faq, ...authorship() }),
-        }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(graph) }}
       />
 
       <p className="text-caption font-semibold uppercase tracking-[0.2em] text-accent">{t("eyebrow")}</p>
       <h1 className="mt-2 font-display text-3xl sm:text-5xl font-bold tracking-tight text-text-primary">
-        {t("title", { city: cityName, month })}
+        {pageTitle}
       </h1>
       <p className="mt-4 text-body sm:text-heading text-text-secondary max-w-2xl leading-relaxed">{intro}</p>
 
@@ -266,6 +279,21 @@ export default async function SunriseMonthPage({ params }: { params: Promise<Par
         </Card>
       </section>
 
+      {/* The same questions the FAQPage markup carries, visible to the reader. */}
+      <section className="mt-10">
+        <h2 className="font-display text-2xl sm:text-3xl font-bold">
+          {t("faqHeading", copy.headingValues)}
+        </h2>
+        <dl className="mt-4 space-y-4">
+          {faqEntries.map(({ q, a }) => (
+            <div key={q}>
+              <dt className="font-display text-title font-semibold text-text-primary">{q}</dt>
+              <dd className="mt-1 text-body text-text-secondary leading-relaxed">{a}</dd>
+            </div>
+          ))}
+        </dl>
+      </section>
+
       {/* Internal mesh: all 12 months + same month nearby. */}
       <nav className="mt-10 pt-8 border-t border-border-default">
         <h2 className="font-display text-title sm:text-2xl font-bold">{t("monthsHeading", { city: cityName })}</h2>
@@ -287,6 +315,15 @@ export default async function SunriseMonthPage({ params }: { params: Promise<Par
             ),
           )}
         </ul>
+
+        {/* Up to the city hub. The twelve month pages and the hub link both
+            ways: the hub is where this city's tree starts, and it answers the
+            question a monthly table cannot — what today looks like. */}
+        <p className="mt-4 text-body">
+          <A href={sunCityPathname(p.locale, base)} className="font-semibold">
+            {tToday("hubLink", { city: cityName })}
+          </A>
+        </p>
 
         {nearby.length > 0 && (
           <>

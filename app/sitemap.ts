@@ -5,7 +5,9 @@ import { getPathname } from "@/i18n/navigation";
 import { buildLanguageAlternates } from "@/i18n/metadata";
 import { BUILTIN_CITIES } from "@/lib/cities";
 import { baseSlug, cityUrl, buildCityAlternates } from "@/lib/city-routes";
-import { SUNRISE_CITIES, sunUrl, buildSunAlternates } from "@/lib/sun-routes";
+import {
+  SUNRISE_CITIES, sunUrl, buildSunAlternates, sunCityUrl, buildSunCityAlternates,
+} from "@/lib/sun-routes";
 
 const PAGES = [
   { path: "/", changeFrequency: "weekly" as const, priority: 1 },
@@ -47,6 +49,19 @@ export default function sitemap(): MetadataRoute.Sitemap {
     }));
   });
 
+  // The city hub at the sunrise prefix (`/amanecer/madrid`): starter batch × 6
+  // locales. `daily` because its subject IS today — the twelve month pages below
+  // are yearly astronomy, this one answers a question whose answer moves.
+  const sunHubEntries = SUNRISE_CITIES.flatMap((base) =>
+    routing.locales.map((locale) => ({
+      url: sunCityUrl(locale, base),
+      lastModified: now,
+      changeFrequency: "daily" as const,
+      priority: 0.7,
+      alternates: { languages: buildSunCityAlternates(locale, base).languages },
+    })),
+  );
+
   // Sunrise/sunset month pages: starter batch × 12 months × 6 locales.
   const sunEntries = SUNRISE_CITIES.flatMap((base) =>
     Array.from({ length: 12 }, (_, monthIndex) =>
@@ -60,5 +75,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ).flat(),
   );
 
-  return [...staticEntries, ...cityEntries, ...sunEntries];
+  return [...staticEntries, ...cityEntries, ...sunHubEntries, ...sunEntries];
 }
