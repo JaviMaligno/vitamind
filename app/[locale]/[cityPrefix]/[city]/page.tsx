@@ -52,14 +52,20 @@ export function generateStaticParams() {
  * day-dependent string is recomputed in the browser (see lib/sun-today.ts).
  * This setting only shortens the odds; it is not what makes the page honest.
  *
- * Segment config is per FILE, so the 438 vitamin D city pages inherit it too.
- * Nothing there goes wrong — their render is deterministic, so every
- * regeneration reproduces byte-identical HTML — but they do leave the fully
- * static cache and re-render hourly for the same output. Splitting the two
- * families into separate route files is the only way to avoid that, and it is
- * not worth taking a live page family apart for.
+ * Segment config is per FILE, so the 438 vitamin D city pages inherit it too,
+ * and that is what makes the number expensive rather than merely conservative:
+ * it applies to 678 pages, not to the 240 that need it. At one hour this
+ * project hit the free ISR write quota within a day — each regeneration is a
+ * cache write, and so is every page of every deploy, on a site of 3612 pages.
+ *
+ * A day, not an hour, because freshness no longer comes from this clock. The
+ * cron at /api/revalidate-today pushes a revalidation of the 240 hubs daily
+ * whether or not anyone fetches them, which is a guarantee ISR cannot give at
+ * any interval: ISR regenerates on request, so a page nobody requests stays
+ * stale however small this number is. This setting is now only the backstop for
+ * the cron failing, and a backstop does not need to run hourly on 678 pages.
  */
-export const revalidate = 3600;
+export const revalidate = 86400;
 
 type Params = { locale: string; cityPrefix: string; city: string };
 
