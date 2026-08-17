@@ -9,25 +9,14 @@ import { CITY_SLUGS } from "@/lib/city-slugs";
 describe("sitemap", () => {
   const entries = sitemap();
 
-  it("emits the static, city, sunrise-hub and sunrise-month URLs", () => {
-    // 9 pages ×6 + 73 cities ×6 + every sunrise city ×(1 hub + 12 months) ×6.
+  it("emits the static, city and sunrise-month URLs", () => {
+    // 9 pages ×6 + 73 cities ×6 + every sunrise city ×12 months ×6.
     //
     // The sunrise term is derived from SUNRISE_CITIES rather than hardcoded, so adding
     // a wave does not require editing this number. What it still pins is the shape —
-    // a hub plus twelve months in six locales for each configured city — which is what
-    // would break if a locale, a month or the hub were ever dropped from the generator.
-    expect(entries).toHaveLength(54 + 438 + SUNRISE_CITIES.length * 13 * 6);
-  });
-
-  it("emits the city hub at the sunrise prefix, in every locale", () => {
-    const urls = entries.map((e) => e.url);
-    expect(urls).toContain(`${SITE_URL}/amanecer/madrid`);
-    expect(urls).toContain(`${SITE_URL}/en/sunrise/london`);
-    expect(urls).toContain(`${SITE_URL}/de/sonnenaufgang/wien`);
-    // The hub is the freshest page in the tree — it is about today, not a month.
-    const madrid = entries.find((e) => e.url === `${SITE_URL}/amanecer/madrid`);
-    expect(madrid?.changeFrequency).toBe("daily");
-    expect(madrid?.alternates?.languages?.["x-default"]).toBe(`${SITE_URL}/amanecer/madrid`);
+    // twelve months in six locales for each configured city — which is what would break
+    // if a locale or a month were ever dropped from the generator.
+    expect(entries).toHaveLength(54 + 438 + SUNRISE_CITIES.length * 12 * 6);
   });
 
   it("covers every configured sunrise city in every locale", () => {

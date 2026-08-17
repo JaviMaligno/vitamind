@@ -267,11 +267,10 @@ export function sunPageGraph({
  * Home → city index → city → this page.
  *
  * The URL's own ancestors are NOT the trail. `app/[locale]/[cityPrefix]/page.tsx`
- * bails out unless the prefix equals `CITY_PREFIX[locale]`, so `/amanecer` is a
- * 404 and putting it in a BreadcrumbList would advertise a dead URL per page.
- * (`/amanecer/madrid` became a live page — the sunrise tree's city hub — but the
- * trail deliberately stays on the vitamin D city page: that is the canonical
- * entity page for the city, and both sunrise pages link into the hub anyway.)
+ * and `.../[city]/page.tsx` both bail out unless the prefix equals
+ * `CITY_PREFIX[locale]`, so `/amanecer` and `/amanecer/madrid` are 404s — putting
+ * them in a BreadcrumbList would advertise two dead URLs per page. The city tree
+ * is the real parent and the page already links back into it.
  */
 function breadcrumbTrail({
   locale, base, cityName, pageName, url, labels,
