@@ -32,8 +32,18 @@ import { sunRegime, type SunRegime, type SunFaqEntry } from "./sun-copy";
  * 12:00–16:00 window on 16 August and none at all on 16 September; London loses
  * its window between mid-September and mid-October.
  *
- * So the design does not try to bound the staleness. It removes the surfaces on
- * which staleness can publish a false statement:
+ * Two defences, because neither alone is enough.
+ *
+ * FIRST, the staleness IS bounded, but from outside ISR: the cron at
+ * `/api/revalidate-today` pushes a regeneration of all 240 hubs once a day, so
+ * the served HTML is at most a day old whether or not anyone fetched it. At one
+ * day the window moves by at most an hour and the regime cannot invert, which is
+ * what makes the "at worst an hour" claim true — it was false while the only
+ * mechanism was ISR, which regenerates on request and therefore never for a page
+ * nobody requests.
+ *
+ * SECOND, and independently, the design removes the surfaces on which staleness
+ * could publish a false statement even if that cron stopped running:
  *
  *   1. THE METADATA STATES NO DAY'S FIGURES. `metaTitle`/`metaDescription` do
  *      not branch on regime and carry no window, no minutes and no clock time —
