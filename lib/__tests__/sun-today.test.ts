@@ -178,40 +178,50 @@ describe("what the page says", () => {
     });
   };
 
-  it("picks the synthesis variant where there is a window and the none variant where there is not", () => {
-    expect(copyFor("madrid", 7, 16).metaTitleKey).toBe("metaTitle");
-    expect(copyFor("oslo", 11, 16).metaTitleKey).toBe("metaTitleNone");
+  /** Values that are true of one day and no other. */
+  const DAY_ARGS = ["date", "year", "windowStart", "windowEnd", "minutes", "sunrise", "sunset", "dayLength"];
+
+  /**
+   * The freshness contract where it actually bites.
+   *
+   * The page's metadata is quoted by a search engine and ingested by an AI
+   * Overview, and no browser ever corrects it. ISR bounds nothing: the HTML is
+   * as old as the last request that triggered a regeneration. Madrid in August
+   * has an eight-hour window and Oslo in December has none, so a metadata
+   * string that branched on regime — or carried the window figures — could
+   * assert the exact opposite of the truth for months. It carries neither.
+   */
+  it("puts no day-specific figure in the metadata", () => {
+    for (const [slug, m] of [["madrid", 7], ["oslo", 11]] as const) {
+      expect(Object.keys(copyFor(slug, m, 16).metaValues), `${slug} ${m}`).toEqual(["city"]);
+    }
   });
 
   /**
-   * The whole freshness design in one assertion: nothing the SERVER renders may
-   * name a calendar date, because a static/ISR page cannot guarantee which day
-   * it is being read on. The date is the client's job.
+   * Same argument for the FAQPage markup: it is server-only, so it carries only
+   * the answer that is a property of the PLACE rather than of today.
    */
-  it("hands no calendar date to any server-rendered string", () => {
-    for (const [slug, m] of [["madrid", 7], ["oslo", 11]] as const) {
-      const copy = copyFor(slug, m, 16);
-      const values = [
-        copy.metaValues, copy.ledeValues, copy.headingValues,
-        ...copy.faq.flatMap((f) => [f.qValues, f.aValues]),
-      ];
-      for (const v of values) {
-        expect(Object.keys(v), `${slug} ${m}`).not.toContain("date");
-        expect(Object.keys(v), `${slug} ${m}`).not.toContain("year");
+  it("keeps the day-dependent answers out of the stale-proof FAQ entry", () => {
+    for (const [slug, m] of [["madrid", 7], ["oslo", 11], ["singapur", 0]] as const) {
+      const { yearFaq } = copyFor(slug, m, 16);
+      expect(yearFaq.aKey, `${slug} ${m}`).toMatch(/^faqYearA/);
+      for (const v of [yearFaq.qValues, yearFaq.aValues]) {
+        expect(Object.keys(v).filter((k) => DAY_ARGS.includes(k)), `${slug} ${m}`).toEqual([]);
       }
     }
   });
 
-  it("answers the window, the sun times and the year in that order", () => {
+  it("answers the window and then the sun times in the day-dependent list", () => {
     const copy = copyFor("madrid", 7, 16);
-    expect(copy.faq.map((f) => f.qKey)).toEqual(["faqWindowQ", "faqSunQ", "faqYearQ"]);
-    expect(copy.faq[0].aKey).toBe("faqWindowASynthesis");
-    expect(copy.faq[0].aValues.windowStart).toMatch(/^\d\d:\d\d$/);
+    expect(copy.dayFaq.map((f) => f.qKey)).toEqual(["faqWindowQ", "faqSunQ"]);
+    expect(copy.dayFaq[0].aKey).toBe("faqWindowASynthesis");
+    expect(copy.dayFaq[0].aValues.windowStart).toMatch(/^\d\d:\d\d$/);
+    expect(copyFor("oslo", 11, 16).dayFaq[0].aKey).toBe("faqWindowANone");
   });
 
   it("states the months of the year from the profile, not from today", () => {
     // Madrid has a real winter gap; Singapore does not.
-    expect(copyFor("madrid", 7, 16).faq[2].aKey).toBe("faqYearARange");
-    expect(copyFor("singapur", 7, 16).faq[2].aKey).toBe("faqYearAAll");
+    expect(copyFor("madrid", 7, 16).yearFaq.aKey).toBe("faqYearARange");
+    expect(copyFor("singapur", 7, 16).yearFaq.aKey).toBe("faqYearAAll");
   });
 });

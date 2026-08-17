@@ -19,27 +19,55 @@ import { sunRegime, type SunRegime, type SunFaqEntry } from "./sun-copy";
  * clear-sky UVI reaches MIN_UVI (3, `lib/vitd.ts`), which no ephemeris rival
  * publishes. Sun times are the supporting data.
  *
- * FRESHNESS. A page about today cannot be allowed to state the wrong day, and
- * ISR gives no upper bound on staleness: after `revalidate` elapses the next
- * request is served the STALE copy while regeneration happens behind it, so on
- * a URL nobody has requested for a week the first visitor reads week-old HTML.
- * No `revalidate` value fixes that. The design therefore is:
+ * FRESHNESS, AND HOW BIG THE PROBLEM ACTUALLY IS.
  *
- *   1. NO SERVER-RENDERED STRING NAMES A CALENDAR DATE. A date is the only
- *      thing here that can be flatly wrong rather than slightly old, and the
- *      page simply never asserts one. (`messages/__tests__/sun-today-copy.test.ts`
- *      enforces it: only the client-rendered `todayIs` takes a `{date}`.)
- *   2. The figures the server does state are quantised to whole hours by
- *      `computeExposureFromCurve`, so they cannot drift by minutes as days
- *      pass — the window either holds or moves by exactly one hour
- *      (`lib/__tests__/sun-today.test.ts` pins both facts).
- *   3. The browser recomputes everything on mount from the CITY's own calendar
- *      date, so a reader always sees today's real figures whatever the cache
- *      served (`components/TodayWindow.tsx`).
+ * ISR gives no upper bound on staleness. After `revalidate` elapses the next
+ * request is served the STALE copy while regeneration happens behind it, so the
+ * HTML a reader gets is as old as the last request that triggered a
+ * regeneration — for 240 brand-new low-traffic URLs that gap is days or weeks,
+ * not an hour. An earlier version of this comment claimed the worst case was
+ * "one hour off". That was a per-DAY bound (the window moves at most one hour
+ * from one day to the next) mistaken for a cache bound. Across a month the real
+ * drift is the full seasonal amplitude, up to a regime inversion: Oslo has a
+ * 12:00–16:00 window on 16 August and none at all on 16 September; London loses
+ * its window between mid-September and mid-October.
  *
- * Worst case, stated plainly: the HTML a crawler reads can carry a window that
- * is one hour off, and only on the first request after a long gap. It can never
- * carry a wrong date, because it carries no date.
+ * So the design does not try to bound the staleness. It removes the surfaces on
+ * which staleness can publish a false statement:
+ *
+ *   1. THE METADATA STATES NO DAY'S FIGURES. `metaTitle`/`metaDescription` do
+ *      not branch on regime and carry no window, no minutes and no clock time —
+ *      they describe what the page answers and by which criterion. That is the
+ *      string a search engine quotes and an AI Overview ingests, and no browser
+ *      ever corrects it, so it is the one surface that had to be made
+ *      unfalsifiable rather than merely corrected. The cost is a snippet without
+ *      numbers; the alternative was a snippet whose numbers could be a season
+ *      out of date.
+ *   2. THE FAQPage MARKUP CARRIES ONLY THE YEAR ANSWER. `yearFaq` comes from
+ *      `cityYearProfile`, which walks all 365 days: it is a property of the
+ *      PLACE and stays true however long the HTML sits in a cache. The two
+ *      day-dependent questions stay visible to the reader but are kept out of
+ *      the structured data, because that is handed to Google verbatim and never
+ *      revisited.
+ *   3. EVERY DAY-DEPENDENT STRING IS CORRECTED IN THE BROWSER, FROM ONE
+ *      RECOMPUTATION. The lede, the stat panel and the two day-dependent FAQ
+ *      answers all read the same `TodayProvider` state, computed on mount from
+ *      the CITY's own calendar date. One computation, so a corrected panel
+ *      cannot sit above a stale answer that contradicts it.
+ *   4. NO SERVER-RENDERED STRING NAMES A CALENDAR DATE, for the same reason.
+ *
+ * Worst case, stated plainly: a reader without JavaScript, on the first request
+ * after a long gap, reads body prose whose window belongs to whatever day the
+ * cache entry was built for — potentially a different season. The metadata and
+ * the structured data cannot be wrong, because they assert nothing about today.
+ * Bounding the body prose too would need a hard cache expiry (Next 16
+ * `cacheComponents` + `cacheLife`, an app-wide change) or a daily
+ * revalidation cron; both are out of scope here and neither is a prerequisite
+ * for the surfaces above.
+ *
+ * `messages/__tests__/sun-today-copy.test.ts` enforces (1) and (4) key by key,
+ * `lib/__tests__/sun-today.test.ts` enforces (2), and
+ * `components/__tests__/TodayWindow.test.tsx` enforces (3).
  */
 
 /** The default reader these pages are written for: Fitzpatrick III, 25% of the
@@ -176,13 +204,21 @@ export function todayWindowCopy(cityName: string, data: SunTodayData): TodayWind
 
 export interface SunTodayCopy {
   regime: SunRegime;
-  metaTitleKey: "metaTitle" | "metaTitleNone" | "metaTitlePolar";
-  metaDescriptionKey: "metaDescription" | "metaDescriptionNone" | "metaDescriptionPolar";
-  ledeKey: "lede" | "ledeNone" | "ledePolar";
+  /**
+   * `{city}` and nothing else. The metadata is the surface no browser revisits,
+   * so it states the page's criterion rather than the day's answer — see the
+   * module comment.
+   */
   metaValues: Values;
-  ledeValues: Values;
   headingValues: Values;
-  faq: SunFaqEntry[];
+  /**
+   * The window and the sun times. Rendered by `components/TodayFaq.tsx` from
+   * the same recomputation as the stat panel, and deliberately absent from the
+   * FAQPage markup: structured data is read once and never corrected.
+   */
+  dayFaq: SunFaqEntry[];
+  /** True of the place, not of today — so it is safe in the FAQPage markup. */
+  yearFaq: SunFaqEntry;
 }
 
 export interface SunTodayCopyInput {
@@ -197,8 +233,12 @@ export interface SunTodayCopyInput {
 
 /**
  * Which strings the page renders, with the values each one needs — the same
- * key/value shape `sunPageCopy` uses, so the visible FAQ and the FAQPage markup
- * are built once and cannot drift apart.
+ * key/value shape `sunPageCopy` uses.
+ *
+ * Split into `dayFaq` and `yearFaq` because the two have different lifetimes,
+ * and the split is what keeps a cached page honest: `yearFaq` is safe to hand
+ * to a crawler as structured data, `dayFaq` is not and is corrected in the
+ * browser instead.
  *
  * Note what is NOT here: a date, a month name for "today", a year. Those are
  * the claims a cached page cannot stand behind (see the module comment).
@@ -236,18 +276,14 @@ export function sunTodayCopy({ locale, cityName, data, profile, band }: SunToday
 
   return {
     regime,
-    metaTitleKey:
-      regime === "synthesis" ? "metaTitle" : regime === "polar" ? "metaTitlePolar" : "metaTitleNone",
-    metaDescriptionKey:
-      regime === "synthesis" ? "metaDescription"
-      : regime === "polar" ? "metaDescriptionPolar"
-      : "metaDescriptionNone",
-    ledeKey: day.ledeKey,
-    metaValues: windowValues,
-    ledeValues: windowValues,
+    // No regime branch and no figures. A cached `metaTitleNone` asserting "no
+    // vitamin D today" for a city with an eight-hour window is exactly the
+    // failure this page cannot afford, and the title is the artefact the whole
+    // page exists to win.
+    metaValues: { city },
     headingValues: { city },
-    // Window first: it is the page's subject. The clock times are support, and
-    // the year answer is the bridge into the twelve month pages.
-    faq: [windowEntry, sunEntry, yearEntry],
+    // Window first: it is the page's subject. The clock times are support.
+    dayFaq: [windowEntry, sunEntry],
+    yearFaq: yearEntry,
   };
 }

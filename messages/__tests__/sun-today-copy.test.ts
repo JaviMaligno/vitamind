@@ -10,31 +10,49 @@ import lt from "@/messages/lt.json";
 import { BUILTIN_CITIES } from "@/lib/cities";
 import { cityYearProfile, contiguousMonthRange } from "@/lib/city-content";
 import { doyFromMonthDay } from "@/lib/solar";
-import { sunTodayData, sunTodayCopy } from "@/lib/sun-today";
+import { sunTodayData, sunTodayCopy, todayWindowCopy } from "@/lib/sun-today";
 
 const LOCALES = { es, en, fr, de, ru, lt } as Record<string, { sunToday: Record<string, string> }>;
 
 /**
- * The city hub's copy. Everything the SERVER renders is in `SERVER_KEYS`; the
- * two `CLIENT_KEYS` are the only strings allowed to name a calendar date,
- * because only the browser knows which day it is when the page is read.
+ * The city hub's copy, split by WHO CAN STILL BE WRONG ABOUT IT.
+ *
+ * `FROZEN_KEYS` are rendered by the server into surfaces no browser ever
+ * revisits: the `<title>`/meta description a search engine quotes, and the FAQ
+ * answer handed to Google as structured data. ISR puts no upper bound on the
+ * age of that HTML — it is as old as the last request that triggered a
+ * regeneration, which for 240 low-traffic URLs is days or weeks — so any figure
+ * in one of these is a claim the page cannot stand behind. They therefore state
+ * criteria, never a day's figures.
+ *
+ * `LIVE_KEYS` are the strings `components/TodayWindow.tsx` and
+ * `components/TodayFaq.tsx` recompute on mount from the city's own date. They
+ * may carry day-specific figures because a reader always sees them corrected —
+ * and because both components draw from ONE recomputation, they cannot
+ * contradict each other on screen.
  */
-const SERVER_KEYS = [
+const FROZEN_KEYS = [
   "eyebrow", "title",
-  "metaTitle", "metaTitleNone", "metaTitlePolar",
-  "metaDescription", "metaDescriptionNone", "metaDescriptionPolar",
-  "lede", "ledeNone", "ledePolar",
-  "windowLabel", "noWindowLabel", "minutesLabel", "minutesValue",
+  "metaTitle", "metaDescription",
+  "windowLabel", "noWindowLabel", "minutesLabel",
   "clearSky", "changesHeading", "changesBody",
   "faqHeading",
-  "faqWindowQ", "faqWindowASynthesis", "faqWindowANone", "faqWindowAPolar",
-  "faqSunQ", "faqSunA", "faqSunAPolar",
+  "faqWindowQ", "faqSunQ",
   "faqYearQ", "faqYearARange", "faqYearAAll", "faqYearANever",
   "hubLink",
 ];
 
-const CLIENT_KEYS = ["todayIs", "recomputed"];
-const ALL_KEYS = [...SERVER_KEYS, ...CLIENT_KEYS];
+const LIVE_KEYS = [
+  "lede", "ledeNone", "ledePolar",
+  "minutesValue",
+  "faqWindowASynthesis", "faqWindowANone", "faqWindowAPolar",
+  "faqSunA", "faqSunAPolar",
+  "todayIs", "recomputed",
+];
+const ALL_KEYS = [...FROZEN_KEYS, ...LIVE_KEYS];
+
+/** Arguments whose value is true of one particular day and no other. */
+const DAY_ARGS = ["date", "windowStart", "windowEnd", "minutes", "sunrise", "sunset", "dayLength"];
 
 /** Every ICU argument name in a message, including inside select/plural branches. */
 const args = (message: string): string[] => {
@@ -56,6 +74,16 @@ describe("sunToday copy", () => {
     expect(ALL_KEYS.filter((k) => typeof ns?.[k] !== "string" || ns[k].trim() === "")).toEqual([]);
   });
 
+  /**
+   * An extra key is not harmless here: a regime-branched `metaTitleNone` is
+   * exactly the string that let a cached page assert "no vitamin D today" for a
+   * city with an eight-hour window. If a variant is not reachable it must not
+   * exist.
+   */
+  it.each(Object.keys(LOCALES))("%s declares exactly the keys the page renders", (locale) => {
+    expect(Object.keys(LOCALES[locale].sunToday).sort()).toEqual([...ALL_KEYS].sort());
+  });
+
   it.each(Object.keys(LOCALES))("%s parses as valid ICU everywhere", (locale) => {
     for (const [key, value] of Object.entries(LOCALES[locale].sunToday)) {
       expect(() => parse(value), `${locale}.${key}`).not.toThrow();
@@ -63,13 +91,19 @@ describe("sunToday copy", () => {
   });
 
   /**
-   * The freshness contract, as a test. A server-rendered page cannot know which
-   * day it is being read on, so no string it renders may name one. Only
-   * `todayIs`, rendered in the browser after mount, takes a date.
+   * The freshness contract, as a test.
+   *
+   * The earlier version of this test only forbade a `{date}` argument, which
+   * missed the real hazard: "Between 12:00 and 16:00, today" is just as flatly
+   * wrong as a wrong date when today has no window at all, and a cached
+   * `metaDescription` saying so is what a search engine quotes and an AI
+   * Overview ingests. Nothing the browser cannot correct may name a figure that
+   * belongs to one day.
    */
-  it.each(Object.keys(LOCALES))("%s names a date only in the client-rendered string", (locale) => {
-    for (const key of SERVER_KEYS) {
-      expect(args(LOCALES[locale].sunToday[key]), `${locale}.${key}`).not.toContain("date");
+  it.each(Object.keys(LOCALES))("%s keeps day-specific figures out of the uncorrectable strings", (locale) => {
+    for (const key of FROZEN_KEYS) {
+      const declared = args(LOCALES[locale].sunToday[key]);
+      expect(declared.filter((a) => DAY_ARGS.includes(a)), `${locale}.${key}`).toEqual([]);
     }
     expect(args(LOCALES[locale].sunToday.todayIs)).toContain("date");
   });
@@ -82,8 +116,11 @@ describe("sunToday copy", () => {
 
   it("gives ru and lt genuine plural categories for the minutes figure", () => {
     // Real values include 4, 8, 22, 57, 72, 117 — the categories differ.
+    // `metaDescription` is absent from this list because it no longer names a
+    // minutes figure at all: the metadata states the criterion, not the day's
+    // answer.
     for (const locale of ["ru", "lt"]) {
-      for (const key of ["minutesValue", "lede", "metaDescription", "faqWindowASynthesis"]) {
+      for (const key of ["minutesValue", "lede", "faqWindowASynthesis"]) {
         const message = LOCALES[locale].sunToday[key];
         for (const category of ["one", "few", "many", "other"]) {
           expect(message, `${locale}.${key} lacks the ${category} plural`).toContain(`${category} {`);
@@ -111,6 +148,7 @@ describe("the page supplies every placeholder each locale declares", () => {
   const PAGE_VALUES: Record<string, string[]> = {
     eyebrow: [],
     title: ["city"],
+    metaTitle: ["city"], metaDescription: ["city"],
     windowLabel: [], noWindowLabel: [], minutesLabel: [], clearSky: [],
     minutesValue: ["minutes"],
     changesHeading: [], changesBody: ["city"],
@@ -121,15 +159,20 @@ describe("the page supplies every placeholder each locale declares", () => {
 
   const supplied = new Map<string, string[]>(Object.entries(PAGE_VALUES));
   for (const [slug, month] of [["madrid", 7], ["oslo", 11], ["singapur", 0], ["reikiavik", 5]] as const) {
+    const c = city(slug);
     const copy = copyFor(slug, month);
-    supplied.set(copy.metaTitleKey, Object.keys(copy.metaValues));
-    supplied.set(copy.metaDescriptionKey, Object.keys(copy.metaValues));
-    supplied.set(copy.ledeKey, Object.keys(copy.ledeValues));
     supplied.set("faqHeading", Object.keys(copy.headingValues));
-    for (const entry of copy.faq) {
+    for (const entry of [...copy.dayFaq, copy.yearFaq]) {
       supplied.set(entry.qKey, Object.keys(entry.qValues));
       supplied.set(entry.aKey, Object.keys(entry.aValues));
     }
+    // The lede and the panel go through `todayWindowCopy`, which is what both
+    // client components render — the page never picks those keys itself.
+    const day = todayWindowCopy(
+      "Ciudad",
+      sunTodayData(c, { year: 2026, monthIndex: month, day: 16, doy: doyFromMonthDay(month, 16) }),
+    );
+    supplied.set(day.ledeKey, Object.keys(day.values));
   }
 
   it("reaches every key the namespace declares", () => {
@@ -139,10 +182,12 @@ describe("the page supplies every placeholder each locale declares", () => {
     // `faqYearANever` (no shipped city fails to synthesise in every month —
     // Reykjavik at 64.1 N still has a summer). Their formatting is covered by
     // the test below, which renders every key in every locale.
+    //
+    // `metaTitle`/`metaDescription` no longer branch on regime at all, so the
+    // polar and none variants of those are gone rather than unreachable.
     const unreached = ALL_KEYS.filter((k) => !supplied.has(k));
     expect(unreached).toEqual([
-      "metaTitlePolar", "metaDescriptionPolar", "ledePolar",
-      "faqWindowAPolar", "faqSunAPolar", "faqYearANever",
+      "faqYearANever", "ledePolar", "faqWindowAPolar", "faqSunAPolar",
     ]);
   });
 

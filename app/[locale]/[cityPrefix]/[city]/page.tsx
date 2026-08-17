@@ -21,7 +21,7 @@ import {
 } from "@/lib/city-routes";
 import { nearbyCities } from "@/lib/city-nearby";
 import { capFirst, cityLabels, monthLabels, monthName, verdictMonths } from "@/lib/city-copy";
-import { fmtTime, dateFromDoy } from "@/lib/solar";
+import { fmtTime, dateFromDoy, doyFromMonthDay } from "@/lib/solar";
 import { getSunTimes, monthlySunTimes } from "@/lib/sun-times";
 import { resolveSunCityPage, sunCityStaticParams } from "@/lib/sun-routes";
 import SunTodayPage, { sunTodayMetadata } from "./SunTodayPage";
@@ -44,13 +44,20 @@ export function generateStaticParams() {
  * Hourly ISR, for the hub's sake: its subject is today, and a build-time render
  * would still be quoting June's window in December.
  *
- * It is a floor on freshness, not a guarantee — ISR serves the stale copy to
- * the request that triggers regeneration, so a URL nobody has asked for in a
- * week answers that week-old HTML once. The hub is built so that this cannot
- * produce a false statement: it names no calendar date server-side, and its
- * window is quantised to whole hours (see lib/sun-today.ts). The city pages
- * share the setting and are unaffected — their content is deterministic, so
- * every regeneration reproduces the same HTML.
+ * IT BOUNDS NOTHING. ISR serves the stale copy to the request that triggers
+ * regeneration, so a URL nobody has asked for in a month answers with month-old
+ * HTML once — long enough for a city's window to have vanished entirely. The
+ * hub is therefore built so that stale HTML still cannot publish a false claim:
+ * its metadata and its structured data assert nothing about today, and every
+ * day-dependent string is recomputed in the browser (see lib/sun-today.ts).
+ * This setting only shortens the odds; it is not what makes the page honest.
+ *
+ * Segment config is per FILE, so the 438 vitamin D city pages inherit it too.
+ * Nothing there goes wrong — their render is deterministic, so every
+ * regeneration reproduces byte-identical HTML — but they do leave the fully
+ * static cache and re-render hourly for the same output. Splitting the two
+ * families into separate route files is the only way to avoid that, and it is
+ * not worth taking a live page family apart for.
  */
 export const revalidate = 3600;
 
@@ -169,8 +176,19 @@ export default async function CityPage({ params }: { params: Promise<Params> }) 
   const dec = monthly[11];
   const longest = monthly.reduce((a, b) => (b.dayLengthMin > a.dayLengthMin ? b : a));
   const shortest = monthly.reduce((a, b) => (b.dayLengthMin < a.dayLengthMin ? b : a));
-  const juneGolden = getSunTimes(city.lat, city.lon, new Date(2026, 5, 15), city.timezone, city.tz).goldenEveningStart;
-  const decGolden = getSunTimes(city.lat, city.lon, new Date(2026, 11, 15), city.timezone, city.tz).goldenEveningStart;
+  // Through `dateFromDoy`, like every other table on this site, because the
+  // host-local `new Date(2026, 5, 15)` these two used is a different INSTANT on
+  // every machine: 15 June 00:00 in the builder's own zone. Measured across the
+  // 73 cities, that gave three different sets of golden-hour figures under UTC,
+  // Atlantic/Canary, Europe/Madrid and Pacific/Honolulu — Athens 20:09 from a
+  // Madrid build against 20:10 from Vercel, and Anchorage, Bangkok, Barcelona,
+  // Berlin and Bogota moving with it. Production was right by the accident of
+  // Vercel building in UTC.
+  const goldenOn = (monthIndex: number, day: number) =>
+    getSunTimes(city.lat, city.lon, dateFromDoy(doyFromMonthDay(monthIndex, day)), city.timezone, city.tz)
+      .goldenEveningStart;
+  const juneGolden = goldenOn(5, 15);
+  const decGolden = goldenOn(11, 15);
 
   const faq = [
     {

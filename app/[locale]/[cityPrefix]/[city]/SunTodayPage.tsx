@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import Card from "@/components/ui/Card";
 import A from "@/components/ui/A";
+import TodayProvider from "@/components/TodayProvider";
 import TodayWindow from "@/components/TodayWindow";
+import TodayFaq from "@/components/TodayFaq";
 import { sunPageGraph } from "@/lib/schema";
 import {
   SUNRISE_CITIES, MONTH_SLUGS, sunPathname, sunCityPathname, buildSunCityAlternates,
@@ -38,13 +40,22 @@ interface Resolved {
   base: string;
 }
 
+/**
+ * The metadata is the artefact this page exists to win — the SERP snippet and
+ * what an AI Overview ingests — and it is the one surface no browser ever
+ * corrects. So it states no day's figures and does not branch on regime: with
+ * an unbounded ISR cache behind it, a snippet reading "no vitamin D today" for
+ * a city with an eight-hour window is a live possibility, and a snippet with no
+ * numbers beats one whose numbers may be a season old. Only `{city}` is
+ * interpolated. See lib/sun-today.ts.
+ */
 export async function sunTodayMetadata(locale: string, { city, base }: Resolved): Promise<Metadata> {
   const t = await getTranslations({ locale, namespace: "sunToday" });
   const alternates = buildSunCityAlternates(locale, base);
   const copy = pageCopy(locale, city, base);
 
-  const title = t(copy.metaTitleKey, copy.metaValues);
-  const description = t(copy.metaDescriptionKey, copy.metaValues);
+  const title = t("metaTitle", copy.metaValues);
+  const description = t("metaDescription", copy.metaValues);
   return {
     title,
     description,
@@ -86,15 +97,27 @@ export default async function SunTodayPage({ locale, resolved }: { locale: strin
   const copy = pageCopy(locale, city, base);
   const { cityName, data, today } = copy;
 
-  const faqEntries = copy.faq.map((entry) => ({
-    q: t(entry.qKey, entry.qValues),
-    a: t(entry.aKey, entry.aValues),
-  }));
-  const faq = faqEntries.map(({ q, a }) => ({
+  const yearEntry = {
+    q: t(copy.yearFaq.qKey, copy.yearFaq.qValues),
+    a: t(copy.yearFaq.aKey, copy.yearFaq.aValues),
+  };
+
+  /**
+   * ONLY the year answer is marked up.
+   *
+   * Structured data is handed to Google verbatim and never revisited, and this
+   * HTML comes from a cache with no upper bound on its age. The window and the
+   * sun times are true of one day; the year answer comes from `cityYearProfile`
+   * walking all 365 days, so it is true of the PLACE and cannot go stale. The
+   * other two questions stay visible to the reader (corrected in the browser by
+   * `TodayFaq`) but assert nothing to a crawler. A FAQPage may mark up a subset
+   * of the page's questions; it may not mark up an answer that is wrong.
+   */
+  const faq = [{
     "@type": "Question",
-    name: q,
-    acceptedAnswer: { "@type": "Answer", text: a },
-  }));
+    name: yearEntry.q,
+    acceptedAnswer: { "@type": "Answer", text: yearEntry.a },
+  }];
 
   const pageTitle = t("title", { city: cityName });
   const url = buildSunCityAlternates(locale, base).canonical;
@@ -144,43 +167,39 @@ export default async function SunTodayPage({ locale, resolved }: { locale: strin
         {pageTitle}
       </h1>
 
-      {/* The lede and the stat panel both live in the client component: it
-          recomputes them for the reader's actual day, and a corrected panel
-          above a stale paragraph would contradict itself on screen. */}
-      <TodayWindow
+      {/* Everything on this page that depends on WHICH DAY it is sits inside
+          the provider — the lede, the stat panel and the two day-dependent FAQ
+          answers — so all of it is corrected by one recomputation in the
+          browser. Correcting only some of it is how a panel ends up saying "no
+          window today" above an answer that names one. The server-rendered
+          sections in between are passed straight through as children. */}
+      <TodayProvider
         city={{ lat: city.lat, lon: city.lon, tz: city.tz, timezone: city.timezone, elevation: city.elevation }}
         cityName={cityName}
         initial={todayWindowCopy(cityName, data)}
-      />
+      >
+        <TodayWindow />
 
-      {/* Why a page about today has to exist at all. */}
-      <section className="mt-10">
-        <Card variant="glass" className="!p-6 sm:!p-8">
-          <h2 className="font-display text-title sm:text-2xl font-bold">{t("changesHeading")}</h2>
-          <p className="mt-3 text-body sm:text-heading text-text-secondary leading-relaxed">
-            {t("changesBody", { city: cityName })}
-          </p>
-          <A href={cityPathname(locale, base)} className="mt-3 inline-block text-caption font-semibold">
-            {tSunrise("vitdCta", { city: cityName })}
-          </A>
-        </Card>
-      </section>
+        {/* Why a page about today has to exist at all. */}
+        <section className="mt-10">
+          <Card variant="glass" className="!p-6 sm:!p-8">
+            <h2 className="font-display text-title sm:text-2xl font-bold">{t("changesHeading")}</h2>
+            <p className="mt-3 text-body sm:text-heading text-text-secondary leading-relaxed">
+              {t("changesBody", { city: cityName })}
+            </p>
+            <A href={cityPathname(locale, base)} className="mt-3 inline-block text-caption font-semibold">
+              {tSunrise("vitdCta", { city: cityName })}
+            </A>
+          </Card>
+        </section>
 
-      {/* The same questions the FAQPage markup carries, visible to the reader —
-          markup whose answers are not on the page earns no appearance at all. */}
-      <section className="mt-10">
-        <h2 className="font-display text-2xl sm:text-3xl font-bold">
-          {t("faqHeading", copy.headingValues)}
-        </h2>
-        <dl className="mt-4 space-y-4">
-          {faqEntries.map(({ q, a }) => (
-            <div key={q}>
-              <dt className="font-display text-title font-semibold text-text-primary">{q}</dt>
-              <dd className="mt-1 text-body text-text-secondary leading-relaxed">{a}</dd>
-            </div>
-          ))}
-        </dl>
-      </section>
+        <section className="mt-10">
+          <h2 className="font-display text-2xl sm:text-3xl font-bold">
+            {t("faqHeading", copy.headingValues)}
+          </h2>
+          <TodayFaq year={yearEntry} />
+        </section>
+      </TodayProvider>
 
       {/* Internal mesh. The hub is the city's entry point into its twelve month
           pages, and each of those links back here. */}
