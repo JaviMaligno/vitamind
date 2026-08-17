@@ -1,4 +1,4 @@
-import { declination, equationOfTime, dayOfYear } from "./solar";
+import { declination, equationOfTime, dayOfYear, daysInMonth, DOY_REFERENCE_YEAR } from "./solar";
 import { tzOffsetForDate } from "./timezone";
 
 const RAD = Math.PI / 180;
@@ -54,14 +54,48 @@ function dayLengthMinutes(lat: number, doy: number): number {
 const wrap24 = (h: number) => ((h % 24) + 24) % 24;
 
 /**
+ * One event, from hours-after-UTC-midnight to the clock time the city shows.
+ *
+ * THE OFFSET IS READ AT THE EVENT'S OWN INSTANT. It used to be read once per
+ * day, at whatever instant the caller's `date` happened to be — UTC midnight of
+ * that day for every caller on this site. On a day when the zone changes offset
+ * (two a year wherever DST is observed) the instant that starts the day and the
+ * instant the sun rises sit on opposite sides of the transition, so every
+ * printed time on that day came out an hour wrong: America/Chicago is at -05:00
+ * at 00:00 UTC on 1 November 2026, moves to -06:00 at 07:00 UTC (02:00 local),
+ * and the sun rises later still, at 12:26 UTC — so the page shipped 07:26 for a
+ * sunrise the zone calls 06:26.
+ *
+ * Each event gets its own probe rather than one probe per day, because that is
+ * what the identity `printed == Intl.format(instant, zone)` says: nothing ties
+ * a dawn and a dusk to the same offset except the usual accident that
+ * transitions happen at night.
+ */
+function localHoursOf(
+  utcMidnight: number, utcHours: number, timezone: string | undefined, tzFallback: number,
+): number {
+  const offset = timezone
+    ? tzOffsetForDate(timezone, new Date(utcMidnight + utcHours * 3_600_000))
+    : tzFallback;
+  return wrap24(utcHours + offset);
+}
+
+/**
  * Today's sun times for a location, in local hours. Uses the same solar model as
  * `solarElev` (declination + equation of time), so times land within a few
  * minutes of ephemeris values — plenty for an at-a-glance panel.
+ *
+ * `date` is read in UTC, like everything that goes through `dayOfYear`.
  */
 export function getSunTimes(lat: number, lon: number, date: Date, timezone?: string, tzFallback = 0): SunTimes {
   const doy = dayOfYear(date);
-  const offset = timezone ? tzOffsetForDate(timezone, date) : tzFallback;
-  const solarNoon = wrap24(12 - lon / 15 - equationOfTime(doy) / 60 + offset);
+  // The astronomy first, with no zone in it: hours from UTC midnight of this
+  // day. A sunrise is an absolute instant, and the timezone decides only how
+  // that instant is printed — so the offset cannot be folded in here.
+  const solarNoonUtc = 12 - lon / 15 - equationOfTime(doy) / 60;
+  const utcMidnight = Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
+  const local = (utcHours: number) => localHoursOf(utcMidnight, utcHours, timezone, tzFallback);
+  const solarNoon = local(solarNoonUtc);
 
   const half = halfDayAt(lat, doy, HORIZON_DEG);
   const golden = halfDayAt(lat, doy, GOLDEN_DEG);
@@ -79,8 +113,8 @@ export function getSunTimes(lat: number, lon: number, date: Date, timezone?: str
       sunset: null,
       solarNoon,
       // Polar night can still have civil twilight around noon.
-      civilDawn: half === "below" && civilHalf !== null ? wrap24(solarNoon - civilHalf) : null,
-      civilDusk: half === "below" && civilHalf !== null ? wrap24(solarNoon + civilHalf) : null,
+      civilDawn: half === "below" && civilHalf !== null ? local(solarNoonUtc - civilHalf) : null,
+      civilDusk: half === "below" && civilHalf !== null ? local(solarNoonUtc + civilHalf) : null,
       goldenMorningEnd: null,
       goldenEveningStart: null,
       dayLengthMin,
@@ -90,13 +124,13 @@ export function getSunTimes(lat: number, lon: number, date: Date, timezone?: str
   }
 
   return {
-    sunrise: wrap24(solarNoon - half),
-    sunset: wrap24(solarNoon + half),
+    sunrise: local(solarNoonUtc - half),
+    sunset: local(solarNoonUtc + half),
     solarNoon,
-    civilDawn: civilHalf !== null ? wrap24(solarNoon - civilHalf) : null,
-    civilDusk: civilHalf !== null ? wrap24(solarNoon + civilHalf) : null,
-    goldenMorningEnd: goldenHalf !== null ? wrap24(solarNoon - goldenHalf) : null,
-    goldenEveningStart: goldenHalf !== null ? wrap24(solarNoon + goldenHalf) : null,
+    civilDawn: civilHalf !== null ? local(solarNoonUtc - civilHalf) : null,
+    civilDusk: civilHalf !== null ? local(solarNoonUtc + civilHalf) : null,
+    goldenMorningEnd: goldenHalf !== null ? local(solarNoonUtc - goldenHalf) : null,
+    goldenEveningStart: goldenHalf !== null ? local(solarNoonUtc + goldenHalf) : null,
     dayLengthMin,
     dayLengthDeltaMin,
     polar: null,
@@ -117,10 +151,18 @@ export interface MonthlySunTimes {
 /**
  * Sun times for the 15th of each month — stable, build-time-safe values for the
  * static city pages (same fixed reference year the city copy helpers use).
+ *
+ * "Build-time-safe" is what `Date.UTC` buys. The host-local constructor made
+ * these tables a function of the builder's own timezone: `new Date(2026, 7, 15)`
+ * is 14 August 23:00 UTC in the Canaries and 15 August 10:00 UTC in Honolulu,
+ * and `dayOfYear` reads it in UTC either way, so the day number itself moved. A
+ * laptop in Atlantic/Canary emitted 07:11 for a Madrid August day where Vercel
+ * emitted 07:12; production was right only by the accident of Vercel's builders
+ * running in UTC.
  */
 export function monthlySunTimes(lat: number, lon: number, timezone?: string, tzFallback = 0): MonthlySunTimes[] {
   return Array.from({ length: 12 }, (_, monthIndex) => {
-    const st = getSunTimes(lat, lon, new Date(2026, monthIndex, 15), timezone, tzFallback);
+    const st = getSunTimes(lat, lon, new Date(Date.UTC(DOY_REFERENCE_YEAR, monthIndex, 15)), timezone, tzFallback);
     return {
       monthIndex,
       sunrise: st.sunrise,
@@ -145,11 +187,20 @@ export interface DailySunTimes {
  * Day-by-day times for one month of the fixed reference year — the data behind
  * the expandable rows of the monthly table. Same model as everything else, so
  * it stays consistent with the summary values.
+ *
+ * UTC throughout, for the reason given on `monthlySunTimes`.
+ *
+ * The row count is `daysInMonth`, not the older `new Date(y, m + 1, 0).getDate()`.
+ * That older form was NOT a bug: a host-local constructor read back with a
+ * host-local getter cancels, and it returns the same twelve counts under every
+ * host zone (measured: UTC, Atlantic/Canary, Pacific/Honolulu, Australia/Sydney).
+ * It is replaced because it expressed a calendar fact through a wall-clock
+ * round-trip, not because it ever produced a wrong number.
  */
 export function dailySunTimes(lat: number, lon: number, monthIndex: number, timezone?: string, tzFallback = 0): DailySunTimes[] {
-  const days = new Date(2026, monthIndex + 1, 0).getDate();
+  const days = daysInMonth(monthIndex);
   return Array.from({ length: days }, (_, i) => {
-    const st = getSunTimes(lat, lon, new Date(2026, monthIndex, i + 1), timezone, tzFallback);
+    const st = getSunTimes(lat, lon, new Date(Date.UTC(DOY_REFERENCE_YEAR, monthIndex, i + 1)), timezone, tzFallback);
     return {
       day: i + 1,
       civilDawn: st.civilDawn,

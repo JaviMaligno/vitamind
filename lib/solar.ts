@@ -1,5 +1,5 @@
 import type { SolarPoint, VitDWindow } from "./types";
-import { tzOffsetForDate } from "./timezone";
+import { zoneOffsetAtLocalHour } from "./timezone";
 
 const RAD = Math.PI / 180;
 
@@ -33,15 +33,56 @@ export function solarElev(lat: number, lon: number, doy: number, utcH: number): 
   return Math.asin(Math.max(-1, Math.min(1, sinElev))) * 180 / Math.PI;
 }
 
+/**
+ * The sun's elevation through one local day, sampled every five minutes and
+ * indexed by the city's WALL CLOCK — what its consumers ask for ("what is the
+ * sun doing here at 13:00"), and the inverse of the conversion `getSunTimes`
+ * does. `computeExposureFromCurve` reads one sample per integer hour, so these
+ * labels become the vitamin D window the city hub is about.
+ *
+ * THE OFFSET IS READ PER SAMPLE, not once per curve. It used to be read once at
+ * `dateFromDoy(doy)` — UTC midnight — which is the same bug `lib/sun-times.ts`
+ * carried: on a day whose zone changes offset, midnight and midday sit on
+ * opposite sides of the transition, so every hour of the day was labelled with
+ * an offset the zone had already left. Far enough from Greenwich the probe was
+ * not even in the same local day: Santiago's two wrong days were 5 April and
+ * 6 September, the day AFTER each transition, whose local hours all share one
+ * offset while UTC midnight still falls in the previous day. Sydney, east of
+ * Greenwich, had the mirror of that luck and was never wrong.
+ *
+ * Madrid's window on 25 October 2026 came out 13:00–16:00 where the city's
+ * clock says 12:00–15:00, printed beside a sunrise `getSunTimes` had already
+ * placed correctly — a page disagreeing with itself. Across the 40 hub cities,
+ * 35 city-days a year were affected, every one by exactly an hour: the old
+ * window ran an hour early on 23 of them (spring forward) and an hour late on
+ * 12 (autumn back). The sunrise/sunset tables come from `getSunTimes` and are
+ * untouched by this.
+ *
+ * Per sample rather than per curve is what the wall-clock index MEANS: hours on
+ * the two sides of a transition are placed by different offsets, and nothing
+ * ties them together except the accident that transitions happen at night. In
+ * this city list that accident does hold — every one of the 35 changed days
+ * moved as a block, window start and end together, which is what a single
+ * post-transition offset across all the daylight hours looks like — but a curve
+ * indexed by wall clock has no business relying on it.
+ */
 export function getCurve(lat: number, lon: number, doy: number, tz: number, timezone?: string): SolarPoint[] {
-  const effectiveTz = timezone
-    ? tzOffsetForDate(timezone, dateFromDoy(doy))
-    : tz;
+  const utcMidnight = dateFromDoy(doy).getTime();
+  const offsetAt = (localH: number) =>
+    timezone ? zoneOffsetAtLocalHour(timezone, utcMidnight, localH) : tz;
+  // Two probes settle the whole day, since no zone in the tzdata for the
+  // reference year changes offset twice within one day: a day that starts and
+  // ends on the same offset never left it, and then one number serves every
+  // sample. So an ordinary day costs four `Intl` reads rather than the 578 a
+  // naive per-sample loop would take, and only the two transition days a year
+  // pay the full price.
+  const dayStart = offsetAt(0);
+  const constant = dayStart === offsetAt(24) ? dayStart : null;
 
   const p: SolarPoint[] = [];
   for (let m = 0; m <= 1440; m += 5) {
     const localH = m / 60;
-    const utcH = localH - effectiveTz;
+    const utcH = localH - (constant ?? offsetAt(localH));
     p.push({ localHours: localH, elevation: solarElev(lat, lon, doy, utcH) });
   }
   return p;

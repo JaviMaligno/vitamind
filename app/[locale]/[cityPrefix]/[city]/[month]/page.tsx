@@ -7,7 +7,8 @@ import Card from "@/components/ui/Card";
 import A from "@/components/ui/A";
 import PhaseWindow from "@/components/PhaseWindow";
 import {
-  SUNRISE_CITIES, MONTH_SLUGS, resolveSunPage, sunPathname, sunStaticParams, buildSunAlternates,
+  SUNRISE_CITIES, MONTH_SLUGS, resolveSunPage, sunPathname, sunCityPathname, sunStaticParams,
+  buildSunAlternates,
 } from "@/lib/sun-routes";
 import { baseSlug, cityPathname, localizedCityName } from "@/lib/city-routes";
 import { nearbyCities } from "@/lib/city-nearby";
@@ -81,6 +82,7 @@ export default async function SunriseMonthPage({ params }: { params: Promise<Par
   const t = await getTranslations({ locale: p.locale, namespace: "sunrisePage" });
   const tSun = await getTranslations({ locale: p.locale, namespace: "sunTimes" });
   const tNav = await getTranslations({ locale: p.locale, namespace: "nav" });
+  const tToday = await getTranslations({ locale: p.locale, namespace: "sunToday" });
 
   const cityName = localizedCityName(p.locale, base);
   const month = monthName(p.locale, monthIndex);
@@ -313,6 +315,15 @@ export default async function SunriseMonthPage({ params }: { params: Promise<Par
             ),
           )}
         </ul>
+
+        {/* Up to the city hub. The twelve month pages and the hub link both
+            ways: the hub is where this city's tree starts, and it answers the
+            question a monthly table cannot — what today looks like. */}
+        <p className="mt-4 text-body">
+          <A href={sunCityPathname(p.locale, base)} className="font-semibold">
+            {tToday("hubLink", { city: cityName })}
+          </A>
+        </p>
 
         {nearby.length > 0 && (
           <>

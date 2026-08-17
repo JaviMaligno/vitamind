@@ -21,12 +21,51 @@ import {
 } from "@/lib/city-routes";
 import { nearbyCities } from "@/lib/city-nearby";
 import { capFirst, cityLabels, monthLabels, monthName, verdictMonths } from "@/lib/city-copy";
-import { fmtTime, dateFromDoy } from "@/lib/solar";
+import { fmtTime, dateFromDoy, doyFromMonthDay } from "@/lib/solar";
 import { getSunTimes, monthlySunTimes } from "@/lib/sun-times";
+import { resolveSunCityPage, sunCityStaticParams } from "@/lib/sun-routes";
+import SunTodayPage, { sunTodayMetadata } from "./SunTodayPage";
 
+/**
+ * TWO PAGE FAMILIES SHARE THIS SEGMENT.
+ *
+ * `/vitamina-d/madrid` is the vitamin D city page; `/amanecer/madrid` is the
+ * sunrise tree's city hub. Next allows one dynamic segment name per position,
+ * so both arrive here and are told apart by the PREFIX: `resolveCity` accepts
+ * only `CITY_PREFIX[locale]`, `resolveSunCityPage` only `SUN_PREFIX[locale]`,
+ * and each returns null for the other. Loosening either resolver silently
+ * takes a live page family down.
+ */
 export function generateStaticParams() {
-  return cityStaticParams();
+  return [...cityStaticParams(), ...sunCityStaticParams()];
 }
+
+/**
+ * Hourly ISR, for the hub's sake: its subject is today, and a build-time render
+ * would still be quoting June's window in December.
+ *
+ * IT BOUNDS NOTHING. ISR serves the stale copy to the request that triggers
+ * regeneration, so a URL nobody has asked for in a month answers with month-old
+ * HTML once — long enough for a city's window to have vanished entirely. The
+ * hub is therefore built so that stale HTML still cannot publish a false claim:
+ * its metadata and its structured data assert nothing about today, and every
+ * day-dependent string is recomputed in the browser (see lib/sun-today.ts).
+ * This setting only shortens the odds; it is not what makes the page honest.
+ *
+ * Segment config is per FILE, so the 438 vitamin D city pages inherit it too,
+ * and that is what makes the number expensive rather than merely conservative:
+ * it applies to 678 pages, not to the 240 that need it. At one hour this
+ * project hit the free ISR write quota within a day — each regeneration is a
+ * cache write, and so is every page of every deploy, on a site of 3612 pages.
+ *
+ * A day, not an hour, because freshness no longer comes from this clock. The
+ * cron at /api/revalidate-today pushes a revalidation of the 240 hubs daily
+ * whether or not anyone fetches them, which is a guarantee ISR cannot give at
+ * any interval: ISR regenerates on request, so a page nobody requests stays
+ * stale however small this number is. This setting is now only the backstop for
+ * the cron failing, and a backstop does not need to run hourly on 678 pages.
+ */
+export const revalidate = 86400;
 
 type Params = { locale: string; cityPrefix: string; city: string };
 
@@ -40,6 +79,9 @@ function resolveCity({ locale, cityPrefix, city }: Params) {
 
 export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
   const p = await params;
+  const sun = resolveSunCityPage(p.locale, p.cityPrefix, p.city);
+  if (sun) return sunTodayMetadata(p.locale, sun);
+
   const city = resolveCity(p);
   if (!city) return {};
 
@@ -64,6 +106,14 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
 
 export default async function CityPage({ params }: { params: Promise<Params> }) {
   const p = await params;
+
+  // The sunrise tree's hub reaches this file through the shared segment.
+  const sun = resolveSunCityPage(p.locale, p.cityPrefix, p.city);
+  if (sun) {
+    setRequestLocale(p.locale);
+    return <SunTodayPage locale={p.locale} resolved={sun} />;
+  }
+
   const city = resolveCity(p);
   if (!city) notFound();
   setRequestLocale(p.locale);
@@ -132,8 +182,19 @@ export default async function CityPage({ params }: { params: Promise<Params> }) 
   const dec = monthly[11];
   const longest = monthly.reduce((a, b) => (b.dayLengthMin > a.dayLengthMin ? b : a));
   const shortest = monthly.reduce((a, b) => (b.dayLengthMin < a.dayLengthMin ? b : a));
-  const juneGolden = getSunTimes(city.lat, city.lon, new Date(2026, 5, 15), city.timezone, city.tz).goldenEveningStart;
-  const decGolden = getSunTimes(city.lat, city.lon, new Date(2026, 11, 15), city.timezone, city.tz).goldenEveningStart;
+  // Through `dateFromDoy`, like every other table on this site, because the
+  // host-local `new Date(2026, 5, 15)` these two used is a different INSTANT on
+  // every machine: 15 June 00:00 in the builder's own zone. Measured across the
+  // 73 cities, that gave three different sets of golden-hour figures under UTC,
+  // Atlantic/Canary, Europe/Madrid and Pacific/Honolulu — Athens 20:09 from a
+  // Madrid build against 20:10 from Vercel, and Anchorage, Bangkok, Barcelona,
+  // Berlin and Bogota moving with it. Production was right by the accident of
+  // Vercel building in UTC.
+  const goldenOn = (monthIndex: number, day: number) =>
+    getSunTimes(city.lat, city.lon, dateFromDoy(doyFromMonthDay(monthIndex, day)), city.timezone, city.tz)
+      .goldenEveningStart;
+  const juneGolden = goldenOn(5, 15);
+  const decGolden = goldenOn(11, 15);
 
   const faq = [
     {

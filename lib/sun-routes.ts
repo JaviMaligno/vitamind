@@ -109,6 +109,63 @@ export function sunStaticParams(): { locale: string; cityPrefix: string; city: s
   );
 }
 
+/* ------------------------------------------------------------------------- *
+ * The city hub: the sunrise prefix WITHOUT a month (`/amanecer/madrid`)
+ * ------------------------------------------------------------------------- */
+
+/**
+ * The hub occupies the same `[cityPrefix]/[city]` segment as the vitamin D city
+ * pages, which validate `CITY_PREFIX` and bail out otherwise. The two families
+ * therefore share one route file and are told apart by the prefix alone — so
+ * this resolver must reject `CITY_PREFIX` as firmly as it rejects nonsense, or
+ * one of the two page trees disappears.
+ */
+
+/** Locale-local path (no locale prefix): "/sunrise/london". */
+export function sunCityPathname(locale: string, base: string): string {
+  return `/${SUN_PREFIX[locale]}/${localizedCitySlug(locale, base)}`;
+}
+
+export function sunCityUrl(locale: string, base: string): string {
+  return `${SITE_URL}${getPathname({ href: sunCityPathname(locale, base), locale: locale as Locale })}`;
+}
+
+export function buildSunCityAlternates(
+  locale: string,
+  base: string,
+): { canonical: string; languages: Record<string, string> } {
+  const languages: Record<string, string> = {};
+  for (const l of routing.locales) languages[l] = sunCityUrl(l, base);
+  languages["x-default"] = sunCityUrl(routing.defaultLocale, base);
+  return { canonical: sunCityUrl(locale, base), languages };
+}
+
+/** locale × starter city, for generateStaticParams. */
+export function sunCityStaticParams(): { locale: string; cityPrefix: string; city: string }[] {
+  return routing.locales.flatMap((locale) =>
+    SUNRISE_CITIES.map((base) => ({
+      locale,
+      cityPrefix: SUN_PREFIX[locale],
+      city: localizedCitySlug(locale, base),
+    })),
+  );
+}
+
+/** Resolves (locale, prefix, citySlug) → the city, or null. */
+export function resolveSunCityPage(
+  locale: string,
+  cityPrefix: string,
+  citySlug: string,
+): { city: City; base: string } | null {
+  if (cityPrefix !== SUN_PREFIX[locale]) return null;
+  const cityId = cityIdFromSlug(locale, citySlug);
+  if (!cityId) return null;
+  const base = baseSlug(cityId);
+  if (!SUNRISE_CITIES.includes(base)) return null;
+  const city = BUILTIN_CITIES.find((c) => c.id === cityId);
+  return city ? { city, base } : null;
+}
+
 /** Resolves (locale, prefix, citySlug, monthSlug) → the city + month, or null. */
 export function resolveSunPage(
   locale: string,

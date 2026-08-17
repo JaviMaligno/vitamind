@@ -267,10 +267,11 @@ export function sunPageGraph({
  * Home → city index → city → this page.
  *
  * The URL's own ancestors are NOT the trail. `app/[locale]/[cityPrefix]/page.tsx`
- * and `.../[city]/page.tsx` both bail out unless the prefix equals
- * `CITY_PREFIX[locale]`, so `/amanecer` and `/amanecer/madrid` are 404s — putting
- * them in a BreadcrumbList would advertise two dead URLs per page. The city tree
- * is the real parent and the page already links back into it.
+ * bails out unless the prefix equals `CITY_PREFIX[locale]`, so `/amanecer` is a
+ * 404 and putting it in a BreadcrumbList would advertise a dead URL per page.
+ * (`/amanecer/madrid` became a live page — the sunrise tree's city hub — but the
+ * trail deliberately stays on the vitamin D city page: that is the canonical
+ * entity page for the city, and both sunrise pages link into the hub anyway.)
  */
 function breadcrumbTrail({
   locale, base, cityName, pageName, url, labels,
@@ -332,12 +333,25 @@ function sunEvent({
  * and sits at +02:00 for all of August — so publishing it as the offset of an
  * instant would be wrong for roughly half the year in most of the city list.
  *
- * The probe deliberately repeats the expression `dailySunTimes` uses
- * (`tzOffsetForDate(timezone, new Date(YEAR, monthIndex, day))`, local-time
- * constructor included) rather than a more careful one. The offset that turns a
- * wall-clock time into an instant has to be the same offset that produced that
- * wall-clock time; a "better" calculation here would emit a startDate the page's
- * own table contradicts.
+ * This probe USED to mirror `dailySunTimes` exactly. It no longer does:
+ * `lib/sun-times.ts` now reads the offset at each event's own instant, so on the
+ * 63 city-months a year that contain a DST transition the printed time carries
+ * the post-transition offset and this day-start probe reads the pre-transition
+ * one. Nothing false ships from the mismatch — `offsetHoldsAtInstant` below
+ * drops precisely those Events instead of labelling them — but this function is
+ * now the conservative half of a pair, not a copy of the table. Probing the
+ * instant here would make the label true again and let those Events through;
+ * that is a deliberate change, not a tidy-up, and it belongs in its own commit.
+ *
+ * "The start of that day" means UTC midnight, and it is `Date.UTC` that makes it
+ * mean the same thing everywhere. The host-local constructor this used made the
+ * probe an instant of the BUILDER's day: `new Date(2026, 10, 1)` is 00:00 UTC on
+ * Vercel and 10:00 UTC on a laptop in Honolulu, which is past Chicago's 07:00 UTC
+ * transition — so that laptop probed -06:00, agreed with the instant, and
+ * published the two Events a UTC build drops. Measured over the shipped 40
+ * cities × 12 months: 1908 Event nodes under UTC, Atlantic/Canary, Europe/Madrid
+ * and Australia/Sydney, 1920 under Pacific/Honolulu. Which nodes a page carries
+ * is not allowed to depend on where it was built.
  *
  * With no IANA name we fall back to `City.tz` — which is precisely what
  * `dailySunTimes` falls back to when placing the printed time, so the instant is
@@ -347,7 +361,7 @@ function sunEvent({
  */
 function utcOffsetHours(city: City, monthIndex: number, day: number): number {
   if (!city.timezone) return city.tz;
-  return tzOffsetForDate(city.timezone, new Date(DOY_REFERENCE_YEAR, monthIndex, day));
+  return tzOffsetForDate(city.timezone, new Date(Date.UTC(DOY_REFERENCE_YEAR, monthIndex, day)));
 }
 
 /**
@@ -355,15 +369,16 @@ function utcOffsetHours(city: City, monthIndex: number, day: number): number {
  * wall clock designates?
  *
  * On the two DST transition days a year it does not: the probe above reads the
- * pre-transition offset, so "2026-11-01T07:26:00-05:00" for America/Chicago
+ * pre-transition offset, so "2026-11-01T06:26:00-05:00" for America/Chicago
  * names an instant at which the zone is already at -06:00. The label is a claim
  * about the zone, and that claim is false, so the caller drops the Event —
  * roughly 12 of the 1920 nodes the shipped 40 cities × 12 months produce.
  *
- * The alternative, probing the zone at the instant rather than at the start of
- * the day, is not available: the wall clock came from the day-start probe, and
- * relabelling it would move the instant an hour away from the time the page
- * prints beside it. The Event is dropped, not corrected.
+ * The fix is now available and deliberately not taken here: since
+ * `lib/sun-times.ts` places each printed time with the offset in force at that
+ * event, probing the same instant above would produce a label the zone does hold
+ * and restore these nodes. Doing it is a change to what the pages publish, so it
+ * gets its own commit rather than riding along with the sun-times fix.
  *
  * With no IANA name there is no zone to disagree with the fallback, so nothing
  * is skipped.
