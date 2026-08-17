@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, afterAll } from "vitest";
 import {
   ORGANIZATION_ID, PERSON_ID, WEBAPP_ID,
   siteGraph, authorship, modelCitations, sunPageGraph, cityPlaceId,
@@ -10,6 +10,15 @@ import { SUNRISE_CITIES } from "@/lib/sun-routes";
 import { dailySunTimes } from "@/lib/sun-times";
 import { fmtTime } from "@/lib/solar";
 import type { City } from "@/lib/types";
+
+const originalTz = process.env.TZ;
+afterAll(() => {
+  // Assigning `undefined` to an env var stores the STRING "undefined", which
+  // resolves to Etc/Unknown, and vitest reuses a worker across files. CI leaves
+  // TZ unset, so this is the normal path rather than the edge case.
+  if (originalTz === undefined) delete process.env.TZ;
+  else process.env.TZ = originalTz;
+});
 
 const nodeOfType = (graph: ReturnType<typeof siteGraph>, type: string) =>
   graph["@graph"].find((n) => n["@type"] === type);
@@ -315,11 +324,12 @@ describe("sunPageGraph", () => {
 
   it("labels the instant with the offset probed at local midnight, not the record's fixed tz", () => {
     // The whole reason City.tz cannot be used: Madrid is tz=1 in the record and
-    // sits at +02:00 for the whole of August. The probe is the one
-    // `dailySunTimes` uses to place the printed time — same expression, local
-    // midnight included — so the label matches the clock time beside it. On a
-    // day where that offset does not survive to the instant, the Event is
-    // dropped instead (see the DST transition tests below).
+    // sits at +02:00 for the whole of August. Away from a transition the day has
+    // one offset, so the day-start probe and the event-instant probe
+    // `dailySunTimes` now uses are the same number and the label matches the
+    // clock time beside it. On a day where that offset does not survive to the
+    // instant the two differ and the Event is dropped instead (see the DST
+    // transition tests below).
     expect(MADRID.tz).toBe(1);
     const august = nodesOfType(madridAugust(), "Event");
     const january = nodesOfType(
@@ -384,10 +394,12 @@ describe("sunPageGraph", () => {
 
   it("drops the Event when the probed offset is not the one in force at the instant", () => {
     // 1 November 2026, America/Chicago: the clocks go back at 02:00 local. The
-    // probe reads -05:00 (the offset that placed the printed 07:26), but the
-    // instant that wall clock designates falls after the transition, where the
-    // zone is at -06:00. Emitting "07:26:00-05:00" would publish an offset the
-    // zone does not have at that moment, so the node goes.
+    // day-start probe reads -05:00, but the instant that wall clock designates
+    // falls after the transition, where the zone is at -06:00. Emitting
+    // "…-05:00" would publish an offset the zone does not have at that moment,
+    // so the node goes. (The fixture's 7.4333 is what the page printed before
+    // lib/sun-times.ts started probing the event's own instant; the skip is what
+    // it asserts, and it holds for the corrected 6.4333 the same way.)
     const chicago: City = {
       id: "builtin:chicago", name: "Chicago", lat: 41.88, lon: -87.63,
       tz: -6, timezone: "America/Chicago", source: "builtin",
@@ -513,10 +525,12 @@ describe("sunPageGraph on real sun-times data", () => {
     // 12 of 1920 nodes across the 40 cities x 12 months are lost this way, on
     // the 6 city-months where a transition falls on the first or last day —
     // 36 pages once the six locales are counted.
-    // Do not "restore" them by probing the instant instead: the probe mirrors
-    // `dailySunTimes`, which places every printed time in the table, not just
-    // these two. Moving it would shift the printed time on every transition day
-    // of the year: 63 of the 480 city-months, 378 pages across the locales.
+    // The reason not to "restore" them by probing the instant has since gone:
+    // `dailySunTimes` was moved onto an event-instant probe (the printed time on
+    // those 63 city-months shifted by an hour, which was the point), so a
+    // matching probe here would now label these correctly rather than
+    // contradict the table. It stays deliberate until its own change makes it,
+    // because it alters what the pages publish.
     expect(SUNRISE_CITIES).toContain("chicago");
     const city = cityRecord("builtin:chicago");
     const NOVEMBER = 10;
@@ -528,5 +542,33 @@ describe("sunPageGraph on real sun-times data", () => {
       "Event",
     );
     expect(events).toHaveLength(0);
+  });
+
+  it("emits the same graph whatever the host zone", () => {
+    // WHICH Events are skipped was a property of the builder's own machine. The
+    // offset probe built its date with the host-local constructor, so
+    // `new Date(2026, 10, 1)` is 00:00 UTC on Vercel and 10:00 UTC on a laptop
+    // in Honolulu — and Chicago's transition is at 07:00 UTC. The Honolulu build
+    // therefore probed -06:00, agreed with the instant, and published the two
+    // Events that UTC drops: measured 1920 nodes there against 1908 under UTC,
+    // Atlantic/Canary, Europe/Madrid and Australia/Sydney. The skip is a
+    // deliberate decision (see the test above); it must be the same decision
+    // everywhere, and it is the UTC one that has been shipping.
+    const chicago = cityRecord("builtin:chicago");
+    const NOVEMBER = 10;
+    const graphIn = (zone: string) => {
+      process.env.TZ = zone;
+      const rows = dailySunTimes(chicago.lat, chicago.lon, NOVEMBER, chicago.timezone, chicago.tz);
+      return JSON.stringify(madridAugust({
+        city: chicago, base: "chicago", cityName: "Chicago",
+        monthIndex: NOVEMBER, days: [rows[0], rows[rows.length - 1]],
+      }));
+    };
+    const utc = graphIn("UTC");
+    for (const zone of ["Atlantic/Canary", "Pacific/Honolulu", "Australia/Sydney"]) {
+      expect(graphIn(zone), `${zone} differs from UTC`).toBe(utc);
+    }
+    // And the decision itself, stated: the transition day's two figures go.
+    expect(nodesOfType(JSON.parse(utc), "Event")).toHaveLength(2);
   });
 });
