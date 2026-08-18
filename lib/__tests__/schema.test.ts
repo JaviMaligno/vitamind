@@ -1,4 +1,5 @@
 import { describe, it, expect, afterAll } from "vitest";
+import { readFileSync } from "node:fs";
 import {
   ORGANIZATION_ID, PERSON_ID, WEBAPP_ID,
   siteGraph, authorship, modelCitations, sunPageGraph, cityPlaceId,
@@ -187,6 +188,36 @@ describe("sunPageGraph", () => {
     expect(g["@graph"].map((n) => n["@type"])).toEqual(
       expect.arrayContaining(["Place", "WebPage", "BreadcrumbList", "Event", "FAQPage"]),
     );
+  });
+
+  it("carries the description the page built, and omits the field when it built none", () => {
+    // The page supplies these because only it has the translator. A sunrise on a
+    // polar day has no direction and no Event either, so the absent case here is
+    // the one where the page had a sunrise but could not name a direction.
+    const withText = nodesOfType(
+      madridAugust({ days: [{ day: 1, sunrise: 7.2, sunset: 21.5, sunriseDescription: "El sol sale por el este en Madrid.", sunsetDescription: "El sol se pone por el oeste en Madrid." }] }),
+      "Event",
+    );
+    expect(withText.map((e) => e.description)).toEqual([
+      "El sol sale por el este en Madrid.",
+      "El sol se pone por el oeste en Madrid.",
+    ]);
+
+    const without = nodesOfType(madridAugust({ days: [{ day: 1, sunrise: 7.2, sunset: 21.5 }] }), "Event");
+    for (const e of without) expect(e).not.toHaveProperty("description");
+    // An empty string would be worse than nothing: it asserts a blank description.
+    expect(JSON.stringify(without)).not.toContain('"description"');
+  });
+
+  it("states a compass point and never a bearing, which the model cannot back to the degree", () => {
+    // declination() is a one-term approximation reaching 2.33 degrees of error at
+    // the latitudes we ship. The visible page prints degrees beside a note saying
+    // so; a description field has nowhere to put that note.
+    const es = JSON.parse(readFileSync("messages/es.json", "utf8"));
+    for (const key of ["eventDescriptionSunrise", "eventDescriptionSunset"]) {
+      expect(es.sunrisePage[key]).not.toMatch(/°|\{[a-zA-Z]*[Bb]earing\}|\{degrees\}/);
+      expect(es.sunrisePage[key]).toContain("{point}");
+    }
   });
 
   it("anchors the Place on a city-level @id, so 12 months x 6 locales mean one entity", () => {

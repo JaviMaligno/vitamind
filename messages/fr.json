@@ -795,7 +795,9 @@
     "faqDirectionQ": "Où se couche le soleil à {city} en {month} ?",
     "faqDirectionA": "À la mi-{month} à {city}, le soleil se couche {sunsetPoint} : un azimut de {sunsetBearing}°, mesuré depuis le nord géographique, {offSide, select, north {soit {offDegrees}° au nord de l'ouest} south {soit {offDegrees}° au sud de l'ouest} other {c'est-à-dire pratiquement plein ouest}}. Il se lève {sunrisePoint}, à {sunriseBearing}°. {drift, select, north {Au fil du mois, les deux points se décalent de {driftDegrees}° vers le nord.} south {Au fil du mois, les deux points se décalent de {driftDegrees}° vers le sud.} other {Au fil du mois, les deux points bougent à peine.}}",
     "note": "Valeurs astronomiques indicatives : elles peuvent varier d'une ou deux minutes selon l'année.",
-    "howCalculated": "Comment ces horaires sont calculés"
+    "howCalculated": "Comment ces horaires sont calculés",
+    "eventDescriptionSunrise": "Le soleil se lève {point} à {city}.",
+    "eventDescriptionSunset": "Le soleil se couche {point} à {city}."
   },
   "cityPage": {
     "title": "Vitamine D du soleil {atCity}",

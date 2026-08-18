@@ -795,7 +795,9 @@
     "faqDirectionQ": "¿Por dónde se pone el sol en {city} en {month}?",
     "faqDirectionA": "A mitad de {month} en {city} el sol se pone {sunsetPoint}: un azimut de {sunsetBearing}°, medido desde el norte geográfico, {offSide, select, north {o sea {offDegrees}° al norte del oeste exacto} south {o sea {offDegrees}° al sur del oeste exacto} other {es decir, prácticamente el oeste exacto}}. Sale {sunrisePoint}, a {sunriseBearing}°. {drift, select, north {A lo largo del mes los dos puntos se desplazan {driftDegrees}° hacia el norte.} south {A lo largo del mes los dos puntos se desplazan {driftDegrees}° hacia el sur.} other {A lo largo del mes los dos puntos apenas se mueven.}}",
     "note": "Valores astronómicos orientativos: pueden variar uno o dos minutos según el año.",
-    "howCalculated": "Cómo se calculan estas horas"
+    "howCalculated": "Cómo se calculan estas horas",
+    "eventDescriptionSunrise": "El sol sale {point} en {city}.",
+    "eventDescriptionSunset": "El sol se pone {point} en {city}."
   },
   "cityPage": {
     "title": "Vitamina D del sol en {city}",

@@ -156,6 +156,21 @@ export interface SunDayFigures {
   day: number;
   sunrise: number | null;
   sunset: number | null;
+  /**
+   * Localised one-liners for the Event `description`, built by the page because
+   * only it has the translator.
+   *
+   * They name the compass point and deliberately not the bearing in degrees.
+   * `declination()` is a one-term approximation whose error reaches 2.33 degrees
+   * at the latitudes we ship, which the visible page discloses in a note next to
+   * the figure — a description field has nowhere to put that note, and a bare
+   * "71°" would claim a precision the model does not have. An eight-point sector
+   * is 45 degrees wide and absorbs the error.
+   *
+   * Absent on polar days, where there is no direction and no Event either.
+   */
+  sunriseDescription?: string;
+  sunsetDescription?: string;
 }
 
 export interface SunPageGraphInput {
@@ -253,8 +268,8 @@ export function sunPageGraph({
     // is named as pending in lib/sun-routes.ts).
     const sunsetPastMidnight = d.sunrise !== null && d.sunset !== null && d.sunset < d.sunrise;
     return [
-      sunEvent({ city, monthIndex, day: d.day, hours: d.sunrise, kind: "sunrise", label: labels.sunrise, cityName, url, placeId }),
-      sunEvent({ city, monthIndex, day: d.day, dateDay: d.day + (sunsetPastMidnight ? 1 : 0), hours: d.sunset, kind: "sunset", label: labels.sunset, cityName, url, placeId }),
+      sunEvent({ city, monthIndex, day: d.day, hours: d.sunrise, kind: "sunrise", label: labels.sunrise, cityName, url, placeId, description: d.sunriseDescription }),
+      sunEvent({ city, monthIndex, day: d.day, dateDay: d.day + (sunsetPastMidnight ? 1 : 0), hours: d.sunset, kind: "sunset", label: labels.sunset, cityName, url, placeId, description: d.sunsetDescription }),
     ];
   }).filter((e): e is Node => e !== null);
 
@@ -297,7 +312,7 @@ function breadcrumbTrail({
  * the vocabulary because competitors do would be a claim about nothing.
  */
 function sunEvent({
-  city, monthIndex, day, dateDay = day, hours, kind, label, cityName, url, placeId,
+  city, monthIndex, day, dateDay = day, hours, kind, label, cityName, url, placeId, description,
 }: {
   city: City;
   monthIndex: number;
@@ -311,6 +326,7 @@ function sunEvent({
   cityName: string;
   url: string;
   placeId: string;
+  description?: string;
 }): Node | null {
   if (hours === null) return null;
   const offset = utcOffsetHours(city, monthIndex, day);
@@ -322,6 +338,8 @@ function sunEvent({
     name: `${label} — ${cityName}`,
     startDate,
     location: { "@id": placeId },
+    // Omitted rather than emitted empty when the page could not build one.
+    ...(description ? { description } : {}),
   };
 }
 

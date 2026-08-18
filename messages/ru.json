@@ -795,7 +795,9 @@
     "faqDirectionQ": "Где садится солнце ({city}, {month})?",
     "faqDirectionA": "{city}, {month}: в середине месяца солнце садится {sunsetPoint} — азимут {sunsetBearing}°, отсчитанный от истинного севера, {offSide, select, north {то есть на {offDegrees}° севернее точного запада} south {то есть на {offDegrees}° южнее точного запада} other {то есть практически точный запад}}. Восходит оно {sunrisePoint}, на азимуте {sunriseBearing}°. {drift, select, north {За месяц обе точки смещаются на {driftDegrees}° к северу.} south {За месяц обе точки смещаются на {driftDegrees}° к югу.} other {За месяц обе точки почти не смещаются.}}",
     "note": "Астрономические значения ориентировочны: год от года они могут отличаться на одну–две минуты.",
-    "howCalculated": "Как рассчитаны эти данные"
+    "howCalculated": "Как рассчитаны эти данные",
+    "eventDescriptionSunrise": "Солнце восходит {point} в городе {city}.",
+    "eventDescriptionSunset": "Солнце заходит {point} в городе {city}."
   },
   "cityPage": {
     "title": "Витамин D от солнца — {city}",

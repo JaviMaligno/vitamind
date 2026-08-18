@@ -795,7 +795,9 @@
     "faqDirectionQ": "Wo geht die Sonne in {city} im {month} unter?",
     "faqDirectionA": "Mitte {month} geht die Sonne in {city} {sunsetPoint} unter: ein Azimut von {sunsetBearing}°, gemessen vom geografischen Norden aus, {offSide, select, north {also {offDegrees}° nördlich der Westrichtung} south {also {offDegrees}° südlich der Westrichtung} other {also praktisch genau die Westrichtung}}. Sie geht {sunrisePoint} auf, bei {sunriseBearing}°. {drift, select, north {Im Lauf des Monats wandern beide Punkte {driftDegrees}° nach Norden.} south {Im Lauf des Monats wandern beide Punkte {driftDegrees}° nach Süden.} other {Im Lauf des Monats wandern beide Punkte kaum.}}",
     "note": "Astronomische Richtwerte: Sie können je nach Jahr um ein bis zwei Minuten abweichen.",
-    "howCalculated": "Wie diese Zeiten berechnet werden"
+    "howCalculated": "Wie diese Zeiten berechnet werden",
+    "eventDescriptionSunrise": "Die Sonne geht in {city} {point} auf.",
+    "eventDescriptionSunset": "Die Sonne geht in {city} {point} unter."
   },
   "cityPage": {
     "title": "Vitamin D durch Sonne in {city}",
