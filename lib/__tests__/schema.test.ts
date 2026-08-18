@@ -502,6 +502,16 @@ describe("sunPageGraph", () => {
     }
   });
 
+  it("points image at the page's own card, on the path that answers rather than redirects", () => {
+    // Next infers /es/amanecer/... for the image and the proxy 307s that to the
+    // unprefixed path, so the inferred URL is a redirect. Markup pointing at a
+    // redirect is how a 404 ends up inside structured data.
+    for (const e of nodesOfType(madridAugust(), "Event")) {
+      expect(e.image).toBe(`${SITE_URL}/amanecer/madrid/agosto/opengraph-image`);
+      expect(e.image).not.toContain("/es/");
+    }
+  });
+
   it("prices the sunrise at zero, which is the plainest true statement on the page", () => {
     for (const e of nodesOfType(madridAugust(), "Event")) {
       expect(e.offers).toEqual({

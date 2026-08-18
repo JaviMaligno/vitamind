@@ -383,6 +383,19 @@ function sunEvent({
      * this site cites 51 papers without contradiction.
      */
     ...(credits ? { performer: credits.performer, organizer: credits.organizer } : {}),
+    /**
+     * The page's own share card, rendered from this city and this month.
+     *
+     * This was the last field left empty, because filling it meant carrying a
+     * picture the page does not show — which Google's structured-data policy
+     * warns against. A card generated from the page's own figures is not that.
+     *
+     * Derived from the canonical rather than from the locale segment: Next
+     * builds its own image URL as /es/amanecer/... and the proxy redirects that
+     * to the unprefixed path, so the inferred one answers 307. The page states
+     * this same URL in og:image for the same reason.
+     */
+    image: `${url}/opengraph-image`,
   };
 }
 

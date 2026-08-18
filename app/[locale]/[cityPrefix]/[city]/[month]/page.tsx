@@ -73,7 +73,25 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
     title,
     description,
     alternates,
-    openGraph: { title, description, url: alternates.canonical, type: "article" },
+    openGraph: {
+      title,
+      description,
+      url: alternates.canonical,
+      type: "article",
+      /**
+       * Stated explicitly, because the one Next infers is a redirect.
+       *
+       * It builds the image URL from the locale segment — /es/amanecer/... —
+       * but Spanish is the default locale and `proxy.ts` strips that prefix, so
+       * the tag Next emits answers 307 and only the unprefixed path answers 200.
+       * Plenty of social crawlers do not follow redirects for images, which
+       * would lose the card in the locale that carries the most traffic.
+       *
+       * The canonical already carries the right shape per locale (no prefix for
+       * es, /en for English), so deriving from it is correct everywhere.
+       */
+      images: [{ url: `${alternates.canonical}/opengraph-image`, width: 1200, height: 630, alt: title }],
+    },
   };
 }
 
