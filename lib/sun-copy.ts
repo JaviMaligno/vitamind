@@ -1,7 +1,12 @@
 import type { DailySunTimes } from "@/lib/sun-times";
 import type { ExposureResult } from "@/lib/vitd";
+import type { CompassPoint, DueSide } from "@/lib/compass";
 import { dailySunTimes, getSunTimes } from "@/lib/sun-times";
-import { getCurve, doyFromMonthDay, dateFromDoy, fmtTime, fmtDayLength, dayLengthMinutes } from "@/lib/solar";
+import {
+  getCurve, doyFromMonthDay, dateFromDoy, fmtTime, fmtDayLength, dayLengthMinutes,
+  sunDirection, daysInMonth,
+} from "@/lib/solar";
+import { compassPoint, offsetFromDueEast } from "@/lib/compass";
 import { computeExposureFromCurve } from "@/lib/vitd";
 import { ozoneDU } from "@/lib/uv-model";
 
@@ -26,6 +31,83 @@ export type SunRegime = "synthesis" | "none" | "polar";
 
 /** A formatted clock time, or nothing at all — never the em dash the table prints. */
 const hhmm = (h: number) => fmtTime(h);
+
+/**
+ * Below this, a month's drift is not a direction this model can claim.
+ *
+ * `lib/solar.ts` documents its `declination` as the one-term approximation,
+ * worth "~1-2° of bearing" and more the further from the equator. A drift of
+ * one degree across a solstice month is inside that, so naming a side for it
+ * would be stating a direction the maths does not support — the copy says the
+ * points barely move instead. Madrid in December drifts 1°; Sydney in June, 1°.
+ */
+export const DRIFT_MIN_DEG = 2;
+
+/**
+ * Where the sun comes up and goes down over one month, for one latitude.
+ *
+ * The mid-month anchor is day 15, the same day every other mid-month figure on
+ * the page uses (`monthData.mid`, the FAQ's "a mitad de mes"), so the direction
+ * and the clock times describe the same day.
+ *
+ * NO LONGITUDE AND NO TIMEZONE, because `sunDirection` takes neither: longitude
+ * moves WHEN a sunrise happens, not WHERE. A signature that accepted them would
+ * imply an accuracy the model does not have.
+ *
+ * Returns `null` when any day of the month lacks a sunrise. That is the same
+ * all-or-nothing rule `sunRegime` applies — a month that turns polar halfway
+ * through has no single sunrise direction any more than it has a single
+ * sunrise time — and `sun-direction.test.ts` sweeps latitude to hold the two in
+ * agreement, so the page can never print a time with no direction beside it or
+ * a direction on a day whose table prints an em dash.
+ */
+export interface MonthDirection {
+  /** Whole degrees clockwise from TRUE north, mid-month. */
+  sunriseBearing: number;
+  sunsetBearing: number;
+  sunrisePoint: CompassPoint;
+  sunsetPoint: CompassPoint;
+  /** How far mid-month sunrise sits from due east — and sunset from due west. */
+  offDegrees: number;
+  offSide: DueSide;
+  /** Whole degrees the sunrise point walks between day 1 and the last day. */
+  driftDegrees: number;
+  drift: "north" | "south" | "none";
+}
+
+export function monthDirection(lat: number, monthIndex: number): MonthDirection | null {
+  const lastDay = daysInMonth(monthIndex);
+  const daily = Array.from({ length: lastDay }, (_, i) =>
+    sunDirection(lat, doyFromMonthDay(monthIndex, i + 1)),
+  );
+  if (daily.some((d) => d === null)) return null;
+
+  const first = daily[0]!;
+  // Every month has at least 28 days, so the 15th is always in range.
+  const mid = daily[14]!;
+  const last = daily[lastDay - 1]!;
+
+  const drift = last.sunriseBearing - first.sunriseBearing;
+  const driftDegrees = Math.round(Math.abs(drift));
+  const { degrees: offDegrees, side: offSide } = offsetFromDueEast(mid.sunriseBearing);
+
+  return {
+    // Rounded for display only; the labels come from the unrounded bearing.
+    // The two cannot disagree: sector boundaries are half-degrees, so rounding
+    // never moves a bearing across one (asserted in `compass.test.ts`). The
+    // `% 360` catches a sunset at 359.6°, which would otherwise print as 360°.
+    sunriseBearing: Math.round(mid.sunriseBearing) % 360,
+    sunsetBearing: Math.round(mid.sunsetBearing) % 360,
+    sunrisePoint: compassPoint(mid.sunriseBearing),
+    sunsetPoint: compassPoint(mid.sunsetBearing),
+    offDegrees,
+    offSide,
+    driftDegrees,
+    // A sunrise bearing FALLING through the month walks from the east toward
+    // the north; the sunset mirrors it, so one figure describes both ends.
+    drift: driftDegrees < DRIFT_MIN_DEG ? "none" : drift < 0 ? "north" : "south",
+  };
+}
 
 export function monthData(
   lat: number,
@@ -53,7 +135,7 @@ export function monthData(
     { ozoneDu: ozoneDU(lat, lon, doy15), elevationM },
   );
 
-  return { days, first, last, deltaMin, mid, exposure, dayLen };
+  return { days, first, last, deltaMin, mid, exposure, dayLen, direction: monthDirection(lat, monthIndex) };
 }
 
 export type MonthData = ReturnType<typeof monthData>;
@@ -101,11 +183,22 @@ export interface SunPageCopy {
  * FAQ section and the FAQPage JSON-LD are built from one list: Google requires
  * the answers it marks up to be on the page, and an invisible FAQ is what made
  * Search Appearance read "Sin datos" for this markup.
+ *
+ * `compassIn` is the one value this module cannot produce, because the compass
+ * point is an identifier and every locale needs a different preposition in
+ * front of it ("à l'est" but "au nord-est"). The caller resolves it from the
+ * `compass.in` namespace. It is required rather than optional so a caller
+ * cannot silently drop the direction answer by forgetting it.
  */
 export function sunPageCopy({
-  cityName, month, data,
-}: { cityName: string; month: string; data: MonthData }): SunPageCopy {
-  const { days, first, last, deltaMin, mid, exposure, dayLen } = data;
+  cityName, month, data, compassIn,
+}: {
+  cityName: string;
+  month: string;
+  data: MonthData;
+  compassIn: (point: CompassPoint) => string;
+}): SunPageCopy {
+  const { days, first, last, deltaMin, mid, exposure, dayLen, direction } = data;
   const regime = sunRegime(days, exposure);
   const city = cityName;
   const trend = deltaMin > 3 ? "longer" : deltaMin < -3 ? "shorter" : "other";
@@ -143,6 +236,35 @@ export function sunPageCopy({
   const dusk = mid.civilDusk;
 
   const faq: SunFaqEntry[] = [
+    /**
+     * FIRST, and deliberately. Search Console over 28 days: queries asking for a
+     * DIRECTION converted at 9.1% (1 click / 11 impressions), the highest CTR
+     * pattern in the whole report, against 0.17% for the clock-time queries this
+     * tree is otherwise full of. It is also the only question here that no
+     * ephemeris rival answers for a city and a month at once, so it leads the
+     * visible list and the FAQPage markup built from it.
+     *
+     * Absent on a polar month: `monthDirection` returns null when any day of the
+     * month has no sunrise, so there is no one direction to name.
+     */
+    ...(direction
+      ? [{
+          qKey: "faqDirectionQ",
+          qValues: { ...cityMonth },
+          aKey: "faqDirectionA",
+          aValues: {
+            month, city,
+            sunrisePoint: compassIn(direction.sunrisePoint),
+            sunsetPoint: compassIn(direction.sunsetPoint),
+            sunriseBearing: direction.sunriseBearing,
+            sunsetBearing: direction.sunsetBearing,
+            offDegrees: direction.offDegrees,
+            offSide: direction.offSide,
+            driftDegrees: direction.driftDegrees,
+            drift: direction.drift,
+          },
+        }]
+      : []),
     {
       qKey: "faqDeltaQ",
       qValues: { trend, city, month },

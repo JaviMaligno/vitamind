@@ -47,6 +47,7 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   const resolved = resolveSunPage(p.locale, p.cityPrefix, p.city, p.month);
   if (!resolved) return {};
   const t = await getTranslations({ locale: p.locale, namespace: "sunrisePage" });
+  const tCompass = await getTranslations({ locale: p.locale, namespace: "compass" });
   const alternates = buildSunAlternates(p.locale, resolved.base, resolved.monthIndex);
 
   /**
@@ -61,6 +62,9 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
     cityName: localizedCityName(p.locale, resolved.base),
     month: monthName(p.locale, resolved.monthIndex),
     data: monthData(city.lat, city.lon, city.tz, city.timezone, city.elevation ?? 0, resolved.monthIndex),
+    // Metadata reads only the title and description variants, but the FAQ is
+    // built either way, so the resolver is supplied rather than made optional.
+    compassIn: (point) => tCompass(`in.${point}`),
   });
   const title = t(copy.metaTitleKey, copy.metaValues);
   const description = t(copy.metaDescriptionKey, copy.metaValues);
@@ -83,12 +87,13 @@ export default async function SunriseMonthPage({ params }: { params: Promise<Par
   const tSun = await getTranslations({ locale: p.locale, namespace: "sunTimes" });
   const tNav = await getTranslations({ locale: p.locale, namespace: "nav" });
   const tToday = await getTranslations({ locale: p.locale, namespace: "sunToday" });
+  const tCompass = await getTranslations({ locale: p.locale, namespace: "compass" });
 
   const cityName = localizedCityName(p.locale, base);
   const month = monthName(p.locale, monthIndex);
   const data = monthData(city.lat, city.lon, city.tz, city.timezone, city.elevation ?? 0, monthIndex);
-  const { days, first, last, deltaMin, mid, exposure, dayLen } = data;
-  const copy = sunPageCopy({ cityName, month, data });
+  const { days, first, last, deltaMin, mid, exposure, dayLen, direction } = data;
+  const copy = sunPageCopy({ cityName, month, data, compassIn: (point) => tCompass(`in.${point}`) });
 
   /**
    * Phase 2 ships the extractable passage to half the sunrise cities; the other
@@ -111,6 +116,28 @@ export default async function SunriseMonthPage({ params }: { params: Promise<Par
   });
 
   const midLen = dayLen(mid) !== null ? fmtDayLength(dayLen(mid)!) : "—";
+
+  /**
+   * Every figure the direction copy states comes from `monthDirection` in
+   * `lib/sun-copy.ts`, which reads `sunDirection` in `lib/solar.ts` — bearings
+   * clockwise from TRUE north, which is why the sentences say so rather than
+   * "on the compass": a phone compass points at magnetic north.
+   *
+   * The same object feeds the visible paragraph and the FAQ answer that
+   * `sunPageCopy` built, so the two cannot state different numbers.
+   */
+  const directionValues = direction && {
+    city: cityName,
+    month,
+    sunrisePoint: tCompass(`in.${direction.sunrisePoint}`),
+    sunsetPoint: tCompass(`in.${direction.sunsetPoint}`),
+    sunriseBearing: direction.sunriseBearing,
+    sunsetBearing: direction.sunsetBearing,
+    offDegrees: direction.offDegrees,
+    offSide: direction.offSide,
+    driftDegrees: direction.driftDegrees,
+    drift: direction.drift,
+  };
 
   /**
    * One list, rendered twice: as the visible <section> below and as the
@@ -223,6 +250,59 @@ export default async function SunriseMonthPage({ params }: { params: Promise<Par
           </div>
         </div>
       </PhaseWindow>
+
+      {/*
+        WHERE, right after WHEN. Search Console over 28 days puts direction
+        queries at 9.1% CTR against 0.17% for the clock-time queries this tree is
+        otherwise full of, and nothing on the site could answer them until now.
+        It sits above the table because that is the order the question comes in —
+        the sun rises at 07:26, and it rises over there.
+
+        Nothing renders on a polar month: `monthDirection` returns null when any
+        day of the month has no sunrise, so there is no one direction to name,
+        and the FAQ drops its direction entry for the same reason.
+      */}
+      {direction && directionValues && (
+        <section className="mt-8">
+          <Card variant="glass" className="!p-6 sm:!p-8">
+            <h2 className="font-display text-title sm:text-2xl font-bold">
+              {t("directionHeading", { city: cityName, month })}
+            </h2>
+            <div className="mt-5 grid grid-cols-2 gap-4">
+              <div>
+                <span className="block text-caption uppercase tracking-wider text-text-muted">
+                  {t("directionRiseLabel")}
+                </span>
+                <span className="mt-1 block font-display text-xl font-semibold text-text-primary">
+                  {capFirst(tCompass(`name.${direction.sunrisePoint}`))}
+                </span>
+                <span className="mt-0.5 block font-mono text-caption text-text-muted">
+                  {direction.sunriseBearing}°
+                </span>
+              </div>
+              <div>
+                <span className="block text-caption uppercase tracking-wider text-text-muted">
+                  {t("directionSetLabel")}
+                </span>
+                <span className="mt-1 block font-display text-xl font-semibold text-text-primary">
+                  {capFirst(tCompass(`name.${direction.sunsetPoint}`))}
+                </span>
+                <span className="mt-0.5 block font-mono text-caption text-text-muted">
+                  {direction.sunsetBearing}°
+                </span>
+              </div>
+            </div>
+            <p className="mt-5 text-body text-text-secondary leading-relaxed">
+              {t("directionBody", directionValues)}
+            </p>
+            {/* The bearings are whole degrees off a model `lib/solar.ts`
+                documents as good to ~1-2°, and they are TRUE north while the
+                compass in the reader's hand is magnetic. Both belong next to
+                the figure, not in a methodology page they will not open. */}
+            <p className="mt-3 text-caption text-text-muted">{t("directionNote")}</p>
+          </Card>
+        </section>
+      )}
 
       {/* Day-by-day table — the content these pages exist for, so it ships in HTML. */}
       <section className="mt-10">

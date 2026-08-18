@@ -727,6 +727,28 @@
     "todayIs": "Hoy, {date}",
     "recomputed": "Recalculado en tu navegador con la fecha y la hora de {city}."
   },
+  "compass": {
+    "name": {
+      "n": "norte",
+      "ne": "noreste",
+      "e": "este",
+      "se": "sureste",
+      "s": "sur",
+      "sw": "suroeste",
+      "w": "oeste",
+      "nw": "noroeste"
+    },
+    "in": {
+      "n": "por el norte",
+      "ne": "por el noreste",
+      "e": "por el este",
+      "se": "por el sureste",
+      "s": "por el sur",
+      "sw": "por el suroeste",
+      "w": "por el oeste",
+      "nw": "por el noroeste"
+    }
+  },
   "sunrisePage": {
     "eyebrow": "El sol mes a mes",
     "metaTitle": "Amanecer y atardecer en {city} en {month} + vitamina D",
@@ -765,6 +787,13 @@
     "faqVitdAPolar": "En {month} el sol de {city} no sigue un ciclo normal de día y noche, así que no hay una franja horaria que valga para todo el mes: hay que mirar el detalle día a día.",
     "faqPolarQ": "¿Por qué no hay una hora de amanecer en {city} en {month}?",
     "faqPolarA": "Porque en {month} hay días en {city} en los que el sol no llega a salir o no llega a ponerse. Por eso esta página no da una hora única para el mes, sino el detalle día a día.",
+    "directionHeading": "¿Por dónde sale y se pone el sol en {city} en {month}?",
+    "directionRiseLabel": "Por dónde sale",
+    "directionSetLabel": "Por dónde se pone",
+    "directionBody": "A mitad de {month} en {city}, el sol sale {sunrisePoint} —un azimut de {sunriseBearing}°, medido desde el norte geográfico— y se pone {sunsetPoint}, a {sunsetBearing}°. {offSide, select, north {Son {offDegrees}° al norte del este exacto al salir, y los mismos {offDegrees}° al norte del oeste al ponerse.} south {Son {offDegrees}° al sur del este exacto al salir, y los mismos {offDegrees}° al sur del oeste al ponerse.} other {Es prácticamente el este exacto al salir y el oeste exacto al ponerse.}} {drift, select, north {Del día 1 al último del mes, los dos puntos se desplazan {driftDegrees}° hacia el norte.} south {Del día 1 al último del mes, los dos puntos se desplazan {driftDegrees}° hacia el sur.} other {Del día 1 al último del mes, los dos puntos apenas se mueven.}}",
+    "directionNote": "Rumbos orientativos: pueden variar un par de grados. Son respecto al norte geográfico, no al que marca la brújula del móvil.",
+    "faqDirectionQ": "¿Por dónde se pone el sol en {city} en {month}?",
+    "faqDirectionA": "A mitad de {month} en {city} el sol se pone {sunsetPoint}: un azimut de {sunsetBearing}°, medido desde el norte geográfico, {offSide, select, north {o sea {offDegrees}° al norte del oeste exacto} south {o sea {offDegrees}° al sur del oeste exacto} other {es decir, prácticamente el oeste exacto}}. Sale {sunrisePoint}, a {sunriseBearing}°. {drift, select, north {A lo largo del mes los dos puntos se desplazan {driftDegrees}° hacia el norte.} south {A lo largo del mes los dos puntos se desplazan {driftDegrees}° hacia el sur.} other {A lo largo del mes los dos puntos apenas se mueven.}}",
     "note": "Valores astronómicos orientativos: pueden variar uno o dos minutos según el año.",
     "howCalculated": "Cómo se calculan estas horas"
   },

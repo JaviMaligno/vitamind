@@ -727,6 +727,28 @@
     "todayIs": "Today, {date}",
     "recomputed": "Recalculated in your browser using the date and time in {city}."
   },
+  "compass": {
+    "name": {
+      "n": "north",
+      "ne": "northeast",
+      "e": "east",
+      "se": "southeast",
+      "s": "south",
+      "sw": "southwest",
+      "w": "west",
+      "nw": "northwest"
+    },
+    "in": {
+      "n": "in the north",
+      "ne": "in the northeast",
+      "e": "in the east",
+      "se": "in the southeast",
+      "s": "in the south",
+      "sw": "in the southwest",
+      "w": "in the west",
+      "nw": "in the northwest"
+    }
+  },
   "sunrisePage": {
     "eyebrow": "The sun, month by month",
     "metaTitle": "Sunrise and sunset in {city} in {month} + vitamin D",
@@ -765,6 +787,13 @@
     "faqVitdAPolar": "In {month} the sun in {city} does not follow a normal day-and-night cycle, so there is no one time window that holds for the whole month: check the day-by-day detail.",
     "faqPolarQ": "Why is there no single sunrise time for {city} in {month}?",
     "faqPolarA": "Because in {month} there are days in {city} when the sun never rises, or never sets. That is why this page gives no single time for the whole month, but the day-by-day detail instead.",
+    "directionHeading": "Where does the sun rise and set in {city} in {month}?",
+    "directionRiseLabel": "Where it rises",
+    "directionSetLabel": "Where it sets",
+    "directionBody": "Mid-{month} in {city}: the sun rises {sunrisePoint} — a bearing of {sunriseBearing}°, measured from true north — and sets {sunsetPoint}, at {sunsetBearing}°. {offSide, select, north {That is {offDegrees}° north of due east at sunrise, and the same {offDegrees}° north of due west at sunset.} south {That is {offDegrees}° south of due east at sunrise, and the same {offDegrees}° south of due west at sunset.} other {That is as good as due east at sunrise and due west at sunset.}} {drift, select, north {From the 1st to the last day of the month both points shift {driftDegrees}° north.} south {From the 1st to the last day of the month both points shift {driftDegrees}° south.} other {From the 1st to the last day of the month both points barely move.}}",
+    "directionNote": "Approximate bearings: they can be a couple of degrees out. They are measured from true north, not the north a phone compass points to.",
+    "faqDirectionQ": "Where does the sun set in {city} in {month}?",
+    "faqDirectionA": "Mid-{month} in {city}: the sun sets {sunsetPoint}, a bearing of {sunsetBearing}° measured from true north, {offSide, select, north {which is {offDegrees}° north of due west} south {which is {offDegrees}° south of due west} other {which is as good as due west}}. It rises {sunrisePoint}, at {sunriseBearing}°. {drift, select, north {Over the month both points shift {driftDegrees}° north.} south {Over the month both points shift {driftDegrees}° south.} other {Over the month both points barely move.}}",
     "note": "Approximate astronomical values: they can shift a minute or two from year to year.",
     "howCalculated": "How these times are calculated"
   },
