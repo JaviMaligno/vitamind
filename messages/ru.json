@@ -797,7 +797,9 @@
     "note": "Астрономические значения ориентировочны: год от года они могут отличаться на одну–две минуты.",
     "howCalculated": "Как рассчитаны эти данные",
     "eventDescriptionSunrise": "Солнце восходит {point} в городе {city}.",
-    "eventDescriptionSunset": "Солнце заходит {point} в городе {city}."
+    "eventDescriptionSunset": "Солнце заходит {point} в городе {city}.",
+    "eventOrganizer": "Бог",
+    "eventPerformer": "Солнце"
   },
   "cityPage": {
     "title": "Витамин D от солнца — {city}",

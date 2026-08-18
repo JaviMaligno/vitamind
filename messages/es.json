@@ -797,7 +797,9 @@
     "note": "Valores astronómicos orientativos: pueden variar uno o dos minutos según el año.",
     "howCalculated": "Cómo se calculan estas horas",
     "eventDescriptionSunrise": "El sol sale {point} en {city}.",
-    "eventDescriptionSunset": "El sol se pone {point} en {city}."
+    "eventDescriptionSunset": "El sol se pone {point} en {city}.",
+    "eventOrganizer": "Dios",
+    "eventPerformer": "El Sol"
   },
   "cityPage": {
     "title": "Vitamina D del sol en {city}",

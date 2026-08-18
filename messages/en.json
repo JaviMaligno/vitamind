@@ -797,7 +797,9 @@
     "note": "Approximate astronomical values: they can shift a minute or two from year to year.",
     "howCalculated": "How these times are calculated",
     "eventDescriptionSunrise": "The sun rises {point} in {city}.",
-    "eventDescriptionSunset": "The sun sets {point} in {city}."
+    "eventDescriptionSunset": "The sun sets {point} in {city}.",
+    "eventOrganizer": "God",
+    "eventPerformer": "The Sun"
   },
   "cityPage": {
     "title": "Vitamin D from the sun in {city}",

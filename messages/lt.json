@@ -797,7 +797,9 @@
     "note": "Astronominės reikšmės yra orientacinės: priklausomai nuo metų jos gali skirtis viena–dviem minutėmis.",
     "howCalculated": "Kaip apskaičiuoti šie laikai",
     "eventDescriptionSunrise": "Saulė {city} teka {point}.",
-    "eventDescriptionSunset": "Saulė {city} leidžiasi {point}."
+    "eventDescriptionSunset": "Saulė {city} leidžiasi {point}.",
+    "eventOrganizer": "Dievas",
+    "eventPerformer": "Saulė"
   },
   "cityPage": {
     "title": "Vitaminas D iš saulės: {city}",

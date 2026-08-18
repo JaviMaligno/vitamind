@@ -192,6 +192,11 @@ export interface SunPageGraphInput {
    * it cannot drift from the visible text or disturb a running copy experiment.
    */
   labels: { sunrise: string; sunset: string; cities: string };
+  /**
+   * Localised names for the Event's `performer` and `organizer`. Optional so the
+   * builder stays usable without them, and so their absence is testable.
+   */
+  credits?: { organizer: string; performer: string };
   /** The days the page states in its intro — first and last of the month. */
   days: readonly SunDayFigures[];
   /** The Question nodes the page already builds, passed through unchanged. */
@@ -208,7 +213,7 @@ export function cityPlaceId(base: string): string {
 }
 
 export function sunPageGraph({
-  city, base, cityName, locale, monthIndex, url, pageName, labels, days, faq,
+  city, base, cityName, locale, monthIndex, url, pageName, labels, credits, days, faq,
 }: SunPageGraphInput): { "@context": string; "@graph": Node[] } {
   const placeId = cityPlaceId(base);
 
@@ -268,8 +273,8 @@ export function sunPageGraph({
     // is named as pending in lib/sun-routes.ts).
     const sunsetPastMidnight = d.sunrise !== null && d.sunset !== null && d.sunset < d.sunrise;
     return [
-      sunEvent({ city, monthIndex, day: d.day, hours: d.sunrise, kind: "sunrise", label: labels.sunrise, cityName, url, placeId, description: d.sunriseDescription }),
-      sunEvent({ city, monthIndex, day: d.day, dateDay: d.day + (sunsetPastMidnight ? 1 : 0), hours: d.sunset, kind: "sunset", label: labels.sunset, cityName, url, placeId, description: d.sunsetDescription }),
+      sunEvent({ city, monthIndex, day: d.day, hours: d.sunrise, kind: "sunrise", label: labels.sunrise, cityName, url, placeId, description: d.sunriseDescription, credits }),
+      sunEvent({ city, monthIndex, day: d.day, dateDay: d.day + (sunsetPastMidnight ? 1 : 0), hours: d.sunset, kind: "sunset", label: labels.sunset, cityName, url, placeId, description: d.sunsetDescription, credits }),
     ];
   }).filter((e): e is Node => e !== null);
 
@@ -312,7 +317,7 @@ function breadcrumbTrail({
  * the vocabulary because competitors do would be a claim about nothing.
  */
 function sunEvent({
-  city, monthIndex, day, dateDay = day, hours, kind, label, cityName, url, placeId, description,
+  city, monthIndex, day, dateDay = day, hours, kind, label, cityName, url, placeId, description, credits,
 }: {
   city: City;
   monthIndex: number;
@@ -327,6 +332,7 @@ function sunEvent({
   url: string;
   placeId: string;
   description?: string;
+  credits?: { organizer: string; performer: string };
 }): Node | null {
   if (hours === null) return null;
   const offset = utcOffsetHours(city, monthIndex, day);
@@ -340,6 +346,38 @@ function sunEvent({
     location: { "@id": placeId },
     // Omitted rather than emitted empty when the page could not build one.
     ...(description ? { description } : {}),
+    /**
+     * Scheduled, in the most literal sense the vocabulary allows: orbital
+     * mechanics. More reliable than any concert this property was written for.
+     * Clouds do not cancel a sunrise — they cancel the spectacle — so nothing
+     * here ever becomes EventCancelled.
+     */
+    eventStatus: "https://schema.org/EventScheduled",
+    /**
+     * Free, and this is the plainest true statement on the whole page: watching
+     * the sun come up costs nothing. `price: "0"` with InStock is exactly what
+     * Offer means, not a workaround for an empty field.
+     */
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "EUR",
+      availability: "https://schema.org/InStock",
+      url,
+    },
+    /**
+     * `performer` and `organizer` take a Person or an Organization and nothing
+     * else, so naming the sun and its author stretches the vocabulary — the
+     * fields exist for concerts. Deliberate, and the owner's call: a first cause
+     * and a mechanical explanation are not in competition, which is why the rest
+     * of this site can cite 51 papers without contradiction.
+     */
+    ...(credits
+      ? {
+          performer: { "@type": "Person", name: credits.performer },
+          organizer: { "@type": "Person", name: credits.organizer },
+        }
+      : {}),
   };
 }
 

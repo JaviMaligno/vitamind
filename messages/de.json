@@ -797,7 +797,9 @@
     "note": "Astronomische Richtwerte: Sie können je nach Jahr um ein bis zwei Minuten abweichen.",
     "howCalculated": "Wie diese Zeiten berechnet werden",
     "eventDescriptionSunrise": "Die Sonne geht in {city} {point} auf.",
-    "eventDescriptionSunset": "Die Sonne geht in {city} {point} unter."
+    "eventDescriptionSunset": "Die Sonne geht in {city} {point} unter.",
+    "eventOrganizer": "Gott",
+    "eventPerformer": "Die Sonne"
   },
   "cityPage": {
     "title": "Vitamin D durch Sonne in {city}",

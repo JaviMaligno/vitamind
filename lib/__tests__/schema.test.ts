@@ -490,10 +490,49 @@ describe("sunPageGraph", () => {
     }
   });
 
-  it("claims no attendance mode or event status it cannot justify", () => {
+  it("claims no attendance mode, which a sunrise cannot have", () => {
+    // eventAttendanceMode says whether you turn up in person or watch a stream.
+    // Neither describes the sun coming up, so the field stays absent.
+    //
+    // eventStatus used to be absent for the same reason and no longer is: it
+    // says a scheduled thing may be cancelled, and orbital mechanics schedule a
+    // sunrise more reliably than anything this property was written for. Clouds
+    // cancel the spectacle, not the event, so it is never EventCancelled.
     const json = JSON.stringify(nodesOfType(madridAugust(), "Event"));
     expect(json).not.toContain("eventAttendanceMode");
-    expect(json).not.toContain("eventStatus");
+    for (const e of nodesOfType(madridAugust(), "Event")) {
+      expect(e.eventStatus).toBe("https://schema.org/EventScheduled");
+    }
+  });
+
+  it("prices the sunrise at zero, which is the plainest true statement on the page", () => {
+    for (const e of nodesOfType(madridAugust(), "Event")) {
+      expect(e.offers).toEqual({
+        "@type": "Offer",
+        price: "0",
+        priceCurrency: "EUR",
+        availability: "https://schema.org/InStock",
+        url: `${SITE_URL}/amanecer/madrid/agosto`,
+      });
+    }
+  });
+
+  it("credits the sun and its author when the page supplies them, and omits both when it does not", () => {
+    // performer and organizer take a Person or an Organization and nothing else,
+    // so this stretches a vocabulary written for concerts. Deliberate, and the
+    // owner's call: a first cause and a mechanical explanation are not rivals.
+    const credited = nodesOfType(
+      madridAugust({ credits: { organizer: "Dios", performer: "El Sol" } }),
+      "Event",
+    );
+    for (const e of credited) {
+      expect(e.performer).toEqual({ "@type": "Person", name: "El Sol" });
+      expect(e.organizer).toEqual({ "@type": "Person", name: "Dios" });
+    }
+
+    const plain = JSON.stringify(nodesOfType(madridAugust(), "Event"));
+    expect(plain).not.toContain("performer");
+    expect(plain).not.toContain("organizer");
   });
 
   it("carries the FAQ through untouched and attributes it", () => {

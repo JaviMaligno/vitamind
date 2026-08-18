@@ -207,6 +207,7 @@ export default async function SunriseMonthPage({ params }: { params: Promise<Par
     url: buildSunAlternates(p.locale, base, monthIndex).canonical,
     pageName: pageTitle,
     labels: { sunrise: tSun("sunrise"), sunset: tSun("sunset"), cities: tNav("cities") },
+    credits: { organizer: t("eventOrganizer"), performer: t("eventPerformer") },
     days: [first, last].map(describeDirection),
     faq,
   });

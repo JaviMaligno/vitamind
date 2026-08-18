@@ -797,7 +797,9 @@
     "note": "Valeurs astronomiques indicatives : elles peuvent varier d'une ou deux minutes selon l'année.",
     "howCalculated": "Comment ces horaires sont calculés",
     "eventDescriptionSunrise": "Le soleil se lève {point} à {city}.",
-    "eventDescriptionSunset": "Le soleil se couche {point} à {city}."
+    "eventDescriptionSunset": "Le soleil se couche {point} à {city}.",
+    "eventOrganizer": "Dieu",
+    "eventPerformer": "Le Soleil"
   },
   "cityPage": {
     "title": "Vitamine D du soleil {atCity}",
