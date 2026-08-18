@@ -490,18 +490,15 @@ describe("sunPageGraph", () => {
     }
   });
 
-  it("claims no attendance mode, which a sunrise cannot have", () => {
-    // eventAttendanceMode says whether you turn up in person or watch a stream.
-    // Neither describes the sun coming up, so the field stays absent.
-    //
-    // eventStatus used to be absent for the same reason and no longer is: it
-    // says a scheduled thing may be cancelled, and orbital mechanics schedule a
-    // sunrise more reliably than anything this property was written for. Clouds
-    // cancel the spectacle, not the event, so it is never EventCancelled.
-    const json = JSON.stringify(nodesOfType(madridAugust(), "Event"));
-    expect(json).not.toContain("eventAttendanceMode");
+  it("is scheduled by orbital mechanics and attended in person", () => {
+    // Both were absent at first on the reasoning that a sunrise is not the kind
+    // of thing these describe. Neither objection survived: a sunrise is
+    // scheduled more reliably than any concert the property was written for
+    // (clouds cancel the spectacle, not the event), and watching one is
+    // attendance in person — the alternative values describe streaming.
     for (const e of nodesOfType(madridAugust(), "Event")) {
       expect(e.eventStatus).toBe("https://schema.org/EventScheduled");
+      expect(e.eventAttendanceMode).toBe("https://schema.org/OfflineEventAttendanceMode");
     }
   });
 
@@ -526,8 +523,12 @@ describe("sunPageGraph", () => {
       "Event",
     );
     for (const e of credited) {
-      expect(e.performer).toEqual({ "@type": "Person", name: "El Sol" });
-      expect(e.organizer).toEqual({ "@type": "Person", name: "Dios" });
+      // Literals, not Person nodes: schema.org ranges these over Person and
+      // Organization only and has no type for what either of these is, so a node
+      // would assert the sun is a person. A string names it and claims no type.
+      expect(e.performer).toBe("El Sol");
+      expect(e.organizer).toBe("Dios");
+      expect(JSON.stringify(e)).not.toContain('"@type":"Person"');
     }
 
     const plain = JSON.stringify(nodesOfType(madridAugust(), "Event"));

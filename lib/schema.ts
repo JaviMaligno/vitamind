@@ -366,18 +366,23 @@ function sunEvent({
       url,
     },
     /**
-     * `performer` and `organizer` take a Person or an Organization and nothing
-     * else, so naming the sun and its author stretches the vocabulary — the
-     * fields exist for concerts. Deliberate, and the owner's call: a first cause
-     * and a mechanical explanation are not in competition, which is why the rest
-     * of this site can cite 51 papers without contradiction.
+     * In person, which is the only way to attend one. The alternative values
+     * describe streaming, and nobody streams the sunrise as the event itself.
      */
-    ...(credits
-      ? {
-          performer: { "@type": "Person", name: credits.performer },
-          organizer: { "@type": "Person", name: credits.organizer },
-        }
-      : {}),
+    eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
+    /**
+     * Plain strings, not `{"@type": "Person"}` nodes.
+     *
+     * `performer` and `organizer` range over Person and Organization and nothing
+     * else — checked against schema.org, which has no type for a celestial body
+     * or for anything else these two are. Emitting a Person node would assert
+     * that the sun is a person, which is false; a literal only names it and
+     * asserts no type at all. Naming them stretches a vocabulary written for
+     * concerts either way, and that is the owner's call: a first cause and a
+     * mechanical explanation are not in competition, which is why the rest of
+     * this site cites 51 papers without contradiction.
+     */
+    ...(credits ? { performer: credits.performer, organizer: credits.organizer } : {}),
   };
 }
 
