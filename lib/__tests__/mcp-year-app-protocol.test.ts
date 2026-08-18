@@ -3,7 +3,7 @@
 // Node, not the project's default jsdom: mcp-handler streams the JSON-RPC
 // response through Node's stream primitives, and under jsdom's globals it dies
 // with "Unexpected chunk type: object" before any assertion runs.
-import { describe, expect, it } from "vitest";
+import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { createMcpHandler } from "mcp-handler";
 import { RESOURCE_MIME_TYPE } from "@modelcontextprotocol/ext-apps";
 import {
@@ -59,6 +59,28 @@ async function connect() {
     clientInfo: { name: "vitest", version: "0.0.0" },
   });
 }
+
+/**
+ * `get_current_status` reaches for live Open-Meteo UV and falls back to the
+ * clear-sky model when it cannot. Left unstubbed, that is a real network call
+ * inside a unit test: it resolved in ~90ms locally and hung past the 5s timeout
+ * on CI, failing twice in a row on a commit that touches none of this code.
+ *
+ * Stubbed to reject, so the tool takes its documented offline path and the test
+ * is deterministic. Nothing is lost: this file asserts that the SDK and
+ * mcp-handler put the right metadata on the wire, for which the provenance of
+ * the UV number is irrelevant, and the live path is covered by
+ * app/api/__tests__/weather-route.test.ts, which mocks fetch too.
+ */
+const realFetch = globalThis.fetch;
+beforeAll(() => {
+  vi.stubGlobal("fetch", (input: RequestInfo | URL, init?: RequestInit) => {
+    const url = typeof input === "string" ? input : input instanceof URL ? input.href : input.url;
+    if (url.includes("open-meteo.com")) return Promise.reject(new Error("offline in tests"));
+    return realFetch(input, init);
+  });
+});
+afterAll(() => vi.unstubAllGlobals());
 
 describe("MCP App metadata on the wire", () => {
   it("marks exactly the widget-bearing tools and leaves the rest alone", async () => {
