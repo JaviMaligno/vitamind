@@ -90,9 +90,17 @@ jobs:
       # help: query strings are not part of the cache key for this route, so the
       # CDN answers HIT regardless.) A failed curl leaves the file empty, which
       # makes the diff treat every URL as new rather than break the deploy.
+      #
+      # Retried, because of what the fail-open costs when it triggers: an empty
+      # baseline makes the diff treat all ~3,600 URLs as new and submit them to
+      # four engines in one batch. That is the over-submission IndexNow treats
+      # as the abusable move (see lib/indexnow.ts), and the crawl it invites is
+      # billed per page read. One flaky 3 MB fetch should not buy a full-site
+      # re-crawl, so give it three tries and a real timeout before falling back.
       - name: Snapshot the live sitemap (pre-deploy)
         run: |
-          curl -sf https://getvitamind.app/sitemap.xml -o /tmp/sitemap-before.xml \
+          curl -sf --max-time 30 --retry 3 --retry-delay 5 \
+            https://getvitamind.app/sitemap.xml -o /tmp/sitemap-before.xml \
             || printf '' > /tmp/sitemap-before.xml
 
       - name: Deploy to Vercel (production)
