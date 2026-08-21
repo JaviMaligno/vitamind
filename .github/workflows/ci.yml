@@ -17,9 +17,31 @@
 # below are not secrets.
 name: CI
 
+# A push here deploys, and a deploy is not free: a ~22-minute build that runs the
+# whole quality gate and prerenders 3,634 routes, on a Hobby plan that is already
+# over two of its limits (see "Vercel plan and usage limits" in CLAUDE.md).
+# Spending that on a commit that only touches documentation delivers nothing to
+# anyone, so pushes whose every changed file is documentation do not trigger this
+# workflow at all. Verified before writing the list: no .md file is imported or
+# read anywhere in the build, so skipping them cannot change what the site
+# serves.
+#
+# `paths-ignore` sits under `push` only. Pull requests keep running the gate
+# whatever they touch — those checks run on GitHub's runners and cost nothing,
+# and a docs-only PR is exactly where a stale link or a wrong command hides.
+#
+# The consequence to know: after a docs-only push, the live deployment is one or
+# more commits behind master's HEAD. That is intended, but it means "what is
+# deployed" is the last push that touched code, not necessarily HEAD.
 on:
   push:
     branches: [master, dev]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - 'LICENSE'
+      - '.gitignore'
+      - '.gitattributes'
   pull_request:
 
 jobs:
