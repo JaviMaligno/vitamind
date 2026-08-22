@@ -2,8 +2,12 @@ import type { City } from "./types";
 import type { SunTimes } from "./sun-times";
 import type { ExposureResult } from "./vitd";
 import type { CityYearProfile } from "./city-content";
+import type { SunDayFigures } from "./schema";
 import { getSunTimes } from "./sun-times";
-import { getCurve, dateFromDoy, doyFromMonthDay, fmtTime, fmtDayLength, dayLengthMinutes } from "./solar";
+import {
+  getCurve, dateFromDoy, doyFromMonthDay, fmtTime, fmtDayLength, dayLengthMinutes,
+  DOY_REFERENCE_YEAR,
+} from "./solar";
 import { computeExposureFromCurve } from "./vitd";
 import { ozoneDU } from "./uv-model";
 import { zonedDate } from "./timezone";
@@ -64,19 +68,59 @@ import { sunRegime, type SunRegime, type SunFaqEntry } from "./sun-copy";
  *      answers all read the same `TodayProvider` state, computed on mount from
  *      the CITY's own calendar date. One computation, so a corrected panel
  *      cannot sit above a stale answer that contradicts it.
- *   4. NO SERVER-RENDERED STRING NAMES A CALENDAR DATE, for the same reason.
+ *   4. NO SERVER-RENDERED STRING NAMES A CALENDAR DATE, for the same reason —
+ *      WITH ONE EXCEPTION, AND IT IS DELIBERATE. The JSON-LD `Event` nodes carry
+ *      `startDate`, so a hub's structured data does name a day: the day it was
+ *      rendered for (`todayEventDays` below, emitted by `sunPageGraph`).
+ *
+ *      Why it is worth keeping. Everything above bounds the DAMAGE staleness can
+ *      do; none of it tells you WHETHER a hub is stale, and `revalidatePath`
+ *      returns `void`, so the cron that does the bounding could stop working and
+ *      keep answering 200. `/api/revalidate-today` therefore reads this date
+ *      back from three sampled hubs and fails the run when the day is neither
+ *      today's nor yesterday's (`lib/hub-freshness.ts`).
+ *
+ *      Be precise about what the Event does and does not buy, because an earlier
+ *      draft of this paragraph claimed it was "the only machine-readable
+ *      statement" of a hub's freshness and that was simply false. Defence 3 says
+ *      the day-dependent strings are corrected in the browser — it does not say
+ *      they are absent from the server render, and they are not: the served HTML
+ *      already carries today's window, today's minutes and today's sunrise and
+ *      sunset. Freshness is checkable from those figures alone, with no dated
+ *      node anywhere.
+ *
+ *      The Event is kept because that check would be much worse, not because it
+ *      is the only one available. Comparing prose figures means reproducing the
+ *      whole solar and UV pipeline in the checker, parsing localised strings in
+ *      six languages, and — the part that actually breaks it — accepting that
+ *      two adjacent days often round to the SAME window and minute count, so a
+ *      hub frozen yesterday would pass. One ISO date in one structured node is a
+ *      single parse, an exact comparison, and no second implementation of the
+ *      model. Removing it would not make freshness unobservable; it would make
+ *      the observation expensive and unreliable enough that nobody would keep it
+ *      working — which, on the evidence of the 53- and 58-day silent-secret
+ *      incidents in CLAUDE.md, is the same outcome by a slower route.
+ *
+ *      The exception is also the mildest possible one. A stale Event is not
+ *      FALSE: Oslo's sunrise on 2026-08-22 was 05:51 and always will be. It is
+ *      merely DATED — a frozen hub would keep advertising a past day's event
+ *      instead of today's. Compare what is not allowed here: a stale
+ *      `metaTitleNone` would tell a search engine there is no vitamin D window
+ *      in a city that has an eight-hour one.
  *
  * Worst case, stated plainly: a reader without JavaScript, on the first request
  * after a long gap, reads body prose whose window belongs to whatever day the
- * cache entry was built for — potentially a different season. The metadata and
- * the structured data cannot be wrong, because they assert nothing about today.
- * Bounding the body prose too would need a hard cache expiry (Next 16
- * `cacheComponents` + `cacheLife`, an app-wide change) or a daily
+ * cache entry was built for — potentially a different season. The metadata
+ * cannot be wrong, because it asserts nothing about today; the structured data
+ * cannot be wrong either, but it can be visibly out of date, and that is what
+ * makes it checkable. Bounding the body prose too would need a hard cache expiry
+ * (Next 16 `cacheComponents` + `cacheLife`, an app-wide change) or a daily
  * revalidation cron; both are out of scope here and neither is a prerequisite
  * for the surfaces above.
  *
  * `messages/__tests__/sun-today-copy.test.ts` enforces (1) and (4) key by key,
- * `lib/__tests__/sun-today.test.ts` enforces (2), and
+ * `lib/__tests__/sun-today.test.ts` enforces (2) and pins the one dated Event
+ * (exactly one calendar day, and it is the render's own), and
  * `components/__tests__/TodayWindow.test.tsx` enforces (3).
  */
 
@@ -148,6 +192,31 @@ export function sunTodayData(city: City, today: TodayInZone): SunTodayData {
     ),
     dayLengthMin: dayLengthMinutes(sun.sunrise, sun.sunset),
   };
+}
+
+/**
+ * The one dated surface the hub publishes: the day its JSON-LD Events belong to.
+ *
+ * `sunPageGraph` stamps every Event instant with `DOY_REFERENCE_YEAR`, because
+ * that is the year every table on this site is computed for. On a page whose
+ * subject is today, publishing an Event dated 2026 while the reader is in 2027
+ * would be a fabricated instant, so the Events are emitted only while the two
+ * years agree; the Place, WebPage, BreadcrumbList and FAQPage nodes are
+ * unaffected.
+ *
+ * WHEN `DOY_REFERENCE_YEAR` FALLS BEHIND, EVERY HUB SILENTLY LOSES ITS Event
+ * NODES — both the alpenglow-parity signal and, now, the freshness signal the
+ * cron checks. That used to be a defect nothing would shout about. It is now
+ * audible: with no dated Event anywhere in the sample, `/api/revalidate-today`
+ * can prove nothing and returns 500, so the cron invocation goes red. Bumping
+ * the constant is still the fix.
+ *
+ * Lives here rather than in the page so the test that pins this decision
+ * exercises the decision itself, not a copy of it.
+ */
+export function todayEventDays(today: TodayInZone, sun: SunTimes): SunDayFigures[] {
+  if (today.year !== DOY_REFERENCE_YEAR) return [];
+  return [{ day: today.day, sunrise: sun.sunrise, sunset: sun.sunset }];
 }
 
 type Values = Record<string, string | number>;

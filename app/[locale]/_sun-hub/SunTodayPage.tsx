@@ -13,8 +13,7 @@ import { baseSlug, cityPathname, localizedCityName } from "@/lib/city-routes";
 import { nearbyCities } from "@/lib/city-nearby";
 import { capFirst, monthName } from "@/lib/city-copy";
 import { cityYearProfile, contiguousMonthRange } from "@/lib/city-content";
-import { cityToday, sunTodayData, sunTodayCopy, todayWindowCopy } from "@/lib/sun-today";
-import { DOY_REFERENCE_YEAR } from "@/lib/solar";
+import { cityToday, sunTodayData, sunTodayCopy, todayWindowCopy, todayEventDays } from "@/lib/sun-today";
 import type { City } from "@/lib/types";
 
 /**
@@ -26,10 +25,11 @@ import type { City } from "@/lib/types";
  * (`MIN_UVI`, lib/vitd.ts), which no ephemeris rival publishes and which
  * genuinely changes through the year. The clock times are supporting data.
  *
- * Lives beside `page.tsx` rather than in its own route folder because the URL
- * shares the `[cityPrefix]/[city]` segment with the vitamin D city pages, and
- * Next allows only one dynamic segment name per position. `page.tsx` dispatches
- * on the prefix.
+ * Lives in this private (`_`-prefixed, so unroutable) folder because it is
+ * rendered from SIX route files — `app/[locale]/amanecer/[city]/page.tsx` and
+ * one sibling per locale prefix — wired up by `hub-route.tsx` next to it. It
+ * used to sit beside the vitamin D city page and be dispatched from it on the
+ * prefix; `hub-route.tsx` records why that changed.
  *
  * The freshness design (what is server-rendered, what the browser recomputes,
  * and why no server string names a date) is documented in lib/sun-today.ts.
@@ -123,20 +123,13 @@ export default async function SunTodayPage({ locale, resolved }: { locale: strin
   const url = buildSunCityAlternates(locale, base).canonical;
 
   /**
-   * `sunPageGraph` stamps its Event instants with `DOY_REFERENCE_YEAR`, because
-   * that is the year every table on this site is computed for. On a page whose
-   * subject is today, publishing an Event dated 2026 while the reader is in 2027
-   * would be a fabricated instant, so the Events are emitted only while the two
-   * agree; the Place, WebPage, BreadcrumbList and FAQPage nodes are unaffected.
-   *
-   * WHEN `DOY_REFERENCE_YEAR` FALLS BEHIND, THIS TREE SILENTLY LOSES ITS Event
-   * NODES — the alpenglow-parity signal PR1 added. Bumping the constant is the
-   * fix; nothing here will shout about it.
+   * The Events are the ONE server-rendered surface on this page that names a
+   * calendar date, and that is deliberate: they are what makes a hub's freshness
+   * machine-readable, which is what `/api/revalidate-today` reads back to prove
+   * its own run did something. The decision about which day (and when there is
+   * no day at all) lives in `todayEventDays` — see defence #4 in lib/sun-today.ts.
    */
-  const days =
-    today.year === DOY_REFERENCE_YEAR
-      ? [{ day: today.day, sunrise: data.sun.sunrise, sunset: data.sun.sunset }]
-      : [];
+  const days = todayEventDays(today, data.sun);
 
   const graph = sunPageGraph({
     city,

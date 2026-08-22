@@ -4,11 +4,13 @@ import {
   sunCityPathname, sunCityUrl, buildSunCityAlternates, sunCityStaticParams, resolveSunCityPage,
 } from "../sun-routes";
 import { zonedDate } from "../timezone";
-import { cityToday, sunTodayData, sunTodayCopy } from "../sun-today";
+import { cityToday, sunTodayData, sunTodayCopy, todayEventDays } from "../sun-today";
+import { sunPageGraph } from "../schema";
+import { SITE_URL } from "../site";
 import { CITY_PREFIX, cityStaticParams } from "../city-routes";
 import { BUILTIN_CITIES } from "../cities";
 import { cityYearProfile, contiguousMonthRange } from "../city-content";
-import { doyFromMonthDay } from "../solar";
+import { doyFromMonthDay, DOY_REFERENCE_YEAR } from "../solar";
 import { routing } from "@/i18n/routing";
 import type { City } from "../types";
 
@@ -223,5 +225,117 @@ describe("what the page says", () => {
     // Madrid has a real winter gap; Singapore does not.
     expect(copyFor("madrid", 7, 16).yearFaq.aKey).toBe("faqYearARange");
     expect(copyFor("singapur", 7, 16).yearFaq.aKey).toBe("faqYearAAll");
+  });
+});
+
+/**
+ * THE ONE DATED SURFACE, PINNED.
+ *
+ * Defence #4 in `lib/sun-today.ts` says no server-rendered string names a
+ * calendar date, with exactly one intentional exception: the JSON-LD `Event`
+ * nodes, whose `startDate` is the day the HTML was rendered for. That exception
+ * is what `/api/revalidate-today` reads back to prove its run did something, so
+ * it is load-bearing in both directions — losing it would blind the cron, and
+ * widening it (a second dated node, a date in the FAQ answer, a `modifiedTime`)
+ * would put a claim about a day on a surface no browser corrects.
+ *
+ * Nothing tested this before: `messages/__tests__/sun-today-copy.test.ts` walks
+ * ICU arguments in message strings and never sees the JSON-LD, so the Event went
+ * in and shipped without a single test noticing that the rule had an exception.
+ *
+ * The graph is built exactly as `SunTodayPage` builds it, through the same
+ * `todayEventDays`, so this pins the decision rather than a copy of it.
+ */
+describe("the hub's JSON-LD names exactly one day: its own", () => {
+  const DATE_RE = /\d{4}-\d{2}-\d{2}/;
+
+  const hubGraph = (slug: string, today: { year: number; monthIndex: number; day: number; doy: number }) => {
+    const c = city(slug);
+    const data = sunTodayData(c, today);
+    return sunPageGraph({
+      city: c,
+      base: slug,
+      cityName: "Ciudad",
+      locale: "es",
+      monthIndex: today.monthIndex,
+      url: sunCityUrl("es", slug),
+      pageName: "Sol hoy en Ciudad",
+      labels: { sunrise: "Amanecer", sunset: "Atardecer", cities: "Ciudades" },
+      days: todayEventDays(today, data.sun),
+      // The only entry the page marks up: true of the place, not of today.
+      faq: [{
+        "@type": "Question",
+        name: "¿En qué meses se puede sintetizar vitamina D?",
+        acceptedAnswer: { "@type": "Answer", text: "De marzo a octubre." },
+      }],
+    });
+  };
+
+  const dayIn = (monthIndex: number, day: number, year = DOY_REFERENCE_YEAR) =>
+    ({ year, monthIndex, day, doy: doyFromMonthDay(monthIndex, day) });
+
+  const events = (graph: ReturnType<typeof sunPageGraph>) =>
+    graph["@graph"].filter((n) => n["@type"] === "Event");
+
+  it("dates both Events on the day the page was rendered for, and on no other", () => {
+    const graph = hubGraph("madrid", dayIn(7, 16));
+    const days = new Set(events(graph).map((e) => (e.startDate as string).slice(0, 10)));
+    expect(events(graph)).toHaveLength(2);
+    expect([...days]).toEqual([`${DOY_REFERENCE_YEAR}-08-16`]);
+  });
+
+  it("moves that date with the render day", () => {
+    for (const [monthIndex, day, expected] of [[0, 1, "01-01"], [7, 16, "08-16"], [11, 31, "12-31"]] as const) {
+      const graph = hubGraph("madrid", dayIn(monthIndex, day));
+      const days = new Set(events(graph).map((e) => (e.startDate as string).slice(0, 10)));
+      expect([...days], `${monthIndex}/${day}`).toEqual([`${DOY_REFERENCE_YEAR}-${expected}`]);
+    }
+  });
+
+  it("keeps every other node in the graph free of a date", () => {
+    // The exception is the Event and nothing else. A date reaching the WebPage,
+    // the FAQPage or the BreadcrumbList would be a dated claim on a surface the
+    // browser never revisits — and would also break the cron's reading, which
+    // takes its answer from Event.startDate alone.
+    const graph = hubGraph("madrid", dayIn(7, 16));
+    const others = graph["@graph"].filter((n) => n["@type"] !== "Event");
+    expect(others.length).toBeGreaterThan(0);
+    expect(JSON.stringify(others)).not.toMatch(DATE_RE);
+  });
+
+  it("emits no Event once the calendar outruns DOY_REFERENCE_YEAR, rather than a 2026 instant", () => {
+    // Every solar figure on the site is computed for DOY_REFERENCE_YEAR, so a
+    // startDate stamped 2026 while the reader is in 2027 would be an instant
+    // nothing computed. The whole graph then carries no date at all — which is
+    // why `/api/revalidate-today` treats "no dated Event anywhere in the sample"
+    // as a failed run and not as a pass.
+    const graph = hubGraph("madrid", dayIn(7, 16, DOY_REFERENCE_YEAR + 1));
+    expect(events(graph)).toHaveLength(0);
+    expect(JSON.stringify(graph)).not.toMatch(DATE_RE);
+  });
+
+  it("emits no Event on a polar day, where the page prints no clock time either", () => {
+    // `sunTodayData` returns null sun times and the page prints an em dash;
+    // `sunEvent` drops the node rather than inventing a plausible instant. The
+    // cron reads that as no-signal, never as freshness.
+    // Reykjavik, the northernmost shipped hub, still has both nodes on the
+    // solstice — the polar case is not reachable from SUNRISE_CITIES.
+    expect(events(hubGraph("reikiavik", dayIn(5, 21))).length).toBeGreaterThan(0);
+
+    const svalbard: City = {
+      id: "test:svalbard", name: "Svalbard", lat: 78.2, lon: 15.6, tz: 1,
+      timezone: "Europe/Oslo", source: "builtin",
+    };
+    const solstice = dayIn(5, 21);
+    const graph = sunPageGraph({
+      city: svalbard,
+      base: "svalbard", cityName: "Svalbard", locale: "es",
+      monthIndex: solstice.monthIndex, url: `${SITE_URL}/amanecer/svalbard`,
+      pageName: "Sol hoy en Svalbard",
+      labels: { sunrise: "Amanecer", sunset: "Atardecer", cities: "Ciudades" },
+      days: todayEventDays(solstice, sunTodayData(svalbard, solstice).sun),
+      faq: [],
+    });
+    expect(events(graph)).toHaveLength(0);
   });
 });

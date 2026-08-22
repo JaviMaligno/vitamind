@@ -23,49 +23,55 @@ import { nearbyCities } from "@/lib/city-nearby";
 import { capFirst, cityLabels, monthLabels, monthName, verdictMonths } from "@/lib/city-copy";
 import { fmtTime, dateFromDoy, doyFromMonthDay } from "@/lib/solar";
 import { getSunTimes, monthlySunTimes } from "@/lib/sun-times";
-import { resolveSunCityPage, sunCityStaticParams } from "@/lib/sun-routes";
-import SunTodayPage, { sunTodayMetadata } from "./SunTodayPage";
 
 /**
- * TWO PAGE FAMILIES SHARE THIS SEGMENT.
+ * ONE FAMILY LIVES HERE NOW: the 438 vitamin D city pages, `/vitamina-d/madrid`.
  *
- * `/vitamina-d/madrid` is the vitamin D city page; `/amanecer/madrid` is the
- * sunrise tree's city hub. Next allows one dynamic segment name per position,
- * so both arrive here and are told apart by the PREFIX: `resolveCity` accepts
- * only `CITY_PREFIX[locale]`, `resolveSunCityPage` only `SUN_PREFIX[locale]`,
- * and each returns null for the other. Loosening either resolver silently
- * takes a live page family down.
+ * The sunrise tree's today hub (`/amanecer/madrid`) used to arrive here too —
+ * same `[cityPrefix]/[city]` shape, told apart inside the handler by its prefix,
+ * because Next allows one dynamic segment name per position. It now has six
+ * static route folders of its own (`app/[locale]/amanecer/[city]` and one per
+ * value of SUN_PREFIX), which outrank this dynamic sibling; the reason and the
+ * routing evidence are in app/[locale]/_sun-hub/hub-route.tsx.
+ *
+ * So the prefix check in `resolveCity` is still load-bearing, for what is left:
+ * a wrong-locale prefix (`/en/vitamina-d/madrid`) must 404 rather than serve the
+ * English page at a Spanish URL. And the hub params must NOT reappear in this
+ * list — two route files prerendering the same URL is a build conflict, not a
+ * fallback.
  */
 export function generateStaticParams() {
-  return [...cityStaticParams(), ...sunCityStaticParams()];
+  return cityStaticParams();
 }
 
 /**
- * Hourly ISR, for the hub's sake: its subject is today, and a build-time render
- * would still be quoting June's window in December.
+ * STATIC. Never regenerated, because there is nothing here to regenerate.
  *
- * IT BOUNDS NOTHING. ISR serves the stale copy to the request that triggers
- * regeneration, so a URL nobody has asked for in a month answers with month-old
- * HTML once — long enough for a city's window to have vanished entirely. The
- * hub is therefore built so that stale HTML still cannot publish a false claim:
- * its metadata and its structured data assert nothing about today, and every
- * day-dependent string is recomputed in the browser (see lib/sun-today.ts).
- * This setting only shortens the odds; it is not what makes the page honest.
+ * This file carried `revalidate = 86400` only for the hub's sake — the hub's
+ * subject is today, so a build-time render would still be quoting June's window
+ * in December. Segment config is per FILE, so all 678 pages that shared this one
+ * inherited the interval, and 438 of them were paying for a freshness they have
+ * no use for: every figure on this page is a pure function of the city and the
+ * fixed reference year (`DOY_REFERENCE_YEAR`, lib/solar.ts). Regenerating it
+ * daily produced identical bytes and one ISR cache write each time, on a free
+ * plan already over its write quota.
  *
- * Segment config is per FILE, so the 438 vitamin D city pages inherit it too,
- * and that is what makes the number expensive rather than merely conservative:
- * it applies to 678 pages, not to the 240 that need it. At one hour this
- * project hit the free ISR write quota within a day — each regeneration is a
- * cache write, and so is every page of every deploy, on a site of 3612 pages.
+ * Moving the hub into its own route files is what made this line possible; it
+ * keeps its own 86400 and its own daily cron. Nothing about hub freshness moved.
  *
- * A day, not an hour, because freshness no longer comes from this clock. The
- * cron at /api/revalidate-today pushes a revalidation of the 240 hubs daily
- * whether or not anyone fetches them, which is a guarantee ISR cannot give at
- * any interval: ISR regenerates on request, so a page nobody requests stays
- * stale however small this number is. This setting is now only the backstop for
- * the cron failing, and a backstop does not need to run hourly on 678 pages.
+ * WHAT WOULD BREAK IT: a clock read anywhere on this render path. Not
+ * `new Date(Date.UTC(...))` or `dateFromDoy(...)`, which are deterministic given
+ * their arguments, but an argument-free `new Date`, a `Date.now`, or
+ * lib/solar.ts's one today-relative helper (named in the test, spelled nowhere
+ * in this file so that the test can stay a plain source match). Any of those
+ * would freeze one particular day's numbers into the HTML permanently, which is
+ * strictly worse than the stale-for-a-day it used to be. The client islands
+ * below (SunTimesPanel, CityCta, PhaseWindow, CityHeroBold) do read the clock,
+ * and that is fine precisely because they read it in an effect, render a
+ * deterministic fallback on the server, and carry `suppressHydrationWarning`.
+ * app/__tests__/sun-hub-split.test.ts asserts both halves of that.
  */
-export const revalidate = 86400;
+export const revalidate = false;
 
 type Params = { locale: string; cityPrefix: string; city: string };
 
@@ -79,9 +85,6 @@ function resolveCity({ locale, cityPrefix, city }: Params) {
 
 export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
   const p = await params;
-  const sun = resolveSunCityPage(p.locale, p.cityPrefix, p.city);
-  if (sun) return sunTodayMetadata(p.locale, sun);
-
   const city = resolveCity(p);
   if (!city) return {};
 
@@ -106,14 +109,6 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
 
 export default async function CityPage({ params }: { params: Promise<Params> }) {
   const p = await params;
-
-  // The sunrise tree's hub reaches this file through the shared segment.
-  const sun = resolveSunCityPage(p.locale, p.cityPrefix, p.city);
-  if (sun) {
-    setRequestLocale(p.locale);
-    return <SunTodayPage locale={p.locale} resolved={sun} />;
-  }
-
   const city = resolveCity(p);
   if (!city) notFound();
   setRequestLocale(p.locale);
