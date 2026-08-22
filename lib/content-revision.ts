@@ -66,14 +66,22 @@ export interface ContentRevision {
  * `new Date()` this replaces.
  *
  * A worked example of the same distinction, since it is the one thing about this
- * file that is easy to get wrong: `SUN_MONTH_REVISION.parts.figures` was
- * re-recorded on 2026-08-22 when `lib/sun-prose.ts` was added to the fingerprint
- * — the list of hashed inputs above had always named it, but the code did not
- * actually hash it, leaving the phase-2 paragraph's printed figures on 1440
- * pages outside the guard. The date did NOT move with that hash, and must not
- * have: what changed was the guard's coverage, not one byte of what the pages
- * say. Re-dating them would have asked five engines to re-crawl 3318 unchanged
- * URLs to pay for a bug in the test.
+ * file that is easy to get wrong. Both `figures` hashes were re-recorded on
+ * 2026-08-22, twice in one day, and the date moved with NEITHER:
+ *
+ *   1. `lib/sun-prose.ts` was missing from the fingerprint. The list of hashed
+ *      inputs above had always named it; the code did not hash it, leaving the
+ *      phase-2 paragraph's printed figures on 1440 pages outside the guard.
+ *   2. The `figures` part then stopped hashing computed numbers at all, because
+ *      the digest was not reproducible across machines — see the long comment on
+ *      SUN_MONTH_MODULES in lib/content-fingerprint.ts. It now hashes the source
+ *      of the modules that compute those numbers.
+ *
+ * Neither was a change to one byte of what the pages say, so neither may move a
+ * `lastmod`. The rule this illustrates: the date answers "when did the CONTENT
+ * change", and fixing the instrument that watches the content is not the content
+ * changing. Re-dating 3318 URLs to pay for a bug in a test is the crawl this
+ * whole file exists to avoid.
  */
 
 /** The 2880 month pages: `/{sunPrefix}/{city}/{month}` × 6 locales. */
@@ -87,7 +95,7 @@ export const SUN_MONTH_REVISION: ContentRevision = {
     "copy.ru": "1fd7fc4fbb840698",
     "copy.lt": "609050a0fcd6de95",
     cities: "35aebb84c49f350e",
-    figures: "9a33cb9f169456a3",
+    figures: "59a94b77e7c0efa1",
     constants: "a3b447afa17fa07c",
   },
 };
@@ -103,7 +111,7 @@ export const CITY_PAGE_REVISION: ContentRevision = {
     "copy.ru": "89b8acb124f30221",
     "copy.lt": "4fbc90a2072cbfcd",
     cities: "c66cfdadbf8dabad",
-    figures: "defa87dc5a1dd1c8",
+    figures: "41ccb7d4c32d4255",
     constants: "09032456232a5db5",
   },
 };

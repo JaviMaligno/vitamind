@@ -81,11 +81,7 @@ import { routing } from "@/i18n/routing";
 import { BUILTIN_CITIES } from "@/lib/cities";
 import { baseSlug, localizedCityName } from "@/lib/city-routes";
 import { SUNRISE_CITIES } from "@/lib/sun-routes";
-import { DOY_REFERENCE_YEAR, fmtTime, fmtDayLength } from "@/lib/solar";
-import { monthData } from "@/lib/sun-copy";
-import { sunProse } from "@/lib/sun-prose";
-import { monthlySunTimes } from "@/lib/sun-times";
-import { cityYearProfile, citySeasonalWindows } from "@/lib/city-content";
+import { DOY_REFERENCE_YEAR } from "@/lib/solar";
 import { isTreated } from "@/lib/phase2-cities";
 import type { City } from "@/lib/types";
 
@@ -180,113 +176,79 @@ function cityByBase(base: string): City {
   return city;
 }
 
-const t2 = (h: number | null) => (h !== null ? fmtTime(h) : "—");
-const len = (min: number | null) => (min !== null ? fmtDayLength(min) : "—");
-
 /**
- * The month pages' printed numbers, for every configured city and all twelve
- * months — not a sample. Everything is put through the page's own formatters
- * first, so the digest is over the strings a reader sees. That is also what
- * makes it reproducible: `Math.sin` is not guaranteed identical to the last bit
- * across V8 versions, and rounding to the printed minute is exactly the
- * precision the pages claim.
- */
-function sunMonthFigures(): unknown {
-  return SUNRISE_CITIES.map((base) => {
-    const city = cityByBase(base);
-    return {
-      base,
-      months: Array.from({ length: 12 }, (_, monthIndex) => {
-        const d = monthData(
-          city.lat, city.lon, city.tz, city.timezone, city.elevation ?? 0, monthIndex,
-        );
-        return {
-          deltaMin: d.deltaMin,
-          days: d.days.map((day) => ({
-            day: day.day,
-            dawn: t2(day.civilDawn),
-            sunrise: t2(day.sunrise),
-            sunset: t2(day.sunset),
-            dusk: t2(day.civilDusk),
-            polar: day.polar,
-            length: len(d.dayLen(day)),
-          })),
-          mid: {
-            sunrise: t2(d.mid.sunrise),
-            sunset: t2(d.mid.sunset),
-            golden: t2(d.mid.goldenEveningStart),
-            length: len(d.dayLen(d.mid)),
-          },
-          window: d.exposure
-            ? {
-                start: t2(d.exposure.windowStart),
-                end: t2(d.exposure.windowEnd),
-                minutes: Math.round(d.exposure.minutesNeeded),
-              }
-            : null,
-          direction: d.direction,
-          /**
-           * The phase-2 prose paragraph, which prints figures of its own — a
-           * window, a peak elevation, a minutes-in-the-sun number — computed by
-           * lib/sun-prose.ts and NOT derivable from `monthData` above. Without
-           * this, changing an assumption inside that module (its skin type, its
-           * exposed fraction, its 1000 IU target) would silently rewrite the
-           * paragraph on every treated city's twelve pages in all six locales
-           * while this fingerprint, and therefore the sitemap's lastmod, swore
-           * nothing had changed.
-           *
-           * Gated on `isTreated` because that is exactly the page's own
-           * condition, so the hash covers what is rendered and nothing else.
-           * Which cities are treated is covered separately, by
-           * `constants.phase2Treated` — flip one and the membership moves the
-           * hash even before the figures do.
-           */
-          prose: isTreated(base) ? sunProse(city, monthIndex) : null,
-        };
-      }),
-    };
-  });
-}
-
-/**
- * The city pages' printed numbers, for all 73 builtin cities: the year profile
- * that drives the verdict copy and the year strip, the four representative
- * windows, and the mid-month table.
+ * THE MODULES THAT COMPUTE WHAT EACH FAMILY PRINTS.
  *
- * `hoursByDay` is 365 floats per city, so it is rounded to a tenth of an hour —
- * both because that is finer than anything the strip draws and because hashing
- * raw trig output would make the digest sensitive to a last-bit difference
- * between V8 versions.
+ * This part hashes SOURCE, not output, and the reason is a CI failure worth
+ * recording rather than quietly working around.
+ *
+ * The first version ran the computation and hashed the numbers: every day's
+ * sunrise, every window, every minute count, formatted exactly as the page
+ * prints them. It was reproducible on one machine and NOT across two. The gate
+ * caught it on the first push — every `copy.*`, `cities` and `constants` hash
+ * matched between a laptop and Vercel's build container, and both families'
+ * `figures` differed.
+ *
+ * The deleted version's own comment came within one sentence of this: it noted
+ * that "`Math.sin` is not guaranteed identical to the last bit across V8
+ * versions" and then concluded that rounding to the printed minute made the
+ * digest reproducible. It does not. Rounding is not the fix, which is the part
+ * that is easy to get wrong. `t2()`,
+ * `Math.round()` and `toFixed(1)` do not remove the problem; they relocate it to
+ * a knife edge. A day length landing on 07:12:29.9999 on one platform and
+ * 07:12:30.0001 on another formats to a different minute, and across 40 cities ×
+ * 12 months × 31 days plus 73 cities × 365 day-lengths, SOME value sitting
+ * within 1e-12 of a boundary is not a risk, it is a certainty. A fingerprint
+ * that changes when nothing changed is worse than none: it trains whoever meets
+ * it to paste the new block without reading the diff, which is the exact reflex
+ * this guard exists to prevent.
+ *
+ * So the question changes from "did the printed numbers move?" to "did anything
+ * that DETERMINES them move?" — the model's code, plus the data and constants
+ * already hashed in the parts beside this one. No float is ever hashed, so the
+ * answer is identical on every machine.
+ *
+ * The cost, stated plainly: this is coarser. Reformatting a comment in
+ * lib/solar.ts moves the hash and asks for a `lastmod` bump on pages whose
+ * output did not change. That is the same direction of error this file already
+ * accepts elsewhere — an early re-crawl of unchanged pages is cheap, a stale
+ * page announced as unchanged is the failure CLAUDE.md documents five times.
+ *
+ * It also makes the code match its own documentation: the header of
+ * lib/content-revision.ts has always described the hashed inputs as this list of
+ * modules. It was the implementation that disagreed.
  */
-function cityPageFigures(): unknown {
-  return BUILTIN_CITIES.map((city) => {
-    const profile = cityYearProfile(city.lat, city.lon, city.elevation ?? 0);
-    return {
-      base: baseSlug(city.id),
-      profile: {
-        possibleMonths: profile.possibleMonths,
-        impossibleMonths: profile.impossibleMonths,
-        allYear: profile.allYear,
-        neverPossible: profile.neverPossible,
-        hoursByDay: profile.hoursByDay.map((h) => Number(h.toFixed(1))),
-      },
-      windows: citySeasonalWindows(city.lat, city.lon, city.tz, city.elevation ?? 0).map((w) => ({
-        doy: w.doy,
-        monthIndex: w.monthIndex,
-        possible: w.possible,
-        start: t2(w.windowStart),
-        end: t2(w.windowEnd),
-        minutes: w.minutesNeeded === null ? null : Math.round(w.minutesNeeded),
-      })),
-      months: monthlySunTimes(city.lat, city.lon, city.timezone, city.tz).map((m) => ({
-        monthIndex: m.monthIndex,
-        sunrise: t2(m.sunrise),
-        sunset: t2(m.sunset),
-        length: len(m.dayLengthMin),
-        polar: m.polar,
-      })),
-    };
-  });
+const SUN_MONTH_MODULES = [
+  "lib/solar.ts",
+  "lib/sun-times.ts",
+  "lib/sun-copy.ts",
+  "lib/sun-prose.ts",
+  "lib/uv-model.ts",
+  "lib/vitd.ts",
+  "lib/city-copy.ts",
+] as const;
+
+const CITY_PAGE_MODULES = [
+  "lib/solar.ts",
+  "lib/sun-times.ts",
+  "lib/city-content.ts",
+  "lib/city-copy.ts",
+  "lib/uv-model.ts",
+  "lib/vitd.ts",
+] as const;
+
+/**
+ * Byte-for-byte source of each module, keyed by path so a RENAME shows up too.
+ * Throws rather than skipping a missing file: a module that has moved and is
+ * silently dropped from the hash is a hole in the guard, and a red test is the
+ * cheap version of that news.
+ */
+function moduleSources(paths: readonly string[]): Record<string, string> {
+  const out: Record<string, string> = {};
+  for (const path of paths) {
+    out[path] = readFileSync(join(process.cwd(), path), "utf8");
+  }
+  return out;
 }
 
 /**
@@ -297,7 +259,7 @@ export function sunMonthParts(): Record<string, string> {
   return {
     ...copyParts(SUN_MONTH_NAMESPACES),
     cities: hash(SUNRISE_CITIES.map((base) => cityShape(cityByBase(base), base))),
-    figures: hash(sunMonthFigures()),
+    figures: hash(moduleSources(SUN_MONTH_MODULES)),
     constants: hash({
       doyReferenceYear: DOY_REFERENCE_YEAR,
       // Which cities render the phase-2 prose paragraph. Flipping one changes
@@ -312,7 +274,7 @@ export function cityPageParts(): Record<string, string> {
   return {
     ...copyParts(CITY_PAGE_NAMESPACES),
     cities: hash(BUILTIN_CITIES.map((city) => cityShape(city, baseSlug(city.id)))),
-    figures: hash(cityPageFigures()),
+    figures: hash(moduleSources(CITY_PAGE_MODULES)),
     constants: hash({ doyReferenceYear: DOY_REFERENCE_YEAR }),
   };
 }

@@ -83,7 +83,7 @@ function check(
     "  copy.<locale> = the message namespaces that family's page reads",
     `                  (${label === "The month pages' content" ? SUN_MONTH_NAMESPACES.join(", ") : CITY_PAGE_NAMESPACES.join(", ")})`,
     "  cities        = the city list: identity, geometry, localized names",
-    "  figures       = the numbers the pages PRINT, via their own helpers",
+    "  figures       = the SOURCE of the modules that compute what they print",
     "  constants     = DOY_REFERENCE_YEAR (and the phase-2 treated set)",
     "",
     `WHY THIS IS BLOCKING: ${urlCount} sitemap URLs are about to ship with`,
