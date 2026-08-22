@@ -49,12 +49,22 @@
  *
  * WHAT IS DELIBERATELY NOT HASHED:
  *
- * - The SOURCE TEXT of `lib/*.ts`. It was the obvious candidate and it is the
- *   wrong one in this repo: comments here are long, argumentative and rewritten
- *   constantly, so source hashing would demand a revision bump for edits that
- *   change nothing a reader sees. A guard that cries wolf gets bumped blindly,
- *   which is worse than no guard. The `figures` part covers the case that
- *   matters — a behaviour change in the math — by hashing the output instead.
+ * - Nothing, any more, on the count this bullet used to make. It said the SOURCE
+ *   TEXT of `lib/*.ts` was deliberately excluded, because comments here are long
+ *   and rewritten constantly, so source hashing would demand a revision bump for
+ *   edits that change nothing a reader sees — a guard that cries wolf gets bumped
+ *   blindly, which is worse than no guard. That objection is real and it is now
+ *   the accepted cost: `figures` hashes exactly that source text, because hashing
+ *   the OUTPUT instead — which this bullet recommended — was not reproducible
+ *   across machines and failed the deploy. See SUN_MONTH_MODULES below for the
+ *   measurement and the reasoning.
+ *
+ *   Left in place rather than deleted, because the objection is the thing to
+ *   remember: when this guard fires on a comment-only edit, that is not a bug,
+ *   it is the price, and the answer is to re-record the hash WITHOUT moving the
+ *   date (`lib/content-revision.ts` explains that distinction with two worked
+ *   examples). Read the printed diff before pasting it — blind bumping is the
+ *   failure this bullet correctly predicted.
  * - Anything derived from `Intl` (localized month names, `monthName`,
  *   `monthGenitive`). Those strings come from the runtime's ICU data, so
  *   hashing them would make the fingerprint depend on the Node build and fail
