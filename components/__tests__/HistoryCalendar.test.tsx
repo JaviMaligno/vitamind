@@ -2,10 +2,25 @@ import { describe, expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { NextIntlClientProvider } from "next-intl";
 import HistoryCalendar, { type LocationSpan } from "@/components/dashboard/HistoryCalendar";
-import messages from "@/messages/es.json";
+import fullMessages from "@/messages/es.json";
+import { pickClientMessages } from "@/i18n/client-messages";
 import type { DayRecord } from "@/lib/types";
 
 vi.mock("@/components/PartnerBadge", () => ({ default: () => null }));
+
+/**
+ * The provider gets the SAME subset the real layout ships, not the whole
+ * messages file. Passing `fullMessages` here made this test pass on namespaces
+ * the browser does not receive, so it could not have caught the filter dropping
+ * one — and next-intl does not throw on a miss, it renders the literal key path.
+ * `onError` closes the remaining gap: without it a missing message would only
+ * console.error and this test would assert against a key path as if it were
+ * copy.
+ */
+const messages = pickClientMessages(fullMessages);
+const throwOnMissing = (error: unknown) => {
+  throw error;
+};
 
 const day = (date: string, over: Partial<DayRecord> = {}): DayRecord => ({
   date, cityId: "gps:51.56,-0.10", peakUVI: 6, windowStart: 11, windowEnd: 17,
@@ -26,7 +41,7 @@ function thisWeek(): string[] {
 
 const draw = (records: DayRecord[], locations: LocationSpan[] = [], assumedDates: string[] = []) =>
   render(
-    <NextIntlClientProvider locale="es" messages={messages}>
+    <NextIntlClientProvider locale="es" messages={messages} onError={throwOnMissing}>
       <HistoryCalendar
         records={records}
         locations={locations}
