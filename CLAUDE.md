@@ -314,6 +314,10 @@ npx vercel --prod --yes      # manual production deploy → getvitamind.app
 
 Note: after a `vercel rollback`, new deploys do **not** take the production domain automatically — promote with `npx vercel promote <deployment-url>`.
 
+**`promote` is the one hole in the quality gate, so know what you are pointing it at.** Everything else that can reach production goes through a build, and `vercel.json`'s `buildCommand` runs lint + typecheck + tests before `next build` — so a red tree cannot produce a deployment, whichever path asks for one. `promote` is different: it takes an **existing** deployment and gives it the production domain **without rebuilding**, so whatever gate that deployment did or did not pass is what production gets. Promote a preview deployment and you have published a build that was never gated as production.
+
+That matters mainly if the gate is ever made conditional on `VERCEL_ENV` (a tempting way to speed up previews). Today the gate is unconditional, so every promotable deployment has passed it and the hole is theoretical — but it is the reason the gate must stay unconditional, and the reason to promote by deployment URL you recognise rather than by picking from a list.
+
 ### Vercel project settings
 
 - **Framework Preset:** Next.js (auto-detected on first deploy via `npx vercel --name <project>`; do **not** create the project with `vercel project add` because that creates it with preset "Other" and routes 404)
