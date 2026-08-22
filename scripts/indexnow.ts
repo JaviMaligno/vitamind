@@ -24,6 +24,7 @@ import {
   buildPayloads,
   keyLocation,
   newUrlsSince,
+  baselineProblem,
   submitPayload,
 } from "@/lib/indexnow";
 
@@ -69,13 +70,34 @@ function readSnapshot(file: string): string {
   }
 }
 
+
+
 async function main() {
   const options = parseArgs(process.argv.slice(2));
   const currentUrls = sitemap().map((entry) => entry.url);
 
-  const urls = options.all
-    ? currentUrls
-    : newUrlsSince(readSnapshot(options.beforeFile!), currentUrls);
+  let urls: string[];
+  if (options.all) {
+    urls = currentUrls;
+  } else {
+    const snapshot = readSnapshot(options.beforeFile!);
+    // The fail-open snapshot in ci.yml can hand us an empty or truncated file.
+    // lib/indexnow.ts explains why well-formedness rather than size is the test.
+    const why = baselineProblem(snapshot);
+
+    if (why) {
+      console.error(
+        `[indexnow] REFUSING TO SUBMIT: the baseline ${options.beforeFile} is not a usable ` +
+          `sitemap — ${why}. Submitting now would treat all ${currentUrls.length} current URLs ` +
+          `as new and ping four engines with the whole site, in the same hour the new sitemap ` +
+          `declares most of them unchanged. Nothing was submitted. The deploy is unaffected: ` +
+          `re-run this step, or pass --all if a full resubmission is genuinely what you want.`,
+      );
+      process.exit(1);
+    }
+
+    urls = newUrlsSince(snapshot, currentUrls);
+  }
 
   console.log(
     `[indexnow] sitemap has ${currentUrls.length} URLs; ${urls.length} to submit` +

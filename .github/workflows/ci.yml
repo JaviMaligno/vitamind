@@ -91,15 +91,29 @@ jobs:
       # CDN answers HIT regardless.) A failed curl leaves the file empty, which
       # makes the diff treat every URL as new rather than break the deploy.
       #
-      # Retried, because of what the fail-open costs when it triggers: an empty
-      # baseline makes the diff treat all ~3,600 URLs as new and submit them to
-      # four engines in one batch. That is the over-submission IndexNow treats
-      # as the abusable move (see lib/indexnow.ts), and the crawl it invites is
-      # billed per page read. One flaky 3 MB fetch should not buy a full-site
-      # re-crawl, so give it three tries and a real timeout before falling back.
+      # Three defences on the fail-open, in order of how much they cover.
+      #
+      # --compressed: without it curl advertises no encoding and gets the raw
+      # document. Measured against the live site: 3,215,857 bytes without the
+      # flag, 60,625 with it — 53x less to transfer, and so a 53x smaller window
+      # for the truncation and the timeout that make the fail-open fire in the
+      # first place. (60,625 is the wire size, not the 52,842 that `gzip -9` of
+      # the same file gives locally; they are different numbers and only the wire
+      # one is relevant here.) (Whether it also saves
+      # ISR read units depends on whether an edge HIT is billed at all, which is
+      # not established — so it is claimed here only as a smaller fetch.)
+      #
+      # --retry 3 --retry-delay 5 --max-time 30: one flaky fetch should not be
+      # enough to reach the fallback.
+      #
+      # And the fallback is no longer trusted blindly: scripts/indexnow.ts now
+      # refuses to submit when this file is not a well-formed sitemap, so an
+      # empty or cut-short snapshot stops the ping instead of turning it into a
+      # 3,600-URL submission to four engines. See lib/indexnow.ts
+      # (baselineProblem) for why the test is well-formedness and not size.
       - name: Snapshot the live sitemap (pre-deploy)
         run: |
-          curl -sf --max-time 30 --retry 3 --retry-delay 5 \
+          curl -sf --compressed --max-time 30 --retry 3 --retry-delay 5 \
             https://getvitamind.app/sitemap.xml -o /tmp/sitemap-before.xml \
             || printf '' > /tmp/sitemap-before.xml
 
