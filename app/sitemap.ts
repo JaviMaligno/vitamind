@@ -101,6 +101,34 @@ const PAGES = [
  * `/methodology` copy — is always announced. A hand-bumped constant here would
  * make exactly those edits silent, which is the hazard this change is otherwise
  * spending its effort to close.
+ *
+ * TWO MORE REASONS, ADDED AFTER THE OBVIOUS IMPROVEMENT WAS COSTED AND DROPPED.
+ * Giving these 54 a declared revision looks like the last loose end in this file.
+ * It was investigated on 2026-08-22 and declined, for reasons that are not
+ * visible from here:
+ *
+ *   1. IT WOULD SILENTLY BREAK A DEPENDENCY IN ANOTHER FILE. The `nav`,
+ *      `notifications` and `install` namespaces are deliberately NOT hashed into
+ *      `CITY_PAGE_REVISION` — read the header of lib/content-fingerprint.ts — and
+ *      the stated reason is that they are shared with these app pages, "which
+ *      keep a build-time lastmod, so a chrome edit is already announced there".
+ *      That sentence is load-bearing on THIS policy. Declare a date here without
+ *      hashing chrome into it and a SiteFooter or SiteNav copy edit becomes
+ *      announced nowhere on the whole site.
+ *   2. IT CANNOT COVER THE PAGES THAT MOVE ANYWAY. `/dashboard` is
+ *      `changeFrequency: daily` and `/explore` is weekly because their content IS
+ *      the current day's figures, computed in the browser. A frozen date on those
+ *      is the same lie this file refuses for the hubs. So a declared revision
+ *      could only cover the four genuinely static ones (`/learn`, `/connect`,
+ *      `/about`, `/methodology`) — 24 of the 54 URLs — which halves the benefit
+ *      while leaving all of the machinery, plus a new fingerprint family to keep
+ *      honest.
+ *
+ * The measured prize was 24 URLs × ~28 deploys/month of false announcements
+ * removed, worth something only if the engines act on lastmod at all. That is not
+ * worth a fourth revision family. If it is ever revisited, item 1 is the
+ * precondition: hash the chrome namespaces here FIRST, or into the city page,
+ * before anything else changes.
  */
 export default function sitemap(): MetadataRoute.Sitemap {
   /**

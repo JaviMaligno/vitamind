@@ -76,6 +76,13 @@
  *   `nav` IS hashed: it reads `nav.cities` into the page's JSON-LD, so the
  *   string is part of what that family publishes.)
  *
+ *   THIS EXCLUSION DEPENDS ON A POLICY IN ANOTHER FILE, so it cannot be read
+ *   alone: it is only safe while the 54 app pages keep a moving lastmod. Give
+ *   them a declared revision without hashing chrome into it and a SiteFooter or
+ *   SiteNav copy edit becomes announced nowhere on the site. The same warning is
+ *   written at the other end, in app/sitemap.ts's app-page policy, because a
+ *   one-sided note is how this gets broken by someone reading only one file.
+ *
  * ONE THING THE `figures` PART WILL DO, and it is not a bug: if Node's bundled
  * tzdata changes a timezone rule, the printed clock times for the affected
  * cities change and this hash moves. That is a real content change — the pages
