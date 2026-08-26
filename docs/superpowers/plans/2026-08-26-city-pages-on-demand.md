@@ -294,21 +294,61 @@ ls -R .next/server/app/\[locale\]/\[cityPrefix\]/ | rg -i "zzzz" || echo "NO SE 
 find .next -name "*zzzz*" | head
 ```
 
-**Interpretación, y qué hacer con cada resultado:**
+## MEDIDO EL 2026-08-26 — este paso ya está hecho, y su respuesta invalida el «Plan B»
 
-- **Aparece algún fichero con `zzzz`** → Next SÍ materializa el 404. Entonces, además del
-  prefiltro sintáctico, la rama de desconocidos **no puede** resolverse con `notFound()`
-  bajo `revalidate = false`. Plan B, tal como manda el spec: servir los desconocidos desde
-  una ruta `force-dynamic`. En la práctica eso significa añadir al fichero de ruta un
-  camino que llame a `notFound()` **después** de haber marcado la petición como dinámica
-  (`import { connection } from "next/server"; await connection();` antes del `notFound()`
-  en la rama de miss), y volver a correr esta medición para confirmar que ya no se
-  materializa. **Anota el resultado en el cuerpo de la PR.**
-- **No aparece nada** → `notFound()` no se cachea. El prefiltro sintáctico se queda igual
-  (descarta la basura sin consultar la base), pero no hace falta `force-dynamic`.
+Next **16.1.6 SÍ cachea** el `notFound()` de un parámetro no listado. Medido sobre una app
+mínima con seis variantes de configuración de segmento, servida con `next start`:
 
-**Hecho cuando:** el resultado está anotado, con el comando y su salida, en un comentario
-que se pegará en el cuerpo de la PR. Para el servidor (`kill` del proceso de `next start`).
+```
+curl -sD - .../es/vitamina-d/zzzz-aaaa-0001
+  HTTP/1.1 404 · x-nextjs-cache: MISS · x-nextjs-prerender: 1
+  x-nextjs-stale-time: 300 · Cache-Control: s-maxage=31536000
+segunda petición a la misma URL → x-nextjs-cache: HIT
+en disco: 11 ficheros (.html + .rsc + .meta + 8 .segment.rsc) = 19.613 bytes por URL basura
+```
+
+**El «Plan B» de este paso NO FUNCIONA. No lo intentes.** `import { connection } from
+"next/server"; await connection(); notFound();` devuelve **HTTP 500** con
+`digest: 'DYNAMIC_SERVER_USAGE'`, no un 404, tanto con `revalidate = false` como sin ese
+export. Next renderiza los params no listados en modo generación estática para rellenar la
+caché, y una API dinámica ahí es un error, no una vía de escape.
+
+**Las dos salidas baratas también están descartadas**, medidas: sin ningún `revalidate` el
+404 se cachea igual, y con `dynamicParams = false` también (11 ficheros, 19.557 bytes). No
+lo causa `revalidate = false`.
+
+**Lo único que evita la escritura es `export const dynamic = "force-dynamic"`** — 404 con
+`Cache-Control: private, no-cache, no-store` y cero ficheros en disco. Pero es POR FICHERO
+y arrastra todo lo demás: esa variante se construyó como `f (Dynamic)` sin prerenderizar
+ninguno de sus `generateStaticParams`. Ponerlo en el fichero real sacaría del prerender a
+las 438 páginas curadas. **No es opción para el fichero compartido.**
+
+**Consecuencia vinculante para el Paso 32:** un solo fichero de ruta no puede ser a la vez
+estático para las 438 curadas y no-cacheado en el fallo. Es una decisión de arquitectura de
+rutas, no una línea de código. La opción recomendada es **partir por reescritura en
+`proxy.ts`**: el middleware aplica `isDynamicCitySlug` y reescribe las URLs que casan a un
+fichero de ruta interno aparte con `dynamic = "force-dynamic"`. Las curadas no casan nunca
+—medido: 0 de 194 slugs built-in terminan en dos letras tras guion— así que el fichero
+estático y sus 438 páginas quedan intactos y la URL pública no cambia.
+
+**Dos matices que hay que decir en la PR para no atribuir a B un problema heredado:**
+
+1. **La exposición ya existe hoy en producción.** El fichero real es exactamente la
+   variante medida (`revalidate = false` + `notFound()` pelado), así que
+   `/vitamina-d/<cualquier-basura>` ya escribe hoy un 404 cacheado. B no abre el agujero;
+   ensancha su superficie. Y conviene mirarlo del revés: con el cupo ISR al **181 %**
+   (362.730 de 200.000, `CLAUDE.md` línea 173), los 404 basura cacheados son un sospechoso
+   de esa cifra que nadie había conectado.
+2. **El prefiltro sintáctico NO protege el cupo ISR**, solo la base de datos. Este paso
+   daba a entender lo contrario. `isDynamicCitySlug` ahorra la consulta a Supabase, pero su
+   rama de rechazo termina igualmente en `notFound()`, que se cachea igual.
+
+**Caveat de fidelidad:** medido con `next start` autoalojado, o sea contra la caché de
+sistema de ficheros. Las cabeceras y los cache tags son los que consume la capa ISR de
+Vercel, así que la conclusión cualitativa transfiere; la conversión de bytes a unidades de
+escritura es inferencia a partir de la unidad de 8 KB, no está medida en Vercel. A favor:
+el `.meta` lleva un cache tag por URL, así que un 404 envenenado se purga con
+`revalidatePath` sin desplegar.
 
 ---
 

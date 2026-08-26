@@ -835,6 +835,8 @@
     "indexCitiesLabel": "Städte",
     "allCitiesLink": "Alle Städte ansehen",
     "howCalculated": "Wie diese Zeiten berechnet werden",
+    "dynamicProvenance": "Daten zu {city} von GeoNames. Diese Stadt gehört nicht zu unseren ausgewählten Städten: Die Seite wird bei Bedarf aus ihren Koordinaten, ihrer Zeitzone und ihrer Meereshöhe erzeugt.",
+    "dynamicNameLatin": "Der Name erscheint in seiner Originalschreibweise, weil für Deutsch keine Übersetzung vorliegt.",
     "viewCityPage": "Vollständige Seite zu {city} ansehen",
     "viewNearestCityPage": "Seite zu {city} ansehen, {km} km entfernt",
     "viewIndexInstead": "Keine Stadtseite in der Nähe. Alle ansehen",

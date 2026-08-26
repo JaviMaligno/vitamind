@@ -1,11 +1,7 @@
 import Fuse from "fuse.js";
+import { ccToFlag } from "./cc-flag";
+import { aliasSlug } from "./city-dynamic-slug";
 import type { City } from "./types";
-
-// Country code to flag emoji
-function ccToFlag(cc: string): string {
-  if (cc.length !== 2) return "\u{1F4CD}";
-  return String.fromCodePoint(...[...cc.toUpperCase()].map((c) => c.charCodeAt(0) + 0x1F1A5));
-}
 
 interface RawCity {
   i: number;  // geonameid
@@ -36,6 +32,12 @@ async function ensureLoaded(): Promise<void> {
         country: r.c,
         flag: ccToFlag(r.c),
         population: r.p,
+        // The local fallback has ids, not slugs — the slug map lives in the
+        // database. It emits the alias form, which the city route answers with
+        // a 301 to the canonical URL (lib/city-dynamic-slug.ts). One extra hop
+        // beats a dead link. Built through `aliasSlug` rather than inlined, so
+        // the shape stays decided in exactly one file.
+        slug: aliasSlug(r.i),
         source: "geonames" as const,
       }));
       fuseCache = new Fuse(citiesCache, {

@@ -835,6 +835,8 @@
     "indexCitiesLabel": "villes",
     "allCitiesLink": "Voir toutes les villes",
     "howCalculated": "Comment ces horaires sont calculés",
+    "dynamicProvenance": "{city} : données issues de GeoNames. Ce n'est pas l'une de nos villes phares — cette page est générée à la demande à partir de ses coordonnées, de son fuseau horaire et de son altitude.",
+    "dynamicNameLatin": "Le nom est affiché dans son orthographe d'origine, faute de traduction en français.",
     "viewCityPage": "Voir la page complète de {city}",
     "viewNearestCityPage": "Voir la page de {city}, à {km} km",
     "viewIndexInstead": "Aucune page de ville à proximité. Voir toutes les villes",

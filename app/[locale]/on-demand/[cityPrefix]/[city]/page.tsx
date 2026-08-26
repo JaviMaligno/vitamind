@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { authorship } from "@/lib/schema";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import CityCta from "@/components/CityCta";
 import CityHeroBold from "@/components/CityHeroBold";
@@ -11,110 +11,152 @@ import SunTimesPanel from "@/components/SunTimesPanel";
 import MonthlySunTable from "@/components/MonthlySunTable";
 import Card from "@/components/ui/Card";
 import A from "@/components/ui/A";
-import { BUILTIN_CITIES } from "@/lib/cities";
+import { getPathname } from "@/i18n/navigation";
+import { routing } from "@/i18n/routing";
+import { BUILTIN_GEONAME_ID } from "@/lib/builtin-geonames";
 import {
   cityYearProfile, citySeasonalWindows, contiguousMonthRange, viableDateBoundaries,
 } from "@/lib/city-content";
 import {
-  CITY_PREFIX, baseSlug, cityIdFromSlug, localizedCityName, cityPathname,
-  buildCityAlternates, cityStaticParams, indexPathname,
+  CITY_PREFIX, baseSlug, cityIdFromSlug, localizedCityName, cityPathname, indexPathname,
 } from "@/lib/city-routes";
-import { nearbyCities } from "@/lib/city-nearby";
+import {
+  resolveDynamicCity, dynamicCityPathname, buildDynamicCityAlternates,
+} from "@/lib/city-dynamic";
+import { nearbyCitiesTo } from "@/lib/city-nearby";
+import { inferElevationM } from "@/lib/elevation";
 import { capFirst, cityLabels, monthLabels, monthName, verdictMonths } from "@/lib/city-copy";
 import { fmtTime, dateFromDoy, doyFromMonthDay } from "@/lib/solar";
 import { getSunTimes, monthlySunTimes } from "@/lib/sun-times";
+import type { City } from "@/lib/types";
 
 /**
- * ONE FAMILY LIVES HERE NOW: the 438 curated vitamin D city pages,
- * `/vitamina-d/madrid`. Prerendered from `generateStaticParams`, cached forever.
+ * THE ON-DEMAND CITY PAGE — the second family answering `/{prefix}/{slug}`.
  *
- * THE URL SHAPE IS SHARED WITH A SIBLING, and this file never sees that traffic.
- * Any city in the `cities` table (~235,000 of them) also answers at
- * `/{prefix}/{slug}`, with a country-qualified slug (`toledo-es`). Those are
- * served by `app/[locale]/on-demand/[cityPrefix]/[city]/page.tsx`, and the split
- * is decided in the middleware: `i18n/on-demand-city-rewrite.ts`, composed by
- * `proxy.ts`, REWRITES an on-demand URL to that route before Next matches
- * anything. The public URL is identical either way.
+ * Nobody links here by this path. Visitors ask for `/vitamina-d/toledo-es` and
+ * `proxy.ts` REWRITES that to this route (`i18n/on-demand-city-rewrite.ts`
+ * decides), so the public URL, the canonical and the hreflang set are exactly
+ * what they would be if one file served both families. The extra static segment
+ * exists only to give this file a route of its own.
  *
- * Why a sibling and not a branch in here: segment config is per FILE, and the
- * on-demand family needs `dynamic = "force-dynamic"` — measured 2026-08-26 on
- * Next 16.1.6, it is the only thing that stops a `notFound()` for an unlisted
- * param from being WRITTEN to the full route cache (11 files, 19,613 bytes per
- * junk URL, on a plan whose write quota closed the last window at 181%). Put it
- * here and all 438 pages below leave the prerender. The helper's header carries
- * the full measurement, including the two escape hatches that do not work.
+ * WHY IT IS A SEPARATE FILE AT ALL — measured, 2026-08-26, Next 16.1.6, real
+ * `next start`, six segment-config variants (the plan's Paso 4): a `notFound()`
+ * for a param the route's static-param list did not contain IS written to the
+ * full route cache — `x-nextjs-prerender: 1`, `Cache-Control: s-maxage=31536000`, 11 files
+ * and 19,613 bytes per junk URL, HIT on the second request. Dropping
+ * `revalidate` does not stop it. `dynamicParams = false` does not stop it.
+ * `await connection()` before the `notFound()` returns HTTP 500
+ * (`DYNAMIC_SERVER_USAGE`), not a 404. Only `dynamic = "force-dynamic"` stops it
+ * — and segment config is per FILE, so putting it in the curated file would take
+ * its 438 prerendered pages out of the build. With ~235,000 rows behind this
+ * route and an ISR write quota that closed the last 30-day window at 181%
+ * (362,730 of 200,000), an uncacheable miss is the whole point of the split.
  *
- * The wall between the two is measured, not assumed: of the 194 distinct builtin
- * slugs across the six locales, ZERO end in two letters after a hyphen, and
- * every on-demand slug does. `cityIdFromSlug` is consulted first regardless.
+ * WHY THE RENDER IS A SIBLING COPY OF THE CURATED PAGE'S, and not a shared
+ * component. It very nearly is one, and the difference is four values: the
+ * display name, the elevation, how the nearby cities are chosen, and the
+ * provenance line. Extracting the body is blocked by three guards that are
+ * anchored, on purpose, to the curated route file's PATH:
+ * `lib/__tests__/content-revision.test.ts` greps that file for its
+ * `getTranslations` namespaces and requires exactly `cityPage` + `sunTimes`;
+ * `app/__tests__/jsonld-authorship.test.ts` requires the JSON-LD and
+ * `authorship()` to be in it; `app/__tests__/sun-hub-split.test.ts` scans it (and
+ * a fixed list of lib modules) for clock reads, which is what keeps
+ * `revalidate = false` honest over there. Moving the body would need all three
+ * edited in the same commit as the split itself. That is a refactor with its own
+ * risk budget, not a line item inside this one — it is written up as declared
+ * debt in the PR body. Anything that changes what a city page PRINTS has to be
+ * changed in both files until then.
  *
- * The sunrise tree's today hub (`/amanecer/madrid`) used to arrive here too —
- * same `[cityPrefix]/[city]` shape, told apart inside the handler by its prefix,
- * because Next allows one dynamic segment name per position. It now has six
- * static route folders of its own (`app/[locale]/amanecer/[city]` and one per
- * value of SUN_PREFIX), which outrank this dynamic sibling; the reason and the
- * routing evidence are in app/[locale]/_sun-hub/hub-route.tsx.
- *
- * So the prefix check in `resolveCity` is still load-bearing, for what is left:
- * a wrong-locale prefix (`/en/vitamina-d/madrid`) must 404 rather than serve the
- * English page at a Spanish URL. And the hub params must NOT reappear in this
- * list — two route files prerendering the same URL is a build conflict, not a
- * fallback.
+ * FOUR LOCKS KEEP THIS FAMILY OUT OF THE INDEX (D-15): `robots: index: false`
+ * below, absence from `app/sitemap.ts`, absence from the IndexNow payload, and
+ * no dynamic-to-dynamic cross-links — every outbound link from here lands on a
+ * curated page or on the index.
  */
-export function generateStaticParams() {
-  return cityStaticParams();
-}
 
 /**
- * STATIC. Never regenerated, because there is nothing here to regenerate.
- *
- * This file carried `revalidate = 86400` only for the hub's sake — the hub's
- * subject is today, so a build-time render would still be quoting June's window
- * in December. Segment config is per FILE, so all 678 pages that shared this one
- * inherited the interval, and 438 of them were paying for a freshness they have
- * no use for: every figure on this page is a pure function of the city and the
- * fixed reference year (`DOY_REFERENCE_YEAR`, lib/solar.ts). Regenerating it
- * daily produced identical bytes and one ISR cache write each time, on a free
- * plan already over its write quota.
- *
- * Moving the hub into its own route files is what made this line possible; it
- * keeps its own 86400 and its own daily cron. Nothing about hub freshness moved.
- *
- * WHAT WOULD BREAK IT: a clock read anywhere on this render path. Not
- * `new Date(Date.UTC(...))` or `dateFromDoy(...)`, which are deterministic given
- * their arguments, but an argument-free `new Date`, a `Date.now`, or
- * lib/solar.ts's one today-relative helper (named in the test, spelled nowhere
- * in this file so that the test can stay a plain source match). Any of those
- * would freeze one particular day's numbers into the HTML permanently, which is
- * strictly worse than the stale-for-a-day it used to be. The client islands
- * below (SunTimesPanel, CityCta, PhaseWindow, CityHeroBold) do read the clock,
- * and that is fine precisely because they read it in an effect, render a
- * deterministic fallback on the server, and carry `suppressHydrationWarning`.
- * app/__tests__/sun-hub-split.test.ts asserts both halves of that.
+ * NOT prerendered, and never cached. See the header: this is the only measured
+ * defence against an outsider driving unbounded ISR writes by requesting junk.
+ * The syntactic prefilter in `resolveDynamicCity` saves the DATABASE round trip,
+ * not the cache write — its reject branch also ends in `notFound()`.
  */
-export const revalidate = false;
+export const dynamic = "force-dynamic";
 
 type Params = { locale: string; cityPrefix: string; city: string };
 
-/** Resolves (locale, prefix, slug) → the City, or null when the route is bogus. */
-function resolveCity({ locale, cityPrefix, city }: Params) {
+type Resolved =
+  | { kind: "dynamic"; city: City; slug: string; nameIsLocalized: boolean }
+  | { kind: "redirect"; to: string };
+
+/**
+ * Resolves (locale, prefix, slug) → an on-demand city, a permanent redirect, or
+ * null when the route is bogus.
+ *
+ * ONE CITY, ONE URL. Two forms have to be sent somewhere else rather than
+ * served: the qualified form of a CURATED city (`/vitamina-d/shanghai-cn`, which
+ * would otherwise be a second Shanghai page competing with the real one), and
+ * the `id-{geonameid}` alias the search chip emits, which 301s to the canonical
+ * slug. `lib/builtin-geonames.ts` is what makes the first one decidable: it
+ * cannot be derived from the slug (the names differ per locale) nor from the
+ * coordinates (Getafe is 15 km from Madrid and is not Madrid).
+ */
+async function resolveOnDemandCity({ locale, cityPrefix, city }: Params): Promise<Resolved | null> {
+  // Still load-bearing even though the rewrite already checked it: this route is
+  // reachable by its own path, and a wrong-locale prefix must 404 here too.
   if (cityPrefix !== CITY_PREFIX[locale]) return null;
-  const cityId = cityIdFromSlug(locale, city);
-  if (!cityId) return null;
-  return BUILTIN_CITIES.find((c) => c.id === cityId) ?? null;
+
+  // The curated namespace wins (D-12). The rewrite never sends one here; if it
+  // ever did, serving it would be duplicate content pointing away from itself.
+  if (cityIdFromSlug(locale, city)) return null;
+
+  const hit = await resolveDynamicCity(locale, city);
+  if (!hit) return null;
+
+  const curatedBase = Object.entries(BUILTIN_GEONAME_ID)
+    .find(([, id]) => `geonames:${id}` === hit.city.id)?.[0];
+  if (curatedBase) return { kind: "redirect", to: cityPathname(locale, curatedBase) };
+  if (hit.canonicalSlug !== city) {
+    return { kind: "redirect", to: dynamicCityPathname(locale, hit.canonicalSlug) };
+  }
+
+  return {
+    kind: "dynamic",
+    city: hit.city,
+    slug: hit.canonicalSlug,
+    nameIsLocalized: hit.nameIsLocalized,
+  };
+}
+
+/** The locale-local target of a redirect, as the absolute path to send. */
+function absolute(locale: string, href: string): string {
+  return getPathname({ href, locale: locale as (typeof routing.locales)[number] });
+}
+
+/**
+ * The ground elevation this page states its numbers were computed from.
+ *
+ * GeoNames has no `dem` for 0.2% of rows (437 of 235,503) and the seed stores
+ * that as NULL rather than as a claim about sea level, so a fallback is needed.
+ * `inferElevationM` borrows the altitude of a curated city within 25 km, which
+ * is a real fact about the same place; beyond that it declines, and 0 is the
+ * same assumption every non-curated city on this site already carries.
+ */
+function elevationFor(city: City): number {
+  return city.elevation ?? inferElevationM(city.lat, city.lon) ?? 0;
 }
 
 export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
   const p = await params;
-  const city = resolveCity(p);
-  if (!city) return {};
+  const r = await resolveOnDemandCity(p);
+  // A redirect has no metadata of its own; the page body issues it.
+  if (!r || r.kind === "redirect") return {};
 
-  const base = baseSlug(city.id);
   const t = await getTranslations({ locale: p.locale, namespace: "cityPage" });
   // next-intl's untyped `t` wants Record<string, ...>; CityLabels is an interface
   // (no implicit index signature), so widen via a fresh literal. Values unchanged.
-  const labels: Record<string, string> = { ...cityLabels(p.locale, localizedCityName(p.locale, base)) };
-  const alternates = buildCityAlternates(p.locale, base);
+  // The name is the RPC's `display_name`, never the slug.
+  const labels: Record<string, string> = { ...cityLabels(p.locale, r.city.name) };
+  const alternates = buildDynamicCityAlternates(p.locale, r.slug);
 
   const title = t("title", labels);
   const description = t("metaDescription", labels);
@@ -122,45 +164,45 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   return {
     title,
     description,
+    // Self-referencing, never canonical to the nearest curated city: canonical
+    // means "this is the same page", and Toledo is not Madrid.
     alternates,
+    // D-15, the central lock: 1.38M thin URLs must not ask for a place in the
+    // index. `follow` so the outbound links to the index and to the curated
+    // cities keep passing.
+    robots: { index: false, follow: true },
     openGraph: { title, description, url: alternates.canonical, type: "article" },
   };
 }
 
-
-export default async function CityPage({ params }: { params: Promise<Params> }) {
+export default async function OnDemandCityPage({ params }: { params: Promise<Params> }) {
   const p = await params;
-  const city = resolveCity(p);
-  if (!city) notFound();
+  const r = await resolveOnDemandCity(p);
+  if (!r) notFound();
+  if (r.kind === "redirect") permanentRedirect(absolute(p.locale, r.to));
   setRequestLocale(p.locale);
 
-  const base = baseSlug(city.id);
+  const city = r.city;
+  const displayName = city.name;
   const t = await getTranslations({ locale: p.locale, namespace: "cityPage" });
   const tSun = await getTranslations({ locale: p.locale, namespace: "sunTimes" });
 
   // Every value a cityPage template may reference. Each locale uses the subset it
   // needs — ICU ignores extras but throws on a missing one, so pass the superset.
-  // Spread into a fresh literal: next-intl's `t` wants a Record, and an interface
-  // has no implicit index signature. Type-only — the values are unchanged.
-  const labels: Record<string, string> = { ...cityLabels(p.locale, localizedCityName(p.locale, base)) };
+  const labels: Record<string, string> = { ...cityLabels(p.locale, displayName) };
 
   // The synthesis threshold depends on ozone (latitude, longitude, season) and on
-  // altitude, so the city's real position and elevation must both be passed.
-  const elevationM = city.elevation ?? 0;
+  // altitude, so the city's real position and elevation must both be passed. This
+  // is the claim `cityPage.dynamicProvenance` prints at the bottom of the page.
+  const elevationM = elevationFor(city);
   const profile = cityYearProfile(city.lat, city.lon, elevationM);
   const windows = citySeasonalWindows(city.lat, city.lon, city.tz, elevationM);
   const labelsForChart = monthLabels(p.locale);
 
-  // The month band hides the shoulder; this names the first and last day with at
-  // least 30 minutes of viable sun. Rendered only when there is a real winter --
-  // Sydney is allYear by the month rule yet still has a boundary.
   const bounds =
     profile.allYear || profile.neverPossible ? null : viableDateBoundaries(profile.hoursByDay);
   const dateRange = bounds
     ? new Intl.DateTimeFormat(p.locale, { day: "numeric", month: "long", timeZone: "UTC" })
-        // Both endpoints are pinned to the same reference year. A southern band
-        // wraps past January, and real cross-year dates would make formatRange
-        // print a fabricated "2026 – 2027" on a pattern that repeats every year.
         .formatRange(dateFromDoy(bounds.startDoy), dateFromDoy(bounds.endDoy))
     : null;
 
@@ -168,7 +210,10 @@ export default async function CityPage({ params }: { params: Promise<Params> }) 
   const possibleBand = contiguousMonthRange(profile.possibleMonths);
   const impossibleBand = contiguousMonthRange(profile.impossibleMonths);
 
-  const nearby = nearbyCities(city.id);
+  // By COORDINATE, and always over the curated set. An on-demand city has no
+  // entry in BUILTIN_CITIES to look up, and a dynamic-to-dynamic mesh would be a
+  // crawlable path into 1.38M `noindex` URLs.
+  const nearby = nearbyCitiesTo(city.lat, city.lon, 5);
 
   const verdict = profile.allYear
     ? t("verdictAllYear", labels)
@@ -179,9 +224,6 @@ export default async function CityPage({ params }: { params: Promise<Params> }) 
           ...verdictMonths(p.locale, possibleBand!.start - 1, possibleBand!.end - 1),
         });
 
-  // The hero's giant focal stat: same three-way state as `verdict` above, but
-  // rendered as the compact "N months of sun" / "sun all year" / "no solar
-  // synthesis" phrase already used for exactly this purpose on the index page.
   const statPhrase = profile.allYear
     ? t("indexAllYear")
     : profile.neverPossible
@@ -191,21 +233,13 @@ export default async function CityPage({ params }: { params: Promise<Params> }) 
   const summerWindow = windows.find((w) => w.possible && w.minutesNeeded !== null);
 
   // Month-by-month sun values feed both the static table below and the sun FAQs.
-  // June/December are the FAQ's fixed anchor months (named literally in each
-  // translation, correctly declined); longest/shortest month varies by hemisphere.
   const monthly = monthlySunTimes(city.lat, city.lon, city.timezone, city.tz);
   const june = monthly[5];
   const dec = monthly[11];
   const longest = monthly.reduce((a, b) => (b.dayLengthMin > a.dayLengthMin ? b : a));
   const shortest = monthly.reduce((a, b) => (b.dayLengthMin < a.dayLengthMin ? b : a));
-  // Through `dateFromDoy`, like every other table on this site, because the
-  // host-local `new Date(2026, 5, 15)` these two used is a different INSTANT on
-  // every machine: 15 June 00:00 in the builder's own zone. Measured across the
-  // 73 cities, that gave three different sets of golden-hour figures under UTC,
-  // Atlantic/Canary, Europe/Madrid and Pacific/Honolulu — Athens 20:09 from a
-  // Madrid build against 20:10 from Vercel, and Anchorage, Bangkok, Barcelona,
-  // Berlin and Bogota moving with it. Production was right by the accident of
-  // Vercel building in UTC.
+  // Through `dateFromDoy`, like every other table on this site: a host-local
+  // `new Date(2026, 5, 15)` is a different INSTANT on every machine.
   const goldenOn = (monthIndex: number, day: number) =>
     getSunTimes(city.lat, city.lon, dateFromDoy(doyFromMonthDay(monthIndex, day)), city.timezone, city.tz)
       .goldenEveningStart;
@@ -229,8 +263,6 @@ export default async function CityPage({ params }: { params: Promise<Params> }) 
           },
         }]
       : []),
-    // Sunrise/sunset FAQs: the high-volume questions the monthly table answers,
-    // surfaced as FAQPage entries too. Skipped for (hypothetical) polar cities.
     ...(june.sunrise !== null && june.sunset !== null && dec.sunrise !== null && dec.sunset !== null
       ? [{
           "@type": "Question",
@@ -280,13 +312,10 @@ export default async function CityPage({ params }: { params: Promise<Params> }) 
         }}
       />
 
-      {/* BOLD exploratory hero: full-bleed poster-scale sky, verdict as a giant
-          editorial statement rather than a small badge in a contained glass card.
-          See components/CityHeroBold.tsx. */}
       <CityHeroBold
         lat={city.lat}
         lon={city.lon}
-        eyebrow={localizedCityName(p.locale, base)}
+        eyebrow={displayName}
         title={t("title", labels)}
         tone={!profile.neverPossible ? "possible" : "winter"}
         statPhrase={statPhrase}
@@ -310,7 +339,7 @@ export default async function CityPage({ params }: { params: Promise<Params> }) 
             timezone={city.timezone}
             skinType={3}
             areaFraction={0.25}
-            cityName={localizedCityName(p.locale, base)}
+            cityName={displayName}
             labelOff={t("notifyOff")}
             labelOn={t("notifyOn")}
             prominent
@@ -319,9 +348,8 @@ export default async function CityPage({ params }: { params: Promise<Params> }) 
         }
       />
 
-      {/* Today's sun: sunrise, sunset, golden hour and day length — the broad-
-          appeal daily numbers, computed client-side so the static page never
-          shows a stale "today". */}
+      {/* Today's sun: sunrise, sunset, golden hour and day length, computed
+          client-side so the page never shows a stale "today". */}
       <section className="mt-10 sm:mt-16">
         <h2 className="font-display text-2xl sm:text-3xl font-bold">{tSun("cityHeading", labels)}</h2>
         <p className="mt-2 text-body text-text-muted max-w-2xl">{tSun("cityCaption")}</p>
@@ -330,8 +358,7 @@ export default async function CityPage({ params }: { params: Promise<Params> }) 
         </div>
       </section>
 
-      {/* Year profile: the page's signature data-graphic, promoted to a full-width
-          protagonist band instead of a card nested inside a card. */}
+      {/* Year profile: the page's signature data-graphic. */}
       <section className="mt-10 sm:mt-16">
         <h2 className="font-display text-2xl sm:text-4xl font-bold">{t("yearHeading", labels)}</h2>
         <p className="mt-2 text-body text-text-muted max-w-2xl">{t("yearCaption")}</p>
@@ -346,8 +373,7 @@ export default async function CityPage({ params }: { params: Promise<Params> }) 
         </PhaseWindow>
       </section>
 
-      {/* Seasonal windows + supplement: two balanced columns (supplement drops
-          when the city synthesizes all year, and then seasons runs full-width). */}
+      {/* Seasonal windows + supplement. */}
       <div className={`mt-10 sm:mt-16 grid gap-6 lg:gap-8 items-start ${profile.allYear ? "" : "lg:grid-cols-2"}`}>
         <Card variant="glass" className="!p-6 sm:!p-8">
           <h2 className="font-display text-title sm:text-2xl font-bold">{t("seasonHeading")}</h2>
@@ -381,10 +407,7 @@ export default async function CityPage({ params }: { params: Promise<Params> }) 
         )}
       </div>
 
-      {/* Month-by-month sunrise/sunset: static, build-time values (fixed
-          reference year, mid-month) — the indexable content for high-volume
-          "sunrise in <city>" queries; today's live values are in the client
-          panel above, which crawlers don't see. */}
+      {/* Month-by-month sunrise/sunset: fixed reference year, mid-month. */}
       <section className="mt-10 sm:mt-16">
         <h2 className="font-display text-2xl sm:text-3xl font-bold">{tSun("monthlyHeading", labels)}</h2>
         <p className="mt-2 text-body text-text-muted max-w-2xl">{tSun("monthlyCaption")}</p>
@@ -412,14 +435,12 @@ export default async function CityPage({ params }: { params: Promise<Params> }) 
         <p className="mt-3 text-caption text-text-muted">{tSun("monthlyNote")}</p>
       </section>
 
-      {/* Primary CTA — full-width, centered conversion band (the main action, so
-          it stands on its own instead of being tucked into a column). Adapts to
-          the live solar phase so it never clashes with the warm-phase page tints. */}
+      {/* Primary CTA. */}
       <div className="mt-10 sm:mt-14 flex justify-center">
         <CityCta lat={city.lat} lon={city.lon} href="/dashboard" label={t("ctaLabel", labels)} />
       </div>
 
-      {/* FAQ — full-width, two columns on desktop. */}
+      {/* FAQ. */}
       <section className="mt-10 sm:mt-16">
         <h2 className="font-display text-2xl sm:text-3xl font-bold">{t("faqHeading", labels)}</h2>
         <dl className="mt-5 grid gap-5 sm:grid-cols-2 sm:gap-8">
@@ -430,8 +451,6 @@ export default async function CityPage({ params }: { params: Promise<Params> }) 
             </div>
           ))}
         </dl>
-        {/* Bridge into the guide's "sun beyond vitamin D" block, where the sun
-            mechanics behind these answers are explained in depth. */}
         <p className="mt-6 text-body">
           <A href="/learn#block-4" className="font-semibold">
             {tSun("faqMore")}
@@ -439,10 +458,9 @@ export default async function CityPage({ params }: { params: Promise<Params> }) 
         </p>
       </section>
 
-      {/* Cross-links to the nearest cities: turns the 438 pages into a crawlable
-          mesh and gives the reader somewhere to go. Static, so Google follows it.
-          Wide footer strip — a border-top band, not another glass card, so not
-          every block on the page has an identical surface treatment. */}
+      {/* Cross-links OUT of the on-demand layer: the nearest curated cities, by
+          coordinate, plus the index. Never to another on-demand page — that mesh
+          is the crawlable path into 1.38M noindex URLs that D-15 closes. */}
       <nav className="mt-10 sm:mt-16 pt-8 sm:pt-10 border-t border-border-default">
         <h2 className="font-display text-title sm:text-2xl font-bold">{t("nearbyHeading")}</h2>
         <ul className="mt-4 flex flex-wrap gap-2">
@@ -465,8 +483,18 @@ export default async function CityPage({ params }: { params: Promise<Params> }) 
             {t("allCitiesLink")}
           </A>
         </p>
-        {/* Every page that states a figure says where the figure comes from;
-            the bibliography lives on /methodology, not repeated here. */}
+
+        {/* WHERE THIS PAGE CAME FROM. It is not one of the 73 curated cities, and
+            saying so is the honest version of a page that otherwise looks
+            identical to one. The second sentence appears only where `city_names`
+            had no entry for this locale: coverage is 17.8% in ru and 2.3% in lt,
+            so most Lithuanian and Russian pages print the Latin endonym inside a
+            Lithuanian or Cyrillic text, and the reader is told why (Q-B(a)). */}
+        <p className="mt-4 text-caption text-text-muted">
+          {t("dynamicProvenance", { ...labels, city: displayName })}
+          {!r.nameIsLocalized && ` ${t("dynamicNameLatin")}`}
+        </p>
+
         <p className="mt-6 text-caption text-text-muted">
           <A href="/methodology">{t("howCalculated")}</A>
         </p>

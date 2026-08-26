@@ -835,6 +835,8 @@
     "indexCitiesLabel": "miestai",
     "allCitiesLink": "Visi miestai",
     "howCalculated": "Kaip apskaičiuoti šie laikai",
+    "dynamicProvenance": "{city}: duomenys iš GeoNames. Tai nėra vienas iš mūsų pagrindinių miestų – šis puslapis sugeneruojamas pagal poreikį iš miesto koordinačių, laiko juostos ir aukščio virš jūros lygio.",
+    "dynamicNameLatin": "Pavadinimas rodomas originalia rašyba, nes vertimo į lietuvių kalbą neturime.",
     "viewCityPage": "Žiūrėti visą puslapį: {city}",
     "viewNearestCityPage": "Žiūrėti puslapį: {city}, už {km} km",
     "viewIndexInstead": "Netoliese nėra miestų su puslapiais. Žiūrėti visus",

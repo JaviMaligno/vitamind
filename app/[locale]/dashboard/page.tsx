@@ -109,7 +109,7 @@ export default function DashboardPage() {
 
       {hasCity && (
         <div className="px-1 -mt-2 text-caption">
-          <CityPageLink cityId={app.cityId} lat={app.lat} lon={app.lon} />
+          <CityPageLink cityId={app.cityId} cityName={cityName} lat={app.lat} lon={app.lon} />
         </div>
       )}
 

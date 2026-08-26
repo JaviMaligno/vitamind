@@ -43,10 +43,64 @@ describe("directoryTarget — rule 1: a builtin id is exact", () => {
     });
   });
 
+  /**
+   * Changed in PR B, on purpose. A `geonames:` id used to fall through to the
+   * nearby rule because the searched city had no page of its own; now it does, so
+   * it gets its own branch (see the `dynamic` describe below). What this test was
+   * really pinning — that a searched or map-tapped id is never mistaken for a
+   * CURATED city — still holds: neither answer is `exact`.
+   */
   it("does not treat a searched (geonames) or map-tapped (custom) id as exact", () => {
-    expect(target(TOLEDO, "geonames:2510409").kind).toBe("nearby");
+    expect(target(TOLEDO, "geonames:2510409").kind).toBe("dynamic");
     expect(target(TOLEDO, "custom:1755000000000").kind).toBe("nearby");
     expect(target(TOLEDO, undefined).kind).toBe("nearby");
+  });
+});
+
+/**
+ * PR B closes the loop PR A opened. PR A could only ever offer a stand-in for a
+ * searched city, because only the 73 curated ones had a page; with the on-demand
+ * route in place the searched city has its own, so the chip stops substituting.
+ */
+describe("directoryTarget — a searchable city now has its own page", () => {
+  it("sends a geonames city to its own on-demand page, not to a stand-in", () => {
+    // Toledo: 67 km from Madrid, |dlat| 1.05deg — under the old rule this was a
+    // silent redirect to "the full Madrid page".
+    const t = directoryTarget("geonames:2510409", 39.86, -4.02);
+    expect(t.kind).toBe("dynamic");
+    expect(t).toMatchObject({ geonameId: 2510409 });
+  });
+
+  it("still prefers the curated page when the saved city IS a builtin", () => {
+    expect(directoryTarget("builtin:madrid", 40.42, -3.7)).toEqual({ kind: "exact", base: "madrid" });
+  });
+
+  /**
+   * A raw coordinate has no city row behind it (GPS fix, map tap): the nearby
+   * rule of PR A still applies, distance printed and all. B does not remove it.
+   */
+  it("keeps the km-printing nearby branch for a bare coordinate", () => {
+    const t = directoryTarget(undefined, 39.86, -4.02);
+    expect(t.kind).toBe("nearby");
+  });
+
+  it("never returns null", () => {
+    for (const [lat, lon] of [[-54.8, -68.3], [64.18, -51.72], [0, -160]]) {
+      expect(directoryTarget(undefined, lat, lon)).not.toBeNull();
+    }
+  });
+
+  /**
+   * The id is the ONLY thing the saved preference carries — no slug, no country.
+   * So the branch must survive any geonameid shape, and must not fire for the two
+   * other id families the app emits.
+   */
+  it("matches only a well-formed geonames id", () => {
+    expect(directoryTarget("geonames:1", 0, 0)).toMatchObject({ kind: "dynamic", geonameId: 1 });
+    expect(directoryTarget("geonames:12345678", 0, 0)).toMatchObject({ kind: "dynamic", geonameId: 12345678 });
+    for (const bad of ["geonames:", "geonames:abc", "geonames:12a", "explore-heatmap", "custom:1755000000000"]) {
+      expect(directoryTarget(bad, 40.42, -3.7).kind).not.toBe("dynamic");
+    }
   });
 });
 

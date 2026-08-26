@@ -25,6 +25,18 @@ const PAGES = [
 ];
 
 /**
+ * WHY THE ON-DEMAND CITY PAGES ARE DELIBERATELY ABSENT. `/{cityPrefix}/{slug}`
+ * also serves any city in the `cities` table (230,407 rows on 2026-08-26), which
+ * is 1,382,442 URLs across six locales. They are `noindex, follow` by design
+ * (D-15) — the `vitamina-d` template earns 35 impressions and 0 clicks in 28 days
+ * with 438 URLs, so multiplying it by three thousand is thin content on a domain
+ * with 19 inbound links. Listing them here would be a crawl request billed to the
+ * read meter for pages that cannot rank. `app/__tests__/sitemap.test.ts` pins
+ * their absence, and `lib/__tests__/indexnow.test.ts` pins that they never reach
+ * a submission — because this function is what that script imports.
+ */
+
+/**
  * LASTMOD POLICY. Read this before adding an entry family.
  *
  * `lastmod` is not decoration: it is the field Google, Bing, Yandex, Seznam and

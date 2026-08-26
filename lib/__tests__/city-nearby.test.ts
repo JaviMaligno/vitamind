@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { nearbyCities } from "@/lib/city-nearby";
+import { nearbyCities, nearbyCitiesTo } from "@/lib/city-nearby";
 import { BUILTIN_CITIES } from "@/lib/cities";
 import { baseSlug } from "@/lib/city-routes";
 
@@ -33,5 +33,38 @@ describe("nearbyCities", () => {
 
   it("returns an empty array for an unknown city", () => {
     expect(nearbyCities("builtin:atlantis")).toEqual([]);
+  });
+});
+
+describe("nearbyCitiesTo — cross-links for a page that is not itself a builtin", () => {
+  it("returns builtin cities only, so every outbound link points at an indexable page", () => {
+    const got = nearbyCitiesTo(39.86, -4.02, 5);   // Toledo
+    expect(got).toHaveLength(5);
+    for (const c of got) expect(c.id.startsWith("builtin:")).toBe(true);
+  });
+
+  it("orders them by distance, nearest first", () => {
+    const got = nearbyCitiesTo(39.86, -4.02, 5);
+    expect(baseSlug(got[0].id)).toBe("madrid");
+  });
+
+  it("includes the city itself when the coordinate IS a builtin — the caller excludes it", () => {
+    const madrid = BUILTIN_CITIES.find((c) => baseSlug(c.id) === "madrid")!;
+    expect(baseSlug(nearbyCitiesTo(madrid.lat, madrid.lon, 1)[0].id)).toBe("madrid");
+  });
+
+  /**
+   * The refactor guard (spec R-1). `nearbyCities` decides the cross-link block of
+   * 438 city pages + 2880 month pages + 240 hubs, and the ORDER of those links is
+   * published content. If it moves, content ships to 3,558 pages the sitemap
+   * declares unchanged.
+   */
+  it("leaves nearbyCities byte-identical for every builtin city", () => {
+    for (const city of BUILTIN_CITIES) {
+      const viaId = nearbyCities(city.id).map((c) => c.id);
+      const viaCoords = nearbyCitiesTo(city.lat, city.lon, 6)
+        .filter((c) => c.id !== city.id).slice(0, 5).map((c) => c.id);
+      expect(viaCoords, city.id).toEqual(viaId);
+    }
   });
 });
