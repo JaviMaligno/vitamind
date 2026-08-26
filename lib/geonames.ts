@@ -1,11 +1,6 @@
 import Fuse from "fuse.js";
+import { ccToFlag } from "./cc-flag";
 import type { City } from "./types";
-
-// Country code to flag emoji
-function ccToFlag(cc: string): string {
-  if (cc.length !== 2) return "\u{1F4CD}";
-  return String.fromCodePoint(...[...cc.toUpperCase()].map((c) => c.charCodeAt(0) + 0x1F1A5));
-}
 
 interface RawCity {
   i: number;  // geonameid

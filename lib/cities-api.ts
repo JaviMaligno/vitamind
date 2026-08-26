@@ -1,3 +1,4 @@
+import { ccToFlag } from "./cc-flag";
 import type { City } from "./types";
 
 /** Raw row from the Supabase cities table (with optional localized name) */
@@ -13,16 +14,14 @@ interface SupabaseCity {
   display_name?: string;
 }
 
-/** Convert a 2-letter country code to a flag emoji using regional indicator symbols */
-function ccToFlag(cc: string): string {
-  if (!cc || cc.length !== 2) return "\u{1F4CD}";
-  return String.fromCodePoint(
-    ...[...cc.toUpperCase()].map((c) => c.charCodeAt(0) + 0x1F1A5)
-  );
-}
-
-/** Compute numeric UTC offset from an IANA timezone string */
-function tzOffset(timezone: string): number {
+/**
+ * Compute numeric UTC offset from an IANA timezone string.
+ *
+ * Exported for lib/city-dynamic.ts: an on-demand city page resolves a row that
+ * carries the IANA zone, and `City.tz` is the numeric offset the rest of the app
+ * still reads. Same function, so a searched city and its page agree.
+ */
+export function tzOffset(timezone: string): number {
   try {
     const fmt = new Intl.DateTimeFormat("en-US", {
       timeZone: timezone,

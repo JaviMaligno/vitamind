@@ -16,6 +16,13 @@ export interface City {
   country?: string;
   flag?: string;
   population?: number;
+  /**
+   * The canonical URL slug of this city's on-demand page (`toledo-es`). Present
+   * only for rows that come from the `cities` table, which is where the slug is
+   * assigned once and never recomputed. Curated cities do not use it — their
+   * slug is localized and lives in lib/city-slugs.ts.
+   */
+  slug?: string;
   source: CitySource;
 }
 
