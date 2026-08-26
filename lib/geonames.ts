@@ -1,5 +1,6 @@
 import Fuse from "fuse.js";
 import { ccToFlag } from "./cc-flag";
+import { aliasSlug } from "./city-dynamic-slug";
 import type { City } from "./types";
 
 interface RawCity {
@@ -31,6 +32,12 @@ async function ensureLoaded(): Promise<void> {
         country: r.c,
         flag: ccToFlag(r.c),
         population: r.p,
+        // The local fallback has ids, not slugs — the slug map lives in the
+        // database. It emits the alias form, which the city route answers with
+        // a 301 to the canonical URL (lib/city-dynamic-slug.ts). One extra hop
+        // beats a dead link. Built through `aliasSlug` rather than inlined, so
+        // the shape stays decided in exactly one file.
+        slug: aliasSlug(r.i),
         source: "geonames" as const,
       }));
       fuseCache = new Fuse(citiesCache, {
