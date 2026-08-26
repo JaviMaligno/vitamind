@@ -530,6 +530,57 @@ La tabla sirve el buscador en producción.
 **Recomendación: (a)**, porque el upsert solo añade dos columnas y no toca las que el
 buscador lee. (b) obliga a duplicar índices y RPCs por un riesgo que (a) no corre.
 
+## 7-bis. Respuestas medidas (2026-08-26)
+
+Las cinco se cerraron consultando Supabase directamente. Ninguna recomendación cambia;
+dos cifras sí, y una de ellas por un orden de magnitud.
+
+**Q-1 — RESUELTA: 230.407 filas.** Es cities500, como sospechaba el spec, no las 33.390
+de `public/cities15000.json`. Ese fichero es solo el respaldo sin conexión del cliente;
+el buscador consulta Supabase. La superficie potencial es **1.382.442 URLs** (230.407 × 6),
+no 200.340. Nada del diseño se cae —ninguna se pregenera, todas van `noindex` y fuera del
+sitemap— pero confirma que **generar estáticamente es inviable** y que la política de
+graduación (Q-4) es la pieza que impide que esto crezca sin control.
+
+Columnas reales de `cities`: `geoname_id, name, ascii_name, country_code, lat, lon,
+population, timezone`. Dos consecuencias directas:
+- **`timezone` es IANA de verdad** (`Europe/Andorra`), no el `round(lon/15)` del JSON
+  local. Confirma D-«datos de Supabase, no del JSON».
+- **No hay columna de elevación.** El hueco que el spec marcó como bloqueante es real y
+  hay que resolverlo en B, no descubrirlo a mitad.
+
+**Q-2 — RESUELTA: la cobertura depende del tamaño, y el problema es lituano.**
+`city_names` tiene 167.640 filas. La media global engaña (es 10,7 %, lt 2,3 %); lo que
+importa es la cobertura donde hay ciudades que alguien busca:
+
+| Población | n | en | ru | de | lt |
+|---|---|---|---|---|---|
+| > 1 M | 543 | 88 % | 91 % | 79 % | **65 %** |
+| 200 k – 1 M | 2410 | 61 % | 68 % | 44 % | **34 %** |
+| 50 k – 200 k | 9068 | 54 % | 58 % | 39 % | **27 %** |
+| 15 k – 50 k | 21394 | 34 % | 42 % | 23 % | **12 %** |
+
+Matiz que la tabla esconde y que decide la respuesta: **para las lenguas en alfabeto
+latino, no tener fila suele significar que el nombre es idéntico** (Madrid es Madrid en
+alemán), así que un 79 % no es un 21 % de páginas rotas. Donde la ausencia SÍ se ve es en
+`ru` —que es la mejor cubierta, 91 % en las grandes, precisamente porque el cirílico
+obligó a rellenarlo— y sobre todo en `lt`, que declina y adapta los topónimos
+(`Madridas`) y se queda en el 65 % incluso en megaciudades.
+
+**Se mantiene la recomendación (a)**: endónimo latino con línea de procedencia. Pero el
+esfuerzo de redacción va a `lt`, que es donde de verdad se lee a medio traducir.
+
+**Q-3, Q-4, Q-5 — sin cambios.** Fuera de B, graduación manual, upsert en caliente. Q-1
+refuerza las tres: con 1,38 M de URLs posibles, promover a curada tiene que seguir siendo
+un acto humano.
+
+**Dato que reencuadra el valor de B.** Sobre una muestra de 20.000 filas repartidas por
+toda la tabla, el chip de PR A manda al índice al **35,4 %** de los casos — pero al
+**50,9 %** de las ciudades de más de 500.000 habitantes. Falla MÁS cuanto más grande es
+la ciudad, porque las grandes están repartidas por todo el mundo y las pequeñas se
+agrupan donde ya hay built-ins. O sea que B no atiende a la cola larga: atiende
+precisamente a lo que la gente busca.
+
 ---
 
 ## 8. Contrato de verificación de PR A
