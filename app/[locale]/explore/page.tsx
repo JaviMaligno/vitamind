@@ -139,7 +139,7 @@ export default function ExplorePage() {
       {/* Entry into the per-city SEO pages, which are otherwise only reachable
           from Google or the sitemap: the current city direct, plus the full index. */}
       <div className="mx-auto max-w-[1280px] px-4 pb-1 text-caption flex items-center gap-4">
-        <CityPageLink cityId={cityId} lat={lat} lon={lon} />
+        <CityPageLink cityId={cityId} cityName={cityName} lat={lat} lon={lon} />
         <Link
           href={indexPath(locale)}
           className="inline-flex min-h-[36px] w-fit items-center gap-1.5 rounded-full border border-glass-border bg-glass px-3 text-caption font-medium text-accent shadow-sm backdrop-blur-md transition-colors hover:bg-surface-elevated"

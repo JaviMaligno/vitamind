@@ -28,18 +28,28 @@ export function cityPagePath(base: string, locale: string): string | null {
  * Where the "see the full city page" chip should send someone, and how honest the
  * copy has to be about it.
  *
- * - `exact`   — it really is their city. Name it, no distance.
+ * - `exact`   — it really is their city, and it is curated. Name it, no distance.
+ * - `dynamic` — it really is their city, and it is one of the ~235,000 searchable
+ *               ones. Name it, no distance either: since the on-demand route
+ *               landed there is nothing being substituted, so nothing to qualify.
  * - `nearby`  — a builtin city stands in. `silent: true` is the one branch allowed
  *               to name it without qualifying (the latitude band of D-4 licenses
  *               it); otherwise the copy must print `km`.
  * - `index`   — nothing worth offering. Send them to the directory, which lists
  *               eight candidates with their distances.
  *
- * There is no fourth answer: this never returns null, which is the bug it replaces
- * (the chip used to vanish, unexplained, for 54 % of searchable cities).
+ * This never returns null, which is the bug it replaces (the chip used to vanish,
+ * unexplained, for 54 % of searchable cities).
  */
 export type DirectoryTarget =
   | { kind: "exact"; base: string }
+  /**
+   * A searchable city that is not curated. It now has a page of its own, so the
+   * chip stops substituting: no stand-in, no distance to explain. The link uses
+   * the `id-{geonameid}` alias because that id is the only thing the saved
+   * preference carries — the route redirects it to the canonical slug.
+   */
+  | { kind: "dynamic"; geonameId: number }
   | { kind: "nearby"; base: string; km: number; silent: boolean }
   | { kind: "index" };
 
@@ -50,10 +60,13 @@ function lonDelta(a: number, b: number): number {
 
 /**
  * Resolve the chip's destination. `cityId` is the saved place's id when there is
- * one; `lat`/`lon` are authoritative, because searched cities come back as
- * `geonames:*`, a map tap emits `custom:${Date.now()}` and a GPS fix has no id at
- * all — measuring by coordinates makes all three behave the same.
- * Client-safe (no message imports).
+ * one, and the two id families that name a real row — `builtin:` and `geonames:` —
+ * are answered from the id alone, because each has a page of its own.
+ *
+ * `lat`/`lon` decide everything else, and are what the remaining branches measure:
+ * a map tap emits `custom:${Date.now()}` and a GPS fix has no id at all, so there
+ * is no city row behind either and a stand-in, distance stated, is the best answer
+ * available. Client-safe (no message imports).
  */
 export function directoryTarget(
   cityId: string | undefined,
@@ -61,6 +74,13 @@ export function directoryTarget(
   lon: number,
 ): DirectoryTarget {
   if (cityId?.startsWith("builtin:")) return { kind: "exact", base: cityId.replace(/^builtin:/, "") };
+
+  // A searched city carries its geonameid, and PR B gave every one of those a page.
+  // Curated cities never reach here (the branch above caught them), so this cannot
+  // steal a `/vitamin-d/madrid` link — and even if a `geonames:` id for a curated
+  // city did arrive, the route redirects the alias onto the curated URL.
+  const geo = /^geonames:(\d+)$/.exec(cityId ?? "");
+  if (geo) return { kind: "dynamic", geonameId: Number(geo[1]) };
 
   const hit = nearestBuiltin(lat, lon);
   if (!hit) return { kind: "index" };
