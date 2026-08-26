@@ -32,6 +32,32 @@ describe("assignSlugs", () => {
     const out = assignSlugs([row(1, "Toledo", "ES", 900), row(2, "Toledo", "US", 800)], new Set());
     expect(out.map((r) => r.slug).sort()).toEqual(["toledo-es", "toledo-us"]);
   });
+
+  /**
+   * The published URL wins over population, and it wins without the caller
+   * having to preload `taken`. Delete the first pass in `assignSlugs` and this
+   * is the only test that goes red: the other four never set `slug` on a row,
+   * so they exercise the `taken` path and never the immutability branch.
+   */
+  it("lets a row keep its published slug even when a bigger city wants that form", () => {
+    const published: SeedRow = { ...row(1, "Toledo", "ES", 100), slug: "toledo-es" };
+    const out = assignSlugs([published, row(2, "Toledo", "ES", 900)], new Set());
+    expect(out.find((r) => r.geoname_id === 1)!.slug).toBe("toledo-es");
+    expect(out.find((r) => r.geoname_id === 2)!.slug).toBe("toledo-es-2");
+    expect(new Set(out.map((r) => r.slug)).size).toBe(out.length);
+  });
+
+  it("claims every preserved slug before assigning, whatever order the rows arrive in", () => {
+    const rows: SeedRow[] = [
+      row(3, "Toledo", "ES", 5000),
+      { ...row(1, "Toledo", "ES", 10), slug: "toledo-es" },
+      { ...row(2, "Toledo", "ES", 20), slug: "toledo-es-2" },
+    ];
+    const out = assignSlugs(rows, new Set());
+    expect(out.find((r) => r.geoname_id === 1)!.slug).toBe("toledo-es");
+    expect(out.find((r) => r.geoname_id === 2)!.slug).toBe("toledo-es-2");
+    expect(new Set(out.map((r) => r.slug)).size).toBe(3);
+  });
 });
 
 describe("parseElevation — GeoNames column 16 (dem)", () => {

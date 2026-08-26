@@ -76,6 +76,15 @@ export function parseElevation(raw: string): number | null {
  * `taken` is mutated as we go: two rows of the same batch would otherwise
  * collide with each other, not just with what the database already has.
  *
+ * Preserved slugs are claimed in a FIRST PASS, before anything is assigned.
+ * Claiming them inside the main loop instead would depend on population order:
+ * a row that already owns `toledo-es` but has 100 inhabitants is visited after
+ * an unslugged Toledo of 900, which would take the short form for itself and
+ * hand the same string to both. That is a UNIQUE violation on `idx_cities_slug`
+ * — and since a failed upsert only logs, it would silently drop a batch of a
+ * thousand. Two passes make the function correct on its own rather than relying
+ * on the caller having preloaded `taken`.
+ *
  * Rows come back in their ORIGINAL order (the sort runs over a copy of the
  * indices), because the caller batches them against the parsed dump.
  */
@@ -88,10 +97,10 @@ export function assignSlugs(rows: SeedRow[], taken: Set<string>): SeedRow[] {
   );
 
   const slugs: string[] = new Array(rows.length);
+  for (const r of rows) if (r.slug) taken.add(r.slug);
   for (const i of order) {
     const r = rows[i];
     if (r.slug) {
-      taken.add(r.slug);
       slugs[i] = r.slug;
       continue;
     }
@@ -110,6 +119,13 @@ export function assignSlugs(rows: SeedRow[], taken: Set<string>): SeedRow[] {
  * Every slug the table already holds: the set to avoid colliding with, and the
  * geoname_id → slug map that pins those rows to the slug they were published
  * under. Paged, because the table has ~230k rows and PostgREST caps a response.
+ *
+ * The `order` is load-bearing, not tidiness. `range()` without one leaves the
+ * row order up to the planner, and across the ~230 requests this takes that
+ * order is not guaranteed to stay put. A row that slips through the gap between
+ * two pages is a slug missing from `taken` and from `existing`, which hands its
+ * published URL to somebody else on the next run — the one thing the slug is
+ * supposed to be immune to.
  */
 async function loadExistingSlugs(
   supabase: SupabaseClient
@@ -121,6 +137,7 @@ async function loadExistingSlugs(
       .from("cities")
       .select("geoname_id, slug")
       .not("slug", "is", null)
+      .order("geoname_id", { ascending: true })
       .range(from, from + BATCH_SIZE - 1);
     if (error) throw new Error(`reading existing slugs: ${error.message}`);
     if (!data || data.length === 0) break;
