@@ -835,6 +835,8 @@
     "indexCitiesLabel": "cities",
     "allCitiesLink": "Browse all cities",
     "howCalculated": "How these times are calculated",
+    "dynamicProvenance": "{city} data from GeoNames. It is not one of our featured cities: this page is generated on demand from its coordinates, its time zone and its elevation.",
+    "dynamicNameLatin": "The name is shown in its original spelling because we have no translation for this language.",
     "viewCityPage": "View the full {city} page",
     "viewNearestCityPage": "View the {city} page, {km} km away",
     "viewIndexInstead": "No city page is nearby. See all cities",

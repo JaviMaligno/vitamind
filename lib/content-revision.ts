@@ -118,16 +118,28 @@ export const SUN_MONTH_REVISION: ContentRevision = {
  * genitive, and French and Russian fixed a dangling quantifier and a number
  * disagreement. Same reasoning, same verdict: still not one byte of what a city
  * page prints.
+ *
+ * All six moved once more when `cityPage.dynamicProvenance` and
+ * `cityPage.dynamicNameLatin` were added for the on-demand city pages. Those two
+ * keys are rendered only by the on-demand branch — a `noindex` page that is not
+ * in the sitemap and therefore has no `lastmod` to state — so once again the 438
+ * prerendered pages print exactly what they printed before, and `date` stays.
+ *
+ * The pattern is now established enough to state as a rule: `copyParts` hashes
+ * each namespace WHOLE, so ADDING a key to `cityPage` will always move all six
+ * `copy.*`, whether or not any of the 438 pages renders it. Moving `date` for
+ * one of these is the mistake, not skipping it. Move `date` only when the diff
+ * touches a key these pages actually render.
  */
 export const CITY_PAGE_REVISION: ContentRevision = {
   date: "2026-08-17",
   parts: {
-    "copy.es": "c9d9516cdf41e807",
-    "copy.en": "aacd37acffb61d09",
-    "copy.fr": "3cebb7985b7cc2eb",
-    "copy.de": "ef4e9ff3a53337e3",
-    "copy.ru": "d0e786a4e57a05d0",
-    "copy.lt": "e37baad848b76253",
+    "copy.es": "34ca0e375247fe2a",
+    "copy.en": "bca2707728053e22",
+    "copy.fr": "8a027f7cb5044894",
+    "copy.de": "b3e19fe375854bb1",
+    "copy.ru": "39c852cd4713ae68",
+    "copy.lt": "ff610006e37f9b63",
     cities: "c66cfdadbf8dabad",
     figures: "41ccb7d4c32d4255",
     constants: "09032456232a5db5",
