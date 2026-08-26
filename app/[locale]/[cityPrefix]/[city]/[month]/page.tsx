@@ -13,7 +13,8 @@ import {
 import { baseSlug, cityPathname, localizedCityName } from "@/lib/city-routes";
 import { nearbyCities } from "@/lib/city-nearby";
 import { capFirst, monthName } from "@/lib/city-copy";
-import { fmtTime, fmtDayLength, DOY_REFERENCE_YEAR } from "@/lib/solar";
+import { fmtTime, fmtDayLength, DOY_REFERENCE_YEAR, sunDirection, doyFromMonthDay } from "@/lib/solar";
+import { compassPoint } from "@/lib/compass";
 import { monthData, sunPageCopy } from "@/lib/sun-copy";
 import { sunProse } from "@/lib/sun-prose";
 import { isTreated } from "@/lib/phase2-cities";
@@ -92,7 +93,25 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
     title,
     description,
     alternates,
-    openGraph: { title, description, url: alternates.canonical, type: "article" },
+    openGraph: {
+      title,
+      description,
+      url: alternates.canonical,
+      type: "article",
+      /**
+       * Stated explicitly, because the one Next infers is a redirect.
+       *
+       * It builds the image URL from the locale segment — /es/amanecer/... —
+       * but Spanish is the default locale and `proxy.ts` strips that prefix, so
+       * the tag Next emits answers 307 and only the unprefixed path answers 200.
+       * Plenty of social crawlers do not follow redirects for images, which
+       * would lose the card in the locale that carries the most traffic.
+       *
+       * The canonical already carries the right shape per locale (no prefix for
+       * es, /en for English), so deriving from it is correct everywhere.
+       */
+      images: [{ url: `${alternates.canonical}/opengraph-image`, width: 1200, height: 630, alt: title }],
+    },
   };
 }
 
@@ -192,6 +211,31 @@ export default async function SunriseMonthPage({ params }: { params: Promise<Par
    * The labels are the ones already on screen, so the graph adds no copy of its
    * own and cannot drift from the visible text.
    */
+  /**
+   * The Event `description`. Google lists it among the fields it wants on an
+   * Event, and unlike `performer`, `organizer` or `offers` it can be filled
+   * without inventing a semantics a sunrise does not have.
+   *
+   * It states the compass point and not the bearing: `sunDirection` is exact,
+   * but the `declination()` feeding it is a one-term approximation reaching
+   * 2.33 degrees of error at the latitudes we ship. The visible page prints
+   * degrees next to a note saying so; a description field has nowhere to put
+   * that note. The eight-point sector is 45 degrees wide and absorbs it.
+   *
+   * Computed per day from that day's own doy, not from the mid-month figure the
+   * visible section uses — these describe the first and last of the month.
+   */
+  const describeDirection = (d: { day: number; sunrise: number | null; sunset: number | null }) => {
+    const dir = sunDirection(city.lat, doyFromMonthDay(monthIndex, d.day));
+    if (!dir) return d;
+    const at = (bearing: number) => tCompass(`in.${compassPoint(bearing)}`);
+    return {
+      ...d,
+      sunriseDescription: t("eventDescriptionSunrise", { city: cityName, point: at(dir.sunriseBearing) }),
+      sunsetDescription: t("eventDescriptionSunset", { city: cityName, point: at(dir.sunsetBearing) }),
+    };
+  };
+
   const graph = sunPageGraph({
     city,
     base,
@@ -201,7 +245,8 @@ export default async function SunriseMonthPage({ params }: { params: Promise<Par
     url: buildSunAlternates(p.locale, base, monthIndex).canonical,
     pageName: pageTitle,
     labels: { sunrise: tSun("sunrise"), sunset: tSun("sunset"), cities: tNav("cities") },
-    days: [first, last],
+    credits: { organizer: t("eventOrganizer"), performer: t("eventPerformer") },
+    days: [first, last].map(describeDirection),
     faq,
   });
 

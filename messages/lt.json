@@ -795,7 +795,11 @@
     "faqDirectionQ": "Kur leidžiasi saulė ({city}, {month})?",
     "faqDirectionA": "{city}, {month}: mėnesio viduryje saulė leidžiasi {sunsetPoint} — azimutas {sunsetBearing}°, matuojamas nuo tikrosios šiaurės, {offSide, select, north {t. y. {offDegrees}° į šiaurę nuo tikslių vakarų} south {t. y. {offDegrees}° į pietus nuo tikslių vakarų} other {t. y. beveik tiksliai vakaruose}}. Teka ji {sunrisePoint}, ties {sunriseBearing}° azimutu. {drift, select, north {Per mėnesį abu taškai pasislenka {driftDegrees}° į šiaurę.} south {Per mėnesį abu taškai pasislenka {driftDegrees}° į pietus.} other {Per mėnesį abu taškai beveik nepajuda.}}",
     "note": "Astronominės reikšmės yra orientacinės: priklausomai nuo metų jos gali skirtis viena–dviem minutėmis.",
-    "howCalculated": "Kaip apskaičiuoti šie laikai"
+    "howCalculated": "Kaip apskaičiuoti šie laikai",
+    "eventDescriptionSunrise": "Saulė {city} teka {point}.",
+    "eventDescriptionSunset": "Saulė {city} leidžiasi {point}.",
+    "eventOrganizer": "Dievas",
+    "eventPerformer": "Saulė"
   },
   "cityPage": {
     "title": "Vitaminas D iš saulės: {city}",

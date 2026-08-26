@@ -156,6 +156,21 @@ export interface SunDayFigures {
   day: number;
   sunrise: number | null;
   sunset: number | null;
+  /**
+   * Localised one-liners for the Event `description`, built by the page because
+   * only it has the translator.
+   *
+   * They name the compass point and deliberately not the bearing in degrees.
+   * `declination()` is a one-term approximation whose error reaches 2.33 degrees
+   * at the latitudes we ship, which the visible page discloses in a note next to
+   * the figure — a description field has nowhere to put that note, and a bare
+   * "71°" would claim a precision the model does not have. An eight-point sector
+   * is 45 degrees wide and absorbs the error.
+   *
+   * Absent on polar days, where there is no direction and no Event either.
+   */
+  sunriseDescription?: string;
+  sunsetDescription?: string;
 }
 
 export interface SunPageGraphInput {
@@ -177,6 +192,11 @@ export interface SunPageGraphInput {
    * it cannot drift from the visible text or disturb a running copy experiment.
    */
   labels: { sunrise: string; sunset: string; cities: string };
+  /**
+   * Localised names for the Event's `performer` and `organizer`. Optional so the
+   * builder stays usable without them, and so their absence is testable.
+   */
+  credits?: { organizer: string; performer: string };
   /** The days the page states in its intro — first and last of the month. */
   days: readonly SunDayFigures[];
   /** The Question nodes the page already builds, passed through unchanged. */
@@ -193,7 +213,7 @@ export function cityPlaceId(base: string): string {
 }
 
 export function sunPageGraph({
-  city, base, cityName, locale, monthIndex, url, pageName, labels, days, faq,
+  city, base, cityName, locale, monthIndex, url, pageName, labels, credits, days, faq,
 }: SunPageGraphInput): { "@context": string; "@graph": Node[] } {
   const placeId = cityPlaceId(base);
 
@@ -253,8 +273,8 @@ export function sunPageGraph({
     // is named as pending in lib/sun-routes.ts).
     const sunsetPastMidnight = d.sunrise !== null && d.sunset !== null && d.sunset < d.sunrise;
     return [
-      sunEvent({ city, monthIndex, day: d.day, hours: d.sunrise, kind: "sunrise", label: labels.sunrise, cityName, url, placeId }),
-      sunEvent({ city, monthIndex, day: d.day, dateDay: d.day + (sunsetPastMidnight ? 1 : 0), hours: d.sunset, kind: "sunset", label: labels.sunset, cityName, url, placeId }),
+      sunEvent({ city, monthIndex, day: d.day, hours: d.sunrise, kind: "sunrise", label: labels.sunrise, cityName, url, placeId, description: d.sunriseDescription, credits }),
+      sunEvent({ city, monthIndex, day: d.day, dateDay: d.day + (sunsetPastMidnight ? 1 : 0), hours: d.sunset, kind: "sunset", label: labels.sunset, cityName, url, placeId, description: d.sunsetDescription, credits }),
     ];
   }).filter((e): e is Node => e !== null);
 
@@ -292,12 +312,12 @@ function breadcrumbTrail({
  * Polar day and night print an em dash on the page; the node is dropped instead
  * of being filled with a plausible-looking instant.
  *
- * No `eventStatus` or `eventAttendanceMode`: those describe scheduled gatherings
- * that can be cancelled or attended online. A sunrise is neither, and asserting
- * the vocabulary because competitors do would be a claim about nothing.
+ * The vocabulary this borrows was written for concerts. Each optional property
+ * below carries the argument for why it is true of a sunrise; none is emitted
+ * because a competitor emits it.
  */
 function sunEvent({
-  city, monthIndex, day, dateDay = day, hours, kind, label, cityName, url, placeId,
+  city, monthIndex, day, dateDay = day, hours, kind, label, cityName, url, placeId, description, credits,
 }: {
   city: City;
   monthIndex: number;
@@ -311,6 +331,8 @@ function sunEvent({
   cityName: string;
   url: string;
   placeId: string;
+  description?: string;
+  credits?: { organizer: string; performer: string };
 }): Node | null {
   if (hours === null) return null;
   const offset = utcOffsetHours(city, monthIndex, day);
@@ -322,6 +344,58 @@ function sunEvent({
     name: `${label} — ${cityName}`,
     startDate,
     location: { "@id": placeId },
+    // Omitted rather than emitted empty when the page could not build one.
+    ...(description ? { description } : {}),
+    /**
+     * Scheduled, in the most literal sense the vocabulary allows: orbital
+     * mechanics. More reliable than any concert this property was written for.
+     * Clouds do not cancel a sunrise — they cancel the spectacle — so nothing
+     * here ever becomes EventCancelled.
+     */
+    eventStatus: "https://schema.org/EventScheduled",
+    /**
+     * Free, and this is the plainest true statement on the whole page: watching
+     * the sun come up costs nothing. `price: "0"` with InStock is exactly what
+     * Offer means, not a workaround for an empty field.
+     */
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "EUR",
+      availability: "https://schema.org/InStock",
+      url,
+    },
+    /**
+     * In person, which is the only way to attend one. The alternative values
+     * describe streaming, and nobody streams the sunrise as the event itself.
+     */
+    eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
+    /**
+     * Plain strings, not `{"@type": "Person"}` nodes.
+     *
+     * `performer` and `organizer` range over Person and Organization and nothing
+     * else — checked against schema.org, which has no type for a celestial body
+     * or for anything else these two are. Emitting a Person node would assert
+     * that the sun is a person, which is false; a literal only names it and
+     * asserts no type at all. Naming them stretches a vocabulary written for
+     * concerts either way, and that is the owner's call: a first cause and a
+     * mechanical explanation are not in competition, which is why the rest of
+     * this site cites 51 papers without contradiction.
+     */
+    ...(credits ? { performer: credits.performer, organizer: credits.organizer } : {}),
+    /**
+     * The page's own share card, rendered from this city and this month.
+     *
+     * This was the last field left empty, because filling it meant carrying a
+     * picture the page does not show — which Google's structured-data policy
+     * warns against. A card generated from the page's own figures is not that.
+     *
+     * Derived from the canonical rather than from the locale segment: Next
+     * builds its own image URL as /es/amanecer/... and the proxy redirects that
+     * to the unprefixed path, so the inferred one answers 307. The page states
+     * this same URL in og:image for the same reason.
+     */
+    image: `${url}/opengraph-image`,
   };
 }
 
