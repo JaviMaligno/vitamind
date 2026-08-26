@@ -795,7 +795,11 @@
     "faqDirectionQ": "Where does the sun set in {city} in {month}?",
     "faqDirectionA": "Mid-{month} in {city}: the sun sets {sunsetPoint}, a bearing of {sunsetBearing}° measured from true north, {offSide, select, north {which is {offDegrees}° north of due west} south {which is {offDegrees}° south of due west} other {which is as good as due west}}. It rises {sunrisePoint}, at {sunriseBearing}°. {drift, select, north {Over the month both points shift {driftDegrees}° north.} south {Over the month both points shift {driftDegrees}° south.} other {Over the month both points barely move.}}",
     "note": "Approximate astronomical values: they can shift a minute or two from year to year.",
-    "howCalculated": "How these times are calculated"
+    "howCalculated": "How these times are calculated",
+    "eventDescriptionSunrise": "The sun rises {point} in {city}.",
+    "eventDescriptionSunset": "The sun sets {point} in {city}.",
+    "eventOrganizer": "God",
+    "eventPerformer": "The Sun"
   },
   "cityPage": {
     "title": "Vitamin D from the sun in {city}",

@@ -1,4 +1,5 @@
 import { describe, it, expect, afterAll } from "vitest";
+import { readFileSync } from "node:fs";
 import {
   ORGANIZATION_ID, PERSON_ID, WEBAPP_ID,
   siteGraph, authorship, modelCitations, sunPageGraph, cityPlaceId,
@@ -187,6 +188,36 @@ describe("sunPageGraph", () => {
     expect(g["@graph"].map((n) => n["@type"])).toEqual(
       expect.arrayContaining(["Place", "WebPage", "BreadcrumbList", "Event", "FAQPage"]),
     );
+  });
+
+  it("carries the description the page built, and omits the field when it built none", () => {
+    // The page supplies these because only it has the translator. A sunrise on a
+    // polar day has no direction and no Event either, so the absent case here is
+    // the one where the page had a sunrise but could not name a direction.
+    const withText = nodesOfType(
+      madridAugust({ days: [{ day: 1, sunrise: 7.2, sunset: 21.5, sunriseDescription: "El sol sale por el este en Madrid.", sunsetDescription: "El sol se pone por el oeste en Madrid." }] }),
+      "Event",
+    );
+    expect(withText.map((e) => e.description)).toEqual([
+      "El sol sale por el este en Madrid.",
+      "El sol se pone por el oeste en Madrid.",
+    ]);
+
+    const without = nodesOfType(madridAugust({ days: [{ day: 1, sunrise: 7.2, sunset: 21.5 }] }), "Event");
+    for (const e of without) expect(e).not.toHaveProperty("description");
+    // An empty string would be worse than nothing: it asserts a blank description.
+    expect(JSON.stringify(without)).not.toContain('"description"');
+  });
+
+  it("states a compass point and never a bearing, which the model cannot back to the degree", () => {
+    // declination() is a one-term approximation reaching 2.33 degrees of error at
+    // the latitudes we ship. The visible page prints degrees beside a note saying
+    // so; a description field has nowhere to put that note.
+    const es = JSON.parse(readFileSync("messages/es.json", "utf8"));
+    for (const key of ["eventDescriptionSunrise", "eventDescriptionSunset"]) {
+      expect(es.sunrisePage[key]).not.toMatch(/°|\{[a-zA-Z]*[Bb]earing\}|\{degrees\}/);
+      expect(es.sunrisePage[key]).toContain("{point}");
+    }
   });
 
   it("anchors the Place on a city-level @id, so 12 months x 6 locales mean one entity", () => {
@@ -459,10 +490,60 @@ describe("sunPageGraph", () => {
     }
   });
 
-  it("claims no attendance mode or event status it cannot justify", () => {
-    const json = JSON.stringify(nodesOfType(madridAugust(), "Event"));
-    expect(json).not.toContain("eventAttendanceMode");
-    expect(json).not.toContain("eventStatus");
+  it("is scheduled by orbital mechanics and attended in person", () => {
+    // Both were absent at first on the reasoning that a sunrise is not the kind
+    // of thing these describe. Neither objection survived: a sunrise is
+    // scheduled more reliably than any concert the property was written for
+    // (clouds cancel the spectacle, not the event), and watching one is
+    // attendance in person — the alternative values describe streaming.
+    for (const e of nodesOfType(madridAugust(), "Event")) {
+      expect(e.eventStatus).toBe("https://schema.org/EventScheduled");
+      expect(e.eventAttendanceMode).toBe("https://schema.org/OfflineEventAttendanceMode");
+    }
+  });
+
+  it("points image at the page's own card, on the path that answers rather than redirects", () => {
+    // Next infers /es/amanecer/... for the image and the proxy 307s that to the
+    // unprefixed path, so the inferred URL is a redirect. Markup pointing at a
+    // redirect is how a 404 ends up inside structured data.
+    for (const e of nodesOfType(madridAugust(), "Event")) {
+      expect(e.image).toBe(`${SITE_URL}/amanecer/madrid/agosto/opengraph-image`);
+      expect(e.image).not.toContain("/es/");
+    }
+  });
+
+  it("prices the sunrise at zero, which is the plainest true statement on the page", () => {
+    for (const e of nodesOfType(madridAugust(), "Event")) {
+      expect(e.offers).toEqual({
+        "@type": "Offer",
+        price: "0",
+        priceCurrency: "EUR",
+        availability: "https://schema.org/InStock",
+        url: `${SITE_URL}/amanecer/madrid/agosto`,
+      });
+    }
+  });
+
+  it("credits the sun and its author when the page supplies them, and omits both when it does not", () => {
+    // performer and organizer take a Person or an Organization and nothing else,
+    // so this stretches a vocabulary written for concerts. Deliberate, and the
+    // owner's call: a first cause and a mechanical explanation are not rivals.
+    const credited = nodesOfType(
+      madridAugust({ credits: { organizer: "Dios", performer: "El Sol" } }),
+      "Event",
+    );
+    for (const e of credited) {
+      // Literals, not Person nodes: schema.org ranges these over Person and
+      // Organization only and has no type for what either of these is, so a node
+      // would assert the sun is a person. A string names it and claims no type.
+      expect(e.performer).toBe("El Sol");
+      expect(e.organizer).toBe("Dios");
+      expect(JSON.stringify(e)).not.toContain('"@type":"Person"');
+    }
+
+    const plain = JSON.stringify(nodesOfType(madridAugust(), "Event"));
+    expect(plain).not.toContain("performer");
+    expect(plain).not.toContain("organizer");
   });
 
   it("carries the FAQ through untouched and attributes it", () => {

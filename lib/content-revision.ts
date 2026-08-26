@@ -86,14 +86,14 @@ export interface ContentRevision {
 
 /** The 2880 month pages: `/{sunPrefix}/{city}/{month}` × 6 locales. */
 export const SUN_MONTH_REVISION: ContentRevision = {
-  date: "2026-08-17",
+  date: "2026-08-26",
   parts: {
-    "copy.es": "2c0b6f3abd337018",
-    "copy.en": "0dbe30f5ec88d908",
-    "copy.fr": "f7b3b236826dad5b",
-    "copy.de": "5d6e47b781fba86f",
-    "copy.ru": "1fd7fc4fbb840698",
-    "copy.lt": "609050a0fcd6de95",
+    "copy.es": "19c8154efe44dd27",
+    "copy.en": "01d1084af16f6106",
+    "copy.fr": "cba7554aea029b9d",
+    "copy.de": "c5917fcf7f664286",
+    "copy.ru": "7d0427fc5082438b",
+    "copy.lt": "2fa9119bd4283f7d",
     cities: "35aebb84c49f350e",
     figures: "59a94b77e7c0efa1",
     constants: "a3b447afa17fa07c",
