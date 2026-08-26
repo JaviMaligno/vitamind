@@ -312,9 +312,9 @@ function breadcrumbTrail({
  * Polar day and night print an em dash on the page; the node is dropped instead
  * of being filled with a plausible-looking instant.
  *
- * No `eventStatus` or `eventAttendanceMode`: those describe scheduled gatherings
- * that can be cancelled or attended online. A sunrise is neither, and asserting
- * the vocabulary because competitors do would be a claim about nothing.
+ * The vocabulary this borrows was written for concerts. Each optional property
+ * below carries the argument for why it is true of a sunrise; none is emitted
+ * because a competitor emits it.
  */
 function sunEvent({
   city, monthIndex, day, dateDay = day, hours, kind, label, cityName, url, placeId, description, credits,
