@@ -95,7 +95,30 @@ async function main() {
   console.log(`Done. Inserted/updated ${inserted} cities.`);
 }
 
-main().catch((err) => {
-  console.error(err);
-  process.exit(1);
-});
+/**
+ * IMPORT SAFETY — run the seeder only when this file IS the entry point.
+ *
+ * `scripts/__tests__/seed-slug-assignment.test.ts` imports this module for its
+ * pure functions, and `npm test` runs inside vercel.json's `buildCommand`,
+ * where NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are both set
+ * (lib/push-store.ts, lib/oauth.ts and lib/mcp-personal.ts need them at
+ * runtime). Without this guard, that import runs `main()`: a GeoNames download
+ * followed by an upsert of 230,407 rows into the PRODUCTION `cities` table —
+ * the table that serves the live search — on every production build.
+ *
+ * Checked against argv rather than `import.meta`, so it behaves the same
+ * whether the file is loaded as ESM or transpiled to CJS. `npx tsx
+ * scripts/seed-cities.ts` puts the script path in argv[1]; vitest puts its own
+ * binary there.
+ */
+const invokedDirectly = (process.argv[1] ?? "")
+  .replace(/\\/g, "/")
+  .toLowerCase()
+  .endsWith("scripts/seed-cities.ts");
+
+if (invokedDirectly) {
+  main().catch((err) => {
+    console.error(err);
+    process.exit(1);
+  });
+}
