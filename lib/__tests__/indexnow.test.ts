@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import {
+  baselineProblem,
   INDEXNOW_KEY,
   INDEXNOW_ENDPOINT,
   MAX_URLS_PER_SUBMISSION,
@@ -213,3 +214,46 @@ describe("submitPayload", () => {
     expect(result.body).toContain("Forbidden");
   });
 });
+
+describe("baselineProblem — the guard on the fail-open snapshot", () => {
+  const url = (n: number) => `<url><loc>https://getvitamind.app/p${n}</loc></url>`;
+  const wrap = (body: string) =>
+    `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="x">${body}</urlset>`;
+
+  it("passes a complete sitemap", () => {
+    expect(baselineProblem(wrap([1, 2, 3].map(url).join("")))).toBeNull();
+  });
+
+  it("rejects the empty file the fail-open produces", () => {
+    // ci.yml turns a failed curl into `printf '' > file` on purpose, so this is
+    // the shape the guard exists for, not a hypothetical.
+    expect(baselineProblem("")).toBe("it parsed to 0 URLs");
+  });
+
+  it("rejects a TRUNCATED snapshot even though it parses plenty of URLs", () => {
+    /**
+     * The case that killed the first design. A url-count floor cannot catch this:
+     * cutting the real 3.2 MB sitemap at 200 KB leaves 241 valid <loc> entries,
+     * which clears any floor low enough to be safe, and the caller would then
+     * submit every one of the ~3,600 current URLs. Absence of the closing tag is
+     * what identifies it, at any length.
+     */
+    const truncated = wrap(Array.from({ length: 300 }, (_, i) => url(i)).join("")).replace(
+      "</urlset>",
+      "",
+    );
+    expect(baselineProblem(truncated)).toMatch(/300 URLs but has no <\/urlset>/);
+  });
+
+  it("does not punish a legitimate expansion, however large", () => {
+    /**
+     * Growing SUNRISE_CITIES from 40 toward 73 adds ~2,400 URLs in one wave, so a
+     * real baseline can legitimately be a small fraction of the new sitemap. A
+     * proportional guard would block exactly that; this one must not, because the
+     * baseline is still a complete document.
+     */
+    const smallButComplete = wrap(url(1));
+    expect(baselineProblem(smallButComplete)).toBeNull();
+  });
+});
+

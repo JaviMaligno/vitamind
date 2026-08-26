@@ -69,6 +69,42 @@ function decodeXmlEntities(value: string): string {
  * this a snapshot that may be empty (curl failed) or an error page, and an empty
  * "before" must degrade to "everything is new", not crash the step.
  */
+/**
+ * Why a `--before` baseline cannot be trusted, or null when it can.
+ *
+ * The CI snapshot fails OPEN on purpose: an unreadable fetch becomes an empty
+ * file so a flaky curl cannot break a deploy that already succeeded. The price is
+ * that an empty baseline makes `newUrlsSince` report EVERY url as new, and the
+ * caller then pings four engines with the whole site — the over-submission this
+ * module's own comments identify as the abusable move, delivered in the same hour
+ * the fresh sitemap declares most of those urls unchanged.
+ *
+ * Well-formedness is the test, not size, and that is the second design. The first
+ * was a floor on the url count, and it died in testing: a snapshot truncated to
+ * 200 KB of the real 3.2 MB parses to 241 perfectly valid urls, clears any floor
+ * low enough to be safe, and would still have submitted 3,371. Size cannot tell a
+ * truncated fetch from a small sitemap.
+ *
+ * A proportion of the current sitemap fails the other way: growing SUNRISE_CITIES
+ * from 40 toward 73 adds ~2,400 urls at once, leaving a legitimate baseline at 58%
+ * of current, so any ratio tight enough to catch truncation also blocks a planned
+ * expansion.
+ *
+ * What separates them is that a truncated document is not a document: a complete
+ * sitemap closes with `</urlset>` and a cut-off one cannot, at any length. That has
+ * no interaction with how fast the site grows, which is why it is the test used —
+ * with the zero-url case kept beside it for the plain-empty file the fail-open
+ * actually produces.
+ */
+export function baselineProblem(xml: string): string | null {
+  const count = parseSitemapUrls(xml).length;
+  if (count === 0) return "it parsed to 0 URLs";
+  if (!xml.includes("</urlset>")) {
+    return `it parsed ${count} URLs but has no </urlset> — it was cut short`;
+  }
+  return null;
+}
+
 export function parseSitemapUrls(xml: string): string[] {
   const urls = new Set<string>();
   const locPattern = /<loc>([\s\S]*?)<\/loc>/g;

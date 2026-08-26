@@ -1,10 +1,11 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, afterEach, vi } from "vitest";
 import { readdirSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import sitemap from "@/app/sitemap";
 import { SITE_URL } from "@/lib/site";
 import { SUNRISE_CITIES } from "@/lib/sun-routes";
 import { CITY_SLUGS } from "@/lib/city-slugs";
+import { SUN_MONTH_REVISION, CITY_PAGE_REVISION } from "@/lib/content-revision";
 
 describe("sitemap", () => {
   const entries = sitemap();
@@ -111,5 +112,93 @@ describe("sitemap", () => {
       (p) => !entries.some((e) => e.url === `${SITE_URL}${p}`),
     );
     expect(missing).toEqual([]);
+  });
+});
+
+/**
+ * THE LASTMOD POLICY, pinned per family.
+ *
+ * `lastmod` is what the five engines schedule crawls from, and this project's
+ * binding meter is (URLs crawled) × (bytes served). The old sitemap opened with
+ * `new Date()` and stamped it on all 3612 entries, so every deploy — including
+ * ones that touched no page at all — announced the whole site as changed. These
+ * tests exist so that regression cannot come back quietly: what they assert is
+ * not a format but a NUMBER, the count of URLs a deploy re-dates.
+ *
+ * The clock is faked far in the future, and deliberately so: the declared
+ * revisions in lib/content-revision.ts can never be a future date (their own
+ * guard asserts `date <= today`), so a render day of 2030 cannot collide with
+ * one of them and the two sets stay distinguishable however the revisions move.
+ */
+describe("sitemap lastmod policy", () => {
+  const RENDER_DAY = "2030-03-04";
+  const LATER_DAY = "2030-03-05";
+
+  const at = (day: string) => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date(`${day}T12:34:56.000Z`));
+    return sitemap();
+  };
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  const monthCount = SUNRISE_CITIES.length * 12 * 6;
+  const hubCount = SUNRISE_CITIES.length * 6;
+
+  it("re-dates 294 URLs on a deploy, not 3612", () => {
+    const built = at(RENDER_DAY);
+    const moving = built.filter((e) => e.lastModified === RENDER_DAY);
+
+    // 54 app pages + the 240 today hubs. Everything else — 3318 URLs — carries a
+    // date that a deploy cannot move.
+    expect(moving).toHaveLength(54 + hubCount);
+    expect(built.length - moving.length).toBe(438 + monthCount);
+  });
+
+  it("gives each family the date that family's content actually has", () => {
+    const built = at(RENDER_DAY);
+    const find = (url: string) => built.find((e) => e.url === url);
+
+    // App page: its content is the app, so a deploy is its change event.
+    expect(find(`${SITE_URL}/learn`)?.lastModified).toBe(RENDER_DAY);
+    // Hub: its subject is today (see lib/sun-today.ts), never a frozen revision.
+    expect(find(`${SITE_URL}/amanecer/madrid`)?.lastModified).toBe(RENDER_DAY);
+    // City page: four representative days of the reference year.
+    expect(find(`${SITE_URL}/vitamina-d/madrid`)?.lastModified).toBe(CITY_PAGE_REVISION.date);
+    // Month page: a pure function of (city, month, DOY_REFERENCE_YEAR).
+    expect(find(`${SITE_URL}/amanecer/madrid/agosto`)?.lastModified).toBe(SUN_MONTH_REVISION.date);
+    expect(find(`${SITE_URL}/en/sunrise/oslo/august`)?.lastModified).toBe(SUN_MONTH_REVISION.date);
+  });
+
+  it("moves the hubs and only the hubs when the clock moves", () => {
+    const first = at(RENDER_DAY);
+    vi.useRealTimers();
+    const second = at(LATER_DAY);
+
+    const changed = first
+      .map((e, i) => ({ url: e.url, before: e.lastModified, after: second[i].lastModified }))
+      .filter((row) => row.before !== row.after);
+
+    // The 54 app pages plus the 240 hubs, and nothing from the two frozen
+    // families: a day passing (or a deploy happening) is not a content change
+    // for a page whose figures are a function of the calendar, not of the clock.
+    expect(changed).toHaveLength(54 + hubCount);
+    expect(changed.some((row) => row.url.includes("/agosto"))).toBe(false);
+    expect(changed.some((row) => row.url === `${SITE_URL}/vitamina-d/madrid`)).toBe(false);
+  });
+
+  /**
+   * Date-only, not an instant. The old value was `2026-08-21T23:40:09.563Z`
+   * repeated 3612 times — millisecond precision about when a page's content
+   * changed, which nobody has. `YYYY-MM-DD` is valid per sitemaps.org, and
+   * `MetadataRoute.Sitemap` passes a string through verbatim.
+   */
+  it("emits every lastmod as a plain date", () => {
+    for (const e of at(RENDER_DAY)) {
+      expect(typeof e.lastModified, e.url).toBe("string");
+      expect(e.lastModified as string, e.url).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    }
   });
 });

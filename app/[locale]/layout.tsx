@@ -5,6 +5,7 @@ import { getMessages, setRequestLocale } from "next-intl/server";
 import { Analytics } from "@vercel/analytics/react";
 import AppShell from "@/components/AppShell";
 import { routing } from "@/i18n/routing";
+import { pickClientMessages } from "@/i18n/client-messages";
 import { buildAlternates } from "@/i18n/metadata";
 import { SITE_URL, IS_PRODUCTION_DEPLOY } from "@/lib/site";
 import SchemaScript from "@/components/SchemaScript";
@@ -102,7 +103,31 @@ export default async function LocaleLayout(
         <SchemaScript locale={locale} description={DESCRIPTIONS[locale] ?? DESCRIPTIONS.en} />
       </head>
       <body style={{ margin: 0 }}>
-        <NextIntlClientProvider messages={messages} locale={locale}>
+        {/*
+          Only the namespaces a client component can actually read. next-intl
+          serialises whatever it is given into the RSC payload of every response,
+          so handing it the whole file put all 34 namespaces — including the seven
+          that only ever render on the server — into the HTML and .rsc of every
+          page. Measured on production-build artifacts against what the live
+          site was serving: 41-45 KB off the raw HTML of every response, a mean
+          of -24% per page (the table is in i18n/client-messages.ts). Vercel
+          bills ISR reads as crawled URLs × served bytes and the read meter sits
+          near the Hobby ceiling, so this is bytes off the one limit that binds.
+
+          Server components are unaffected: `useTranslations` /
+          `getTranslations` inside a Server Component resolve against
+          i18n/request.ts, which still loads the full file. `getMessages()` here
+          is still the full object for the same reason — it is the server's copy.
+
+          The set lives in i18n/client-messages.ts and is guarded two ways,
+          because next-intl does NOT throw on a missing message: it renders the
+          literal key path ("sunrisePage.vitdCta") into indexed HTML with a 200.
+          i18n/__tests__/client-messages.test.ts re-derives the requirement from
+          the client module graph, and
+          components/__tests__/client-provider-subset.test.tsx renders the
+          root-scoped callers through this same subset with a throwing onError.
+        */}
+        <NextIntlClientProvider messages={pickClientMessages(messages)} locale={locale}>
           <AppShell>{children}</AppShell>
         </NextIntlClientProvider>
         <Analytics />

@@ -10,9 +10,18 @@ type Locale = (typeof routing.locales)[number];
 /**
  * Localized routing for the programmatic sunrise/sunset pages
  * (`/amanecer/madrid/julio` ↔ `/en/sunrise/madrid/july`), mirroring
- * lib/city-routes.ts. The URL shares the [cityPrefix] dynamic segment with the
- * city pages (Next requires one slug name per position); each page validates
- * its own prefix, so the two trees can't collide.
+ * lib/city-routes.ts.
+ *
+ * The MONTH pages share the [cityPrefix] dynamic segment with the vitamin D
+ * city pages (Next requires one slug name per position), which is harmless
+ * because both families are static: `resolveSunPage` accepts only
+ * `SUN_PREFIX[locale]` and the city index accepts only `CITY_PREFIX[locale]`, so
+ * the two trees cannot collide.
+ *
+ * The city HUBS (`/amanecer/madrid`, no month) used to share that segment too
+ * and no longer do: they have six static route folders of their own, one per
+ * prefix, because they are the only family here that needs a revalidate
+ * interval. See app/[locale]/_sun-hub/hub-route.tsx.
  */
 
 export const SUN_PREFIX: Record<string, string> = {
@@ -23,6 +32,27 @@ export const SUN_PREFIX: Record<string, string> = {
   ru: "voskhod",
   lt: "sauletekis",
 };
+
+/**
+ * The inverse of SUN_PREFIX, for the six thin hub route folders.
+ *
+ * Each of `app/[locale]/amanecer/[city]/`, `.../sunrise/[city]/` and friends is
+ * named after one prefix and therefore serves exactly one locale, so it needs to
+ * turn its own folder name back into that locale to know which cities to
+ * prerender. Returns null rather than guessing: a folder whose name is not in
+ * SUN_PREFIX has no cities and no business rendering a hub, and the caller in
+ * `app/[locale]/_sun-hub/hub-route.tsx` turns that into a loud build failure.
+ *
+ * Correct only while the prefixes are distinct across locales, which
+ * app/__tests__/sun-hub-split.test.ts asserts — two locales sharing a prefix
+ * would make one of them unreachable, since the folder can only resolve to one.
+ */
+export function localeForSunPrefix(prefix: string): string | null {
+  for (const [locale, value] of Object.entries(SUN_PREFIX)) {
+    if (value === prefix) return locale;
+  }
+  return null;
+}
 
 /** ASCII month slugs per locale, index 0 = January. */
 export const MONTH_SLUGS: Record<string, string[]> = {
@@ -114,11 +144,15 @@ export function sunStaticParams(): { locale: string; cityPrefix: string; city: s
  * ------------------------------------------------------------------------- */
 
 /**
- * The hub occupies the same `[cityPrefix]/[city]` segment as the vitamin D city
- * pages, which validate `CITY_PREFIX` and bail out otherwise. The two families
- * therefore share one route file and are told apart by the prefix alone — so
- * this resolver must reject `CITY_PREFIX` as firmly as it rejects nonsense, or
- * one of the two page trees disappears.
+ * The hub has its own six static route folders (`app/[locale]/amanecer/[city]`
+ * and friends), so `resolveSunCityPage` is now called with the folder's own
+ * prefix as a literal rather than with whatever a dynamic segment captured.
+ * The prefix check below is still load-bearing, and for a new reason: a static
+ * folder is matched for EVERY locale, so `/en/amanecer/madrid` reaches the
+ * Spanish folder's handler with `locale = "en"`. Returning null there is what
+ * keeps that URL a 404 instead of serving the English hub at a Spanish path,
+ * which would be a duplicate of `/en/sunrise/madrid` with a canonical pointing
+ * away from itself.
  */
 
 /** Locale-local path (no locale prefix): "/sunrise/london". */
@@ -140,7 +174,15 @@ export function buildSunCityAlternates(
   return { canonical: sunCityUrl(locale, base), languages };
 }
 
-/** locale × starter city, for generateStaticParams. */
+/**
+ * locale × starter city — the full set of 240 hubs, and the single source the
+ * six route folders slice with `sunHubStaticParams`. It keeps the `cityPrefix`
+ * key even though no route file has that segment any more, because that key IS
+ * the slice criterion and because the existing tests in
+ * lib/__tests__/sun-today.test.ts walk this list to prove every prerendered
+ * triple resolves; deriving the folders from it means those tests still cover
+ * exactly what gets built.
+ */
 export function sunCityStaticParams(): { locale: string; cityPrefix: string; city: string }[] {
   return routing.locales.flatMap((locale) =>
     SUNRISE_CITIES.map((base) => ({

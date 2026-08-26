@@ -32,12 +32,32 @@ export function generateStaticParams() {
 }
 
 /**
- * Daily ISR. The tables are astronomy and do not change, but the served HTML
- * carrying a current date is the difference between a page that reads as this
- * year's and one that reads as an archive — the freshness gap measured against
- * alpenglow, whose pages say "Aug 8".
+ * Static. This render is a pure function of (city, month, DOY_REFERENCE_YEAR),
+ * so build time is the only time it needs.
+ *
+ * It used to be `86400`, on the argument that "the served HTML carrying a
+ * current date is the difference between a page that reads as this year's and
+ * one that reads as an archive". That argument was wrong about this page: the
+ * HTML carries no current date. Nothing on the render path reads a clock —
+ * every date is built as `new Date(Date.UTC(DOY_REFERENCE_YEAR, ...))`, the
+ * year the page prints is the hardcoded constant at lib/solar.ts, and the only
+ * dates in the built artifact are the JSON-LD Event bounds of the month being
+ * rendered. Regenerating this page in 2027 would still print 2026, so an
+ * interval could never buy the freshness it was charged for. What moves these
+ * pages into a new year is bumping DOY_REFERENCE_YEAR, which is a deploy.
+ *
+ * The interval was not free. It put all 2880 of these pages in the ISR cache
+ * class, which is billed per read and per write in 8 KB units, and they are by
+ * far the largest page group on the site — see "Vercel plan and usage limits"
+ * in CLAUDE.md. `false` returns them to the static class, which the meters
+ * showed costing nothing for the weeks before the interval was introduced.
+ *
+ * The interval arrived coupled to the phase-2 prose A/B (it was added in the
+ * same commit), but the coupling is spurious: lib/phase2-cities.ts reads a
+ * static assignment file with no date logic, so the experiment never needed
+ * daily regeneration.
  */
-export const revalidate = 86400;
+export const revalidate = false;
 
 type Params = { locale: string; cityPrefix: string; city: string; month: string };
 

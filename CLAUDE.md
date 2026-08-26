@@ -31,8 +31,9 @@ Routes are locale-segmented via next-intl (`es` default without prefix; `en`, `f
 
 - **`app/layout.tsx`** — Passthrough root layout (just returns `children`). The real `<html>`/`<body>`, metadata, and PWA manifest link live in `app/[locale]/layout.tsx` (required by the next-intl as-needed i18n, where the default locale has no URL prefix). Service worker registration is **not** here — it's done client-side in `components/UpdateNotice.tsx`.
 - **`app/[locale]/page.tsx`** — Home. Other screens: `dashboard/`, `explore/`, `learn/`, `profile/`, `partners/`, `offline/`, `reset-password/`.
-- **`app/[locale]/[cityPrefix]/[city]/page.tsx`** — SEO city pages with localized route prefixes AND slugs (`/vitamina-d/madrid` ↔ `/en/vitamin-d/madrid`). `lib/city-routes.ts` + `i18n/metadata.ts` build the hreflang alternates.
-- **`app/[locale]/[cityPrefix]/[city]/[month]/page.tsx`** — Programmatic sunrise/sunset SEO pages (`/amanecer/madrid/julio` ↔ `/en/sunrise/madrid/july`), 28 starter cities × 12 months × 6 locales, fully static with the day-by-day sun table in the HTML. Routing/slugs in `lib/sun-routes.ts` (shares the `[cityPrefix]` segment with city pages; each validates its own prefix). Grow `SUNRISE_CITIES` there for the next waves.
+- **`app/[locale]/[cityPrefix]/[city]/page.tsx`** — SEO city pages with localized route prefixes AND slugs (`/vitamina-d/madrid` ↔ `/en/vitamin-d/madrid`). `lib/city-routes.ts` + `i18n/metadata.ts` build the hreflang alternates. **Static (`revalidate = false`)** — a pure function of (city, `DOY_REFERENCE_YEAR`).
+- **`app/[locale]/_sun-hub/` + six static prefix folders** (`amanecer/`, `sunrise/`, `lever-du-soleil/`, `sonnenaufgang/`, `voskhod/`, `sauletekis/`) — the 240 today hubs (`/amanecer/madrid`). They used to share the `[cityPrefix]/[city]` file with the city pages, which forced ONE `revalidate` on all 678 pages because segment config is per file. A static segment outranks a dynamic sibling, so the hubs now have folders of their own and keep `revalidate = 86400` while the city pages went static. All six folders are thin re-exports of `_sun-hub/hub-route.tsx`. **`app/__tests__/sun-hub-split.test.ts` is load-bearing:** six directory NAMES duplicate six `SUN_PREFIX` values with nothing in the type system connecting them, so it pins the folder set to `SUN_PREFIX`, pins each folder's `PREFIX` literal to its own directory name, and reassembles the 240 hubs **from disk**. Rename or delete a folder and 40 URLs per locale stay in the sitemap and 404.
+- **`app/[locale]/[cityPrefix]/[city]/[month]/page.tsx`** — Programmatic sunrise/sunset SEO pages (`/amanecer/madrid/julio` ↔ `/en/sunrise/madrid/july`), 40 starter cities × 12 months × 6 locales = 2,880 pages, **static (`revalidate = false`)** with the day-by-day sun table in the HTML. Routing/slugs in `lib/sun-routes.ts` (shares the `[cityPrefix]` segment with city pages; each validates its own prefix). Grow `SUNRISE_CITIES` there for the next waves.
 - **`app/[locale]/connect/page.tsx`** — "Connect your AI" documentation page (`/connect`, in the top nav): the two MCP connector URLs, per-client setup steps and a mocked consent preview rendered from the real `oauth` strings.
 - **`app/[locale]/error.tsx`, `app/[locale]/not-found.tsx`, `app/global-error.tsx`** — error boundaries; localized copy under the `errorPage`/`notFoundPage` message keys.
 - **`app/api/weather/route.ts`** — Proxies Open-Meteo (UV index, cloud cover). Validates lat/lon/dates, 8s upstream timeout, opaque error responses.
@@ -97,18 +98,63 @@ the error rather than catching it.
 against the module that computes the figure* — naming the files. That instruction found a
 blocker in every one of the three AI-Overview phases. A general "review this" did not.
 
+## The client only gets the namespaces it can read
+
+`app/[locale]/layout.tsx` passes `pickClientMessages(messages)`, not `messages`, to
+`NextIntlClientProvider` — the list is `CLIENT_NAMESPACES` in `i18n/client-messages.ts`. Seven
+namespaces (`learn`, `sunrisePage`, `connect`, `methodology`, `about`, `compass`, `notFoundPage`)
+only ever render on the server and are ~45 KB of every response.
+
+**Why this needs care rather than a quick edit: next-intl does not throw on a missing message.**
+Its default `onError` is `console.error` and its default `getMessageFallback` joins namespace and
+key, so a namespace you forget to add renders the literal string `sunrisePage.eyebrow` into HTML
+Google indexes, **with a 200 status**. It is not a crash; it is silently degraded copy on
+thousands of SEO pages.
+
+So if you make a server-only component client-side, or add a `useTranslations` anywhere:
+`i18n/__tests__/client-messages.test.ts` is the net. It walks the real client module graph and
+scans twice — once reading namespaces out of hook calls, and once over **every string literal in
+every client-graph module**, because a key can reach the browser without sitting next to a hook
+call (handed to a helper, held in a table, passed as a prop). Server components are unaffected:
+`getTranslations` resolves against `i18n/request.ts`, which still loads the full file.
+
+## Copy changes to the month and city pages need a revision bump
+
+`app/sitemap.ts` no longer stamps `new Date()` on all 3,612 URLs. The 2,880 month pages and 438
+city pages publish a **declared** date from `lib/content-revision.ts`; only the 240 hubs and 54 app
+pages still move with the build.
+
+That means a copy fix could ship to 2,880 pages announced as unchanged, so the engines keep
+serving the old text — the failure mode the table above documents five times over. The guard is
+`lib/content-fingerprint.ts` + `lib/__tests__/content-revision.test.ts`:
+
+```bash
+npx vitest run lib/__tests__/content-revision.test.ts   # prints the block to paste
+```
+
+Change copy in the `sunrisePage` or `cityPage` namespaces, or any module that determines what
+those pages print, and that test fails with the new block. **Read the diff it prints before
+pasting it** — it is telling you how far the change reached. Then update `date` too, if the content
+really did change: the date answers "when did the CONTENT change", so re-recording a hash because
+you fixed the *instrument* is not a content change and must not move it.
+
+`figures` hashes the **source** of the computing modules, not their output. Hashing the computed
+numbers was tried and failed CI: floating point is not identical across machines, and rounding
+does not fix it — it relocates the problem to a knife edge where one day length formats to a
+different minute on Linux than on macOS.
+
 ## Key Technical Details
 
 - **Path alias:** `@/*` maps to repo root (`tsconfig.json`)
 - **Tailwind CSS v4** with `@tailwindcss/postcss`
 - **`web-push`** is in `serverExternalPackages` (`next.config.ts`) to avoid client bundling
 - **Security headers** (CSP, HSTS, X-Frame-Options, etc.) are set in `next.config.ts` for every deploy. If a new external origin is needed (script/style/fetch), add it to the CSP there — do not remove the header.
-- **Vercel cron:** `vercel.json` — `0 8 * * *` hits `/api/push/notify`
+- **Vercel cron:** `vercel.json` — `0 8 * * *` hits `/api/push/notify`, `10 0 * * *` hits `/api/revalidate-today` (which self-verifies; see "Cron jobs")
 - Interactive components use `"use client"`; city pages and layouts are server components for SEO.
 
 ## Environments
 
-Both environments live in the single Vercel project `vitamind` (scope `javieraguilar-6355s-projects`), separated by Vercel environment:
+Both environments live in the single Vercel project `vitamind` (scope `js-projects-98e2a0d2`, the personal account), separated by Vercel environment:
 
 | Env | Git branch | Vercel environment | Public URL | Purpose |
 |---|---|---|---|---|
@@ -117,12 +163,121 @@ Both environments live in the single Vercel project `vitamind` (scope `javieragu
 
 The Preview environment has its **own** VAPID keys, `CRON_SECRET` and `PUSH_TEST_ALLOWED_ENDPOINT` (copied from the retired `vitamind-dev` project), so push subscriptions stay isolated between prod and dev — see "Push subscription isolation" below. The old standalone `vitamind-dev` project was deleted on 2026-07-17.
 
+## Vercel plan and usage limits — a deploy is not free
+
+The project is on the **Hobby (free)** plan, and as of 2026-08-22 it is **over** two of its
+limits. Measured from the Usage dashboard (30-day window ending 2026-08-22):
+
+| Resource | Used | Hobby limit |
+|---|---|---|
+| **ISR Writes** | 362,730 | 200,000 — **181%** |
+| **Fast Origin Transfer** | 10.58 GB | 10 GB — **106%** |
+| **ISR Reads** | 950,392 | 1,000,000 — 95% |
+| Fast Data Transfer | 6.5 GB | 100 GB |
+| Edge Requests | 383 K | 1 M |
+| Function Invocations | 230 K | 1 M |
+| Fluid Active CPU | 2 h 16 m | 4 h |
+
+### What is established
+
+- **The write bill began with the ISR cache class, on a known date.** Commit `71993ce`
+  (2026-08-10 17:43) added the first `export const revalidate` in the repo's history. Writes went
+  from ~0 to 22 K that same day. For the weeks before it, the same ~3,600 pages were prerendered
+  on **every** deploy for **~0 write units**. So a *static* prerender is free; putting routes in
+  the ISR class is what started the meter.
+- **Fast Origin Transfer is not a separate problem.** (950,392 + 362,730) × 8 KB = 10.7 GB ≈ the
+  10.58 GB reported. It is the ISR traffic measured in bytes; nothing else contributes materially.
+- **Reads bill statically prerendered routes too.** Between 2026-07-30 and 2026-08-09 the read
+  meter was already flat at 30–40 K/day while **zero** routes were in the ISR class. So
+  reads ≈ crawled URLs × served HTML bytes, with no dependence on cache class. That is why
+  lengthening `revalidate` does nothing for reads, and why **URL count is the read budget**.
+- **Three page counts are floating around; they are different things.** 3,612 = sitemap entries.
+  3,634 = prerendered routes in `.next/prerender-manifest.json`. Of those, the ISR-class ones
+  (`initialRevalidateSeconds: 86400`) were 3,558 before 2026-08-22 and are **240** after. Say
+  which one you mean.
+- **A sweep of the ISR set cost ~35,500 write units** when it was 3,558 routes. After the
+  2026-08-22 work it is 240 hubs at ~1,200–1,400 units. Measured by gzipping every `.html` +
+  `.rsc` under `.next/server/app` and dividing by the 8 KB unit — re-measure the same way rather
+  than scaling the old number, because the per-page bytes changed too.
+
+### What changed on 2026-08-22, and what it bought
+
+Four changes, all measured in production afterwards:
+
+| | Before | After |
+|---|---|---|
+| ISR-class routes | 3,558 | **240** (the six hub folders × 40) |
+| `/amanecer/madrid/agosto` | 192,292 B | **147,965 B** (−23.1%) |
+| `/amanecer/madrid` | 139,761 B | **95,368 B** (−31.8%) |
+| `/vitamina-d/madrid` | 246,516 B | **202,183 B** (−18.0%) |
+| sitemap URLs re-dated per deploy | 3,612 | **294** |
+
+1. The 2,880 month pages and, via the route split, the 438 city pages left the ISR class — they
+   are pure functions of (city, month, `DOY_REFERENCE_YEAR`) and nothing on their render path
+   reads a clock.
+2. `NextIntlClientProvider` stopped receiving the whole message file. See "The client only gets
+   the namespaces it can read" below — that rule is the one with teeth.
+3. `app/sitemap.ts` stopped stamping `new Date()` on everything. See "Copy changes to the month
+   and city pages need a revision bump" below.
+4. `/api/revalidate-today` became falsifiable: it reads three sampled hubs back and fails the run
+   when the day they carry is neither today's nor yesterday's (`lib/hub-freshness.ts`). It used to
+   return `{revalidated: 240}` unconditionally, because `revalidatePath` returns void.
+
+### What is NOT established — do not write it down as fact
+
+Two models both fit the write series, and they make different predictions. This has already
+burned one pass of analysis, so it is recorded as an open question rather than answered:
+
+- **Sweep model:** a pass over the ISR set costs one sweep (~35.5 K), and both a deploy and a day
+  of revalidation write one.
+- **Request-driven model:** reads and writes are the *same* requests — one document request that
+  finds an expired ISR entry bills ~10 read units and ~10 write units. At ~3,200 document
+  fetches/day that gives ~32 K reads and ~35 K writes per day, which is why the two meters are
+  nearly equal instead of coincidentally equal.
+
+Evidence that neither model absorbs cleanly: the 2026-08-16 deploy *added* 678 ISR pages and
+billed only 8 K writes, a third of a zero-deploy day. And the last three days of the window
+(no commits on any branch, ISR set at its largest) billed ~2,910/day total — almost exactly the
+`/api/revalidate-today` cron's 240 hubs on its own, which is what "identical bytes are not
+billed" predicts.
+
+**The cheap experiment:** the month pages went static (`revalidate = false`) on 2026-08-22. Read
+the write series a fortnight later. If writes fall to roughly the cron's ~2,200/day, the sweep
+model was right. If they land near (remaining ISR page requests × ~10), the request-driven model
+was. Until then, do not claim a per-deploy write cost — and note that the comment history got
+this wrong once already: "at one hour this project hit the free ISR write quota within a day" is
+a misattribution, since `revalidate = 3600` was live for only 15.7 hours (2026-08-16 19:55 →
+2026-08-17 11:37) and the 200 K had already been crossed cumulatively around 2026-08-15.
+
+### Facts about the plan itself
+
+- **Hobby has no billing cycle.** The docs are explicit — limits reset by *"waiting until 30 days
+  have passed"*, i.e. a rolling window, not a monthly zeroing. The dashboard's date selector
+  (e.g. "Jul 23 – Aug 22") is a default 30-day *view*, not a cycle boundary; do not read a reset
+  date into it.
+- **Exceeding is a stop, not a bill.** There is no overage on Hobby. Sustained overuse leads to a
+  paused deployment, at which point production serves `503 DEPLOYMENT_PAUSED`. For 3612 SEO URLs
+  mid-indexing that is the expensive failure, not the $20.
+- **Hobby is restricted to non-commercial personal use**, defined broadly by Vercel's fair-use
+  terms (advertising a product or service, and even donations, count as commercial). The
+  `/partners` page and the go-to-market work put this project outside that definition
+  independently of any usage number.
+
+**Reading the numbers:** the usage REST API (`/v1/usage`) is **Pro-only** — on Hobby it returns
+`plan_upgrade_required`, and the CLI has no `usage` command. The only source is the dashboard at
+`https://vercel.com/js-projects-98e2a0d2/~/usage` (per-path breakdowns need Observability Plus).
+
 ## Deployment (via GitHub Actions)
 
 Deploys are automated in `.github/workflows/ci.yml` and **gated on green CI** (lint + typecheck + test + build):
 
 - Push to `master` → `deploy-prod` job → production deploy of the `vitamind` project → getvitamind.app.
 - Push to `dev` → `deploy-dev` job → Preview deploy aliased to the stable https://getvitamind-dev.vercel.app.
+
+**A deploy is not cheap.** It runs the full quality gate and prerenders 3,634 routes — a ~22-minute
+build, and a `dev` preview prerenders the identical set, so it costs the same as a production one.
+Whether a deploy *also* costs ISR write units is the open question recorded under "Vercel plan and
+usage limits" above; either way, batching changes beats pushing every one-line fix.
 
 Both jobs use the `VERCEL_TOKEN` repo secret (GitHub → repo Settings → Secrets → Actions); the org/project IDs are inline in the workflow (not secrets). If a deploy job fails with an auth error, the token expired — create a new one at vercel.com/account/settings/tokens and update the secret.
 
@@ -141,14 +296,13 @@ Both jobs use the `VERCEL_TOKEN` repo secret (GitHub → repo Settings → Secre
 > Remaining marketing items (MCP directories, announcement) in
 > `docs/plans/2026-07-19-mcp-evolution-account-marketing.md`.
 
-> **Planned (bigger) change:** migrate the project to the personal Vercel
-> account (`js-projects-98e2a0d2`, GitHub `JaviMaligno` login) to stop using the
-> work-email account for personal projects. `getvitamind.app` is registered at a
-> third-party registrar (not Vercel), so the move is: recreate env vars in the
-> personal project (printf discipline!), verify the deployment URL end-to-end,
-> then move the domain. Push subscribers survive because the origin and VAPID
-> keys stay the same. Native Git integration works there (that account owns the
-> `JaviMaligno` GitHub connection).
+> **Done — migration to the personal Vercel account.** The project no longer
+> lives under the work-email account: team `js-projects-98e2a0d2` (`j's
+> projects`), project id `prj_5Fe55OLq4R3Uk1zz1NCMwsB4jH7t`, with
+> `getvitamind.app` attached to it (third-party registrar, Vercel nameservers)
+> and `.github/workflows/ci.yml` already carrying that `VERCEL_ORG_ID` inline.
+> Verified 2026-08-22 via `vercel project ls` / `vercel domains ls`. Anything
+> that still says `javieraguilar-6355s-projects` is stale.
 
 ### Manual deploy (fallback)
 
@@ -159,6 +313,10 @@ npx vercel --prod --yes      # manual production deploy → getvitamind.app
 ```
 
 Note: after a `vercel rollback`, new deploys do **not** take the production domain automatically — promote with `npx vercel promote <deployment-url>`.
+
+**`promote` is the one hole in the quality gate, so know what you are pointing it at.** Everything else that can reach production goes through a build, and `vercel.json`'s `buildCommand` runs lint + typecheck + tests before `next build` — so a red tree cannot produce a deployment, whichever path asks for one. `promote` is different: it takes an **existing** deployment and gives it the production domain **without rebuilding**, so whatever gate that deployment did or did not pass is what production gets. Promote a preview deployment and you have published a build that was never gated as production.
+
+That matters mainly if the gate is ever made conditional on `VERCEL_ENV` (a tempting way to speed up previews). Today the gate is unconditional, so every promotable deployment has passed it and the hole is theoretical — but it is the reason the gate must stay unconditional, and the reason to promote by deployment URL you recognise rather than by picking from a list.
 
 ### Vercel project settings
 
@@ -193,7 +351,16 @@ Two things worth knowing before touching it:
 
 ### Cron jobs
 
-`vercel.json` defines a daily cron `0 8 * * *` UTC hitting `/api/push/notify`. Crons only run on **Production** deployments, so the `dev` branch preview never schedules it — dev push testing is manual via curl (below).
+`vercel.json` defines two daily crons, both **Production only** (a `dev` preview never schedules them, so dev testing is manual via curl):
+
+- `0 8 * * *` → `/api/push/notify`
+- `10 0 * * *` → `/api/revalidate-today`, which regenerates the 240 hubs and then **verifies itself**: it fetches three sampled hubs, parses the calendar day out of their JSON-LD `Event` (`lib/hub-freshness.ts`), and returns 500 when the day is neither today's nor yesterday's, so a broken cron shows as a failed invocation instead of a cheerful `{revalidated: 240}`. Two days are allowed on purpose — it makes the verdict independent of the still-unresolved cache mechanism. The sample is `es/madrid`, `en/tokio`, `es/sidney`: the Event nodes drop on a city's DST transition day, so an all-European sample would go blind twice a year, and Asia/Tokyo has never observed DST.
+
+You can check hub freshness yourself without the secret:
+
+```bash
+curl -s https://getvitamind.app/en/sunrise/oslo | grep -o '#sunrise-[0-9-]\{10\}'   # should be today
+```
 
 The endpoint authorizes via `Authorization: Bearer $CRON_SECRET` header only (set automatically by Vercel cron). The `?secret=` query-string variant was removed because it leaks the secret to logs/history; pass the secret in the header.
 

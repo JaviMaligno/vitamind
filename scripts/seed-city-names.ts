@@ -11,7 +11,7 @@
  *   npm install -D unzipper @types/unzipper
  */
 
-import { createClient } from "@supabase/supabase-js";
+import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import { createWriteStream, createReadStream, existsSync, unlinkSync } from "fs";
 import { tmpdir } from "os";
 import { join } from "path";
@@ -25,14 +25,70 @@ const ALTERNATE_NAMES_URL =
 const BATCH_SIZE = 1000;
 const SUPPORTED_LOCALES = new Set(["es", "en", "fr", "de", "ru", "lt"]);
 
-interface CityNameRow {
+/**
+ * A `type`, not an `interface`, and the difference is load-bearing: supabase-js's
+ * `GenericTable` requires `Row: Record<string, unknown>`, and TypeScript gives an
+ * implicit index signature to object-literal type ALIASES but never to
+ * interfaces. As an interface this failed the constraint, the schema below
+ * stopped being a `GenericSchema`, and every row type collapsed to `never` —
+ * which surfaces as "Property 'geoname_id' does not exist on type 'never'" three
+ * hundred lines away, with nothing pointing at the declaration that caused it.
+ */
+type CityNameRow = {
   geoname_id: number;
   locale: string;
   name: string;
-}
+};
+
+/**
+ * The two tables this script touches, and only those.
+ *
+ * Without it, `ReturnType<typeof createClient>` resolves the schema generics to
+ * `never` — supabase-js's signal for "you have not told me your schema" — so
+ * `.select()` yields rows of type `never` and `.upsert()` refuses every payload.
+ * The errors read like the CODE is wrong when the truth is that the TYPE is
+ * absent.
+ *
+ * Declared by hand rather than generated because the alternative was leaving
+ * `scripts/` outside the typecheck, which is where it used to be: tsconfig.json
+ * excluded the whole directory, so neither `npm run typecheck` nor `next build`
+ * ever looked at it — and `scripts/indexnow.ts`, which runs in CI on every
+ * production deploy, was the code least covered by the gate that guards
+ * production. Four errors in this one file were the entire price of closing that,
+ * so it is paid here.
+ *
+ * If the schema grows past what these scripts use, generate the types properly
+ * (`supabase gen types typescript`) rather than extending this by hand.
+ */
+type SeedSchema = {
+  public: {
+    Tables: {
+      cities: {
+        Row: { geoname_id: number };
+        Insert: { geoname_id: number };
+        Update: { geoname_id?: number };
+        Relationships: [];
+      };
+      city_names: {
+        Row: CityNameRow;
+        Insert: CityNameRow;
+        Update: Partial<CityNameRow>;
+        Relationships: [];
+      };
+    };
+    // supabase-js's GenericSchema requires all three keys with index
+    // signatures. `Record<string, never>` is the empty-but-indexable shape;
+    // `Record<never, never>` is `{}`, which has no index signature and silently
+    // fails the constraint, sending every row type back to `never`.
+    Views: Record<string, never>;
+    Functions: Record<string, never>;
+  };
+};
+
+type SeedClient = SupabaseClient<SeedSchema, "public">;
 
 async function fetchAllGeonameIds(
-  supabase: ReturnType<typeof createClient>
+  supabase: SeedClient
 ): Promise<Set<number>> {
   const ids = new Set<number>();
   const PAGE_SIZE = 1000;
@@ -162,7 +218,7 @@ async function parseTxt(
 }
 
 async function upsertRows(
-  supabase: ReturnType<typeof createClient>,
+  supabase: SeedClient,
   rows: CityNameRow[]
 ): Promise<void> {
   console.log(
@@ -214,7 +270,7 @@ async function main() {
     process.exit(1);
   }
 
-  const supabase = createClient(supabaseUrl, serviceKey);
+  const supabase = createClient<SeedSchema, "public">(supabaseUrl, serviceKey);
 
   const zipPath = join(tmpdir(), "alternateNamesV2.zip");
   const txtPath = join(tmpdir(), "alternateNamesV2.txt");
