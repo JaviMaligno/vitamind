@@ -4,7 +4,8 @@ import { useState, useCallback, useRef } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { Search, X, MapPin, Loader2 } from "lucide-react";
 import Flag from "@/components/ui/Flag";
-import { haversineKm } from "@/lib/continent";
+import { haversineKm } from "@/lib/geo-distance";
+import { NEARBY_PHRASING_KM } from "@/lib/nearest-city";
 
 interface IndexCity {
   name: string;
@@ -15,10 +16,6 @@ interface IndexCity {
 }
 
 type GeoState = "idle" | "loading" | "denied" | "unavailable";
-
-// Beyond this the built-in directory (73 global cities) has nothing genuinely
-// "near"; be honest about it instead of passing a far city off as nearby.
-const NEAR_THRESHOLD_KM = 500;
 
 /**
  * Sticky search + region filter + "near me" for the city index. The index page
@@ -205,13 +202,17 @@ export default function CityIndexSearch({
 
       {/* Near-me results — distance-sorted top 8, rendered client-side (the SSG
           band list is hidden while this is active). A caption states how far the
-          nearest actually is (the built-in directory is sparse), so a 600 km
-          "nearest" doesn't masquerade as nearby. */}
+          nearest actually is (the built-in directory is sparse), so a far
+          "nearest" doesn't masquerade as nearby. The threshold for saying "near"
+          is shared with the chip on Mi Día / Explorar (NEARBY_PHRASING_KM); the
+          two screens used to disagree about the word, which is what made the
+          chip's silent substitution a bug. Either way the eight cards render
+          with their distances. */}
       {nearby && (
         <>
           <p className="mt-6 flex items-center justify-center gap-1.5 text-center text-caption text-text-muted">
             <MapPin className="h-3.5 w-3.5 shrink-0" aria-hidden />
-            {nearby[0].km > NEAR_THRESHOLD_KM
+            {nearby[0].km > NEARBY_PHRASING_KM
               ? t("indexNoneNearby")
               : t("indexNearestDistance", { km: Math.round(nearby[0].km).toLocaleString(locale) })}
           </p>

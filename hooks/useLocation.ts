@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo, useCallback, useEffect } from "react";
-import { BUILTIN_CITIES, findNearestCity } from "@/lib/cities";
+import { BUILTIN_CITIES } from "@/lib/cities";
 import { loadFavorites, saveFavorites, loadCustomLocations, saveCustomLocation, deleteCustomLocation, loadPreferences } from "@/lib/storage";
 import type { City } from "@/lib/types";
 
@@ -80,18 +80,6 @@ export function useLocation() {
     }
   }, []);
 
-  const selectFromHeatmap = useCallback((newLat: number, newDoy: number, setDoy: (d: number) => void) => {
-    const rL = Math.round(newLat * 10) / 10;
-    setLat(rL); setDoy(Math.max(1, Math.min(365, Math.round(newDoy))));
-    const near = findNearestCity(rL, BUILTIN_CITIES);
-    if (near) {
-      setLon(near.lon); setTz(near.tz); setTimezone(near.timezone); setCityName(near.name); setCityFlag(near.flag || "\u{1F4CD}"); setCityId(near.id);
-    } else {
-      setLon(0); setTz(0); setTimezone(undefined);
-      setCityName(`Lat ${Math.round(rL)}\u00B0`); setCityFlag("\u{1F4CD}"); setCityId(`custom:lat-${rL}`);
-    }
-  }, []);
-
   const restoreCity = useCallback((id: string, customCities: City[]) => {
     const builtinIds = new Set(BUILTIN_CITIES.map((c) => c.id));
     const city = [...BUILTIN_CITIES, ...customCities.filter((c) => !builtinIds.has(c.id))]
@@ -140,7 +128,6 @@ export function useLocation() {
     editingFavs, setEditingFavs,
     allCities,
     selectCity,
-    selectFromHeatmap,
     restoreCity,
     toggleFav,
     handleSaveLocation,

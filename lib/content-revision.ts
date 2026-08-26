@@ -100,16 +100,34 @@ export const SUN_MONTH_REVISION: ContentRevision = {
   },
 };
 
-/** The 438 city pages: `/{cityPrefix}/{city}` × 6 locales. */
+/**
+ * The 438 city pages: `/{cityPrefix}/{city}` × 6 locales.
+ *
+ * A third worked example of the distinction above, because it is the first one
+ * where the hash moved for copy rather than for tooling and the date STILL did
+ * not. On 2026-08-26 the honest-CTA work added `cityPage.viewNearestCityPage`
+ * and `cityPage.viewIndexInstead`. `copyParts` hashes the `cityPage` namespace
+ * whole, so all six `copy.*` moved — but these 438 pages do not render either
+ * key. They belong to `components/CityPageLink.tsx`, the chip that lives on Mi
+ * Día and Explorar, which are app pages with a moving `lastmod`. Not one byte of
+ * what a city page prints changed, so `date` stays where it was.
+ *
+ * The native review of those keys later that day moved `fr`, `de`, `ru` and `lt`
+ * again — German dropped a `{city}-Seite` compound that breaks on the four
+ * multi-word city names, Lithuanian moved `{city}` out of a slot that wanted the
+ * genitive, and French and Russian fixed a dangling quantifier and a number
+ * disagreement. Same reasoning, same verdict: still not one byte of what a city
+ * page prints.
+ */
 export const CITY_PAGE_REVISION: ContentRevision = {
   date: "2026-08-17",
   parts: {
-    "copy.es": "46f6bac8c9cba777",
-    "copy.en": "7b13403d43ef44be",
-    "copy.fr": "ebd6258461fc6569",
-    "copy.de": "11e721c9a88ad3ad",
-    "copy.ru": "89b8acb124f30221",
-    "copy.lt": "4fbc90a2072cbfcd",
+    "copy.es": "c9d9516cdf41e807",
+    "copy.en": "aacd37acffb61d09",
+    "copy.fr": "3cebb7985b7cc2eb",
+    "copy.de": "ef4e9ff3a53337e3",
+    "copy.ru": "d0e786a4e57a05d0",
+    "copy.lt": "e37baad848b76253",
     cities: "c66cfdadbf8dabad",
     figures: "41ccb7d4c32d4255",
     constants: "09032456232a5db5",

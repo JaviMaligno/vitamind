@@ -54,7 +54,7 @@ export default function ExplorePage() {
 
   const dateLabel = fmtDate(date);
 
-  // Bridge: selectFromHeatmap needs setDoy
+  // Bridge: the heatmap handler needs setDoy
   const onSelectFromHeatmap = useCallback(
     (newLat: number, newDoy: number) => {
       setExploreCity((prev) => ({
