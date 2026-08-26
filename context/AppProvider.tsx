@@ -47,7 +47,6 @@ interface AppContextValue {
   setEditingFavs: (v: boolean) => void;
   allCities: City[];
   selectCity: (c: City) => void;
-  selectFromHeatmap: (lat: number, doy: number, setDoy: (d: number) => void) => void;
   toggleFav: (c: City | string) => void;
   handleSaveLocation: (city: City) => void;
   handleDeleteCustom: (id: string) => void;
@@ -188,7 +187,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setEditingFavs: loc.setEditingFavs,
     allCities: loc.allCities,
     selectCity: loc.selectCity,
-    selectFromHeatmap: loc.selectFromHeatmap,
     toggleFav: loc.toggleFav,
     handleSaveLocation,
     handleDeleteCustom: loc.handleDeleteCustom,

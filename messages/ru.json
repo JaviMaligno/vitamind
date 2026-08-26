@@ -832,6 +832,8 @@
     "allCitiesLink": "Все города",
     "howCalculated": "Как рассчитаны эти данные",
     "viewCityPage": "Полная страница города {city}",
+    "viewNearestCityPage": "Открыть страницу города {city}, {km} км",
+    "viewIndexInstead": "Поблизости нет городов со страницей. Смотреть все",
     "indexBandVeryHigh": "Экстремальные широты (55°+) — долгие зимы без полезного солнца",
     "indexBandHigh": "Высокие широты (45–55°)",
     "indexBandMid": "Средние широты (35–45°)",

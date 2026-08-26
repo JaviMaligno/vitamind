@@ -59,13 +59,3 @@ export const DEFAULT_FAVORITE_IDS: string[] = [];
 export function cityToId(name: string): string {
   return `builtin:${name.toLowerCase().replace(/\s+/g, "-")}`;
 }
-
-export function findNearestCity(lat: number, cities: City[]): City | null {
-  let best: City | null = null;
-  let minD = 999;
-  for (const c of cities) {
-    const d = Math.abs(c.lat - lat);
-    if (d < minD) { minD = d; best = c; }
-  }
-  return best && minD < 3 ? best : null;
-}

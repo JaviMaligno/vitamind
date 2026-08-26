@@ -832,6 +832,8 @@
     "allCitiesLink": "Alle Städte ansehen",
     "howCalculated": "Wie diese Zeiten berechnet werden",
     "viewCityPage": "Vollständige {city}-Seite ansehen",
+    "viewNearestCityPage": "{city}-Seite ansehen, {km} km entfernt",
+    "viewIndexInstead": "Keine Stadt mit Seite ist in der Nähe. Alle ansehen",
     "indexBandVeryHigh": "Extreme Breiten (55°+) — lange Winter ohne nutzbare Sonne",
     "indexBandHigh": "Hohe Breiten (45–55°)",
     "indexBandMid": "Mittlere Breiten (35–45°)",

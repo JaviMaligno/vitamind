@@ -832,6 +832,8 @@
     "allCitiesLink": "Visi miestai",
     "howCalculated": "Kaip apskaičiuoti šie laikai",
     "viewCityPage": "Žiūrėti visą {city} puslapį",
+    "viewNearestCityPage": "Žiūrėti {city} puslapį, už {km} km",
+    "viewIndexInstead": "Netoliese nėra miestų su puslapiu. Žiūrėti visus",
     "indexBandVeryHigh": "Kraštutinės platumos (55°+) — ilgos žiemos be naudingos saulės",
     "indexBandHigh": "Aukštos platumos (45–55°)",
     "indexBandMid": "Vidutinės platumos (35–45°)",

@@ -832,6 +832,8 @@
     "allCitiesLink": "Ver todas las ciudades",
     "howCalculated": "Cómo se calculan estas horas",
     "viewCityPage": "Ver la página completa de {city}",
+    "viewNearestCityPage": "Ver la página de {city}, a {km} km",
+    "viewIndexInstead": "Ninguna ciudad con página está cerca. Ver todas",
     "indexBandVeryHigh": "Latitudes extremas (55°+) — inviernos largos sin sol útil",
     "indexBandHigh": "Latitudes altas (45–55°)",
     "indexBandMid": "Latitudes medias (35–45°)",

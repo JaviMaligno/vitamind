@@ -1,0 +1,513 @@
+{
+  "builtin:amsterdam": [
+    "builtin:bruselas",
+    "builtin:londres",
+    "builtin:paris",
+    "builtin:berlin",
+    "builtin:zurich"
+  ],
+  "builtin:anchorage": [
+    "builtin:vancouver",
+    "builtin:seattle",
+    "builtin:san-francisco",
+    "builtin:los-angeles",
+    "builtin:denver"
+  ],
+  "builtin:atenas": [
+    "builtin:estambul",
+    "builtin:roma",
+    "builtin:el-cairo",
+    "builtin:budapest",
+    "builtin:viena"
+  ],
+  "builtin:auckland": [
+    "builtin:sidney",
+    "builtin:melbourne",
+    "builtin:perth",
+    "builtin:honolulu",
+    "builtin:singapur"
+  ],
+  "builtin:bangkok": [
+    "builtin:kuala-lumpur",
+    "builtin:singapur",
+    "builtin:hong-kong",
+    "builtin:taipei",
+    "builtin:shanghai"
+  ],
+  "builtin:barcelona": [
+    "builtin:valencia",
+    "builtin:marsella",
+    "builtin:madrid",
+    "builtin:malaga",
+    "builtin:sevilla"
+  ],
+  "builtin:berlin": [
+    "builtin:praga",
+    "builtin:copenhague",
+    "builtin:varsovia",
+    "builtin:viena",
+    "builtin:amsterdam"
+  ],
+  "builtin:bogota": [
+    "builtin:medellin",
+    "builtin:lima",
+    "builtin:miami",
+    "builtin:ciudad-de-mexico",
+    "builtin:nueva-york"
+  ],
+  "builtin:bombay": [
+    "builtin:delhi",
+    "builtin:dubai",
+    "builtin:bangkok",
+    "builtin:kuala-lumpur",
+    "builtin:singapur"
+  ],
+  "builtin:bruselas": [
+    "builtin:amsterdam",
+    "builtin:paris",
+    "builtin:londres",
+    "builtin:zurich",
+    "builtin:berlin"
+  ],
+  "builtin:budapest": [
+    "builtin:viena",
+    "builtin:praga",
+    "builtin:varsovia",
+    "builtin:berlin",
+    "builtin:zurich"
+  ],
+  "builtin:buenos-aires": [
+    "builtin:montevideo",
+    "builtin:santiago",
+    "builtin:sao-paulo",
+    "builtin:lima",
+    "builtin:bogota"
+  ],
+  "builtin:casablanca": [
+    "builtin:sevilla",
+    "builtin:malaga",
+    "builtin:lisboa",
+    "builtin:madrid",
+    "builtin:valencia"
+  ],
+  "builtin:chicago": [
+    "builtin:toronto",
+    "builtin:nueva-york",
+    "builtin:denver",
+    "builtin:miami",
+    "builtin:phoenix"
+  ],
+  "builtin:ciudad-de-mexico": [
+    "builtin:phoenix",
+    "builtin:miami",
+    "builtin:denver",
+    "builtin:los-angeles",
+    "builtin:chicago"
+  ],
+  "builtin:ciudad-del-cabo": [
+    "builtin:johannesburgo",
+    "builtin:nairobi",
+    "builtin:lagos",
+    "builtin:sao-paulo",
+    "builtin:montevideo"
+  ],
+  "builtin:copenhague": [
+    "builtin:berlin",
+    "builtin:oslo",
+    "builtin:estocolmo",
+    "builtin:amsterdam",
+    "builtin:praga"
+  ],
+  "builtin:delhi": [
+    "builtin:bombay",
+    "builtin:dubai",
+    "builtin:bangkok",
+    "builtin:hong-kong",
+    "builtin:pekin"
+  ],
+  "builtin:denver": [
+    "builtin:phoenix",
+    "builtin:los-angeles",
+    "builtin:chicago",
+    "builtin:san-francisco",
+    "builtin:seattle"
+  ],
+  "builtin:dubai": [
+    "builtin:bombay",
+    "builtin:delhi",
+    "builtin:el-cairo",
+    "builtin:estambul",
+    "builtin:atenas"
+  ],
+  "builtin:dublin": [
+    "builtin:edimburgo",
+    "builtin:londres",
+    "builtin:amsterdam",
+    "builtin:bruselas",
+    "builtin:paris"
+  ],
+  "builtin:edimburgo": [
+    "builtin:dublin",
+    "builtin:londres",
+    "builtin:amsterdam",
+    "builtin:bruselas",
+    "builtin:paris"
+  ],
+  "builtin:el-cairo": [
+    "builtin:atenas",
+    "builtin:estambul",
+    "builtin:roma",
+    "builtin:budapest",
+    "builtin:viena"
+  ],
+  "builtin:estambul": [
+    "builtin:atenas",
+    "builtin:budapest",
+    "builtin:el-cairo",
+    "builtin:viena",
+    "builtin:roma"
+  ],
+  "builtin:estocolmo": [
+    "builtin:helsinki",
+    "builtin:oslo",
+    "builtin:copenhague",
+    "builtin:varsovia",
+    "builtin:berlin"
+  ],
+  "builtin:helsinki": [
+    "builtin:estocolmo",
+    "builtin:oslo",
+    "builtin:copenhague",
+    "builtin:moscu",
+    "builtin:varsovia"
+  ],
+  "builtin:hong-kong": [
+    "builtin:taipei",
+    "builtin:shanghai",
+    "builtin:bangkok",
+    "builtin:pekin",
+    "builtin:seul"
+  ],
+  "builtin:honolulu": [
+    "builtin:san-francisco",
+    "builtin:los-angeles",
+    "builtin:seattle",
+    "builtin:vancouver",
+    "builtin:anchorage"
+  ],
+  "builtin:johannesburgo": [
+    "builtin:ciudad-del-cabo",
+    "builtin:nairobi",
+    "builtin:lagos",
+    "builtin:el-cairo",
+    "builtin:dubai"
+  ],
+  "builtin:kuala-lumpur": [
+    "builtin:singapur",
+    "builtin:bangkok",
+    "builtin:hong-kong",
+    "builtin:taipei",
+    "builtin:bombay"
+  ],
+  "builtin:lagos": [
+    "builtin:las-palmas",
+    "builtin:tenerife",
+    "builtin:casablanca",
+    "builtin:malaga",
+    "builtin:sevilla"
+  ],
+  "builtin:las-palmas": [
+    "builtin:tenerife",
+    "builtin:casablanca",
+    "builtin:lisboa",
+    "builtin:sevilla",
+    "builtin:malaga"
+  ],
+  "builtin:lima": [
+    "builtin:bogota",
+    "builtin:medellin",
+    "builtin:santiago",
+    "builtin:buenos-aires",
+    "builtin:montevideo"
+  ],
+  "builtin:lisboa": [
+    "builtin:sevilla",
+    "builtin:malaga",
+    "builtin:madrid",
+    "builtin:casablanca",
+    "builtin:valencia"
+  ],
+  "builtin:londres": [
+    "builtin:bruselas",
+    "builtin:paris",
+    "builtin:amsterdam",
+    "builtin:dublin",
+    "builtin:edimburgo"
+  ],
+  "builtin:los-angeles": [
+    "builtin:san-francisco",
+    "builtin:phoenix",
+    "builtin:denver",
+    "builtin:seattle",
+    "builtin:vancouver"
+  ],
+  "builtin:madrid": [
+    "builtin:valencia",
+    "builtin:sevilla",
+    "builtin:malaga",
+    "builtin:lisboa",
+    "builtin:barcelona"
+  ],
+  "builtin:malaga": [
+    "builtin:sevilla",
+    "builtin:madrid",
+    "builtin:casablanca",
+    "builtin:valencia",
+    "builtin:lisboa"
+  ],
+  "builtin:marsella": [
+    "builtin:barcelona",
+    "builtin:zurich",
+    "builtin:roma",
+    "builtin:valencia",
+    "builtin:paris"
+  ],
+  "builtin:medellin": [
+    "builtin:bogota",
+    "builtin:lima",
+    "builtin:miami",
+    "builtin:ciudad-de-mexico",
+    "builtin:nueva-york"
+  ],
+  "builtin:melbourne": [
+    "builtin:sidney",
+    "builtin:auckland",
+    "builtin:perth",
+    "builtin:singapur",
+    "builtin:kuala-lumpur"
+  ],
+  "builtin:miami": [
+    "builtin:nueva-york",
+    "builtin:chicago",
+    "builtin:toronto",
+    "builtin:ciudad-de-mexico",
+    "builtin:medellin"
+  ],
+  "builtin:montevideo": [
+    "builtin:buenos-aires",
+    "builtin:santiago",
+    "builtin:sao-paulo",
+    "builtin:lima",
+    "builtin:bogota"
+  ],
+  "builtin:moscu": [
+    "builtin:helsinki",
+    "builtin:varsovia",
+    "builtin:estocolmo",
+    "builtin:copenhague",
+    "builtin:budapest"
+  ],
+  "builtin:nairobi": [
+    "builtin:johannesburgo",
+    "builtin:el-cairo",
+    "builtin:dubai",
+    "builtin:lagos",
+    "builtin:ciudad-del-cabo"
+  ],
+  "builtin:nueva-york": [
+    "builtin:toronto",
+    "builtin:chicago",
+    "builtin:miami",
+    "builtin:denver",
+    "builtin:ciudad-de-mexico"
+  ],
+  "builtin:oslo": [
+    "builtin:estocolmo",
+    "builtin:copenhague",
+    "builtin:helsinki",
+    "builtin:berlin",
+    "builtin:amsterdam"
+  ],
+  "builtin:paris": [
+    "builtin:bruselas",
+    "builtin:londres",
+    "builtin:amsterdam",
+    "builtin:zurich",
+    "builtin:marsella"
+  ],
+  "builtin:pekin": [
+    "builtin:seul",
+    "builtin:shanghai",
+    "builtin:taipei",
+    "builtin:hong-kong",
+    "builtin:tokio"
+  ],
+  "builtin:perth": [
+    "builtin:melbourne",
+    "builtin:sidney",
+    "builtin:singapur",
+    "builtin:kuala-lumpur",
+    "builtin:bangkok"
+  ],
+  "builtin:phoenix": [
+    "builtin:los-angeles",
+    "builtin:denver",
+    "builtin:san-francisco",
+    "builtin:seattle",
+    "builtin:vancouver"
+  ],
+  "builtin:praga": [
+    "builtin:viena",
+    "builtin:berlin",
+    "builtin:budapest",
+    "builtin:varsovia",
+    "builtin:zurich"
+  ],
+  "builtin:reikiavik": [
+    "builtin:edimburgo",
+    "builtin:dublin",
+    "builtin:oslo",
+    "builtin:tromso",
+    "builtin:londres"
+  ],
+  "builtin:roma": [
+    "builtin:marsella",
+    "builtin:zurich",
+    "builtin:viena",
+    "builtin:budapest",
+    "builtin:barcelona"
+  ],
+  "builtin:san-francisco": [
+    "builtin:los-angeles",
+    "builtin:phoenix",
+    "builtin:seattle",
+    "builtin:vancouver",
+    "builtin:denver"
+  ],
+  "builtin:santiago": [
+    "builtin:buenos-aires",
+    "builtin:montevideo",
+    "builtin:lima",
+    "builtin:sao-paulo",
+    "builtin:bogota"
+  ],
+  "builtin:sao-paulo": [
+    "builtin:montevideo",
+    "builtin:buenos-aires",
+    "builtin:santiago",
+    "builtin:lima",
+    "builtin:bogota"
+  ],
+  "builtin:seattle": [
+    "builtin:vancouver",
+    "builtin:san-francisco",
+    "builtin:los-angeles",
+    "builtin:denver",
+    "builtin:phoenix"
+  ],
+  "builtin:seul": [
+    "builtin:shanghai",
+    "builtin:pekin",
+    "builtin:tokio",
+    "builtin:taipei",
+    "builtin:hong-kong"
+  ],
+  "builtin:sevilla": [
+    "builtin:malaga",
+    "builtin:lisboa",
+    "builtin:madrid",
+    "builtin:casablanca",
+    "builtin:valencia"
+  ],
+  "builtin:shanghai": [
+    "builtin:taipei",
+    "builtin:seul",
+    "builtin:pekin",
+    "builtin:hong-kong",
+    "builtin:tokio"
+  ],
+  "builtin:sidney": [
+    "builtin:melbourne",
+    "builtin:auckland",
+    "builtin:perth",
+    "builtin:singapur",
+    "builtin:kuala-lumpur"
+  ],
+  "builtin:singapur": [
+    "builtin:kuala-lumpur",
+    "builtin:bangkok",
+    "builtin:hong-kong",
+    "builtin:taipei",
+    "builtin:shanghai"
+  ],
+  "builtin:taipei": [
+    "builtin:shanghai",
+    "builtin:hong-kong",
+    "builtin:seul",
+    "builtin:pekin",
+    "builtin:tokio"
+  ],
+  "builtin:tenerife": [
+    "builtin:las-palmas",
+    "builtin:casablanca",
+    "builtin:lisboa",
+    "builtin:sevilla",
+    "builtin:malaga"
+  ],
+  "builtin:tokio": [
+    "builtin:seul",
+    "builtin:shanghai",
+    "builtin:pekin",
+    "builtin:taipei",
+    "builtin:hong-kong"
+  ],
+  "builtin:toronto": [
+    "builtin:nueva-york",
+    "builtin:chicago",
+    "builtin:miami",
+    "builtin:denver",
+    "builtin:phoenix"
+  ],
+  "builtin:tromso": [
+    "builtin:helsinki",
+    "builtin:estocolmo",
+    "builtin:oslo",
+    "builtin:copenhague",
+    "builtin:moscu"
+  ],
+  "builtin:valencia": [
+    "builtin:madrid",
+    "builtin:barcelona",
+    "builtin:malaga",
+    "builtin:sevilla",
+    "builtin:marsella"
+  ],
+  "builtin:vancouver": [
+    "builtin:seattle",
+    "builtin:san-francisco",
+    "builtin:los-angeles",
+    "builtin:denver",
+    "builtin:phoenix"
+  ],
+  "builtin:varsovia": [
+    "builtin:praga",
+    "builtin:berlin",
+    "builtin:budapest",
+    "builtin:viena",
+    "builtin:copenhague"
+  ],
+  "builtin:viena": [
+    "builtin:budapest",
+    "builtin:praga",
+    "builtin:berlin",
+    "builtin:varsovia",
+    "builtin:zurich"
+  ],
+  "builtin:zurich": [
+    "builtin:paris",
+    "builtin:bruselas",
+    "builtin:marsella",
+    "builtin:praga",
+    "builtin:viena"
+  ]
+}
