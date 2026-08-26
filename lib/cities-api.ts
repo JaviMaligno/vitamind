@@ -12,6 +12,15 @@ interface SupabaseCity {
   population: number;
   timezone: string;
   display_name?: string;
+  /**
+   * Both added by 20260826_city_slug_elevation.sql, and both `| null` rather
+   * than merely optional: the columns are NULLABLE and every RPC selects them,
+   * so a row that exists but has not been re-seeded yet arrives as an explicit
+   * `null`, not as an absent key. The optional half covers the other case — a
+   * response produced before the migration reached the database.
+   */
+  elevation?: number | null;
+  slug?: string | null;
 }
 
 /**
@@ -40,8 +49,23 @@ export function tzOffset(timezone: string): number {
   }
 }
 
-/** Convert a Supabase city row to our City type */
-function toCity(row: SupabaseCity): City {
+/**
+ * Convert a Supabase city row to our City type.
+ *
+ * Exported for lib/__tests__/cities-api-mapping.test.ts: this is the only place
+ * a searched city acquires its elevation and its slug, and both are silent when
+ * wrong — a missing elevation prints a plausible but incorrect month count, a
+ * missing slug just yields a search result that cannot link anywhere.
+ *
+ * `?? undefined` on both, never the raw value: the columns are nullable, so
+ * until the re-seed finishes every row carries `null`. `City.slug` is typed
+ * `string | undefined`, and letting a null through would type-check all the way
+ * to an href ending in `/null`. For elevation, undefined keeps "not measured"
+ * (437 GeoNames rows have no `dem`) distinct from "at sea level" — consumers
+ * default it to 0 themselves, which is how every non-curated city is treated
+ * today anyway.
+ */
+export function toCity(row: SupabaseCity): City {
   return {
     id: `geonames:${row.geoname_id}`,
     name: row.display_name ?? row.name,
@@ -52,6 +76,8 @@ function toCity(row: SupabaseCity): City {
     country: row.country_code,
     flag: ccToFlag(row.country_code),
     population: row.population,
+    elevation: row.elevation ?? undefined,
+    slug: row.slug ?? undefined,
     source: "geonames",
   };
 }

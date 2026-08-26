@@ -8,6 +8,14 @@ function getSupabaseServer() {
   return createClient(url, key);
 }
 
+/**
+ * Every branch below returns raw `cities` rows, and since
+ * 20260826_city_slug_elevation.sql those rows carry `slug` and `elevation` —
+ * part of the response contract now, not incidental columns. No code change was
+ * needed: the four RPCs select them explicitly and `select("*")` picks them up.
+ * They arrive as `null` for a row the re-seed has not reached; `toCity` in
+ * lib/cities-api.ts is what normalizes that to undefined.
+ */
 export async function GET(request: NextRequest) {
   const { searchParams } = request.nextUrl;
   const q = searchParams.get("q");

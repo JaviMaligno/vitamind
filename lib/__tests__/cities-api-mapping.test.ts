@@ -22,7 +22,12 @@ describe("toCity", () => {
   });
 
   it("keeps working for a row that predates the two columns", () => {
-    const { elevation, slug, ...old } = ROW;
+    // Keys absent altogether, which is a real shape: a response served before
+    // the migration reached the database. (Deleting beats destructuring off a
+    // rest here only because the two discarded bindings trip no-unused-vars.)
+    const old: Record<string, unknown> = { ...ROW };
+    delete old.elevation;
+    delete old.slug;
     const city = toCity(old as never);
     expect(city.elevation).toBeUndefined();
     expect(city.slug).toBeUndefined();
