@@ -107,3 +107,61 @@ describe("CityPageLink — state 3: nothing useful nearby", () => {
     }
   });
 });
+
+/**
+ * State 4, added by PR B: the searched city has a page of its own now, so the
+ * chip stops offering a stand-in. This is the bug of origin — a user who searched
+ * Toledo was told "see the full Madrid page" and had no way to reach Toledo.
+ *
+ * The link uses the `id-{geonameid}` alias rather than the slug, because the id is
+ * the only thing the saved preference carries; the route 308s it to the canonical
+ * slug. `jest-dom` is not wired into this suite (no `setupFiles`), so the href is
+ * read with `getAttribute`, as everywhere else in this file.
+ */
+const TOLEDO = { lat: 39.86, lon: -4.02 }; // Madrid, 67 km, dLat 0.56 → was a SILENT stand-in
+
+describe("CityPageLink — state 4: the searched city has its own page", () => {
+  it("names the SEARCHED city, not the stand-in, and links to its own page", () => {
+    render(<CityPageLink cityId="geonames:2510409" cityName="Toledo" lat={TOLEDO.lat} lon={TOLEDO.lon} />);
+    expect(chip().getAttribute("href")).toContain("/id-2510409");
+    expect(chip().textContent).toContain("Toledo");
+    expect(chip().textContent).not.toContain("Madrid");
+  });
+
+  it("uses the unqualified viewCityPage copy — it IS their city, so there is no distance to state", () => {
+    render(<CityPageLink cityId="geonames:2510409" cityName="Toledo" lat={TOLEDO.lat} lon={TOLEDO.lon} />);
+    const label = chip().textContent ?? "";
+    expect(label).toContain("cityPage.viewCityPage[city=Toledo]");
+    expect(label).not.toContain("cityPage.viewNearestCityPage");
+    expect(label).not.toMatch(/km=/);
+  });
+
+  it("puts the alias under the locale's city prefix, not at the root", () => {
+    render(<CityPageLink cityId="geonames:2510409" cityName="Toledo" lat={TOLEDO.lat} lon={TOLEDO.lon} />);
+    expect(chip().getAttribute("href")).toBe("/vitamin-d/id-2510409");
+  });
+
+  /**
+   * Without a name there is nothing honest to print — `viewCityPage` with an empty
+   * `{city}` would read "View the full  page". So the chip falls back to PR A's
+   * behaviour rather than degrading the copy. Both call sites pass the name; this
+   * guards the prop being optional.
+   */
+  it("falls back to the PR A branches when no cityName is supplied", () => {
+    render(<CityPageLink cityId="geonames:2510409" lat={TOLEDO.lat} lon={TOLEDO.lon} />);
+    expect(chip().getAttribute("href")).toBe("/vitamin-d/madrid");
+    expect(chip().textContent).not.toContain("id-2510409");
+  });
+
+  it("does not hijack a builtin city that also has a name", () => {
+    render(<CityPageLink cityId="builtin:madrid" cityName="Madrid" lat={MADRID.lat} lon={MADRID.lon} />);
+    expect(chip().getAttribute("href")).toBe("/vitamin-d/madrid");
+    expect(chip().textContent).toContain("city=cities.madrid");
+  });
+
+  it("still renders a link for a searched city nowhere near a builtin", () => {
+    render(<CityPageLink cityId="geonames:3833367" cityName="Ushuaia" lat={USHUAIA.lat} lon={USHUAIA.lon} />);
+    expect(chip().getAttribute("href")).toBe("/vitamin-d/id-3833367");
+    expect(chip().textContent).toContain("Ushuaia");
+  });
+});
