@@ -255,15 +255,25 @@ const CITY_PAGE_MODULES = [
 ] as const;
 
 /**
- * Byte-for-byte source of each module, keyed by path so a RENAME shows up too.
- * Throws rather than skipping a missing file: a module that has moved and is
- * silently dropped from the hash is a hole in the guard, and a red test is the
- * cheap version of that news.
+ * Source of each module, keyed by path so a RENAME shows up too. Throws rather
+ * than skipping a missing file: a module that has moved and is silently dropped
+ * from the hash is a hole in the guard, and a red test is the cheap version of
+ * that news.
+ *
+ * Line endings are normalised to LF before hashing, and that is not cosmetic.
+ * The comment above claims the digest is "identical on every machine" because no
+ * float is hashed. Floats were not the only way to break that: git's
+ * `core.autocrlf` is on by default on Windows, so a Windows checkout holds these
+ * modules in CRLF and Linux CI holds them in LF, and hashing the raw text made
+ * `figures` differ between the two while every other part matched. The symptom
+ * was a guard that could never go green on the maintainer's own machine — which
+ * teaches exactly the paste-without-reading reflex the guard exists to prevent.
+ * Normalising costs nothing on CI, where the files are already LF.
  */
 function moduleSources(paths: readonly string[]): Record<string, string> {
   const out: Record<string, string> = {};
   for (const path of paths) {
-    out[path] = readFileSync(join(process.cwd(), path), "utf8");
+    out[path] = readFileSync(join(process.cwd(), path), "utf8").replace(/\r\n/g, "\n");
   }
   return out;
 }
