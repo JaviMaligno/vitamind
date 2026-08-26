@@ -13,6 +13,7 @@ import {
   submitPayload,
 } from "@/lib/indexnow";
 import { CANONICAL_HOST, SITE_URL } from "@/lib/site";
+import sitemap from "@/app/sitemap";
 
 const sitemapWith = (...urls: string[]) =>
   `<?xml version="1.0" encoding="UTF-8"?>
@@ -257,3 +258,24 @@ describe("baselineProblem — the guard on the fail-open snapshot", () => {
   });
 });
 
+
+describe("the on-demand city family never reaches a submission", () => {
+  /**
+   * `scripts/indexnow.ts` builds its list by importing `app/sitemap.ts`, so today
+   * nothing leaks by itself. This turns that accident into a guarantee: a future
+   * change to the sitemap cannot quietly push 1.4 M `noindex` URLs to Bing, which
+   * is the abuse this module's own header warns about.
+   *
+   * Shown to fail before it was kept: pushing `/vitamina-d/toledo-es` and
+   * `/vitamina-d/id-2510409` onto `urls` by hand turns it red.
+   */
+  it("builds no payload containing a qualified or id-alias city URL", () => {
+    const urls = sitemap().map((e) => e.url);
+    for (const payload of buildPayloads(urls)) {
+      for (const url of payload.urlList) {
+        expect(url, url).not.toMatch(/\/[a-z0-9-]+-[a-z]{2}(-\d+)?$/);
+        expect(url, url).not.toMatch(/\/id-\d+$/);
+      }
+    }
+  });
+});

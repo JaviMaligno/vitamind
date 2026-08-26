@@ -113,6 +113,34 @@ describe("sitemap", () => {
     );
     expect(missing).toEqual([]);
   });
+
+  /**
+   * THE LOCK THAT FAILS SILENTLY IF IT IS NOT PINNED (R-5).
+   *
+   * `/{cityPrefix}/{slug}` now also serves any city in the `cities` table —
+   * 230,407 rows, which is 1,382,442 URLs across six locales. The sitemap is a
+   * crawl REQUEST, and this project's binding meter is (URLs crawled) × (bytes
+   * served). Listing a `noindex` family that cannot rank by design would be pure
+   * cost against it.
+   *
+   * Worse, `lib/indexnow.ts` builds its submission list by importing this very
+   * function, so a URL that leaks in here ends up PUSHED to Bing — which that
+   * module's own header calls the abusable move.
+   *
+   * Both asserts were shown to fail before they were kept: adding a single
+   * `/vitamina-d/toledo-es` entry to `app/sitemap.ts` turned the first red, and
+   * `/vitamina-d/id-2510409` the second.
+   */
+  it("never lists a qualified (on-demand) city URL", () => {
+    const qualified = entries.filter((e) =>
+      /\/[a-z0-9-]+-[a-z]{2}(-\d+)?$/.test(new URL(e.url).pathname),
+    );
+    expect(qualified.map((e) => e.url)).toEqual([]);
+  });
+
+  it("never lists an id-alias URL", () => {
+    expect(entries.filter((e) => /\/id-\d+$/.test(e.url)).map((e) => e.url)).toEqual([]);
+  });
 });
 
 /**
