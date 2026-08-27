@@ -7,7 +7,22 @@ import { Link } from "@/i18n/navigation";
 import PosterHero from "@/components/PosterHero";
 import PhaseButton from "@/components/PhaseButton";
 
-const CONTACT_EMAIL = "javiecija96@gmail.com";
+/**
+ * On the project's own domain rather than a personal Gmail, because this is the
+ * address a health brand writes to.
+ *
+ * It is a Namecheap forwarder, not a mailbox — there is nothing to log into.
+ * Mail sent here lands in the personal inbox; verified end to end on 2026-08-27
+ * by sending from an unrelated account, which is the only test that proves it
+ * (a message sent from the destination address gets threaded with its own copy
+ * in Sent and looks like it never arrived).
+ *
+ * The same address is already Brevo's verified sender for javieraguilar.ai, so
+ * one address both sends and receives. If the MX records for that domain ever
+ * move off `eforward*.registrar-servers.com`, this stops receiving and has to
+ * come back to an address that works.
+ */
+const CONTACT_EMAIL = "info@javieraguilar.ai";
 
 const WHY_ITEMS: { Icon: LucideIcon; titleKey: string; textKey: string }[] = [
   { Icon: Target, titleKey: "why1Title", textKey: "why1Text" },
