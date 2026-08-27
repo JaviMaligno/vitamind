@@ -128,3 +128,67 @@ Los datos de empresas están basados en conocimiento hasta principios de 2025. A
 - Verificar que la empresa sigue activa y con los mismos productos
 - Buscar a la persona correcta en LinkedIn (puede haber cambiado)
 - Comprobar si tienen programa de afiliados existente (muchas lo tienen)
+
+---
+
+## Lo que pasó al probarlo (2026-08-26) — leer antes de usar la tabla de arriba
+
+**La premisa de la «Fase 1 — Ya (sin usuarios, valor mutuo)» está desmentida por el único
+experimento que se ha corrido.** El usuario contactó con un partner y la respuesta fue que
+nada hasta tener usuarios. Marnys, que ya había declinado antes por lo mismo, es el número
+9 de esa misma fase.
+
+O sea que la fase no separa lo que decía separar. Si el criterio real de los partners es
+«enséñame usuarios», entonces las tres fases son una sola y todas empiezan en la 2.
+
+**Y esto convierte en circular el plan de conseguir autoridad por esta vía.** El cuello
+medido es autoridad (19 enlaces externos de 5 dominios, 12 de ellos de la web propia); la
+autoridad vendría de enlaces editoriales; los enlaces editoriales vendrían de partners; y
+los partners piden usuarios, que es lo que la autoridad tenía que traer. El ciclo se cierra
+sobre sí mismo y no tiene entrada por aquí. Cualquier plan futuro tiene que romperlo, no
+recorrerlo.
+
+**Lo que sigue teniendo sentido, y es lo único:** la página `/partners` es una página de
+OFERTA, no un escaparate — no afirma en ningún sitio tener socios, así que no exhibe un
+vacío. Está prerenderizada pese al `"use client"` (verificado en producción: todo el copy
+va en el HTML inicial), es `index, follow` y está en el sitemap. Es decir, la leen los
+rastreadores y los asistentes. Eso la saca del círculo: no persigue a nadie, la encuentra
+quien ya venía buscando. Cuesta cero mantenerla.
+
+**Lo que NO hay que hacer:** volver a recorrer la tabla de arriba de uno en uno esperando
+un resultado distinto, ni escribir a los de la Fase 1 «porque no necesitan usuarios». Lo
+necesitan.
+
+---
+
+## ⚠️ El copy de `/partners` ahora cita números. Hay que revisarlos.
+
+El 2026-08-26 se reescribió el pitch: dejó de vender una audiencia («audiencia
+comprometida», «nuestros usuarios vuelven regularmente») y pasó a vender lo que sí es
+demostrable. **Ese cambio no fue estético.** El pitch anterior invitaba exactamente a la
+objeción que recibimos: si abres diciendo «llega a usuarios», lo primero que hace un
+partner es preguntar cuántos, y con 101 clics en 28 días esa conversación se acaba ahí.
+
+Las cuatro claves reescritas, en los seis idiomas, son `pageSubtitle`,
+`heroDescription`, `why4Title` y `why4Text`.
+
+**Dos cifras viven ahora en `messages/*.json` y van a caducar:**
+
+| Cifra en el copy | De dónde sale | Cuándo se midió |
+|---|---|---|
+| «3.000 páginas indexadas» | Search Console, cobertura: 3,07 mil indexadas | 2026-08-14 |
+| «unas 35.000 impresiones al mes» | Search Console, 35,2 mil impresiones en 28 días | 2026-08-14 |
+
+Las dos están redondeadas **a la baja** a propósito, que es la dirección segura. Aun así:
+**si Search Console se aleja de ahí, hay que tocar el copy.** Es la misma regla que
+CLAUDE.md documenta cinco veces para las afirmaciones sobre `lib/`, aplicada a una
+afirmación sobre el propio producto. Un pitch que exagera es lo que nos dejó sin partner
+la primera vez.
+
+Nota: las páginas de ciudad bajo demanda son `noindex` y no cuentan para «indexadas», así
+que la cifra no sube sola por haberlas desplegado.
+
+**fr, de, ru y lt están sin revisión nativa.** En la PR anterior una revisión de estas
+mismas cuatro locales encontró cuatro errores reales (un compuesto alemán que se rompe con
+nombres de varias palabras, un genitivo lituano, un cuantificador francés colgando y una
+discordancia de número en ruso). No dar por bueno lo que hay.

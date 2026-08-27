@@ -469,4 +469,39 @@ describe("the rewrite decides the split, and gets it right in both directions", 
     expect(CITY_PREFIX.es).toBe("vitamina-d");
     expect(CITY_PREFIX.lt).toBe("vitaminas-d");
   });
+
+  /**
+   * JUNK THAT LOOKS LIKE NOTHING STILL GOES ON-DEMAND, and this is the assert
+   * that keeps it that way.
+   *
+   * The rewrite used to stop unless the slug looked dynamic or was an id alias.
+   * Measured in production on 2026-08-26: `/vitamina-d/zzzzzz` matches neither,
+   * so it fell through to the curated file and came back `x-vercel-cache: HIT`
+   * on the second request — a 404 written to the cache, against a quota that
+   * closed its last window at 181%. Only junk that happened to look dynamic was
+   * protected, which is the wrong half.
+   *
+   * Nothing pinned that behaviour before, in either direction, so re-adding the
+   * prefilter would have reopened the hole silently. It will now go red.
+   *
+   * Supabase is not exposed by this: `resolveDynamicCity` applies the same
+   * prefilter itself, so an unresolvable shape returns null without a round trip.
+   */
+  it.each(["zzzzzz", "noexiste", "madrid2", "a", "1234"])(
+    "rewrites %s, which can never resolve, rather than letting the curated file cache its 404",
+    (slug) => {
+      const from = `/${CITY_PREFIX.es}/${slug}`;
+      const to = rw(from);
+      expect(to, `${from} must be rewritten, not left to the static file`).not.toBeNull();
+      expect(to).not.toBe(from);
+      expect(segments(to!)[0]).toBe("es");
+      expect(segments(to!).at(-1)).toBe(slug);
+    },
+  );
+
+  /** The curated wall is now the only thing holding, so assert it directly. */
+  it("still refuses to touch a curated slug", () => {
+    expect(rw(`/${CITY_PREFIX.es}/madrid`)).toBeNull();
+    expect(rw(`/en/${CITY_PREFIX.en}/london`)).toBeNull();
+  });
 });

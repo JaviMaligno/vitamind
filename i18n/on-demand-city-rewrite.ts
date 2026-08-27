@@ -1,6 +1,5 @@
 import { routing } from "./routing";
 import { CITY_PREFIX, cityIdFromSlug } from "@/lib/city-routes";
-import { geonameIdFromAlias, isDynamicCitySlug } from "@/lib/city-dynamic-slug";
 
 type Locale = (typeof routing.locales)[number];
 
@@ -78,12 +77,25 @@ export function onDemandCityRewrite(pathname: string): string | null {
   // its hreflang — and those 438 pages carry essentially all the organic traffic.
   if (cityIdFromSlug(locale, slug)) return null;
 
-  // The syntactic prefilter, plus the id alias. The alias does NOT match
-  // `isDynamicCitySlug` (the regex demands a two-letter country segment at the
-  // end) yet `resolveDynamicCity` accepts it, and it is the form the search chip
-  // emits when all it holds is a geoname id. Routing by the prefilter alone
-  // would send every chip click to the static file, and cache its 404.
-  if (!isDynamicCitySlug(slug) && geonameIdFromAlias(slug) === null) return null;
+  // EVERYTHING ELSE GOES ON-DEMAND, including shapes that cannot possibly
+  // resolve. This used to stop here unless the slug looked dynamic
+  // (`isDynamicCitySlug`) or was an id alias, and that left a hole measured in
+  // production on 2026-08-26: `/vitamina-d/zzzzzz` has neither shape, so it fell
+  // through to the curated file and came back `x-vercel-cache: HIT` on the
+  // second request — a cached 404 against a write quota that closed its last
+  // window at 181%. Only junk that happened to look dynamic was protected, which
+  // is the wrong half.
+  //
+  // Sending it here costs a middleware-to-route hop instead of a cache write.
+  // Nothing reaches Supabase that did not before: `resolveDynamicCity` applies
+  // the same prefilter itself, so an unresolvable shape still returns null
+  // without a round trip — it just returns it from a `force-dynamic` route,
+  // where the resulting 404 is not written anywhere.
+  //
+  // Which leaves the curated check above as the only thing standing between the
+  // 438 prerendered pages and this rewrite. It is exact rather than heuristic —
+  // `cityIdFromSlug` consults the generated map — so that is the right place for
+  // the whole weight to rest.
 
   // The locale is spelled out even for `es`, whose public URL carries no prefix:
   // this rewrite bypasses next-intl, so nothing downstream can infer it.
