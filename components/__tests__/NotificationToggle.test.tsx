@@ -49,3 +49,27 @@ describe("NotificationToggle labels", () => {
     expect(screen.queryByText(/notifications\.notify/)).toBeNull();
   });
 });
+
+/**
+ * iOS Safari, outside standalone. Web push exists on iOS only for a web app on
+ * the home screen: in a Safari TAB the service worker registration has no
+ * `pushManager` at all, while `PushManager` is still on `window` — so the
+ * support check passes and the old code then read `.getSubscription()` off
+ * `undefined`. The rejection was unhandled, no `setStatus` ever ran, and the
+ * toggle stayed on "loading" for the rest of the visit with nothing the user
+ * could do about it. UNVERIFIED ON A REAL iPHONE (see the branch notes); this
+ * test pins the shape of the guard, not Safari's behaviour.
+ */
+describe("NotificationToggle on a registration without pushManager", () => {
+  it("says unsupported instead of hanging on 'loading'", async () => {
+    const g = globalThis as Record<string, unknown>;
+    g.PushManager = function () {};
+    g.Notification = { permission: "default" };
+    Object.defineProperty(navigator, "serviceWorker", {
+      configurable: true,
+      value: { ready: Promise.resolve({}) },
+    });
+    render(<NotificationToggle lat={40} lon={-3} tz={1} skinType={3} areaFraction={0.25} cityName="Madrid" />);
+    expect(await screen.findByText(/notifications\.unsupported/)).toBeTruthy();
+  });
+});

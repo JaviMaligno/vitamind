@@ -6,7 +6,8 @@ import {
   detectPlatform,
   isInAppBrowser as detectInAppBrowser,
   isStandalone as detectStandalone,
-  setInstallBannerSeen,
+  markInstallBannerOutcome,
+  markInstallBannerShown,
   type InstallPlatform,
 } from "@/lib/install";
 import InstallInstructionsModal, { type InstallModalMode } from "@/components/InstallInstructionsModal";
@@ -83,7 +84,8 @@ export default function InstallProvider({ children }: { children: ReactNode }) {
   // appinstalled listener
   useEffect(() => {
     const onInstalled = () => {
-      setInstallBannerSeen();
+      // Terminal: the app is on the home screen, so the ask is never spent again.
+      markInstallBannerOutcome("installed");
       setDeferredPrompt(null);
       setIsInstalled(true);
       if (!installedToastShown.current) {
@@ -109,7 +111,9 @@ export default function InstallProvider({ children }: { children: ReactNode }) {
   );
 
   const openModal = useCallback((mode: InstallModalMode) => {
-    setInstallBannerSeen();
+    // The instructions modal IS the ask, so it counts as one — otherwise the
+    // banner would follow it around asking the same thing again.
+    markInstallBannerShown();
     setModalMode(mode);
   }, []);
 

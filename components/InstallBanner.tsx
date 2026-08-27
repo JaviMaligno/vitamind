@@ -4,7 +4,14 @@ import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Smartphone, X } from "lucide-react";
 import { useInstallPrompt } from "@/hooks/useInstallPrompt";
-import { getInstallBannerSeen, isStandalone, setInstallBannerSeen } from "@/lib/install";
+import {
+  INSTALL_INTENT_EVENT,
+  canShowInstallBanner,
+  isStandalone,
+  markInstallBannerOutcome,
+  markInstallBannerShown,
+  recordVisit,
+} from "@/lib/install";
 import PhaseButton from "@/components/PhaseButton";
 
 export default function InstallBanner() {
@@ -15,15 +22,24 @@ export default function InstallBanner() {
   const [closing, setClosing] = useState(false);
   const dismissTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  /**
+   * WHEN TO ASK. This used to be `setTimeout(…, 10000)`: ten seconds after the
+   * page loaded, the banner appeared and the browser's one and only install
+   * request was marked spent — usually on a sunrise table reached from Google,
+   * by someone who had not yet been shown anything worth installing.
+   *
+   * Now the ask waits for a signal the visitor gave us: they came BACK (a
+   * second session), or they touched a control that only someone using the
+   * product touches (`INSTALL_INTENT_EVENT` — the skin selector, a month
+   * expander, the GPS button). Time-on-page is not such a signal; a tab left
+   * open in the background produces it for free.
+   */
   useEffect(() => {
     if (isInstalled || isStandalone()) {
       queueMicrotask(() => setShouldRender(false));
       return;
     }
-    if (getInstallBannerSeen()) {
-      // Already shown once. Don't auto-show again. (We only set this state on first mount.)
-      return;
-    }
+    if (!canShowInstallBanner()) return;
 
     const eligible =
       isInAppBrowser ||
@@ -34,11 +50,24 @@ export default function InstallBanner() {
 
     queueMicrotask(() => setShouldRender(true));
 
-    const showTimer = setTimeout(() => {
-      setInstallBannerSeen();
+    // `recordVisit` is idempotent per session, so the effect re-running when
+    // `beforeinstallprompt` finally fires does not inflate the count.
+    const visits = recordVisit();
+
+    const show = () => {
+      // Marked here, at the moment it goes on screen, so "seen" means seen.
+      markInstallBannerShown();
       setVisible(true);
-    }, 10000);
-    return () => clearTimeout(showTimer);
+    };
+
+    if (visits >= 2) {
+      show();
+      return;
+    }
+
+    const onIntent = () => show();
+    window.addEventListener(INSTALL_INTENT_EVENT, onIntent, { once: true });
+    return () => window.removeEventListener(INSTALL_INTENT_EVENT, onIntent);
   }, [platform, isInAppBrowser, isInstalled]);
 
   useEffect(() => {
@@ -52,7 +81,8 @@ export default function InstallBanner() {
 
   if (!shouldRender) return null;
 
-  const dismiss = () => {
+  const dismiss = (outcome?: "dismissed") => {
+    if (outcome) markInstallBannerOutcome(outcome);
     setClosing(true);
     if (dismissTimerRef.current) clearTimeout(dismissTimerRef.current);
     dismissTimerRef.current = setTimeout(() => {
@@ -62,7 +92,12 @@ export default function InstallBanner() {
   };
 
   const handleInstall = async () => {
-    await trigger();
+    const result = await trigger();
+    // `accepted` is the native prompt's own verdict. `manual` means the
+    // instructions modal took over — that is engagement, not a refusal, and the
+    // modal records its own display, so no outcome is written here.
+    if (result === "accepted") markInstallBannerOutcome("installed");
+    else if (result === "dismissed") markInstallBannerOutcome("dismissed");
     dismiss();
   };
 
@@ -81,7 +116,7 @@ export default function InstallBanner() {
           {t("banner.cta")}
         </PhaseButton>
         <button
-          onClick={dismiss}
+          onClick={() => dismiss("dismissed")}
           aria-label={t("modal.close")}
           className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md text-neutral-400 hover:text-white"
         >
