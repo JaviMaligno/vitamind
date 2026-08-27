@@ -1,9 +1,35 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAllSubscriptions, removeSubscription, type StoredSubscription } from "@/lib/push-store";
+import {
+  claimNotification,
+  getAllSubscriptions,
+  removeSubscription,
+  type StoredSubscription,
+} from "@/lib/push-store";
+import { notifyDecision } from "@/lib/push-schedule";
 import { getCurve, dayOfYear, fmtTime } from "@/lib/solar";
 import { minutesForVitD, computeExposureFromCurve, type SkinType } from "@/lib/vitd";
 import { ozoneDU } from "@/lib/uv-model";
 
+/**
+ * The daily "go out in the sun" push, sent on the SUBSCRIBER's clock.
+ *
+ * This used to be one cron at 08:00 UTC that iterated every stored subscription.
+ * 08:00 UTC is a wall-clock time for the server and for nobody else: the notice
+ * landed at 10:00 in Madrid, 04:00 in New York, 01:00 in Los Angeles and 17:00 in
+ * Tokyo. Half the recipients were asleep and the other half had already lost the
+ * synthesis window the message was naming.
+ *
+ * `vercel.json` now schedules this path once for every UTC hour and each run
+ * sends only to the subscriptions whose own clock is inside the morning window
+ * in `lib/push-schedule.ts`. It is 24 separate daily entries rather than a single
+ * `0 * * * *` because the account is on Vercel's Hobby plan, where any expression
+ * that would run more than once a day fails the deployment outright; the same
+ * plan invokes each entry anywhere inside its hour, which is why the window is
+ * three hours wide rather than one.
+ *
+ * Being eligible on several runs is safe because the day is CLAIMED before it is
+ * pushed (`claimNotification`), keyed on the subscriber's local date.
+ */
 const SUPPORTED_LOCALES = ["es", "en", "fr", "de", "ru", "lt"];
 
 interface PushMessages {
@@ -172,14 +198,47 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ sent: 0, skipped: 0, failed: 0, total: 0, detail: "No subscriptions found" });
     }
 
-    const doy = dayOfYear(new Date());
+    const now = new Date();
     const webpush = await getWebPush();
     let sent = 0;
     let failed = 0;
     let skipped = 0;
+    let deferred = 0;
     const errors: { endpoint: string; reason: string }[] = [];
 
     for (const sub of subs) {
+      const decision = notifyDecision(now, sub);
+
+      // Force mode is a manual delivery test: it must fire whatever the clock
+      // says and however many times it is asked, so it takes neither gate.
+      if (!force) {
+        if (!decision.due) {
+          deferred++;
+          continue;
+        }
+        try {
+          if (!(await claimNotification(sub.subscription.endpoint, decision.localDay))) {
+            // Another invocation of this same local day got there first.
+            deferred++;
+            continue;
+          }
+        } catch (err) {
+          // Without the claim there is no once-a-day guard, and this endpoint
+          // now runs 24 times a day. Skip the push rather than risk repeating
+          // it, and let the run report the failure.
+          failed++;
+          errors.push({
+            endpoint: sub.subscription.endpoint,
+            reason: `claim failed: ${err instanceof Error ? err.message : String(err)}`,
+          });
+          continue;
+        }
+      }
+
+      // The day the SUBSCRIBER is living, not the one the server is: at 09:00 in
+      // Kiritimati it is still yesterday in UTC, and the solar curve is a
+      // function of the day.
+      const doy = dayOfYear(new Date(`${decision.localDay}T00:00:00Z`));
       const result = await sendForSubscription(sub, doy, webpush, force);
       if (result.sent) sent++;
       if (result.skipped) skipped++;
@@ -189,7 +248,14 @@ export async function GET(request: NextRequest) {
 
     // Log the outcome so failed pushes are visible in Vercel function logs —
     // the response body of a cron invocation is never read by anyone.
-    const summary = { sent, skipped, failed, total: subs.length, mode: force ? "force-test" : "cron" };
+    const summary = {
+      sent,
+      skipped,
+      deferred,
+      failed,
+      total: subs.length,
+      mode: force ? "force-test" : "cron",
+    };
     if (errors.length) {
       console.error("[api/push/notify] run finished with errors:", JSON.stringify({ ...summary, errors }));
     } else {
