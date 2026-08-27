@@ -132,14 +132,49 @@ el `FAQPage`, ni la URL.
 - **Indexables** (a diferencia de las páginas bajo demanda, que son `noindex`).
 - En el sitemap, con `lastmod` declarado por `CITY_PAGE_REVISION` o constante propia.
 - Slug **sin ciudad** y localizado por idioma, con hreflang entre las seis locales.
-- `FAQPage` en la madre; las hijas, `Article` o `MedicalWebPage` — a decidir en el plan
-  con la documentación de Google delante, no de memoria.
+- **Marcado: `Article`/`BlogPosting`, y nada más.** Investigado el 2026-08-27 contra la
+  documentación de Google, y las tres opciones que el borrador barajaba están muertas:
+  `HowTo` se retiró en 2023; **`FAQPage` dejó de mostrar resultado enriquecido el
+  2026-05-07 y su documentación se borró el 2026-06-15** — la excepción para sitios
+  sanitarios ya no existe; y `MedicalWebPage` **nunca fue un tipo que Google leyera**, no
+  está en la galería de resultados enriquecidos. `Article` es el único con resultado
+  enriquecido real (título, imagen, fechas). Con `author` (Person + `sameAs`),
+  `datePublished`, `dateModified` y `BreadcrumbList` para la jerarquía madre→hija.
+- **No hay marcado que ayude a ser citado en un AI Overview.** Google lo dice literal:
+  «There's also no special schema.org structured data that you need to add». Y medido por
+  Ahrefs sobre 1.885 páginas que añadieron JSON-LD contra 4.000 de control: **−4,6 % en
+  AI Overviews**, significativo. Otro estudio encontró que los cinco sistemas probados
+  extraen **solo HTML visible e ignoran el JSON-LD**. Corolario vinculante para el plan:
+  **lo que no esté en el HTML visible no cuenta**. Si hay preguntas, van en el cuerpo.
 - Enlace desde `/learn`, desde el índice de ciudades y desde el footer.
 
-**Advertencia YMYL:** es territorio sanitario. Google favorece dominios institucionales y
-esto no se gana en semanas. La apuesta no es ganarle a MedlinePlus en «vitamina D», es
-ganar en **«cuánto tiempo al sol *si tengo la piel clara*»**, que es una consulta que las
-instituciones no responden con un número porque no personalizan.
+**YMYL, corregido con evidencia (2026-08-27).** El borrador daba por hecho que Google
+favorece dominios institucionales en salud y que sin firma médica no hay nada que hacer.
+**Es falso, y hay un contraejemplo directo.**
+
+Para «how much sun for vitamin D by skin type» la primera página en inglés la ocupan
+sitios NO institucionales: examine.com, dummies.com, una tienda de suplementos, una
+calculadora — y, sobre todo, **`getbask.app`, el blog de una app competidora de vitamina
+D**. Verificado abriendo la página: **no tiene autor, no tiene revisor médico, no tiene
+credenciales**. Tiene cuatro citas revisadas por pares (incluido Holick 2004), una tabla
+por fototipo × índice UV, preguntas y un descargo de responsabilidad. Su marcado es
+`BlogPosting` — ni `MedicalWebPage`, ni `FAQPage`, ni `HowTo`.
+
+Es literalmente el molde de este spec, ya posicionando.
+
+En español el reparto es mixto: hay clínicas, pero también prensa generalista y un blog
+de farmacia. Ahí la ventaja es autoridad de dominio, no credenciales.
+
+**Conclusión que cambia la apuesta: la barrera no es la firma médica ni el marcado, es el
+perfil de enlaces** — 19 externos, 12 propios. Bask posiciona con el blog de una app; la
+diferencia con nosotros es dominio, no schema.
+
+Lo que sí separa a los no institucionales que posicionan de los que no es la
+**transparencia metodológica**: examine.com es el caso canónico, sin plantilla de médicos
+pero con metodología publicada y citas. Publicar Holick y Dowdy 2010, los supuestos y los
+límites del cálculo es la vía realista. Un revisor con credenciales seguiría siendo la
+única forma de cumplir la letra de las directrices de calidad de Google, pero **no es
+requisito para posicionar**.
 
 ## 7. Fases posteriores, esbozadas (condicionan esta)
 
