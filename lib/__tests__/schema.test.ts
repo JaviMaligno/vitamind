@@ -353,14 +353,12 @@ describe("sunPageGraph", () => {
     expect(events[3].startDate).toBe("2026-08-31T20:45:00+02:00");
   });
 
-  it("labels the instant with the offset probed at local midnight, not the record's fixed tz", () => {
+  it("labels the instant with the offset the zone is in there, not the record's fixed tz", () => {
     // The whole reason City.tz cannot be used: Madrid is tz=1 in the record and
-    // sits at +02:00 for the whole of August. Away from a transition the day has
-    // one offset, so the day-start probe and the event-instant probe
-    // `dailySunTimes` now uses are the same number and the label matches the
-    // clock time beside it. On a day where that offset does not survive to the
-    // instant the two differ and the Event is dropped instead (see the DST
-    // transition tests below).
+    // sits at +02:00 for the whole of August. The probe reads the zone at the
+    // event's own instant, the same instant `dailySunTimes` reads to place the
+    // printed time, so the label and the clock beside it always agree — on a
+    // transition day too (see the DST transition tests below).
     expect(MADRID.tz).toBe(1);
     const august = nodesOfType(madridAugust(), "Event");
     const january = nodesOfType(
@@ -423,14 +421,14 @@ describe("sunPageGraph", () => {
     expect(events[1].startDate).toBe("2026-08-02T00:00:00+02:00");
   });
 
-  it("drops the Event when the probed offset is not the one in force at the instant", () => {
-    // 1 November 2026, America/Chicago: the clocks go back at 02:00 local. The
-    // day-start probe reads -05:00, but the instant that wall clock designates
-    // falls after the transition, where the zone is at -06:00. Emitting
-    // "…-05:00" would publish an offset the zone does not have at that moment,
-    // so the node goes. (The fixture's 7.4333 is what the page printed before
-    // lib/sun-times.ts started probing the event's own instant; the skip is what
-    // it asserts, and it holds for the corrected 6.4333 the same way.)
+  it("labels a transition day with the offset in force at the event, not at the day's start", () => {
+    // 1 November 2026, America/Chicago: the clocks go back at 02:00 local, i.e.
+    // 07:00 UTC. The day STARTS at -05:00, and both figures below fall after the
+    // transition, where the zone is at -06:00. A day-start probe used to read
+    // -05:00 for them, which would have published an offset the zone does not
+    // hold at that moment, so both nodes were dropped rather than mislabelled —
+    // 12 of 1920 nodes across the shipped 40 cities × 12 months, 36 pages.
+    // Probing each event's own instant makes the label true, so they ship.
     const chicago: City = {
       id: "builtin:chicago", name: "Chicago", lat: 41.88, lon: -87.63,
       tz: -6, timezone: "America/Chicago", source: "builtin",
@@ -439,15 +437,19 @@ describe("sunPageGraph", () => {
     const events = nodesOfType(
       madridAugust({
         city: chicago, base: "chicago", cityName: "Chicago",
-        monthIndex: NOVEMBER, days: [{ day: 1, sunrise: 7.4333, sunset: 17.7 }],
+        // The post-transition figures the corrected `dailySunTimes` prints.
+        monthIndex: NOVEMBER, days: [{ day: 1, sunrise: 6.4333, sunset: 16.7833 }],
       }),
       "Event",
     );
-    expect(events).toHaveLength(0);
+    expect(events).toHaveLength(2);
+    expect(events[0].startDate).toBe("2026-11-01T06:26:00-06:00");
+    expect(events[1].startDate).toBe("2026-11-01T16:47:00-06:00");
   });
 
   it("keeps the Events of an ordinary day in the same month", () => {
-    // The skip above has to cost exactly the transition day and nothing else.
+    // The transition day must be the only day whose offset differs from the
+    // month's, and it must not become an excuse to relabel the rest.
     const chicago: City = {
       id: "builtin:chicago", name: "Chicago", lat: 41.88, lon: -87.63,
       tz: -6, timezone: "America/Chicago", source: "builtin",
@@ -599,19 +601,17 @@ describe("sunPageGraph on real sun-times data", () => {
     expect(wall(events[3])).toBe(fmtTime(days[1].sunset!));
   });
 
-  it("emits no Event for 1 November in Chicago, and that is deliberate", () => {
-    // The DST transition day: the offset that placed the printed time is not
-    // the offset in force at the instant it designates, so both Events are
-    // dropped rather than published with a label the zone does not hold.
-    // 12 of 1920 nodes across the 40 cities x 12 months are lost this way, on
-    // the 6 city-months where a transition falls on the first or last day —
+  it("emits both Events for 1 November in Chicago, on the real day's figures", () => {
+    // The DST transition day, end to end: the real `dailySunTimes` row, the real
+    // city record, the real graph. Both nodes used to be dropped here, because
+    // the offset was probed at the day's start and disagreed with the instant —
+    // 12 of 1920 nodes across the 40 cities × 12 months, on the 6 city-months
+    // where a transition falls on the first or last day of the month, which is
     // 36 pages once the six locales are counted.
-    // The reason not to "restore" them by probing the instant has since gone:
-    // `dailySunTimes` was moved onto an event-instant probe (the printed time on
-    // those 63 city-months shifted by an hour, which was the point), so a
-    // matching probe here would now label these correctly rather than
-    // contradict the table. It stays deliberate until its own change makes it,
-    // because it alters what the pages publish.
+    //
+    // Chicago goes back at 02:00 local (07:00 UTC), so the day starts at -05:00
+    // and both figures are at -06:00. The label has to be the second one, and it
+    // has to be the one the printed table already carries.
     expect(SUNRISE_CITIES).toContain("chicago");
     const city = cityRecord("builtin:chicago");
     const NOVEMBER = 10;
@@ -622,19 +622,26 @@ describe("sunPageGraph on real sun-times data", () => {
       madridAugust({ city, base: "chicago", cityName: "Chicago", monthIndex: NOVEMBER, days: [first] }),
       "Event",
     );
-    expect(events).toHaveLength(0);
+    expect(events).toHaveLength(2);
+    for (const e of events) expect(e.startDate as string).toMatch(/-06:00$/);
+    // The two surfaces say the same thing: the clock in the instant is the clock
+    // the table prints.
+    expect((events[0].startDate as string).slice(11, 16)).toBe(fmtTime(first.sunrise!));
+    expect((events[1].startDate as string).slice(11, 16)).toBe(fmtTime(first.sunset!));
   });
 
   it("emits the same graph whatever the host zone", () => {
-    // WHICH Events are skipped was a property of the builder's own machine. The
-    // offset probe built its date with the host-local constructor, so
-    // `new Date(2026, 10, 1)` is 00:00 UTC on Vercel and 10:00 UTC on a laptop
-    // in Honolulu — and Chicago's transition is at 07:00 UTC. The Honolulu build
-    // therefore probed -06:00, agreed with the instant, and published the two
-    // Events that UTC drops: measured 1920 nodes there against 1908 under UTC,
-    // Atlantic/Canary, Europe/Madrid and Australia/Sydney. The skip is a
-    // deliberate decision (see the test above); it must be the same decision
-    // everywhere, and it is the UTC one that has been shipping.
+    // WHICH Events a page carries was once a property of the builder's own
+    // machine. The offset probe built its date with the host-local constructor,
+    // so `new Date(2026, 10, 1)` is 00:00 UTC on Vercel and 10:00 UTC on a
+    // laptop in Honolulu — and Chicago's transition is at 07:00 UTC. The
+    // Honolulu build therefore probed -06:00, agreed with the instant, and
+    // published the two Events that UTC dropped: measured 1920 nodes there
+    // against 1908 under UTC, Atlantic/Canary, Europe/Madrid and
+    // Australia/Sydney. Probing the event's instant removes the disagreement at
+    // the root — every host now emits the full 1920 — but the property this
+    // pins is the one that matters and it is unchanged: the graph is a function
+    // of the city and the day, never of where it was built.
     const chicago = cityRecord("builtin:chicago");
     const NOVEMBER = 10;
     const graphIn = (zone: string) => {
@@ -649,7 +656,8 @@ describe("sunPageGraph on real sun-times data", () => {
     for (const zone of ["Atlantic/Canary", "Pacific/Honolulu", "Australia/Sydney"]) {
       expect(graphIn(zone), `${zone} differs from UTC`).toBe(utc);
     }
-    // And the decision itself, stated: the transition day's two figures go.
-    expect(nodesOfType(JSON.parse(utc), "Event")).toHaveLength(2);
+    // Nothing is dropped any more: the transition day and the ordinary day both
+    // contribute their pair.
+    expect(nodesOfType(JSON.parse(utc), "Event")).toHaveLength(4);
   });
 });

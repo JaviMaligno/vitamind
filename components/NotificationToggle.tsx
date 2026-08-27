@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { useInstallPrompt } from "@/hooks/useInstallPrompt";
-import { isStandalone, setInstallBannerSeen } from "@/lib/install";
+import { isStandalone, markInstallBannerShown } from "@/lib/install";
 import { Bell, BellOff, BellRing } from "lucide-react";
 import { useSolarPhase } from "@/hooks/useSolarPhase";
 import { PHASE_STYLE } from "@/lib/solar-phase";
@@ -47,7 +47,8 @@ export default function NotificationToggle({ lat, lon, tz, timezone, skinType, a
   const phase = useSolarPhase(lat, lon) ?? "day";
 
   const showAndroidTipToast = useCallback(() => {
-    setInstallBannerSeen();
+    // The toast carries an install CTA, so it spends the ask like the banner does.
+    markInstallBannerShown();
     const toast = document.createElement("div");
     toast.className = "fixed left-1/2 -translate-x-1/2 bottom-24 z-[110] px-4 py-3 rounded-xl bg-text-primary text-bg-page-from font-medium text-sm shadow-2xl flex items-center gap-3";
     toast.setAttribute("role", "status");
@@ -70,7 +71,7 @@ export default function NotificationToggle({ lat, lon, tz, timezone, skinType, a
   // Check permission on mount and when user returns to tab (e.g. after changing browser settings)
   useEffect(() => {
     function checkPermission() {
-      if (!("serviceWorker" in navigator) || !("PushManager" in window)) {
+      if (!("serviceWorker" in navigator) || !("PushManager" in window) || !("Notification" in window)) {
         setStatus("unsupported");
         return;
       }
@@ -83,12 +84,23 @@ export default function NotificationToggle({ lat, lon, tz, timezone, skinType, a
         setStatus((prev) => prev === "denied" ? "off" : prev);
       }
       navigator.serviceWorker.ready.then((reg) => {
+        // iOS Safari OUTSIDE standalone has no `pushManager` on the
+        // registration — web push exists there only once the app is on the home
+        // screen — even though `PushManager` is on `window`, which is what the
+        // check above tests. Reading `.getSubscription()` off `undefined`
+        // rejects the chain silently and the toggle sits on "loading" forever,
+        // which is the one state with no way out for the user. Anything that
+        // cannot answer is reported as unsupported instead.
+        if (!reg.pushManager) {
+          setStatus("unsupported");
+          return;
+        }
         reg.pushManager.getSubscription().then((sub) => {
           if (Notification.permission !== "denied") {
             setStatus(sub ? "on" : "off");
           }
-        });
-      });
+        }).catch(() => setStatus("off"));
+      }).catch(() => setStatus("unsupported"));
     }
 
     checkPermission();
@@ -182,6 +194,7 @@ export default function NotificationToggle({ lat, lon, tz, timezone, skinType, a
   useEffect(() => {
     if (status !== "on") return;
     navigator.serviceWorker.ready.then((reg) => {
+      if (!reg.pushManager) return;
       reg.pushManager.getSubscription().then((sub) => {
         if (!sub) return;
         fetch("/api/push/subscribe", {

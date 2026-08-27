@@ -5,6 +5,7 @@ import A from "@/components/ui/A";
 import TodayProvider from "@/components/TodayProvider";
 import TodayWindow from "@/components/TodayWindow";
 import TodayFaq from "@/components/TodayFaq";
+import NotificationToggle from "@/components/NotificationToggle";
 import { sunPageGraph } from "@/lib/schema";
 import {
   SUNRISE_CITIES, MONTH_SLUGS, sunPathname, sunCityPathname, buildSunCityAlternates,
@@ -93,6 +94,11 @@ export default async function SunTodayPage({ locale, resolved }: { locale: strin
   const tSunrise = await getTranslations({ locale, namespace: "sunrisePage" });
   const tSun = await getTranslations({ locale, namespace: "sunTimes" });
   const tNav = await getTranslations({ locale, namespace: "nav" });
+  // Reused verbatim from the city page rather than given keys of its own: the
+  // ask is the same ask, the strings already exist in all six locales, and a
+  // new `sunToday` key would move the month pages' content fingerprint (that
+  // namespace is hashed there) for copy those pages never print.
+  const tCity = await getTranslations({ locale, namespace: "cityPage" });
 
   const copy = pageCopy(locale, city, base);
   const { cityName, data, today } = copy;
@@ -193,6 +199,52 @@ export default async function SunTodayPage({ locale, resolved }: { locale: strin
           <TodayFaq year={yearEntry} />
         </section>
       </TodayProvider>
+
+      {/*
+        THE ONE WAY BACK.
+
+        99 of this site's 101 monthly clicks land on this family, and until now
+        it was the only family with no way to be reminded to return: a visitor
+        read today's window and left, and nothing ever brought them back. The
+        toggle already existed on the city page, the dashboard and the profile —
+        pages this traffic does not visit.
+
+        Three deliberate constraints, because this page's job is unchanged:
+
+        - It sits BELOW the window, in one block. Nothing above the fold moves,
+          there is no overlay and no interstitial. A reader who wants the hour
+          gets the hour.
+        - It is OUTSIDE `TodayProvider`. The provider exists so that every
+          day-dependent surface is corrected by ONE recomputation; a permission
+          toggle is not day-dependent and has no business in that state.
+        - It is invisible to `generateMetadata` and to `sunPageGraph`. What is
+          promised to a crawler is exactly what it was before this block existed.
+
+        The month pages get nothing: 2880 pages of table whose natural way back
+        is the link to this hub, and the downside of disturbing the family that
+        works outweighs the upside.
+      */}
+      <section className="mt-10">
+        <Card variant="glass" className="!p-6 sm:!p-8">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <p className="max-w-[46ch] text-body sm:text-heading text-text-secondary leading-relaxed">
+              {tCity("notifyLead", { city: cityName })}
+            </p>
+            <NotificationToggle
+              lat={city.lat}
+              lon={city.lon}
+              tz={city.tz}
+              timezone={city.timezone}
+              skinType={3}
+              areaFraction={0.25}
+              cityName={cityName}
+              labelOff={tCity("notifyOff")}
+              labelOn={tCity("notifyOn")}
+              prominent
+            />
+          </div>
+        </Card>
+      </section>
 
       {/* Internal mesh. The hub is the city's entry point into its twelve month
           pages, and each of those links back here. */}

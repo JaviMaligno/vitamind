@@ -1,5 +1,15 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
-import { isStandalone, getInstallBannerSeen, setInstallBannerSeen } from "../install";
+import {
+  isStandalone,
+  getInstallBannerState,
+  markInstallBannerShown,
+  markInstallBannerOutcome,
+  canShowInstallBanner,
+  recordVisit,
+  getVisitCount,
+  INSTALL_BANNER_COOLDOWN_MS,
+  INSTALL_BANNER_MAX_SHOWS,
+} from "../install";
 
 describe("isStandalone", () => {
   beforeEach(() => {
@@ -157,22 +167,99 @@ describe("detectMobileOS", () => {
   });
 });
 
-describe("installBannerSeen flag", () => {
+describe("install banner state", () => {
   beforeEach(() => {
     localStorage.clear();
+    sessionStorage.clear();
   });
 
-  it("returns false when flag is not set", () => {
-    expect(getInstallBannerSeen()).toBe(false);
+  it("starts as never shown", () => {
+    expect(getInstallBannerState()).toEqual({ shownAt: 0, count: 0, outcome: "pending" });
+    expect(canShowInstallBanner()).toBe(true);
   });
 
-  it("returns true after setInstallBannerSeen()", () => {
-    setInstallBannerSeen();
-    expect(getInstallBannerSeen()).toBe(true);
+  it("records when the banner was actually shown, not when a timer started", () => {
+    markInstallBannerShown(1_000);
+    expect(getInstallBannerState()).toEqual({ shownAt: 1_000, count: 1, outcome: "pending" });
   });
 
-  it("survives JSON-incompatible legacy values without throwing", () => {
-    localStorage.setItem("vitamind:installBannerSeen", "not-json");
-    expect(() => getInstallBannerSeen()).not.toThrow();
+  it("refuses a second ask before the cooldown", () => {
+    markInstallBannerShown(1_000);
+    expect(canShowInstallBanner(1_000 + INSTALL_BANNER_COOLDOWN_MS - 1)).toBe(false);
+  });
+
+  it("allows a second ask once the cooldown has passed — the old flag allowed none", () => {
+    markInstallBannerShown(1_000);
+    markInstallBannerOutcome("dismissed");
+    expect(canShowInstallBanner(1_000 + INSTALL_BANNER_COOLDOWN_MS)).toBe(true);
+  });
+
+  it("stops after the maximum number of asks", () => {
+    let t = 1_000;
+    for (let i = 0; i < INSTALL_BANNER_MAX_SHOWS; i++) {
+      markInstallBannerShown(t);
+      t += INSTALL_BANNER_COOLDOWN_MS;
+    }
+    expect(canShowInstallBanner(t)).toBe(false);
+  });
+
+  it("never asks again once the app is installed", () => {
+    markInstallBannerOutcome("installed");
+    expect(canShowInstallBanner(Date.now() + 10 * INSTALL_BANNER_COOLDOWN_MS)).toBe(false);
+  });
+
+  it("keeps 'installed' terminal even if something shows the banner afterwards", () => {
+    markInstallBannerOutcome("installed");
+    markInstallBannerShown(5_000);
+    expect(getInstallBannerState().outcome).toBe("installed");
+    expect(canShowInstallBanner(5_000 + INSTALL_BANNER_COOLDOWN_MS)).toBe(false);
+  });
+
+  it("migrates the legacy boolean into one spent ask, not into silence forever", () => {
+    localStorage.setItem("vitamind:installBannerSeen", "true");
+    const state = getInstallBannerState();
+    expect(state.count).toBe(1);
+    expect(state.outcome).toBe("dismissed");
+    // The legacy flag never recorded a time, so the cooldown starts now rather
+    // than reading as already served.
+    expect(canShowInstallBanner()).toBe(false);
+    expect(canShowInstallBanner(state.shownAt + INSTALL_BANNER_COOLDOWN_MS)).toBe(true);
+  });
+
+  it("drops the legacy key once a real record exists", () => {
+    localStorage.setItem("vitamind:installBannerSeen", "true");
+    markInstallBannerShown(2_000);
+    expect(localStorage.getItem("vitamind:installBannerSeen")).toBeNull();
+  });
+
+  it("survives JSON-incompatible stored values without throwing", () => {
+    localStorage.setItem("vitamind:installBanner", "not-json");
+    expect(() => getInstallBannerState()).not.toThrow();
+    expect(getInstallBannerState().count).toBe(0);
+  });
+});
+
+describe("visit counting", () => {
+  beforeEach(() => {
+    localStorage.clear();
+    sessionStorage.clear();
+  });
+
+  it("counts the first arrival", () => {
+    expect(recordVisit()).toBe(1);
+    expect(getVisitCount()).toBe(1);
+  });
+
+  it("counts one arrival per session, not per navigation", () => {
+    recordVisit();
+    recordVisit();
+    recordVisit();
+    expect(getVisitCount()).toBe(1);
+  });
+
+  it("counts the next session as a second visit", () => {
+    recordVisit();
+    sessionStorage.clear();
+    expect(recordVisit()).toBe(2);
   });
 });

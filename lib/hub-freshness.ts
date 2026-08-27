@@ -44,15 +44,19 @@ export interface HubSample {
  * crawled URLs), so the probe samples the MECHANISM rather than auditing every
  * page. Three fetches a day is noise; 240 would be a second crawler.
  *
- * The three are not interchangeable. `sunEvent` in `lib/schema.ts` drops both
- * Events on the two days a year when the offset that placed the wall clock is
- * not the offset in force at the instant it designates — a DST transition — so a
- * sample made only of European cities would carry no dated Event at all on two
- * days a year and the probe would go blind on exactly those days. Asia/Tokyo has
- * never observed DST, so `tokio` always carries the signal; `madrid` and
- * `sidney` transition on different dates in opposite hemispheres, so no single
- * day can silence more than one of the three. Two locales, so a fault confined
- * to the prefixed routes is visible too.
+ * The three were chosen while `sunEvent` in `lib/schema.ts` dropped both Events
+ * on a city's DST transition day: an all-European sample would then have carried
+ * no dated Event at all on two days a year, and the probe would have gone blind
+ * on exactly those days. That hole is closed — `sunEvent` now probes the event's
+ * own instant and labels the transition day correctly instead of going silent —
+ * so `tokio` is no longer load-bearing for that reason.
+ *
+ * The spread is kept anyway, and it still buys something. Asia/Tokyo (no DST),
+ * Europe/Madrid and Australia/Sydney (opposite hemispheres, different transition
+ * dates) put the three samples in three different relationships to UTC and to
+ * the date line, so a fault that depends on any of those shows up in one probe
+ * and not the others rather than in all three at once. Two locales, so a fault
+ * confined to the prefixed routes is visible too.
  */
 export const HUB_FRESHNESS_SAMPLE: readonly { locale: string; base: string }[] = [
   { locale: "es", base: "madrid" },
@@ -147,10 +151,11 @@ export function eventDatesFromHtml(html: string): string[] {
  * - `fresh` — a dated Event for today or yesterday in the city's zone.
  * - `stale` — dated Events, none of them recent: the invalidation is not landing.
  * - `no-signal` — no dated Event at all. Either the year has outrun
- *   `DOY_REFERENCE_YEAR`, or it is this city's DST transition day, or the Event
- *   nodes have been removed from the page. The first and third are real
- *   problems; none of them is evidence of freshness, so a run where EVERY sample
- *   is `no-signal` fails too.
+ *   `DOY_REFERENCE_YEAR` or the Event nodes have been removed from the page;
+ *   both are real problems. A city's DST transition day used to land here too,
+ *   which is why the sample above spans three zones — it no longer does, since
+ *   `sunEvent` labels the transition day instead of dropping it. Nothing here is
+ *   evidence of freshness, so a run where EVERY sample is `no-signal` fails too.
  * - `unreachable` — the fetch itself failed.
  */
 export type HubVerdict = "fresh" | "stale" | "no-signal" | "unreachable";

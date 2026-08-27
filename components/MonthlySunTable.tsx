@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { dailySunTimes, type MonthlySunTimes } from "@/lib/sun-times";
+import { signalInstallIntent } from "@/lib/install";
 import { fmtTime, fmtDayLength } from "@/lib/solar";
 import Card from "@/components/ui/Card";
 
@@ -65,7 +66,12 @@ export default function MonthlySunTable({ monthly, monthNames, lat, lon, tz, tim
                 <td className="px-3 py-2.5 sm:px-6 font-medium">
                   <button
                     type="button"
-                    onClick={() => setOpen(isOpen ? null : m.monthIndex)}
+                    onClick={() => {
+                      // Opening a month's day-by-day detail is a reader going
+                      // deeper than the SERP answer — an install-ask signal.
+                      if (!isOpen) signalInstallIntent();
+                      setOpen(isOpen ? null : m.monthIndex);
+                    }}
                     aria-expanded={isOpen}
                     aria-label={`${monthNames[m.monthIndex]} — ${labels.dayByDay}`}
                     className="inline-flex min-h-[44px] items-center gap-1.5 cursor-pointer text-text-primary hover:text-accent transition-colors"

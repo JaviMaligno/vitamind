@@ -192,3 +192,17 @@ que la cifra no sube sola por haberlas desplegado.
 mismas cuatro locales encontró cuatro errores reales (un compuesto alemán que se rompe con
 nombres de varias palabras, un genitivo lituano, un cuantificador francés colgando y una
 discordancia de número en ruso). No dar por bueno lo que hay.
+
+**Pendiente de revisión nativa (fr, de, ru, lt): `partners.metaTitle` y
+`partners.metaDescription`**, añadidas el 2026-08-27 al mover el `<title>` y la
+`<meta name="description">` de `/partners` fuera de `app/[locale]/partners/layout.tsx`. Antes
+estaban hardcodeadas en el TSX con `es` y `en` solamente: los otros cuatro idiomas servían el
+snippet en inglés, y la descripción sobrevivió a la reescritura del copy del 2026-08-26
+vendiendo la audiencia que el cuerpo de la página ya había dejado de prometer. En `messages`
+las cubre `messages/__tests__/key-parity.test.ts`, así que ya no pueden existir solo en
+español ni quedarse atrás sin que falle un test.
+
+La descripción tiene que seguir diciendo lo que dicen `partners.pageSubtitle` y
+`partners.why4Text` — superficie, no audiencia. Deliberadamente **no** repite las dos cifras
+de la tabla de arriba: son las que caducan, y un snippet cacheado por un buscador es el peor
+sitio donde tener una cifra vieja.
