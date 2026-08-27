@@ -54,7 +54,7 @@ resolver porque no sabe quién pregunta.** Ahí está el hueco.
 
 Se consideraron tres formas (§8 registra las descartadas y por qué). La elegida:
 
-- **`/vitamina-d-sol/` — la madre.** Responde la consulta genérica, que es la que tiene
+- **`/cuanto-sol-vitamina-d` — la madre** (slug decidido en §9). Responde la consulta genérica, que es la que tiene
   volumen. Da el rango honesto (5 a 30 minutos a mediodía de verano en latitud media),
   explica que el número depende del fototipo, y reparte a las seis.
 - **Seis hijas**, una por fototipo, cada una con **su** respuesta.
@@ -174,15 +174,56 @@ y mezcla dos intenciones de búsqueda distintas — el mecanismo y la respuesta.
 pregunta, y necesita el número arriba. Como apartado 30 queda enterrada bajo un
 `<details>`, que es exactamente donde está hoy el problema.
 
-## 9. Preguntas abiertas
+## 9. Decisiones cerradas con el usuario (2026-08-27)
 
-1. **Slug de la madre.** `/vitamina-d-sol/` colisiona conceptualmente con el prefijo
-   `/vitamina-d/` de las páginas de ciudad. Hay que comprobar que el middleware no lo
-   capture y decidir si conviene una raíz distinta.
-2. **Supuestos de la tabla.** Los rangos usan 25 % de piel y 35 años. El área es un
-   supuesto declarable; la edad afecta vía `ageFactor` y habría que decidir si se declara
-   o se omite.
-3. **Objetivo de 1000 UI.** Es el preset del producto, no un consenso universal. La
-   página debe declararlo como elección, no presentarlo como La Cifra.
-4. **Orden de construcción.** Madre primero y hijas después, o las siete a la vez. Lo
-   primero permite medir si la madre sola basta antes de multiplicar por seis.
+**El slug.** El primer borrador proponía `/vitamina-d-sol/` y era mal slug por tres
+razones, no solo por la colisión. Se parece tanto a `/vitamina-d/` que confunde a un
+humano leyendo la URL; **no describe la consulta** (la gente pregunta *cuánto tiempo*, no
+«vitamina d sol»); y cierra la puerta a colgar las hijas debajo.
+
+Queda:
+
+```
+/cuanto-sol-vitamina-d              ← la madre
+/cuanto-sol-vitamina-d/{fototipo}   ← las hijas
+```
+
+Localizado por idioma con la forma en que se pregunta en cada uno
+(`/how-long-in-sun-vitamin-d`, `/wie-lange-sonne-vitamin-d`…), mismo principio que los
+prefijos de ciudad ya existentes.
+
+**AVISO DE MIDDLEWARE, verificado leyendo `i18n/on-demand-city-rewrite.ts`:** desde el
+2026-08-27 la reescritura captura **cualquier** ruta de exactamente dos segmentos cuyo
+primer segmento sea el `CITY_PREFIX` de ese locale, y la manda a la ruta bajo demanda —
+ya no solo los slugs con forma de ciudad. Consecuencias:
+
+- `/vitamina-d/sol` o `/vitamina-d/piel-clara` **serían tragados** como ciudad inexistente.
+  Por eso las hijas NO pueden colgar de `vitamina-d`.
+- `/cuanto-sol-vitamina-d/piel-clara` sale por el `return null` del check de prefijo,
+  pero **el orden de comprobaciones importa y hay que fijarlo con un test**, no confiarlo.
+- Ojo también a que `de` y `ru` comparten el prefijo `vitamin-d` con `en`.
+
+**Supuestos: se declaran todos.** Área expuesta (25 %, «brazos y cara»), edad (35 años,
+entra por `ageFactor` y la síntesis cae con los años) y el objetivo de **1000 UI como
+elección del producto, no como consenso** — hay recomendaciones de 600, 800 y 2000.
+Ocultar un supuesto es lo que hace que la cifra de otro parezca autoritaria, y es
+precisamente el defecto que estas páginas existen para corregir. Cuidado con
+`health-claims.test.ts` al redactar la parte de dosis.
+
+**Las siete a la vez.** Se descartó construir la madre primero y medir: si todas van en
+el mismo despliegue, medir por separado no ahorra trabajo. La condición de reversión de
+§3 sigue en pie — si a los tres meses la madre rinde y las hijas no, se consolidan.
+
+## 10. Lo que queda para el plan
+
+**¿Seis páginas o tres?** Los fototipos I y II difieren en **un minuto** (5,0 y 6,2), y
+III y IV en cuatro. Agrupados de dos en dos —clara, media, oscura— serían tres páginas
+con diferencias grandes de verdad y menos riesgo de contenido casi idéntico. Seis dan más
+superficie pero acercan el problema de las 438 páginas de ciudad. **Decidir en el plan,
+con el criterio de "¿estas dos páginas dirían cosas distintas?" delante.**
+
+**El marcado estructurado** de las hijas (`Article` vs `MedicalWebPage`): decidir con la
+documentación de Google delante, no de memoria.
+
+**Orden de construcción interno**, dado que se despliegan juntas: qué se hace primero
+para que el copy de las hijas no sea plantilla.
