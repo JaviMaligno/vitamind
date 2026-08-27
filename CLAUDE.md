@@ -39,7 +39,7 @@ Routes are locale-segmented via next-intl (`es` default without prefix; `en`, `f
 - **`app/api/weather/route.ts`** — Proxies Open-Meteo (UV index, cloud cover). Validates lat/lon/dates, 8s upstream timeout, opaque error responses.
 - **`app/api/cities/route.ts`** — Server-side city search against Supabase (localized RPCs with fallbacks).
 - **`app/api/push/subscribe/route.ts`** — Push subscription CRUD (validates/clamps all input).
-- **`app/api/push/notify/route.ts`** — Cron-triggered (daily 8 AM UTC via Vercel cron) push broadcaster. Auth: `Authorization: Bearer $CRON_SECRET`. Logs a run summary; returns 500 if every delivery fails so Vercel marks the cron run failed.
+- **`app/api/push/notify/route.ts`** — Cron-triggered push broadcaster, invoked once per UTC hour and sending only to the subscriptions whose LOCAL clock is in the morning window (`lib/push-schedule.ts`), at most once per subscriber-local day. Auth: `Authorization: Bearer $CRON_SECRET`. Logs a run summary; returns 500 if every delivery fails so Vercel marks the cron run failed.
 - **`app/api/mcp/[transport]/route.ts` + `app/api/mcp-auth/[transport]/route.ts`** — Remote MCP server (`mcp-handler`, stateless Streamable HTTP; no Redis, so no SSE transport), tool set registered once in `lib/mcp-server.ts` and served at TWO endpoints: `/api/mcp/mcp` (public, auth optional — never 401s) and `/api/mcp-auth/mcp` (auth REQUIRED — its 401 is what triggers the client's OAuth flow). Six public tools (`search_city`, `get_sun_times`, `get_vitamin_d_window` with `atTime`, `get_vitamin_d_year`, `get_current_status`, `estimate_sun_session`) plus four OAuth-scoped personal tools (`get_my_profile`, `get_my_cities`, `get_my_history`, `log_sun_session`). Tool logic is pure and unit-tested in `lib/mcp-tools.ts` / `lib/mcp-personal.ts`; per-call usage logging (tool + duration only, never args). User docs at `/connect`.
 - **`app/api/oauth/*` + `app/.well-known/oauth-*`** — Minimal OAuth 2.1 authorization server for the MCP personal tools (`lib/oauth.ts`): dynamic client registration, PKCE S256 mandatory, single-use hashed codes, hashed opaque tokens (`vd_at_…`) with refresh rotation. Identity = Supabase Auth via the consent page at `/oauth-consent` (namespace `oauth` in messages). Supabase JWTs are never accepted at the MCP endpoint. Tables in `supabase/migrations/20260719_mcp_oauth.sql` (service-role only, RLS with no policies).
 
@@ -149,7 +149,7 @@ different minute on Linux than on macOS.
 - **Tailwind CSS v4** with `@tailwindcss/postcss`
 - **`web-push`** is in `serverExternalPackages` (`next.config.ts`) to avoid client bundling
 - **Security headers** (CSP, HSTS, X-Frame-Options, etc.) are set in `next.config.ts` for every deploy. If a new external origin is needed (script/style/fetch), add it to the CSP there — do not remove the header.
-- **Vercel cron:** `vercel.json` — `0 8 * * *` hits `/api/push/notify`, `10 0 * * *` hits `/api/revalidate-today` (which self-verifies; see "Cron jobs")
+- **Vercel cron:** `vercel.json` — 24 daily entries (`0 0 * * *` … `0 23 * * *`) hit `/api/push/notify`, `10 0 * * *` hits `/api/revalidate-today` (which self-verifies; see "Cron jobs")
 - Interactive components use `"use client"`; city pages and layouts are server components for SEO.
 
 ## Environments
@@ -329,6 +329,11 @@ That matters mainly if the gate is ever made conditional on `VERCEL_ENV` (a temp
 
 `supabase/migrations/*.sql` are **not applied automatically**. After adding one, run it against the shared Supabase project (SQL editor or `supabase db push`) **before** deploying code that depends on it. Applied state worth knowing:
 
+- ⚠️ **`20260827_push_last_notified_on.sql` is PENDING as of 2026-08-27.** It adds
+  `push_subscriptions.last_notified_on date`, the once-a-day guard the hourly push cron
+  depends on. `/api/push/notify` claims that column before every push and **fails the run
+  rather than pushing unguarded** if the claim errors, so until it is applied the cron
+  returns 500 and nobody is notified. Apply it before merging.
 - `20260716_lock_down_anon_access.sql` removes the anon-role RLS policies on `push_subscriptions` (they exposed all subscriber endpoints/locations to anyone with the public anon key) and enables RLS on `city_names`. The app never used anon access to those tables — all server access uses the service role.
 
 ### IndexNow (instant indexing for Bing/Yandex/Seznam/Naver)
@@ -351,9 +356,13 @@ Two things worth knowing before touching it:
 
 ### Cron jobs
 
-`vercel.json` defines two daily crons, both **Production only** (a `dev` preview never schedules them, so dev testing is manual via curl):
+`vercel.json` defines 25 cron entries, all **Production only** (a `dev` preview never schedules them, so dev testing is manual via curl):
 
-- `0 8 * * *` → `/api/push/notify`
+- `0 0 * * *` … `0 23 * * *` → `/api/push/notify`, one entry per UTC hour. **Those 24 lines are not a single `0 * * * *` on purpose, and must not be tidied into one:** this account is on Hobby, where any expression that would run more than once a day *fails the deployment* (`Hobby accounts are limited to daily cron jobs`). Several entries on one path is a shape Vercel documents and supports. `app/__tests__/vercel-crons.test.ts` pins both the once-a-day shape and the full 24-hour coverage.
+
+  The push itself is still **once a day per subscriber** — each run sends only to the subscriptions whose own clock reads 09:00–11:59 (`lib/push-schedule.ts`), and claims that subscriber's local date in `push_subscriptions.last_notified_on` before pushing. It used to be one run at 08:00 UTC for everybody, which is 04:00 in New York, 01:00 in Los Angeles and 17:00 in Tokyo.
+
+  The window is three hours wide because Hobby invokes a cron **anywhere inside its hour** (±59 min), so consecutive runs can be 1 h 59 m apart; a narrower window could be stepped over and the subscriber would silently get nothing that day. Hobby also caps cron jobs at 100 per project, so 25 is not near a limit, and 24 invocations a day is ~720/month against a 1 M function-invocation allowance — it does **not** touch the ISR write quota, which is the meter that is over budget.
 - `10 0 * * *` → `/api/revalidate-today`, which regenerates the 240 hubs and then **verifies itself**: it fetches three sampled hubs, parses the calendar day out of their JSON-LD `Event` (`lib/hub-freshness.ts`), and returns 500 when the day is neither today's nor yesterday's, so a broken cron shows as a failed invocation instead of a cheerful `{revalidated: 240}`. Two days are allowed on purpose — it makes the verdict independent of the still-unresolved cache mechanism. The sample is `es/madrid`, `en/tokio`, `es/sidney`: the Event nodes drop on a city's DST transition day, so an all-European sample would go blind twice a year, and Asia/Tokyo has never observed DST.
 
 You can check hub freshness yourself without the secret:
@@ -369,7 +378,10 @@ The endpoint authorizes via `Authorization: Bearer $CRON_SECRET` header only (se
 ### Manual push test
 
 ```bash
-# Prod (cron behaviour: only sends if UV ≥ 3 and a synthesis window exists)
+# Prod (cron behaviour: sends only to subscribers whose LOCAL clock is 09:00-11:59 and
+# who have not been notified on their local day yet, and only if UV ≥ 3 with a synthesis
+# window. Outside those hours a manual curl reports everyone as `deferred` — that is the
+# endpoint working, not failing. Use ?force=true on dev to test delivery at any hour.)
 curl -H "Authorization: Bearer $CRON_SECRET_PROD" https://getvitamind.app/api/push/notify
 
 # Dev — same as above, runs against the dev-branch preview (Preview env CRON_SECRET)

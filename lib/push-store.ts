@@ -12,6 +12,11 @@ export interface StoredSubscription {
   cityName: string;
   locale: string;
   createdAt: number;
+  /**
+   * The subscriber's own calendar day (`YYYY-MM-DD`) on which the daily push was
+   * last claimed, or undefined if it never was. See `claimNotification`.
+   */
+  lastNotifiedOn?: string;
 }
 
 // Use service_role key for server-side push operations (reads all subscriptions)
@@ -102,5 +107,44 @@ export async function getAllSubscriptions(): Promise<StoredSubscription[]> {
     cityName: row.city_name,
     locale: row.locale ?? "es",
     createdAt: new Date(row.created_at).getTime(),
+    lastNotifiedOn: row.last_notified_on ?? undefined,
   }));
+}
+
+const LOCAL_DAY = /^\d{4}-\d{2}-\d{2}$/;
+
+/**
+ * Claim today's push for one subscription, on the SUBSCRIBER's calendar day.
+ *
+ * `/api/push/notify` is invoked once per UTC hour (24 daily cron entries, since
+ * Hobby rejects a sub-daily expression) and sends to whoever is in their local
+ * morning, so a given subscriber is eligible on two or three of those runs.
+ * Vercel also documents that a scheduled run may be delivered more than once. The
+ * claim is what turns "eligible on several runs" into exactly one push a day.
+ *
+ * It is a CONDITIONAL update rather than a read-then-write: the `or` filter makes
+ * the row match only while it is not already stamped with this local day, so two
+ * runs racing on the same subscription cannot both come back true. Returns
+ * whether this caller got the day.
+ *
+ * The caller must claim BEFORE pushing. Losing the push after a successful claim
+ * costs that subscriber one day's notification; pushing before claiming would
+ * cost them a second copy of it, and the failure Vercel cannot retry is the one
+ * that already reached the user's lock screen.
+ */
+export async function claimNotification(endpoint: string, localDay: string): Promise<boolean> {
+  if (!LOCAL_DAY.test(localDay)) {
+    // The value is interpolated into a PostgREST filter expression below, so it
+    // is checked rather than trusted, even though every caller builds it.
+    throw new Error(`Invalid local day for push claim: ${localDay}`);
+  }
+  const sb = requireServiceClient();
+  const { data, error } = await sb
+    .from("push_subscriptions")
+    .update({ last_notified_on: localDay })
+    .eq("endpoint", endpoint)
+    .or(`last_notified_on.is.null,last_notified_on.neq.${localDay}`)
+    .select("endpoint");
+  if (error) throw new Error(`Failed to claim push notification: ${error.message}`);
+  return (data?.length ?? 0) > 0;
 }
