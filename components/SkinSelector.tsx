@@ -4,6 +4,7 @@ import { useState, useId } from "react";
 import { useTranslations } from "next-intl";
 import { ChevronDown } from "lucide-react";
 import { AREA_PRESETS, type SkinType } from "@/lib/vitd";
+import { signalInstallIntent } from "@/lib/install";
 
 interface Props {
   skinType: SkinType;
@@ -58,7 +59,13 @@ export default function SkinSelector({ skinType, areaFraction, age, onSkinChange
             <select
               id={typeId}
               value={skinType}
-              onChange={(e) => onSkinChange(Number(e.target.value) as SkinType)}
+              onChange={(e) => {
+                // Tuning the calculator to yourself is the cheapest evidence
+                // that this is a tool for you, not an article — which is what
+                // the install ask waits for. See lib/install.ts.
+                signalInstallIntent();
+                onSkinChange(Number(e.target.value) as SkinType);
+              }}
               className="min-h-[44px] appearance-none rounded-lg bg-surface-input border border-border-default pl-3 pr-9 text-text-primary text-body cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-sun"
             >
               {([1, 2, 3, 4, 5, 6] as SkinType[]).map((st) => (
@@ -86,7 +93,10 @@ export default function SkinSelector({ skinType, areaFraction, age, onSkinChange
           <select
             id={areaId}
             value={areaFraction}
-            onChange={(e) => onAreaChange(Number(e.target.value))}
+            onChange={(e) => {
+              signalInstallIntent();
+              onAreaChange(Number(e.target.value));
+            }}
             className="min-h-[44px] appearance-none rounded-lg bg-surface-input border border-border-default pl-3 pr-9 text-text-primary text-body cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-sun"
           >
             {AREA_PRESETS.map((p) => (

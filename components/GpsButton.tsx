@@ -4,6 +4,7 @@ import { useLayoutEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
 import { useApp } from "@/context/AppProvider";
 import GpsErrorHint from "@/components/GpsErrorHint";
+import { signalInstallIntent } from "@/lib/install";
 
 export default function GpsButton() {
   const t = useTranslations("hero");
@@ -71,7 +72,11 @@ export default function GpsButton() {
     // the icon or squeezing the adjacent search field.
     <div className="relative shrink-0" ref={wrapRef}>
       <button
-        onClick={gps.enableGps}
+        onClick={() => {
+          // Asking for your own location is intent, not browsing.
+          signalInstallIntent();
+          gps.enableGps();
+        }}
         disabled={gps.loading}
         title={t("useMyLocation")}
         aria-label={t("useMyLocation")}
