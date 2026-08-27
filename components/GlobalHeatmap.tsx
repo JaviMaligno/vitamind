@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState, useEffect, useMemo, useCallback } from "react";
+import { useLocale, useTranslations } from "next-intl";
 import { vitDHrs, fmtDate, dateFromDoy } from "@/lib/solar";
 import { synthesisThresholdElevation } from "@/lib/uv-model";
 import { heatColor } from "@/lib/year-strip";
@@ -17,6 +18,8 @@ const plotW = W - PAD.l - PAD.r, plotH = H - PAD.t - PAD.b;
 const LAT_MIN = -60, LAT_MAX = 70, latCount = 130, doyCount = 183;
 
 export default function GlobalHeatmap({ selectedLat, selectedDoy, onSelect }: Props) {
+  const locale = useLocale();
+  const t = useTranslations("viz");
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
   const [hover, setHover] = useState<{ lat: number; doy: number; hrs: number } | null>(null);
@@ -62,7 +65,14 @@ export default function GlobalHeatmap({ selectedLat, selectedDoy, onSelect }: Pr
       }
     }
     const mD = [1, 32, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335];
-    const mN = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
+    // Month labels come from the locale, not from a hardcoded Spanish list. The
+    // English site shipped "Ene/Feb/Mar" on its most screenshot-worthy chart
+    // because this array predated i18n and nothing typed it back to a locale.
+    const mN = mD.map((d) =>
+      new Intl.DateTimeFormat(locale, { month: "short", timeZone: "UTC" })
+        .format(new Date(Date.UTC(2026, 0, d)))
+        .replace(/\.$/, ""),
+    );
     ctx.strokeStyle = "rgba(255,255,255,0.06)"; ctx.lineWidth = 0.5;
     mD.forEach((d) => { ctx.beginPath(); ctx.moveTo(PAD.l + ((d - 1) / 365) * plotW, PAD.t); ctx.lineTo(PAD.l + ((d - 1) / 365) * plotW, PAD.t + plotH); ctx.stroke(); });
     [-60, -40, -20, 0, 20, 40, 60].forEach((la) => {
@@ -75,7 +85,7 @@ export default function GlobalHeatmap({ selectedLat, selectedDoy, onSelect }: Pr
     mD.forEach((d, i) => ctx.fillText(mN[i], PAD.l + ((d + 14) / 365) * plotW, PAD.t + plotH + 16));
     ctx.textAlign = "right";
     [-60, -40, -20, 0, 20, 40, 60].forEach((la) => ctx.fillText(`${la}\u00B0`, PAD.l - 6, PAD.t + ((LAT_MAX - la) / (LAT_MAX - LAT_MIN)) * plotH + 4));
-  }, [heatData]);
+  }, [heatData, locale]);
 
   const pxToCoord = useCallback((clientX: number, clientY: number) => {
     const el = overlayRef.current; if (!el) return null;
@@ -161,7 +171,7 @@ export default function GlobalHeatmap({ selectedLat, selectedDoy, onSelect }: Pr
         )}
       </svg>
       <div style={{ position: "absolute", bottom: 6, left: PAD.l, fontSize: 9, color: "var(--color-text-on-chart-faint)", pointerEvents: "none" }}>
-        Clic y arrastra para explorar
+        {t("heatmapHint")}
       </div>
     </div>
   );
