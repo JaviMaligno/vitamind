@@ -84,7 +84,45 @@ export interface ContentRevision {
  * whole file exists to avoid.
  */
 
-/** The 2880 month pages: `/{sunPrefix}/{city}/{month}` × 6 locales. */
+/**
+ * The 2880 month pages: `/{sunPrefix}/{city}/{month}` × 6 locales.
+ *
+ * A fourth worked example, and the first where the answer went the other way for
+ * a reason worth writing down rather than because nothing changed.
+ *
+ * On 2026-08-27 `lib/schema.ts` stopped probing the timezone offset at the day's
+ * start and started probing it at each event's own instant. On the two DST
+ * transition days a year those two disagree, and `sunEvent` had been dropping
+ * both Event nodes rather than publish an offset the zone does not hold. It now
+ * labels them correctly, so 36 of these 2880 pages — the 6 city-months where a
+ * transition lands on the first or last day, times six locales — gained two
+ * Event nodes each. That IS a change to what those pages publish. `date` still
+ * did not move, and the arithmetic is the whole argument:
+ *
+ *   - 36 pages changed. 2844 did not.
+ *   - `date` is one number for the family, so moving it tells the engines that
+ *     2844 unchanged URLs changed today. This file's own opening paragraph calls
+ *     that "false on its face" and names the meter it is billed to; the read
+ *     budget is crawled URLs, and it sits at 95% of a rolling 200 K.
+ *   - Nothing a READER sees moved. The five failures CLAUDE.md documents are all
+ *     a wrong figure served to a person under a `lastmod` that says it is
+ *     current. This is absent machine-readable markup becoming present, on 1.25%
+ *     of the family, and the engines re-crawl these on their own schedule
+ *     regardless — `lastmod` is a hint, not a queue.
+ *
+ * The cost of the call, stated so it can be overturned knowingly: those 36 pages
+ * carry their new Events under an older date, so Google may take its own time to
+ * see them. The next real copy change to this family moves `date` and they ride
+ * along. If the Event parity signal turns out to be worth buying sooner than
+ * that, bumping the date is the way to buy it — deliberately, not by reflex.
+ *
+ * A GAP THIS EXPOSED, left open on purpose. `lib/schema.ts` is in neither module
+ * list in `lib/content-fingerprint.ts`, so the guard did not fire at all here;
+ * the reasoning above is a decision someone made, not one the test forced. Every
+ * future change to the JSON-LD these pages carry is outside the guard the same
+ * way. Adding it would move `figures` for BOTH families at once and force a date
+ * decision on 3318 URLs in the same commit, which is why it is not done here.
+ */
 export const SUN_MONTH_REVISION: ContentRevision = {
   date: "2026-08-26",
   parts: {

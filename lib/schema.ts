@@ -1,7 +1,7 @@
 import { SITE_URL } from "@/lib/site";
 import { REFERENCES } from "@/lib/references";
 import { DOY_REFERENCE_YEAR } from "@/lib/solar";
-import { tzOffsetForDate } from "@/lib/timezone";
+import { tzOffsetForDate, zoneOffsetAtLocalHour } from "@/lib/timezone";
 import { cityUrl, indexUrl } from "@/lib/city-routes";
 import { getPathname } from "@/i18n/navigation";
 import type { routing } from "@/i18n/routing";
@@ -306,8 +306,10 @@ function breadcrumbTrail({
 }
 
 /**
- * One sunrise or sunset as an Event, or `null` when the page has no figure for it
- * and on the two days a year the offset label would not hold.
+ * One sunrise or sunset as an Event, or `null` when the page has no figure for
+ * it — or, now only in principle, when no offset can be verified for the instant
+ * (see `offsetHoldsAtInstant`; it used to fire on every DST transition day and
+ * fires for nothing this site publishes).
  *
  * Polar day and night print an em dash on the page; the node is dropped instead
  * of being filled with a plausible-looking instant.
@@ -321,9 +323,12 @@ function sunEvent({
 }: {
   city: City;
   monthIndex: number;
-  /** The day the page states the figure under; also the day the offset is probed for. */
+  /** The day the page states the figure under. */
   day: number;
-  /** The calendar day the instant belongs to — `day + 1` for a sunset past midnight. */
+  /**
+   * The calendar day the instant belongs to — `day + 1` for a sunset past
+   * midnight — and therefore the day the offset is probed on.
+   */
   dateDay?: number;
   hours: number | null;
   kind: "sunrise" | "sunset";
@@ -335,7 +340,10 @@ function sunEvent({
   credits?: { organizer: string; performer: string };
 }): Node | null {
   if (hours === null) return null;
-  const offset = utcOffsetHours(city, monthIndex, day);
+  // `dateDay`, not `day`: the offset belongs to the instant, and a sunset past
+  // local midnight is an instant on the following calendar day. `localInstant`
+  // stamps the same day, so the two cannot disagree about which one it is.
+  const offset = utcOffsetHours(city, monthIndex, dateDay, hours);
   const startDate = localInstant(hours, monthIndex, dateDay, offset);
   if (!offsetHoldsAtInstant(city, startDate, offset)) return null;
   return {
@@ -400,32 +408,51 @@ function sunEvent({
 }
 
 /**
- * The offset the zone shows when probed at the *start* of that day — not, in
- * general, the offset in force at the moment the sun rises or sets.
+ * The offset in force at the moment the page's clock time designates — not the
+ * offset the day happened to start in.
  *
  * `City.tz` is a fixed number that ignores DST — Madrid is `tz: 1` in the record
  * and sits at +02:00 for all of August — so publishing it as the offset of an
  * instant would be wrong for roughly half the year in most of the city list.
+ * Probing the zone fixes that for 363 days a year. The other two are why this
+ * function takes `hours` at all.
  *
- * This probe USED to mirror `dailySunTimes` exactly. It no longer does:
- * `lib/sun-times.ts` now reads the offset at each event's own instant, so on the
- * 63 city-months a year that contain a DST transition the printed time carries
- * the post-transition offset and this day-start probe reads the pre-transition
- * one. Nothing false ships from the mismatch — `offsetHoldsAtInstant` below
- * drops precisely those Events instead of labelling them — but this function is
- * now the conservative half of a pair, not a copy of the table. Probing the
- * instant here would make the label true again and let those Events through;
- * that is a deliberate change, not a tidy-up, and it belongs in its own commit.
+ * WHAT THIS USED TO DO AND WHY IT CHANGED. The probe read the zone at UTC
+ * midnight of the stated day and applied that one answer to both events. On a
+ * day when the zone changes offset the day's start and the sunrise sit on
+ * opposite sides of the transition, so the label named an offset the zone was no
+ * longer in — "2026-11-01T06:26:00-05:00" for America/Chicago, at a moment the
+ * zone is already at -06:00. Rather than publish that, `sunEvent` dropped the
+ * node: 12 of the 1920 Event nodes the shipped 40 cities × 12 months produce, on
+ * the 6 city-months where a transition lands on the first or last day of the
+ * month, which is 36 pages once the six locales are counted. Silence was the
+ * safe answer to a wrong label, but it was never the right one — an Event on
+ * these pages is the whole point of the graph.
  *
- * "The start of that day" means UTC midnight, and it is `Date.UTC` that makes it
- * mean the same thing everywhere. The host-local constructor this used made the
- * probe an instant of the BUILDER's day: `new Date(2026, 10, 1)` is 00:00 UTC on
- * Vercel and 10:00 UTC on a laptop in Honolulu, which is past Chicago's 07:00 UTC
- * transition — so that laptop probed -06:00, agreed with the instant, and
- * published the two Events a UTC build drops. Measured over the shipped 40
- * cities × 12 months: 1908 Event nodes under UTC, Atlantic/Canary, Europe/Madrid
- * and Australia/Sydney, 1920 under Pacific/Honolulu. Which nodes a page carries
- * is not allowed to depend on where it was built.
+ * The half of the pair that made silence unnecessary landed first:
+ * `lib/sun-times.ts` places each printed time with the offset in force at that
+ * event's own instant. Probing the same instant here closes the pair, and the
+ * label the reader's clock would show and the label the markup carries are once
+ * again two presentations of one instant.
+ *
+ * `zoneOffsetAtLocalHour` is reused rather than reimplemented: this is the wall
+ * clock → instant direction (we hold "06:26 on 1 November" and want the offset),
+ * which needs two probes, not the one `tzOffsetForDate` takes. Its own comment
+ * carries the argument for why two are enough, and the one hour a year where the
+ * question has no answer at all — a hour that sits between local midnight and
+ * 03:00, where no sunrise or sunset this site publishes falls. `sunEvent` still
+ * verifies the answer before emitting it, so the pathological case degrades to
+ * the old silence rather than to a false label.
+ *
+ * `day` is the calendar day the INSTANT belongs to (`dateDay` at the call site,
+ * one past the stated day for a sunset after local midnight), and `Date.UTC` is
+ * what makes "that day" mean the same thing on every builder. The host-local
+ * constructor this used made the probe an instant of the BUILDER's day:
+ * `new Date(2026, 10, 1)` is 00:00 UTC on Vercel and 10:00 UTC on a laptop in
+ * Honolulu, which is past Chicago's 07:00 UTC transition — so that laptop
+ * published the two Events a UTC build dropped, and which nodes a page carries
+ * is not allowed to depend on where it was built. With the instant probe both
+ * builders now emit the same 1920.
  *
  * With no IANA name we fall back to `City.tz` — which is precisely what
  * `dailySunTimes` falls back to when placing the printed time, so the instant is
@@ -433,26 +460,30 @@ function sunEvent({
  * currently carries a zone, so this path is reachable only for records that come
  * from elsewhere.
  */
-function utcOffsetHours(city: City, monthIndex: number, day: number): number {
+function utcOffsetHours(city: City, monthIndex: number, day: number, hours: number): number {
   if (!city.timezone) return city.tz;
-  return tzOffsetForDate(city.timezone, new Date(Date.UTC(DOY_REFERENCE_YEAR, monthIndex, day)));
+  return zoneOffsetAtLocalHour(city.timezone, Date.UTC(DOY_REFERENCE_YEAR, monthIndex, day), hours);
 }
 
 /**
  * Does the offset that produced the wall clock still hold at the instant that
  * wall clock designates?
  *
- * On the two DST transition days a year it does not: the probe above reads the
- * pre-transition offset, so "2026-11-01T06:26:00-05:00" for America/Chicago
- * names an instant at which the zone is already at -06:00. The label is a claim
- * about the zone, and that claim is false, so the caller drops the Event —
- * roughly 12 of the 1920 nodes the shipped 40 cities × 12 months produce.
+ * This used to fail twice a year by construction, because the offset above was
+ * probed at the day's start. It no longer does: the probe reads the event's own
+ * instant, so the answer it returns is the one in force there.
  *
- * The fix is now available and deliberately not taken here: since
- * `lib/sun-times.ts` places each printed time with the offset in force at that
- * event, probing the same instant above would produce a label the zone does hold
- * and restore these nodes. Doing it is a change to what the pages publish, so it
- * gets its own commit rather than riding along with the sun-times fix.
+ * It is kept, and it is not dead weight. `zoneOffsetAtLocalHour` resolves a wall
+ * clock in two probes, and inside the one-hour window a transition creates — the
+ * clock that never happens in spring, the one that happens twice in autumn — a
+ * wall clock does not name a single instant, so no offset can be verified.
+ * Nothing this site publishes falls there (that window sits between local
+ * midnight and 03:00 wherever DST is observed, and these nodes are sunrises and
+ * sunsets), but the guarantee worth keeping is about the markup, not about the
+ * latitudes shipped today: if a figure ever does land in it, the node is dropped
+ * rather than labelled with an offset the zone does not hold. A missing Event
+ * costs a rich result; a false offset is a claim about a timezone, and this repo
+ * has shipped enough claims it could not support.
  *
  * With no IANA name there is no zone to disagree with the fallback, so nothing
  * is skipped.
