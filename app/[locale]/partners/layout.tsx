@@ -11,9 +11,17 @@ export async function generateMetadata(
     en: "Partner with Vitamina D Explorer — Health Brand Partnerships",
   };
 
+  /**
+   * These have to say the same thing the page says. The body stopped promising an
+   * audience on 2026-08-26 — it was the claim that invited "come back when you
+   * have users" — but this description is hardcoded here rather than read from
+   * `messages`, so it survived the rewrite and kept selling the audience in the
+   * one place search engines and AI assistants actually quote. The visible page
+   * was honest and the snippet was not, which is the worse half to get wrong.
+   */
   const descriptions: Record<string, string> = {
-    es: "Llega a usuarios interesados en salud en el momento exacto en que necesitan suplementos de vitamina D. Modelos de patrocinio, afiliados y contenido co-marcado.",
-    en: "Reach health-conscious users at the exact moment they need vitamin D supplements. Sponsorship, affiliate, and co-branded content models.",
+    es: "Miles de páginas indexadas en seis idiomas que responden a quien busca cuándo puede sintetizar vitamina D. Modelos de patrocinio, afiliados y contenido co-marcado.",
+    en: "Thousands of indexed pages in six languages answering people who want to know when they can synthesize vitamin D. Sponsorship, affiliate, and co-branded content models.",
   };
 
   return {
