@@ -1,0 +1,63 @@
+{
+  "$comment": [
+    "PRIMERA LECTURA CON EL ESQUEMA v2 (ver METHOD.md). Tres consultas, no diez: esto no",
+    "es una lectura semanal, es la comprobación del campo que faltaba.",
+    "",
+    "POR QUÉ EXISTE. El estudio de patrones del 14/8 concluyó «the AI Overview is NOT the",
+    "mechanism» apoyándose en que sun-toronto-aug no lleva AIO y tampoco recibe clics. Esa",
+    "conclusión se cae con el campo nuevo: la respuesta está servida en el SERP con AIO y",
+    "SIN AIO. Cuando el AIO no se genera, el fragmento del primer orgánico ya trae la hora.",
+    "El mecanismo no es el AI Overview: es que el resultado responde la pregunta.",
+    "",
+    "Eso es más general y peor que la hipótesis anterior, porque tampoco lo arregla subir",
+    "posiciones: el fragmento del número uno regala el dato igual.",
+    "",
+    "AVISO DE MÉTODO, aprendido aquí: get_page_text NO captura el AI Overview. La lectura",
+    "de Madrid parecía no tener AIO por extracción de texto y la captura mostró uno que",
+    "ocupa toda la pantalla por encima del pliegue. Cualquier lectura futura va por imagen."
+  ],
+  "capturedOn": "2026-08-27",
+  "capturedVia": "Chrome del propietario con su perfil, vía extensión",
+  "viewport": "1316x905",
+  "schemaVersion": 2,
+  "observations": [
+    {
+      "id": "sun-madrid-today",
+      "query": "a qué hora amanece en Madrid",
+      "aiOverview": true,
+      "answerInSerp": true,
+      "answerLocation": "aio",
+      "answerDetail": "El AIO da amanecer 07:37, culminación 14:16 y puesta 20:54. No solo la hora pedida: el día solar entero.",
+      "aioBottomPx": 560,
+      "firstOrganicPx": 625,
+      "cited": false,
+      "present": false,
+      "aioCited": ["theskylive.com", "alpenglowapp.com"],
+      "note": "Alpenglow SÍ está citado dentro del AIO, en la familia que nos da el 99% de los clics. Nosotros no aparecemos en toda la primera página."
+    },
+    {
+      "id": "sun-toronto-aug",
+      "query": "what time is sunset in toronto in august",
+      "aiOverview": false,
+      "aiOverviewFailed": true,
+      "answerInSerp": true,
+      "answerLocation": "snippet",
+      "answerDetail": "Sin AIO, el fragmento de timeanddate ya trae «6:35 am ↑ (75°) 8:01 pm», y el de sunrisesunset.com otro tanto. La respuesta está servida igual.",
+      "cited": false,
+      "present": false,
+      "note": "Google mostró «Can't generate an AI overview right now. Try again later.» — un FALLO TRANSITORIO, no ausencia de AIO para esta consulta. Las dos lecturas anteriores la registraron como aiOverview:false y pudieron ser este mismo mensaje. El contraejemplo en el que se apoyaba la conclusión del 14/8 puede no ser un contraejemplo."
+    },
+    {
+      "id": "vitd-how-long",
+      "query": "cuanto tiempo al sol para vitamina d",
+      "aiOverview": true,
+      "answerInSerp": true,
+      "answerLocation": "aio",
+      "answerDetail": "El AIO da la respuesta de consenso: «10 a 15 minutos al día, de 2 a 3 veces por semana», citando a Rioja Salud. Debajo lista «Factores Clave»: área expuesta (~25% de superficie corporal), sin cristales, y horario según estación.",
+      "cited": false,
+      "present": false,
+      "aioCited": ["riojasalud.es", "Dr. Sebastian Podlipnik", "+3 más (5 sites)"],
+      "note": "EL HALLAZGO. El AIO declara que la respuesta depende de área, fototipo, latitud y estación — y acto seguido da un número único. Una de sus fuentes se matiza a sí misma: «Datos orientativos para fototipo II-III en latitud ~40°N (España peninsular)». Es decir: el hueco que este producto calcula está reconocido dentro del propio resultado que lo ocupa. Las fuentes citadas son instituciones sanitarias y un dermatólogo, lo que confirma la barrera de autoridad YMYL."
+    }
+  ]
+}
