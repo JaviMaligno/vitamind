@@ -50,47 +50,111 @@ Como contraste, la latitud varía menos — a fototipo III, 21 de junio: Bogotá
 **El eje que decide la respuesta es el fototipo, y es justo el que un buscador no puede
 resolver porque no sabe quién pregunta.** Ahí está el hueco.
 
-## 3. Decisión: seis páginas, una por fototipo, más una madre
+## 3. Decisión: TRES páginas, no seis, más una madre
 
-Se consideraron tres formas (§8 registra las descartadas y por qué). La elegida:
+**Corregido el 2026-08-27 tras medir. La versión anterior de esta sección proponía seis y
+su premisa era falsa; queda al final, en §8, con el error explicado.**
 
-- **`/cuanto-sol-vitamina-d` — la madre** (slug decidido en §9). Responde la consulta genérica, que es la que tiene
-  volumen. Da el rango honesto (5 a 30 minutos a mediodía de verano en latitud media),
-  explica que el número depende del fototipo, y reparte a las seis.
-- **Seis hijas**, una por fototipo, cada una con **su** respuesta.
+- **`/cuanto-sol-vitamina-d` — la madre.** Responde la consulta genérica, que es la que
+  tiene volumen. Da el rango honesto, explica que el número depende del tono de piel, y
+  reparte a las tres.
+- **Tres hijas**, tituladas por descripción y nunca por número:
+  **piel clara (I-II)**, **piel media u oliva (III-IV)**, **piel morena u oscura (V-VI)**.
 
-**La razón NO es la indexación.** Es que cualquier página única tendría que elegir un
-número para el HTML, y **cualquier número que elija es falso para cuatro de cada seis
-lectores** — repetiría el error del AI Overview con otra tipografía. Seis páginas dicen
-seis cosas distintas porque **son** seis cosas distintas.
+Tres URLs por idioma, 18 en total. El número de Fitzpatrick aparece como glosa dentro de
+la página, jamás en el título ni en el slug. Los seis tipos siguen existiendo como entrada
+del calculador: **seis en el control, tres en el contenido.**
 
-### El riesgo, y cómo se evita
+Criterio: **una URL por promesa distinta, no por parámetro distinto.**
 
-Las 438 páginas de ciudad son el precedente de qué pasa cuando se multiplica una
-plantilla: 0,08 impresiones por página. Dos condiciones vinculantes:
+### Por qué seis era un error: el margen de seguridad es idéntico
 
-1. **Cada página dice en qué se diferencia de las otras cinco**, con su propio texto. No
-   una plantilla con el número sustituido. El fototipo I quema en minutos y su límite es
-   el eritema; el VI necesita media hora y su riesgo real es la insuficiencia invernal.
-   Son artículos distintos, no seis instancias.
-2. **Si a los tres meses la madre rinde y las hijas no**, las hijas se consolidan en la
-   madre con anclas. Criterio de reversión escrito por adelantado.
+La versión anterior argumentaba que seis páginas dicen seis cosas distintas porque el
+número varía 6×. Medido, eso es solo la mitad de la historia:
+
+| Tipo | vitD (min) | Quemadura (min) | Ratio |
+|---|---|---|---|
+| I | 5,0 | 20,9 | **0,2396** |
+| II | 6,2 | 26,1 | **0,2396** |
+| III | 7,5 | 31,3 | **0,2396** |
+| IV | 11,2 | 46,9 | **0,2396** |
+| V | 18,7 | 78,2 | **0,2396** |
+| VI | 30,0 | 125,1 | **0,2396** |
+
+**El ratio es el mismo a seis decimales**, y se mantiene barriendo área, objetivo, edad y
+UVI — verificado en tres configuraciones distintas además de la del informe. Es
+estructural: en `lib/vitd.ts`, `tau = 0.8·MED/uvi` y `erythemaMinutes = MED/uvi`, así que
+**el tipo de piel se cancela**. Todo lo derivado es el mismo número multiplicado por
+{1; 1,25; 1,5; 2,25; 3,75; 6}.
+
+Y la estacionalidad tampoco separa: la ventana depende de `MIN_UVI = 3`, que **no depende
+de la piel**. Madrid en enero devuelve `null` para los seis. La frase «en invierno aquí no
+puedes sintetizar» sería idéntica en las seis páginas.
+
+Es decir: seis páginas serían la misma página con un número escalado. **Thin content por
+definición** — exactamente el error de las 438 páginas de ciudad.
+
+### Lo que sí separa, y son tres cosas
+
+El contenido distinto no sale del motor, sale de la salud pública, y se agrupa en tres:
+
+- **Piel clara:** el ángulo es el **riesgo de quemadura**. Necesitas lo mínimo y el margen
+  es corto en términos absolutos (5 minutos de vitamina D contra 21 de quemadura).
+- **Piel media:** el caso por defecto. Es la referencia sobre la que están escritas las
+  recomendaciones genéricas, incluida la del AI Overview.
+- **Piel oscura:** el ángulo es la **prevalencia de déficit** y la suplementación en
+  latitudes altas. El NHS singulariza explícitamente ascendencia africana, afrocaribeña y
+  del sur de Asia.
+
+Tres promesas, tres páginas.
+
+### Por descripción, no por número
+
+- El mercado ya convergió: **Bask agrupa I-II / III-IV / V-VI**, Cancer Council NSW
+  agrupa igual, Healthline ni menciona Fitzpatrick y titula «darker skin» / «lighter
+  skin». El numeral solo sobrevive como campo de formulario.
+- En español «fototipo» sí es vocabulario de consumo, pero **atado a elegir protector
+  solar, no a vitamina D**; los artículos de vitamina D dicen «piel clara / morena /
+  oscura». Proxy: la Wikipedia española de *Fototipo* recibe 2.462 vistas al año contra
+  685 de *Escala Fitzpatrick*.
+- Las consultas compuestas existen y son el objetivo: Bask las tiene como encabezados
+  literales («How long should someone with dark skin sit in the sun for vitamin D?»).
+  Ninguna lleva número.
+- **El Fitzpatrick autodeclarado es poco fiable**, sobre todo en personas de color
+  (PubMed 24928709). Seis páginas piden un dato que el lector no sabe dar; «piel clara,
+  media u oscura» sí lo sabe.
+
+**Sin volumen de búsqueda citable:** no hay cifras públicas para estas consultas. Lo
+anterior es evidencia cualitativa y proxies, no volumen medido.
+
+### La condición de reversión sigue en pie
+
+Si a los tres meses la madre rinde y las hijas no, las hijas se consolidan en la madre con
+anclas. El precedente de las 438 páginas de ciudad a 0,08 impresiones por página está
+demasiado fresco para no escribirlo por adelantado.
+
+### Aviso para quien escriba el copy
+
+Hoy **no existe ni una línea de texto condicionada al tipo de piel** en todo el repo (cero
+condicionales sobre `skinType` en `lib/`, `components/` y `app/`), y las páginas de ciudad
+fijan `DEFAULT_SKIN = 3`. Todo el contenido diferencial hay que escribirlo de cero. Con
+seis páginas habría que escribir seis veces la misma cosa; con tres, tres cosas distintas.
 
 ## 4. Qué responde cada página
 
 **Arriba, la respuesta, en HTML estático e indexable.** Sin formulario delante: quien
 llega de una búsqueda con un formulario se vuelve al buscador.
 
-Para cada fototipo, a latitud 40° y 25 % de piel expuesta, entre marzo y septiembre:
+Para cada banda, a latitud 40° y 25 % de piel expuesta, entre marzo y septiembre:
 
-| Fototipo | Rango |
-|---|---|
-| I | 5-9 min |
-| II | 6-11 min |
-| III | 8-13 min |
-| IV | 11-20 min |
-| V | 19-34 min |
-| VI | 30-54 min |
+| Página | Fototipos | Rango |
+|---|---|---|
+| Piel clara | I-II | 5-11 min |
+| Piel media u oliva | III-IV | 8-20 min |
+| Piel morena u oscura | V-VI | 19-54 min |
+
+(Los seis valores individuales quedan dentro de cada página como detalle, no como
+páginas propias.)
 
 **Debajo, de qué depende** — y esto es lo que el AIO admite no dar: la variación por
 estación, por latitud, y el hecho de que **en invierno por encima de cierta latitud es
@@ -113,7 +177,7 @@ cardiovascular, la declaración ósea atribuida a «vitamina K» genérica.
 ## 5. `/learn` se reenfoca en el mismo lote
 
 Decisión del usuario, condicionada a que la fase dure más de una semana. **Dura más**:
-siete páginas × seis idiomas con copy que no puede ser plantilla, más revisión nativa.
+cuatro páginas × seis idiomas con copy que no puede ser plantilla, más revisión nativa.
 
 Hoy `/learn` se titula «Guía Completa de Síntesis Solar y Suplementación» y su
 descripción enumera D3, K2, magnesio, dosis y niveles en sangre. Eso compite por «guía de
@@ -245,20 +309,31 @@ Ocultar un supuesto es lo que hace que la cifra de otro parezca autoritaria, y e
 precisamente el defecto que estas páginas existen para corregir. Cuidado con
 `health-claims.test.ts` al redactar la parte de dosis.
 
-**Las siete a la vez.** Se descartó construir la madre primero y medir: si todas van en
+**Las cuatro a la vez.** Se descartó construir la madre primero y medir: si todas van en
 el mismo despliegue, medir por separado no ahorra trabajo. La condición de reversión de
 §3 sigue en pie — si a los tres meses la madre rinde y las hijas no, se consolidan.
 
 ## 10. Lo que queda para el plan
 
-**¿Seis páginas o tres?** Los fototipos I y II difieren en **un minuto** (5,0 y 6,2), y
-III y IV en cuatro. Agrupados de dos en dos —clara, media, oscura— serían tres páginas
-con diferencias grandes de verdad y menos riesgo de contenido casi idéntico. Seis dan más
-superficie pero acercan el problema de las 438 páginas de ciudad. **Decidir en el plan,
-con el criterio de "¿estas dos páginas dirían cosas distintas?" delante.**
+Las dos preguntas grandes del borrador quedaron cerradas con medición: el marcado (§6, es
+`Article`, y las otras tres opciones están muertas) y el número de páginas (§3, son tres,
+porque el margen de seguridad es idéntico entre fototipos).
 
-**El marcado estructurado** de las hijas (`Article` vs `MedicalWebPage`): decidir con la
-documentación de Google delante, no de memoria.
+Queda:
 
-**Orden de construcción interno**, dado que se despliegan juntas: qué se hace primero
-para que el copy de las hijas no sea plantilla.
+**Los slugs de las tres hijas**, localizados en seis idiomas y por descripción, no por
+número: `piel-clara`, `piel-media`, `piel-oscura` y sus equivalentes. Ojo al alemán y al
+ruso, que comparten prefijo con el inglés en las rutas de ciudad — comprobar que la
+convención nueva no reproduce esa colisión.
+
+**Un test que fije el orden de comprobaciones de `onDemandCityRewrite`**, para que ninguna
+de las cuatro URLs nuevas pueda ser capturada como ciudad. Es el riesgo concreto de §9 y
+no debe quedar en confianza.
+
+**El orden de escritura del copy**, dado que las cuatro se despliegan juntas: qué se
+redacta primero para que las tres hijas no acaben siendo la misma página con el número
+cambiado. Recordatorio de §3: hoy no existe ni una línea de texto condicionada al tipo de
+piel en todo el repo, así que esto se escribe de cero.
+
+**La redacción del objetivo de 1000 UI** sin que la toque `health-claims.test.ts`, y con
+el descargo de responsabilidad que Bask sí tiene y este sitio tendría que tener.
