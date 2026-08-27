@@ -1,37 +1,37 @@
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 import { buildAlternates } from "@/i18n/metadata";
 
+/**
+ * The metadata is READ FROM `messages`, and that is the whole point of this
+ * file rather than an implementation detail of it.
+ *
+ * It used to be two hardcoded `Record<string, string>` objects here, with `es`
+ * and `en` only and every other locale falling back to English. The body of the
+ * page stopped promising an audience on 2026-08-26 — that claim was what invited
+ * "come back when you have users" — but the hardcoded description did not move
+ * with it, because nothing forces a TSX literal to track a copy rewrite. The
+ * visible page was honest and the snippet Google and the AI assistants quote was
+ * not, which is the worse half to get wrong.
+ *
+ * In `messages` the copy is covered by `messages/__tests__/key-parity.test.ts`,
+ * so the keys cannot exist in Spanish alone, and it sits in the same file a copy
+ * rewrite already opens. The description must keep saying what
+ * `partners.pageSubtitle` and `partners.why4Text` say: surface, not audience.
+ */
 export async function generateMetadata(
   { params }: { params: Promise<{ locale: string }> },
 ): Promise<Metadata> {
   const { locale } = await params;
-
-  const titles: Record<string, string> = {
-    es: "Colabora con Vitamina D Explorer — Partnerships para Marcas de Salud",
-    en: "Partner with Vitamina D Explorer — Health Brand Partnerships",
-  };
-
-  /**
-   * These have to say the same thing the page says. The body stopped promising an
-   * audience on 2026-08-26 — it was the claim that invited "come back when you
-   * have users" — but this description is hardcoded here rather than read from
-   * `messages`, so it survived the rewrite and kept selling the audience in the
-   * one place search engines and AI assistants actually quote. The visible page
-   * was honest and the snippet was not, which is the worse half to get wrong.
-   */
-  const descriptions: Record<string, string> = {
-    es: "Miles de páginas indexadas en seis idiomas que responden a quien busca cuándo puede sintetizar vitamina D. Modelos de patrocinio, afiliados y contenido co-marcado.",
-    en: "Thousands of indexed pages in six languages answering people who want to know when they can synthesize vitamin D. Sponsorship, affiliate, and co-branded content models.",
-  };
+  const t = await getTranslations({ locale, namespace: "partners" });
+  const title = t("metaTitle");
+  const description = t("metaDescription");
 
   return {
-    title: titles[locale] ?? titles.en,
-    description: descriptions[locale] ?? descriptions.en,
+    title,
+    description,
     alternates: buildAlternates(locale, "/partners"),
-    openGraph: {
-      title: titles[locale] ?? titles.en,
-      description: descriptions[locale] ?? descriptions.en,
-    },
+    openGraph: { title, description },
   };
 }
 

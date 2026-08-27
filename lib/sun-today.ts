@@ -211,6 +211,15 @@ export function sunTodayData(city: City, today: TodayInZone): SunTodayData {
  * can prove nothing and returns 500, so the cron invocation goes red. Bumping
  * the constant is still the fix.
  *
+ * BUT ONLY ONCE THE CALENDAR HAS ACTUALLY REACHED THE NEW YEAR. The comparison
+ * above is symmetric: it drops the Events when the reader's year is AHEAD of the
+ * constant and equally when it is BEHIND. Bumping to 2027 in August 2026 does
+ * not pre-empt the January failure, it starts it four months early — every hub
+ * loses its Events on the next deploy, `lib/hub-freshness.ts` reads no dated
+ * Event in any of the three samples, `hubFreshnessOk` is false, and the cron
+ * goes red daily from that deploy until 1 January. The bump belongs in the last
+ * days of December, in the same deploy that publishes the new year's figures.
+ *
  * Lives here rather than in the page so the test that pins this decision
  * exercises the decision itself, not a copy of it.
  */
