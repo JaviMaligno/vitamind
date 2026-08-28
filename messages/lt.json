@@ -213,6 +213,7 @@
     "appHeading": "Programėlė",
     "citiesHeading": "Vitaminas D pagal miestą",
     "learn": "Gidas",
+    "suntime": "Kiek saulės reikia",
     "partners": "Partneriams",
     "about": "Apie",
     "methodology": "Metodika",
@@ -435,7 +436,8 @@
         "a": "Už poliarinių ratų (nuo ~66,6° platumos) dėl Žemės ašies posvyrio vasaros įkarštyje saulė nenusileidžia (vidurnakčio saulė), o žiemos viduryje nepateka (poliarinė naktis). Kuo arčiau ašigalio, tuo ilgiau tai trunka: Tromsėje ar Svalbarde — ištisas savaites ar mėnesius. Programėlė tai pažymi saulės skydelyje, o per ilgą poliarinę žiemą vitamino D galima gauti tik su maistu arba papildais."
       }
     },
-    "backToApp": "Grįžti į programėlę"
+    "backToApp": "Grįžti į programėlę",
+    "howLongLink": "O kiek laiko reikia saulėje? →"
   },
   "cities": {
     "reikiavik": "Reikjavikas",
@@ -870,6 +872,77 @@
     "faqWinterQ": "{city} – ar žiemą galima gauti vitamino D iš saulės?",
     "faqMinutesQ": "{city} – kiek saulės minučių man reikia per dieną?",
     "faqMinutesA": "Vasarą apie {minutes, plural, one {# minutę} few {# minutes} many {# minutės} other {# minučių}} su atidengtomis rankomis ir veidu pakanka 1000 TV (III tipo oda, giedras dangus)."
+  },
+  "suntimePage": {
+    "eyebrow": "Kiek saulės jums reikia",
+    "assumptionsHeading": "Kuo remiasi šie skaičiai",
+    "assumptionArea": "{areaPercent} % neuždengtos odos — maždaug rankos ir veidas",
+    "assumptionAge": "{age} metai, nes su amžiumi sintezė lėtėja",
+    "assumptionTarget": "tikslas — {targetIU} TV per vieną kartą",
+    "assumptionPlace": "platuma {lat}°, giedras dangus, jūros lygyje",
+    "targetNote": "1000 TV yra šio įrankio pasirinkimas, o ne nusistovėjęs sutarimas: nacionalinės institucijos rekomenduoja nuo 600 iki 2000 TV per parą, ir nuo šio pasirinkimo priklauso kiekvienas šio puslapio skaičius.",
+    "methodHeading": "Iš kur šie skaičiai",
+    "methodBody": "Saulės aukštis apskaičiuojamas kiekvienai metų dienai, iš jo — UV indeksas pagal Madronicho modelį su van Heuklono ozono sluoksniu, o iš jo — buvimo saulėje trukmė pagal Holicką ir Dowdy (2010), įskaitant fotodegradacijos ribą, už kurios ilginti seansą nebeapsimoka. Nė vienas skaičius čia neįrašytas ranka: pasikeitus modeliui, pasikeičia ir šis puslapis.",
+    "disclaimer": "Tai įvertis giedram dangui konkrečioje platumoje, o ne medicininis patarimas; jis nežino nei jūsų odos, nei vartojamų vaistų, nei kraujo tyrimų. Jei įtariate trūkumą, tai sprendžiama su gydytoju ir kraujo tyrimu, o ne skaičiuokle.",
+    "monthHeading": "Mėnuo po mėnesio",
+    "monthNote": "Greičiausias ir lėčiausias grupės tipas stipriausią ir silpniausią kiekvieno mėnesio dieną.",
+    "monthRange": "{month}: {min}–{max} min.",
+    "monthImpossible": "{month}: neįmanoma jokios trukmės",
+    "impossibleHeading": "Mėnesiai, kai nepadeda joks saulės kiekis",
+    "impossibleSome": "Šioje platumoje saulė {months} nepakyla pakankamai aukštai. Tai ne buvimo ilgiau klausimas: žemiau 3 UV indekso banga, iš kurios susidaro vitaminas D, žemės beveik nebepasiekia, todėl atsakymas po penkių minučių toks pat kaip po penkių valandų.",
+    "impossibleNone": "Šioje platumoje langas yra kiekvieną mėnesį, nors sezono pakraščiuose reikia kelis kartus daugiau laiko nei vasaros įkarštyje.",
+    "burnHeading": "Palyginti su nudegimu",
+    "burnBody": "Stipriausią sezono dieną reikia apie {minutes} min., o iki matomo paraudimo — apie {burnMinutes} min. Vitaminas D susidaro gerokai anksčiau, nei prasideda žala, ir būtent tai svarbu: likti iki nudegimo nėra jokios naudos.",
+    "typesHeading": "Šeši fototipai išsamiai",
+    "typeRow": "{type} tipas: {min}–{max} min.",
+    "otherBandsHeading": "Ne jūsų oda?",
+    "ctaLabel": "Apskaičiuoti pagal mano miestą ir šiandienos UV",
+    "backToMother": "Grįžti prie bendro atsakymo",
+    "mother": {
+      "title": "Kiek laiko saulėje reikia vitaminui D",
+      "metaDescription": "Sąžiningas atsakymas yra intervalas, o ne skaičius: nuo kelių minučių iki daugiau nei valandos tą pačią dieną ir toje pačioje vietoje, priklausomai nuo odos. Apskaičiuota pagal saulės geometriją ir UV, su visomis nurodytomis prielaidomis.",
+      "h1": "Kiek laiko saulėje reikia praleisti dėl vitamino D?",
+      "lead": "Yra skaičius, kurį kartoja visi, ir daugumai žmonių jis klaidingas.",
+      "answer": "Nuo {min} iki {max} minučių — toje pačioje platumoje, tą pačią valandą ir su tiek pat neuždengtos odos. Keičiasi tik oda.",
+      "whyHeading": "Kodėl įprastas atsakymas prašauna",
+      "whyBody": "„Nuo dešimties iki penkiolikos minučių“ — toks skaičius sklando, ir tai tikras matavimas: vieno odos tipo. Melaninas sugeria tą patį ultravioletą, iš kurio susidaro vitaminas, todėl tamsiausiai odai tos pačios dozės reikia maždaug šešis kartus ilgiau nei šviesiausiai. Dešimt minučių pataiko į intervalo vidurį ir prašauna abiejuose galuose: per daug labai šviesiai odai ir mažiau nei pusė to, ko reikia tamsiausiai. Paieškos sistema to neištaisys, nes atsakymas priklauso nuo to, kas klausia.",
+      "chooseHeading": "Raskite savo intervalą"
+    },
+    "bands": {
+      "fair": {
+        "title": "Kiek saulės reikia vitaminui D esant šviesiai odai",
+        "metaDescription": "Šviesi oda vitaminą D gamina greičiau nei bet kuri kita — ir nudega pirma. Minutės mėnuo po mėnesio, šalia — laikas iki paraudimo.",
+        "h1": "Kiek saulės reikia vitaminui D esant šviesiai odai",
+        "lead": "Jums reikia mažiausiai iš visų. Įprastas patarimas taiko per ilgai, o taikyti per ilgai jums brangiai kainuoja.",
+        "answer": "Nuo {min} iki {max} minučių, priklausomai nuo mėnesio.",
+        "angleHeading": "Naudinga ir žalinga dozė yra visai šalia",
+        "angleBody": "Šviesioje odoje mažai melanino, sulaikančio ultravioletą, todėl vitaminas D susidaro greitai — ir dėl tos pačios priežasties greitai atsiranda paraudimas. Vasaros įkarštyje tarp „pakanka“ ir „pradedu nudegti“ yra minutės, o ne valandos. Sklandantis patarimas parašytas apie tamsesnę odą: jo laikydamiesi negausite nė vieno vieneto vitamino D daugiau, užtat gausite saulės pažeidimą, kurio nereikėjo. Sukaupta ultravioletinė apšvita yra pagrindinė išvengiama odos vėžio priežastis, o šviesi oda pradeda nuo didžiausios bazinės rizikos: trumpas atsakymas čia yra atsargus, o ne tingus.",
+        "gloss": "I ir II fototipai: oda, kuri visada nudega ir niekada neįdega, arba lengvai nudega ir įdega silpnai.",
+        "cardBlurb": "Jums reikia mažiausiai, ir atsarga iki nudegimo trumpiausia."
+      },
+      "medium": {
+        "title": "Kiek saulės reikia vitaminui D esant vidutinio tono ar alyvuogių spalvos odai",
+        "metaDescription": "Vidutinio tono oda yra numatytasis atvejis, kuriam parašytos bendrosios rekomendacijos. Ką tai reiškia, kur jos vis tiek prašauna, ir minutės mėnuo po mėnesio.",
+        "h1": "Kiek saulės reikia vitaminui D esant vidutinio tono ar alyvuogių spalvos odai",
+        "lead": "Patarimas, kurį jau skaitėte, parašytas jums. Jis maždaug teisingas — ir jūs vienintelė grupė, kuriai taip yra.",
+        "answer": "Nuo {min} iki {max} minučių, priklausomai nuo mėnesio.",
+        "angleHeading": "Būti numatytuoju atveju turi savą bėdą",
+        "angleBody": "Beveik kiekviena vieša rekomendacija tyliai remiasi būtent šia grupe. Todėl žinomas skaičius jums tinka, bet kartu paveldite vertę, kuriai niekas nepridėjo išlygų — o išlygos sveria daugiau už pačią vertę. Sezonas ją stumdo labiau nei kas nors kitas, išskyrus odą: tam pačiam kūnui toje pačioje platumoje vasaros įkarštyje reikia dalelės to laiko, kurio reikia sezono pakraštyje, o žemiau tam tikro saulės aukščio neveikia jokia trukmė. Jums nurodytas skaičius yra birželio skaičius be etiketės.",
+        "gloss": "III ir IV fototipai: oda, kuri kartais nudega ir įdega palaipsniui, arba retai nudega ir įdega lengvai.",
+        "cardBlurb": "Grupė, kuriai parašytas bendras patarimas, tik apie tai nepasakyta."
+      },
+      "dark": {
+        "title": "Kiek saulės reikia vitaminui D esant rusvai ar tamsiai odai",
+        "metaDescription": "Tamsiai odai tam pačiam vitaminui D reikia kelis kartus daugiau saulės, todėl aukštose platumose trūkumas dažnesnis. Minutės mėnuo po mėnesio — apskaičiuotos, o ne spėtos.",
+        "h1": "Kiek saulės reikia vitaminui D esant rusvai ar tamsiai odai",
+        "lead": "Jums reikia kelis kartus daugiau nei sklandantis skaičius, o aukštose platumose saulės gali nepakakti išvis.",
+        "answer": "Nuo {min} iki {max} minučių, priklausomai nuo mėnesio.",
+        "angleHeading": "Kodėl toliau nuo pusiaujo trūkumas dažnesnis",
+        "angleBody": "Melaninas yra veiksminga apsauga nuo saulės, ir jis sulaiko būtent tą bangos ilgį, iš kurio susidaro vitaminas. Ten, kur saulė stipri, tai privalumas; ten, kur ji silpna, — kliūtis: prie pusiaujo šviesos pritaikyta oda iš šiaurės žiemos ištraukia tik dalelę naudos. Sveikatos tarnybos tai išskiria atskirai — NHS mini Afrikos, Afrikos ir Karibų bei Pietų Azijos kilmės žmones kaip labiau linkusius stokoti — ir priežastis čia aritmetinė, o ne elgesio. Praktiškai pereinamieji mėnesiai jums užsidaro anksčiau, nei rodo kalendorius, o mėnesiai, šiame puslapyje pažymėti kaip neįmanomi, tokie ir lieka, kad ir kiek laiko praleistumėte lauke.",
+        "gloss": "V ir VI fototipai: oda, kuri retai arba niekada nenudega ir stipriai įdega.",
+        "cardBlurb": "Kelis kartus daugiau laiko, ir sezonas užsidaro anksčiau, nei sako kalendorius."
+      }
+    }
   },
   "offline": {
     "title": "Neprisijungę",

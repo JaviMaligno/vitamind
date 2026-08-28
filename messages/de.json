@@ -213,6 +213,7 @@
     "appHeading": "App",
     "citiesHeading": "Vitamin D nach Stadt",
     "learn": "Ratgeber",
+    "suntime": "Wie viel Sonne",
     "partners": "Partner",
     "about": "Über uns",
     "methodology": "Methodik",
@@ -435,7 +436,8 @@
         "a": "Jenseits der Polarkreise (ab ~66,6° Breite) führt die Neigung der Erde dazu, dass die Sonne im Hochsommer nicht untergeht (Mitternachtssonne) und im tiefsten Winter nicht aufgeht (Polarnacht). Je näher am Pol, desto länger dauert das Phänomen: In Tromsø oder auf Spitzbergen sind es ganze Wochen oder Monate. Die App weist im Sonnenpanel darauf hin, wenn es so weit ist — und im langen Polarwinter kann Vitamin D nur aus der Ernährung oder über Nahrungsergänzung kommen."
       }
     },
-    "backToApp": "Zurück zur App"
+    "backToApp": "Zurück zur App",
+    "howLongLink": "Und wie lange muss man in die Sonne? →"
   },
   "cities": {
     "reikiavik": "Reykjavik",
@@ -870,6 +872,77 @@
     "faqWinterQ": "Kann ich im Winter in {city} Vitamin D durch die Sonne bekommen?",
     "faqMinutesQ": "Wie viele Minuten Sonne brauche ich in {city}?",
     "faqMinutesA": "Im Sommer reichen etwa {minutes} Minuten mit unbedeckten Armen und Gesicht für 1000 IE (Hauttyp III, klarer Himmel)."
+  },
+  "suntimePage": {
+    "eyebrow": "Wie viel Sonne Sie brauchen",
+    "assumptionsHeading": "Wovon diese Zahlen ausgehen",
+    "assumptionArea": "{areaPercent} % unbedeckte Haut — grob gesagt Arme und Gesicht",
+    "assumptionAge": "{age} Jahre, denn die Synthese wird mit dem Alter langsamer",
+    "assumptionTarget": "ein Ziel von {targetIU} IE in einer einzigen Sitzung",
+    "assumptionPlace": "Breitengrad {lat}°, klarer Himmel, auf Meereshöhe",
+    "targetNote": "Die 1000 IE sind die Wahl dieses Werkzeugs, kein gefestigter Konsens: nationale Fachgesellschaften empfehlen zwischen 600 und 2000 IE täglich, und diese Wahl verändert jede Zahl auf dieser Seite.",
+    "methodHeading": "Woher diese Zahlen kommen",
+    "methodBody": "Der Sonnenstand wird für jeden Tag des Jahres berechnet, daraus der UV-Index mit dem Madronich-Modell und der Ozonsäule nach van Heuklon, und daraus die Expositionsdauer nach Holick und Dowdy (2010), samt der Photodegradations-Obergrenze, ab der längeres Verweilen nichts mehr bringt. Keine Zahl ist hier von Hand eingetragen: ändert sich das Modell, ändert sich diese Seite mit.",
+    "disclaimer": "Dies ist eine Schätzung für klaren Himmel auf einem bestimmten Breitengrad, keine medizinische Beratung, und sie kennt weder Ihre Haut noch Ihre Medikamente noch Ihre Blutwerte. Wer einen Mangel vermutet, klärt das mit einer Ärztin und einer Blutprobe, nicht mit einem Rechner.",
+    "monthHeading": "Monat für Monat",
+    "monthNote": "Der schnellste und der langsamste Typ der Gruppe, am stärksten und am schwächsten Tag jedes Monats.",
+    "monthRange": "{month}: {min}–{max} Min.",
+    "monthImpossible": "{month}: bei keiner Dauer möglich",
+    "impossibleHeading": "Die Monate, in denen keine Menge Sonne reicht",
+    "impossibleSome": "Auf diesem Breitengrad steigt die Sonne in {months} nicht hoch genug. Das ist keine Frage des Längerbleibens: unterhalb eines UV-Index von 3 erreicht die Wellenlänge, die Vitamin D bildet, den Boden kaum noch — nach fünf Minuten gilt dieselbe Antwort wie nach fünf Stunden.",
+    "impossibleNone": "Auf diesem Breitengrad hat jeder Monat ein Zeitfenster, auch wenn die Randmonate ein Vielfaches der Hochsommerzeit verlangen.",
+    "burnHeading": "Im Vergleich zum Sonnenbrand",
+    "burnBody": "Am stärksten Tag der Saison brauchen Sie etwa {minutes} Min., gegenüber rund {burnMinutes} Min. bis zur sichtbaren Rötung. Das Vitamin D ist längst gebildet, bevor der Schaden beginnt — und genau darum geht es: bis zum Sonnenbrand zu bleiben bringt nichts.",
+    "typesHeading": "Die sechs Hauttypen im Detail",
+    "typeRow": "Typ {type}: {min}–{max} Min.",
+    "otherBandsHeading": "Nicht Ihre Haut?",
+    "ctaLabel": "Mit meiner Stadt und dem heutigen UV berechnen",
+    "backToMother": "Zurück zur allgemeinen Antwort",
+    "mother": {
+      "title": "Wie lange in die Sonne für Vitamin D",
+      "metaDescription": "Die ehrliche Antwort ist eine Spanne, keine Zahl: von wenigen Minuten bis über eine Stunde, am selben Tag und am selben Ort, je nach Haut. Berechnet aus Sonnengeometrie und UV, mit allen offengelegten Annahmen.",
+      "h1": "Wie lange muss man für Vitamin D in die Sonne?",
+      "lead": "Es gibt eine Zahl, die alle nachsprechen, und für die meisten Menschen ist sie falsch.",
+      "answer": "Zwischen {min} und {max} Minuten — gleicher Breitengrad, gleiche Uhrzeit, gleich viel unbedeckte Haut. Das Einzige, was sich ändert, ist die Haut.",
+      "whyHeading": "Warum die übliche Antwort danebenliegt",
+      "whyBody": "„Zehn bis fünfzehn Minuten“ ist die Zahl, die kursiert, und sie ist eine echte Messung — an einem Hauttyp. Melanin absorbiert dasselbe Ultraviolett, das das Vitamin bildet, weshalb die dunkelste Haut für dieselbe Dosis etwa sechsmal so lange braucht wie die hellste. Zehn Minuten trifft die Mitte der Spanne und verfehlt beide Enden: zu lang für sehr helle Haut, weniger als die Hälfte dessen, was die dunkelste braucht. Eine Suchmaschine kann das nicht beheben, denn die Antwort hängt davon ab, wer fragt.",
+      "chooseHeading": "Ihre Spanne finden"
+    },
+    "bands": {
+      "fair": {
+        "title": "Wie lange in die Sonne für Vitamin D bei heller Haut",
+        "metaDescription": "Helle Haut bildet Vitamin D schneller als jede andere — und verbrennt zuerst. Die Minuten Monat für Monat, mit der Zeit bis zur Rötung daneben.",
+        "h1": "Wie lange in die Sonne für Vitamin D bei heller Haut",
+        "lead": "Sie brauchen am wenigsten von allen. Der übliche Rat zielt zu lang, und zu lang zu zielen kostet Sie etwas.",
+        "answer": "Zwischen {min} und {max} Minuten, je nach Monat.",
+        "angleHeading": "Die nützliche Dosis und die schädliche liegen dicht beieinander",
+        "angleBody": "Helle Haut hat wenig Melanin, das Ultraviolett abfängt, bildet Vitamin D also schnell — und rötet sich aus demselben Grund schnell. Im Hochsommer liegen zwischen „genug“ und „beginnender Sonnenbrand“ Minuten, keine Stunden. Der kursierende Rat ist um eine dunklere Haut herum geschrieben; ihn zu befolgen bringt Ihnen keine Einheit Vitamin D mehr und hinterlässt Sonnenschäden, die nicht nötig waren. Kumulierte UV-Belastung ist die wichtigste vermeidbare Ursache von Hautkrebs, und helle Haut startet beim höchsten Grundrisiko: die kurze Antwort ist damit die vorsichtige, nicht die bequeme.",
+        "gloss": "Hauttypen I und II: Haut, die immer verbrennt und nie bräunt, oder leicht verbrennt und kaum bräunt.",
+        "cardBlurb": "Sie brauchen am wenigsten — und haben den kürzesten Abstand zum Sonnenbrand."
+      },
+      "medium": {
+        "title": "Wie lange in die Sonne für Vitamin D bei mittlerem oder olivfarbenem Hautton",
+        "metaDescription": "Ein mittlerer Hautton ist der stillschweigende Normalfall, für den die allgemeinen Empfehlungen geschrieben sind. Was das bedeutet, wo es trotzdem danebenliegt, und die Minuten Monat für Monat.",
+        "h1": "Wie lange in die Sonne für Vitamin D bei mittlerem oder olivfarbenem Hautton",
+        "lead": "Der Rat, den Sie schon gelesen haben, ist für Sie geschrieben. Er trifft ungefähr zu — und Sie sind die einzige Gruppe, für die das gilt.",
+        "answer": "Zwischen {min} und {max} Minuten, je nach Monat.",
+        "angleHeading": "Der Normalfall zu sein hat ein eigenes Problem",
+        "angleBody": "Fast jede öffentliche Empfehlung setzt diese Gruppe voraus, ohne es zu sagen. Die bekannte Zahl taugt damit für Sie, aber Sie erben auch einen Wert, dem niemand die Einschränkungen mitgegeben hat — und die Einschränkungen wiegen schwerer als der Wert. Die Jahreszeit verschiebt ihn stärker als alles außer der Haut: derselbe Körper braucht auf demselben Breitengrad im Hochsommer einen Bruchteil der Zeit, die er am Rand der Saison braucht, und unterhalb eines bestimmten Sonnenstands wirkt gar keine Dauer. Die Zahl, die man Ihnen genannt hat, ist eine Juni-Zahl ohne Etikett.",
+        "gloss": "Hauttypen III und IV: Haut, die manchmal verbrennt und allmählich bräunt, oder selten verbrennt und leicht bräunt.",
+        "cardBlurb": "Die Gruppe, für die der allgemeine Rat geschrieben wurde, ohne es zu sagen."
+      },
+      "dark": {
+        "title": "Wie lange in die Sonne für Vitamin D bei brauner oder dunkler Haut",
+        "metaDescription": "Dunkle Haut braucht für dasselbe Vitamin D ein Vielfaches an Sonne, weshalb Mangel in hohen Breiten häufiger ist. Die Minuten Monat für Monat, berechnet statt angenommen.",
+        "h1": "Wie lange in die Sonne für Vitamin D bei brauner oder dunkler Haut",
+        "lead": "Sie brauchen ein Vielfaches der kursierenden Zahl, und in hohen Breiten gibt die Sonne es womöglich gar nicht her.",
+        "answer": "Zwischen {min} und {max} Minuten, je nach Monat.",
+        "angleHeading": "Warum Mangel fern des Äquators häufiger ist",
+        "angleBody": "Melanin ist ein wirksamer Sonnenschutz, und es filtert genau die Wellenlänge, die das Vitamin bildet. Das ist ein Vorteil, wo die Sonne kräftig steht, und ein Nachteil, wo sie schwach ankommt: eine für äquatoriales Licht ausgelegte Haut holt aus einem nördlichen Winter nur einen Bruchteil heraus. Gesundheitsdienste weisen eigens darauf hin — der NHS nennt Menschen afrikanischer, afrokaribischer und südasiatischer Herkunft als besonders gefährdet — und der Grund ist Arithmetik, nicht Verhalten. Praktisch heißt das: die Übergangsmonate schließen für Sie früher, als der Kalender vermuten lässt, und die Monate, die diese Seite als unmöglich ausweist, bleiben es, wie lange Sie auch draußen sind.",
+        "gloss": "Hauttypen V und VI: Haut, die selten oder nie verbrennt und tief bräunt.",
+        "cardBlurb": "Ein Vielfaches an Zeit — und eine Saison, die früher schließt als der Kalender sagt."
+      }
+    }
   },
   "offline": {
     "title": "Offline",

@@ -398,7 +398,7 @@ describe("client message subset", () => {
   });
 
   it("does not ship the namespaces that only ever render on the server", () => {
-    // Not a byte-count assertion — a statement that the seven namespaces the
+    // Not a byte-count assertion — a statement that the eight namespaces the
     // saving comes from are actually gone. Server components read from
     // i18n/request.ts, not from this subset, so they keep working.
     const full = JSON.parse(readFileSync(join(ROOT, "messages/es.json"), "utf8"));
@@ -413,6 +413,7 @@ describe("client message subset", () => {
       "methodology",
       "notFoundPage",
       "sunrisePage",
+      "suntimePage",
     ]);
   });
 

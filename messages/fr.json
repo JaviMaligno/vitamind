@@ -213,6 +213,7 @@
     "appHeading": "Application",
     "citiesHeading": "Vitamine D par ville",
     "learn": "Guide",
+    "suntime": "Combien de soleil",
     "partners": "Partenaires",
     "about": "À propos",
     "methodology": "Méthodologie",
@@ -435,7 +436,8 @@
         "a": "Au-delà des cercles polaires (à partir de ~66,6° de latitude), l'inclinaison de la Terre fait qu'en plein été le soleil ne se couche pas (soleil de minuit) et qu'en plein hiver il ne se lève pas (nuit polaire). Plus on s'approche du pôle, plus le phénomène dure : à Tromsø ou au Svalbard, il s'étend sur des semaines, voire des mois entiers. L'application le signale dans le panneau du soleil quand cela se produit, et pendant le long hiver polaire, la vitamine D ne peut venir que de l'alimentation ou de la supplémentation."
       }
     },
-    "backToApp": "Retour à l'application"
+    "backToApp": "Retour à l'application",
+    "howLongLink": "Et combien de temps au soleil faut-il ? →"
   },
   "cities": {
     "reikiavik": "Reykjavik",
@@ -870,6 +872,77 @@
     "faqWinterQ": "Puis-je obtenir de la vitamine D du soleil en hiver {atCity} ?",
     "faqMinutesQ": "Combien de minutes de soleil me faut-il {atCity} ?",
     "faqMinutesA": "En été, environ {minutes} minutes avec le visage et les bras exposés suffisent pour 1 000 UI (peau de type III, ciel dégagé)."
+  },
+  "suntimePage": {
+    "eyebrow": "Combien de soleil vous faut-il",
+    "assumptionsHeading": "Ce que ces chiffres supposent",
+    "assumptionArea": "{areaPercent} % de peau découverte — les bras et le visage, en gros",
+    "assumptionAge": "{age} ans, car la synthèse ralentit avec l'âge",
+    "assumptionTarget": "un objectif de {targetIU} UI en une seule séance",
+    "assumptionPlace": "latitude {lat}°, ciel dégagé, au niveau de la mer",
+    "targetNote": "Les 1000 UI sont le choix de cet outil, pas un consensus établi : les organismes nationaux recommandent de 600 à 2000 UI par jour, et ce choix change tous les chiffres de cette page.",
+    "methodHeading": "D'où viennent ces chiffres",
+    "methodBody": "La hauteur du soleil est calculée pour chaque jour de l'année, l'indice UV en découle par le modèle de Madronich avec la colonne d'ozone de van Heuklon, et le temps d'exposition par Holick et Dowdy (2010), plafond de photodégradation compris — celui qui fait qu'allonger la séance cesse de rapporter. Aucun nombre n'est écrit à la main ici : si le modèle change, cette page change avec lui.",
+    "disclaimer": "Ceci est une estimation pour un ciel dégagé à une latitude donnée, pas un avis médical, et elle ignore votre peau, vos traitements et vos analyses. Si vous pensez manquer de vitamine D, cela se règle avec un médecin et une prise de sang, pas avec un calculateur.",
+    "monthHeading": "Mois par mois",
+    "monthNote": "Le plus rapide et le plus lent de la tranche, le jour le plus fort et le plus faible de chaque mois.",
+    "monthRange": "{month} : {min}–{max} min",
+    "monthImpossible": "{month} : impossible quelle que soit la durée",
+    "impossibleHeading": "Les mois où aucune quantité de soleil ne suffit",
+    "impossibleSome": "À cette latitude le soleil ne monte pas assez haut en {months}. Ce n'est pas une question de rester plus longtemps : en dessous d'un indice UV de 3, la longueur d'onde qui fabrique la vitamine D n'atteint quasiment plus le sol, et la réponse est la même au bout de cinq minutes qu'au bout de cinq heures.",
+    "impossibleNone": "À cette latitude, chaque mois de l'année offre une fenêtre, même si les mois de bordure demandent plusieurs fois plus de temps qu'en plein été.",
+    "burnHeading": "Comparé au coup de soleil",
+    "burnBody": "Le jour le plus fort de la saison, il vous faut environ {minutes} min, contre à peu près {burnMinutes} min pour atteindre la rougeur visible. La vitamine D est faite bien avant que les dégâts commencent, et c'est tout l'intérêt : rester jusqu'à brûler n'apporte rien.",
+    "typesHeading": "Les six phototypes en détail",
+    "typeRow": "Type {type} : {min}–{max} min",
+    "otherBandsHeading": "Ce n'est pas votre peau ?",
+    "ctaLabel": "Le calculer avec ma ville et l'UV du jour",
+    "backToMother": "Revenir à la réponse générale",
+    "mother": {
+      "title": "Combien de temps au soleil pour la vitamine D",
+      "metaDescription": "La réponse honnête est un intervalle, pas un nombre : de quelques minutes à plus d'une heure le même jour et au même endroit, selon la peau. Calculé à partir de la géométrie solaire et de l'UV, avec tous les postulats déclarés.",
+      "h1": "Combien de temps au soleil faut-il pour la vitamine D ?",
+      "lead": "Il y a un chiffre que tout le monde répète, et pour la plupart des gens il est faux.",
+      "answer": "Entre {min} et {max} minutes, à la même latitude, à la même heure et avec la même surface de peau découverte. La seule chose qui change, c'est la peau.",
+      "whyHeading": "Pourquoi la réponse habituelle tombe à côté",
+      "whyBody": "« Dix à quinze minutes » est le chiffre qui circule, et c'est une vraie mesure : celle d'un seul type de peau. La mélanine absorbe l'ultraviolet même qui fabrique la vitamine, si bien que la peau la plus foncée a besoin d'environ six fois plus de temps que la plus claire pour la même dose. Dix minutes tombe juste au milieu de l'intervalle et se trompe aux deux bouts : c'est trop pour une peau très claire, et moins de la moitié de ce qu'il faut à la plus foncée. Un moteur de recherche ne peut pas corriger cela, puisque la réponse dépend de qui pose la question.",
+      "chooseHeading": "Trouvez votre intervalle"
+    },
+    "bands": {
+      "fair": {
+        "title": "Combien de soleil pour la vitamine D avec une peau claire",
+        "metaDescription": "La peau claire fabrique la vitamine D plus vite que toute autre — et brûle la première. Les minutes qu'il vous faut mois par mois, avec le temps avant rougeur à côté.",
+        "h1": "Combien de soleil pour la vitamine D avec une peau claire",
+        "lead": "C'est vous qui en avez le moins besoin. Le conseil habituel vise trop long, et viser trop long vous coûte cher.",
+        "answer": "Entre {min} et {max} minutes, selon le mois.",
+        "angleHeading": "La dose utile et la dose qui abîme sont très proches",
+        "angleBody": "La peau claire a peu de mélanine pour retenir l'ultraviolet : elle fabrique donc la vitamine D vite, et rougit vite pour la même raison. En plein été, entre en avoir assez et commencer à brûler il y a des minutes, pas des heures. Le conseil qui circule est écrit autour d'une peau plus foncée ; le suivre ne vous donne pas une unité de vitamine D de plus et vous laisse des dégâts solaires dont vous n'aviez pas besoin. L'exposition ultraviolette cumulée est la principale cause évitable de cancer de la peau, et la peau claire part du risque le plus élevé : la réponse courte est donc la prudente, pas la paresseuse.",
+        "gloss": "Phototypes I et II : peau qui brûle toujours et ne bronze jamais, ou qui brûle facilement et bronze peu.",
+        "cardBlurb": "C'est vous qui en avez le moins besoin, et qui avez le moins de marge avant de brûler."
+      },
+      "medium": {
+        "title": "Combien de soleil pour la vitamine D avec une peau mate",
+        "metaDescription": "La peau mate est le cas par défaut sur lequel les recommandations générales sont écrites. Ce que cela implique, où cela pèche encore, et les minutes mois par mois.",
+        "h1": "Combien de soleil pour la vitamine D avec une peau mate",
+        "lead": "Le conseil que vous avez déjà lu est écrit pour vous. Il tombe à peu près juste, et vous êtes la seule tranche pour laquelle c'est le cas.",
+        "answer": "Entre {min} et {max} minutes, selon le mois.",
+        "angleHeading": "Être le cas par défaut a son propre inconvénient",
+        "angleBody": "Presque toutes les recommandations publiques présupposent cette tranche sans le dire. Le chiffre connu vous sert donc, mais vous héritez aussi d'un nombre auquel personne n'a mis les réserves, et les réserves comptent plus que le nombre. La saison le déplace plus que tout, sauf la peau : le même corps à la même latitude a besoin d'une fraction du temps en plein été de ce qu'il lui faut en bordure de saison, et sous une certaine hauteur du soleil aucune durée ne fonctionne. Le chiffre qu'on vous a donné est un chiffre de juin sans étiquette.",
+        "gloss": "Phototypes III et IV : peau qui brûle parfois et bronze progressivement, ou qui brûle rarement et bronze facilement.",
+        "cardBlurb": "La tranche pour laquelle le conseil général a été écrit, sans le dire."
+      },
+      "dark": {
+        "title": "Combien de soleil pour la vitamine D avec une peau foncée",
+        "metaDescription": "La peau foncée a besoin de plusieurs fois plus de soleil pour la même vitamine D, et c'est pourquoi la carence est plus fréquente aux latitudes élevées. Les minutes mois par mois, calculées et non supposées.",
+        "h1": "Combien de soleil pour la vitamine D avec une peau foncée",
+        "lead": "Il vous en faut plusieurs fois plus que le chiffre qui circule, et aux latitudes élevées le soleil peut ne pas suffire du tout.",
+        "answer": "Entre {min} et {max} minutes, selon le mois.",
+        "angleHeading": "Pourquoi la carence est plus fréquente loin de l'équateur",
+        "angleBody": "La mélanine est une protection solaire efficace, et elle filtre justement la longueur d'onde qui fabrique la vitamine. C'est un avantage là où le soleil tape fort et un handicap là où il arrive faible : une peau adaptée à la lumière équatoriale tire une fraction du rendement d'un hiver du nord. Les services de santé le signalent à part — le NHS nomme les personnes d'origine africaine, afro-caribéenne et sud-asiatique comme plus exposées au manque — et la raison est arithmétique, pas comportementale. En pratique, les mois de transition se ferment pour vous plus tôt que ne le suggère le calendrier, et les mois que cette page marque impossibles le restent quel que soit le temps passé dehors.",
+        "gloss": "Phototypes V et VI : peau qui brûle rarement ou jamais et bronze intensément.",
+        "cardBlurb": "Plusieurs fois plus de temps, et une saison qui se ferme plus tôt que le calendrier ne le dit."
+      }
+    }
   },
   "offline": {
     "title": "Hors ligne",
