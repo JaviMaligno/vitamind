@@ -67,6 +67,27 @@ const LT_MONTH_LABELS = [
   "liep.", "rugp.", "rugs.", "spal.", "lapkr.", "gruod.",
 ];
 
+/**
+ * One abbreviated month name, with the Lithuanian exception applied.
+ *
+ * Exported because `fmtDate` in lib/solar.ts needs the same answer and asking
+ * `Intl` for `{ month: "short" }` directly does NOT give it: in Lithuanian that
+ * returns "08", so a date would render as "27 08" — not a Lithuanian date, and
+ * not even a month name. This module already owns that exception for the chart
+ * axis; two callers now share one decision instead of disagreeing.
+ *
+ * The trailing period is stripped ("авг." → "авг", "rugp." → "rugp") because the
+ * tooltip this feeds is a fixed 144px box and PR #61 already strips it on the
+ * axis directly above it.
+ */
+export function shortMonthName(locale: string, monthIndex: number): string {
+  const raw =
+    locale === "lt"
+      ? LT_MONTH_LABELS[monthIndex]
+      : new Intl.DateTimeFormat(locale, { month: "short" }).format(refDate(monthIndex));
+  return raw.replace(/\.$/, "");
+}
+
 /** Twelve short month labels for the year-profile chart. */
 export function monthLabels(locale: string): string[] {
   if (locale === "lt") return [...LT_MONTH_LABELS];

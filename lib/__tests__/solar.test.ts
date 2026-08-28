@@ -52,29 +52,45 @@ describe("solar calculations", () => {
  * and delegates the month name to `Intl`, the same way PR #61 fixed the
  * heatmap's month axis in this very file's sibling component.
  *
- * The expected strings below are the real `Intl` output, captured by running it
- * — not guessed. Two of them are worth reading twice:
+ * WHAT IS PINNED HERE, AND WHAT DELIBERATELY IS NOT.
  *
- * - **lt is "08", not "rugp".** Lithuanian's CLDR *standalone* abbreviated month
- *   is numeric. That is not a bug and it is not ours to override: the heatmap's
- *   own X axis (PR #61, same `{ month: "short" }` call) already prints 01…12 in
- *   Lithuanian, so the tooltip now agrees with the axis above it instead of
- *   printing Spanish.
- * - **es changed too, from "Ago" to "ago".** The old array capitalised; CLDR
- *   does not. Spanish abbreviated months are lowercase.
+ * An earlier version of this file pinned six exact `Intl` outputs. It went
+ * against a rule this repo already states, with the reason, in
+ * lib/content-fingerprint.ts: strings from `Intl` come from the runtime's ICU
+ * data, so depending on them "would make the fingerprint depend on the Node
+ * build and fail in CI while passing locally". The mismatch is live — Node 24
+ * locally against Node 22 in CI — and August happens to be stable across those
+ * two CLDR versions, so the pin passed while being the wrong kind of assertion.
+ *
+ * So the month name is compared against `Intl` computed the same way rather
+ * than transcribed, and what is asserted outright are the PROPERTIES that made
+ * this a bug: not Spanish, right script, no trailing period.
+ *
+ * The one literal that IS pinned is Lithuanian, because it is ours and not
+ * ICU's. Lithuanian CLDR returns "08" for an abbreviated month, so `Intl` alone
+ * renders "27 08" — not a Lithuanian date and not a month name. This repo
+ * settled that in lib/city-copy.ts (LT_MONTH_LABELS, with its own test) and
+ * `shortMonthName` is now the single place both callers ask.
  */
 describe("fmtDate localisation", () => {
   const aug27 = new Date(Date.UTC(2026, 7, 27));
 
-  it.each([
-    ["es", "27 ago"],
-    ["en", "27 Aug"],
-    ["fr", "27 août"],
-    ["de", "27 Aug"],
-    ["ru", "27 авг"],
-    ["lt", "27 08"],
-  ])("formats in %s as %s", (locale, expected) => {
-    expect(fmtDate(aug27, locale)).toBe(expected);
+  it.each(["es", "en", "fr", "de", "ru"])(
+    "gives %s the month name its own ICU data has, not a transcription",
+    (locale) => {
+      const expected = new Intl.DateTimeFormat(locale, { month: "short" })
+        .format(new Date(2026, 7, 15))
+        .replace(/\.$/, "");
+      expect(fmtDate(aug27, locale)).toBe(`27 ${expected}`);
+    },
+  );
+
+  it("writes a Lithuanian month name, not the number ICU would give", () => {
+    // `Intl` alone returns "08" here. "27 08" is not a date in Lithuanian, and
+    // lib/city-copy.ts already carries the standard abbreviations for exactly
+    // this reason — see LT_MONTH_LABELS and its test in city-copy.test.ts.
+    expect(fmtDate(aug27, "lt")).toBe("27 rugp");
+    expect(fmtDate(aug27, "lt")).not.toMatch(/\d\s+\d/);
   });
 
   it("never leaks the old Spanish abbreviation into another locale", () => {

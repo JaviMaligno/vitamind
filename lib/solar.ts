@@ -1,5 +1,6 @@
 import type { SolarPoint, VitDWindow } from "./types";
 import { zoneOffsetAtLocalHour } from "./timezone";
+import { shortMonthName } from "./city-copy";
 
 const RAD = Math.PI / 180;
 
@@ -293,10 +294,13 @@ export function fmtDayLength(min: number): string {
  * "08-27" in Lithuanian, and the heatmap tooltip it feeds is a fixed 144px box.
  * The trailing `.` some locales append (ru "авг.") is stripped for the same
  * reason it is stripped there.
+ *
+ * The month comes from `shortMonthName` in lib/city-copy.ts rather than from
+ * `Intl` here, because `Intl`'s `{ month: "short" }` returns "08" in Lithuanian
+ * and this repo settled that case already — see the comment on LT_MONTH_LABELS.
+ * The UTC reading the header promises is preserved by passing `getUTCMonth()`:
+ * the helper takes an index, so no timezone can enter through it.
  */
 export function fmtDate(d: Date, locale: string): string {
-  const month = new Intl.DateTimeFormat(locale, { month: "short", timeZone: "UTC" })
-    .format(d)
-    .replace(/\.$/, "");
-  return `${d.getUTCDate()} ${month}`;
+  return `${d.getUTCDate()} ${shortMonthName(locale, d.getUTCMonth())}`;
 }
