@@ -3,6 +3,7 @@
 import { useRef, useState, useEffect, useMemo, useCallback } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { vitDHrs, fmtDate, dateFromDoy } from "@/lib/solar";
+import { shortMonthName } from "@/lib/city-copy";
 import { synthesisThresholdElevation } from "@/lib/uv-model";
 import { heatColor } from "@/lib/year-strip";
 
@@ -68,11 +69,13 @@ export default function GlobalHeatmap({ selectedLat, selectedDoy, onSelect }: Pr
     // Month labels come from the locale, not from a hardcoded Spanish list. The
     // English site shipped "Ene/Feb/Mar" on its most screenshot-worthy chart
     // because this array predated i18n and nothing typed it back to a locale.
-    const mN = mD.map((d) =>
-      new Intl.DateTimeFormat(locale, { month: "short", timeZone: "UTC" })
-        .format(new Date(Date.UTC(2026, 0, d)))
-        .replace(/\.$/, ""),
-    );
+    //
+    // Through `shortMonthName` and not `Intl` directly, because `Intl` returns
+    // "01".."12" for Lithuanian: this axis printed numbers where every other
+    // locale printed letters. lib/city-copy.ts already owned that exception for
+    // the year-profile chart (LT_MONTH_LABELS, with its own test) and now owns
+    // it for the three callers that need it.
+    const mN = mD.map((_d, i) => shortMonthName(locale, i));
     ctx.strokeStyle = "rgba(255,255,255,0.06)"; ctx.lineWidth = 0.5;
     mD.forEach((d) => { ctx.beginPath(); ctx.moveTo(PAD.l + ((d - 1) / 365) * plotW, PAD.t); ctx.lineTo(PAD.l + ((d - 1) / 365) * plotW, PAD.t + plotH); ctx.stroke(); });
     [-60, -40, -20, 0, 20, 40, 60].forEach((la) => {
