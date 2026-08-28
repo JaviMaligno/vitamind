@@ -91,3 +91,70 @@ describe("crossLocaleRedirect on the sunrise family", () => {
     expect(crossLocaleRedirect("/fr/sonnenaufgang/singapur/notamonth")).toBeNull();
   });
 });
+
+/**
+ * THE SUN-TIME FAMILY, AND THE BUG THAT PUT IT HERE.
+ *
+ * Shipped 2026-08-28 and broken in production within the hour, for a reason that
+ * only shows up in a browser: `localePrefix` is "as-needed" with
+ * `localeDetection` on, so the middleware sends a visitor whose `Accept-Language`
+ * is not Spanish from `/cuanto-sol-vitamina-d` to `/en/cuanto-sol-vitamina-d` —
+ * and that URL 404s by design, because each folder serves exactly one locale.
+ *
+ * Measured against production:
+ *
+ *   /vitamina-d/madrid      AL=en → 307 → /en/vitamina-d/madrid → /en/vitamin-d/madrid → 200
+ *   /cuanto-sol-vitamina-d  AL=en → 307 → /en/cuanto-sol-vitamina-d → 404
+ *
+ * The city family survives that hop because THIS FILE catches it. The new family
+ * did not exist here, so anyone sharing the Spanish URL with a non-Spanish
+ * browser — most of the world — landed on a 404.
+ *
+ * The `es` case hides it completely: with no locale segment and a Spanish
+ * browser there is no redirect at all, which is why `curl` said 200 and the
+ * browser said "Page not found".
+ */
+describe("crossLocaleRedirect on the sun-time family", () => {
+  it("recovers a mother page whose locale segment disagrees with its prefix", () => {
+    // Exactly what localeDetection produces for a non-Spanish browser.
+    expect(crossLocaleRedirect("/en/cuanto-sol-vitamina-d")).toBe("/en/how-long-in-sun-vitamin-d");
+    expect(crossLocaleRedirect("/de/cuanto-sol-vitamina-d")).toBe("/de/wie-lange-sonne-vitamin-d");
+    expect(crossLocaleRedirect("/lt/how-long-in-sun-vitamin-d")).toBe("/lt/kiek-saules-vitaminui-d");
+  });
+
+  it("recovers a band page, translating prefix and band together", () => {
+    expect(crossLocaleRedirect("/en/cuanto-sol-vitamina-d/piel-clara")).toBe(
+      "/en/how-long-in-sun-vitamin-d/fair-skin",
+    );
+    expect(crossLocaleRedirect("/fr/how-long-in-sun-vitamin-d/dark-skin")).toBe(
+      "/fr/combien-de-soleil-vitamine-d/peau-foncee",
+    );
+    // The three slugs the native review moved, since they are the ones a stale
+    // link is most likely to carry.
+    expect(crossLocaleRedirect("/ru/wie-lange-sonne-vitamin-d/mittlerer-hautton")).toBe(
+      "/ru/skolko-solnca-vitamin-d/sredniy-ton-kozhi",
+    );
+  });
+
+  it("recovers into the default locale, which carries no prefix", () => {
+    expect(crossLocaleRedirect("/es/how-long-in-sun-vitamin-d")).toBe("/cuanto-sol-vitamina-d");
+    expect(crossLocaleRedirect("/es/how-long-in-sun-vitamin-d/dark-skin")).toBe(
+      "/cuanto-sol-vitamina-d/piel-oscura",
+    );
+  });
+
+  it("leaves a correct sun-time URL alone", () => {
+    expect(crossLocaleRedirect("/cuanto-sol-vitamina-d")).toBeNull();
+    expect(crossLocaleRedirect("/cuanto-sol-vitamina-d/piel-media")).toBeNull();
+    expect(crossLocaleRedirect("/en/how-long-in-sun-vitamin-d/fair-skin")).toBeNull();
+    expect(crossLocaleRedirect("/de/wie-lange-sonne-vitamin-d/mittlerer-hautton")).toBeNull();
+  });
+
+  it("refuses to guess a band it cannot resolve, so the 404 stands", () => {
+    // A prefix it knows and a band nobody uses: redirecting to the mother would
+    // answer a question the visitor did not ask.
+    expect(crossLocaleRedirect("/en/cuanto-sol-vitamina-d/piel-verde")).toBeNull();
+    // Three segments is not a shape this family has.
+    expect(crossLocaleRedirect("/en/cuanto-sol-vitamina-d/piel-clara/extra")).toBeNull();
+  });
+});

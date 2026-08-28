@@ -2,6 +2,9 @@ import { routing } from "./routing";
 import { getPathname } from "./navigation";
 import { CITY_PREFIX, cityIdFromSlug, cityPathname, indexPathname } from "@/lib/city-routes";
 import { SUN_PREFIX, monthIndexFromSlug, sunPathname } from "@/lib/sun-routes";
+import {
+  SUNTIME_PREFIX, bandFromSlug, suntimePathname, suntimeBandPathname, type Band,
+} from "@/lib/suntime-routes";
 
 type Locale = (typeof routing.locales)[number];
 
@@ -17,7 +20,11 @@ type Locale = (typeof routing.locales)[number];
  * belongs to exactly one city) and states its target locale, so each can be redirected
  * to the page it was always meant to reach.
  *
- * Returns null whenever the path is already correct, is not a city or sunrise URL, or
+ * Three families are covered: city, sunrise and — since 2026-08-28 — sun-time. The
+ * last one is NOT legacy debris like the other two: it is what keeps the
+ * unprefixed Spanish URL shareable at all. See suntimeTarget below.
+ *
+ * Returns null whenever the path is already correct, belongs to none of the three, or
  * cannot be resolved with certainty. Guessing would replace an honest 404 with a page
  * about the wrong city, which is the worse failure.
  */
@@ -41,7 +48,10 @@ export function crossLocaleRedirect(pathname: string): string | null {
   if (!hasLocaleSegment && looksLikeLocale(segments[0])) return null;
 
   const [prefix, ...tail] = rest;
-  const target = cityTarget(locale, prefix, tail) ?? sunTarget(locale, prefix, tail);
+  const target =
+    cityTarget(locale, prefix, tail) ??
+    sunTarget(locale, prefix, tail) ??
+    suntimeTarget(locale, prefix, tail);
   if (!target) return null;
 
   const absolute = getPathname({ href: target, locale });
@@ -97,6 +107,51 @@ function sunTarget(locale: Locale, prefix: string, tail: string[]): string | nul
   if (monthIndex === null) return null;
 
   return sunPathname(locale, baseSlug(cityId), monthIndex);
+}
+
+/**
+ * The sun-time family, added 2026-08-28 after it broke in production the hour it
+ * shipped.
+ *
+ * `localePrefix` is "as-needed" with `localeDetection` on, so a visitor whose
+ * `Accept-Language` is not Spanish asking for `/cuanto-sol-vitamina-d` is sent
+ * by the middleware to `/en/cuanto-sol-vitamina-d` — and that 404s by design,
+ * because each of the twelve static folders serves exactly one locale. Measured
+ * against production:
+ *
+ *   /vitamina-d/madrid      AL=en → 307 → /en/vitamina-d/madrid → /en/vitamin-d/madrid → 200
+ *   /cuanto-sol-vitamina-d  AL=en → 307 → /en/cuanto-sol-vitamina-d → 404
+ *
+ * The city family survives that hop only because this file catches it. So this
+ * is not a nicety for stale links: it is what makes the unprefixed Spanish URL
+ * shareable at all. `curl` reported 200 and hid the whole thing, because with no
+ * `Accept-Language` there is no redirect to follow.
+ *
+ * Unlike a city slug, a band slug is NOT unique across locales in principle, so
+ * each candidate locale is tried and the first that resolves wins. In practice
+ * the eighteen are distinct; the loop is what keeps that from being load-bearing.
+ */
+function suntimeTarget(locale: Locale, prefix: string, tail: string[]): string | null {
+  if (!isKnownPrefix(prefix, SUNTIME_PREFIX)) return null;
+  if (tail.length > 1) return null;
+
+  // The mother, e.g. "/en/cuanto-sol-vitamina-d" → "/en/how-long-in-sun-vitamin-d".
+  if (tail.length === 0) return suntimePathname(locale);
+
+  const band = findBand(tail[0]);
+  // No guess. Falling back to the mother would answer a question the visitor did
+  // not ask, which is the failure this module's header refuses for cities too.
+  if (!band) return null;
+  return suntimeBandPathname(locale, band);
+}
+
+/** The band this slug names, in any locale. */
+function findBand(slug: string): Band | null {
+  for (const candidate of routing.locales) {
+    const band = bandFromSlug(candidate, slug);
+    if (band) return band;
+  }
+  return null;
 }
 
 /** "builtin:nueva-york" → "nueva-york". Local copy to keep this module's imports narrow. */
