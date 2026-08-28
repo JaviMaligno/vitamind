@@ -276,9 +276,27 @@ export function fmtDayLength(min: number): string {
   return `${h} h ${String(m).padStart(2, "0")} min`;
 }
 
-const MONTH_NAMES = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
-
-/** Reads in UTC, to match how `dateFromDoy` builds its dates. */
-export function fmtDate(d: Date): string {
-  return `${d.getUTCDate()} ${MONTH_NAMES[d.getUTCMonth()]}`;
+/**
+ * "27 ago" / "27 Aug" — day and abbreviated month in the caller's locale.
+ *
+ * Reads in UTC, to match how `dateFromDoy` builds its dates.
+ *
+ * `locale` is required rather than defaulting to `"es"`, because a default is
+ * how this function shipped Spanish month names to all six locales in the first
+ * place: the two call sites both have the locale to hand, and a required
+ * parameter makes `tsc` the thing that finds a third one.
+ *
+ * The month is formatted alone and composed by hand, rather than asking `Intl`
+ * for `{ day, month }` together. That is the shape PR #61 used for the heatmap's
+ * month axis in `GlobalHeatmap.tsx`, and it keeps one string shape across the
+ * six locales — `Intl`'s combined pattern would give "Aug 27" in English and
+ * "08-27" in Lithuanian, and the heatmap tooltip it feeds is a fixed 144px box.
+ * The trailing `.` some locales append (ru "авг.") is stripped for the same
+ * reason it is stripped there.
+ */
+export function fmtDate(d: Date, locale: string): string {
+  const month = new Intl.DateTimeFormat(locale, { month: "short", timeZone: "UTC" })
+    .format(d)
+    .replace(/\.$/, "");
+  return `${d.getUTCDate()} ${month}`;
 }
