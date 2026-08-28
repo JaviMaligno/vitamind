@@ -133,13 +133,24 @@ describe("the markup is Article, and none of the three dead types", () => {
    */
   const source = () => read(join(SHARED_DIR, "SuntimePage.tsx"));
 
+  /**
+   * Comments stripped first, because the assert is about what the page EMITS.
+   * The file names all three dead types in a comment explaining why it uses
+   * none of them, and that explanation is worth more than a grep that trips
+   * over it.
+   */
+  const emitted = () =>
+    source()
+      .replace(/\/\*[\s\S]*?\*\//g, "")
+      .replace(/^\s*\/\/.*$/gm, "");
+
   it("emits an Article node", () => {
-    expect(source()).toMatch(/"@type":\s*"Article"|@type: "Article"|'Article'/);
+    expect(emitted()).toMatch(/"@type":\s*"Article"/);
   });
 
   it("emits none of FAQPage, HowTo or MedicalWebPage", () => {
     for (const dead of ["FAQPage", "HowTo", "MedicalWebPage"]) {
-      expect(source(), `${dead} is a dead rich-result type`).not.toContain(dead);
+      expect(emitted(), `${dead} is a dead rich-result type`).not.toContain(dead);
     }
   });
 
@@ -161,7 +172,9 @@ describe("the answer is in the visible HTML, not only in the markup", () => {
   it("prints the range through the copy, with the figures interpolated", () => {
     // `answer` is the sentence that carries the two numbers, and it must reach
     // the body — not a meta tag, not a JSON-LD field.
-    expect(source()).toMatch(/t\(\s*["'`][\w.]*answer/);
+    // The key is built as `${page}.answer`, so the match has to survive the
+    // template interpolation that picks mother or band.
+    expect(source()).toMatch(/t\(\s*[`"'][^)]*answer/);
     expect(source()).toMatch(/min:/);
     expect(source()).toMatch(/max:/);
   });
