@@ -122,6 +122,24 @@ export interface ContentRevision {
  * future change to the JSON-LD these pages carry is outside the guard the same
  * way. Adding it would move `figures` for BOTH families at once and force a date
  * decision on 3318 URLs in the same commit, which is why it is not done here.
+ *
+ * 2026-08-28 — `figures` RE-RECORDED IN ALL THREE FAMILIES, NO DATE MOVED.
+ * `fmtDate` in `lib/solar.ts` stopped formatting month names from a hardcoded
+ * Spanish array and now takes a locale. `lib/solar.ts` is in all three module
+ * lists, so all three `figures` hashes moved together; nothing else did.
+ *
+ * None of the three families renders `fmtDate`. Grepped across the repo, it has
+ * exactly two call sites: the `GlobalHeatmap` tooltip and the `/explore` date
+ * label — and `GlobalHeatmap` reaches the page only through `VisualizationZone`,
+ * which `/explore` alone imports. So the 2880 month pages, the 438 city pages
+ * and the 24 sun-time pages do not print a single byte that this change touches.
+ * `/explore` is an app page and keeps a build `lastmod` regardless.
+ *
+ * That is the file's own rule applied, not an exception to it: `date` answers
+ * "when did the CONTENT change", and re-recording a hash because a *shared
+ * module* moved is not a content change for pages that do not call the moved
+ * function. Moving it would announce 3342 URLs as changed for a change none of
+ * them render, on a read meter that closed its last window at 95%.
  */
 export const SUN_MONTH_REVISION: ContentRevision = {
   date: "2026-08-26",
@@ -133,7 +151,7 @@ export const SUN_MONTH_REVISION: ContentRevision = {
     "copy.ru": "7d0427fc5082438b",
     "copy.lt": "2fa9119bd4283f7d",
     cities: "35aebb84c49f350e",
-    figures: "59a94b77e7c0efa1",
+    figures: "905e7c92287f25c8",
     constants: "a3b447afa17fa07c",
   },
 };
@@ -179,7 +197,7 @@ export const CITY_PAGE_REVISION: ContentRevision = {
     "copy.ru": "39c852cd4713ae68",
     "copy.lt": "ff610006e37f9b63",
     cities: "c66cfdadbf8dabad",
-    figures: "41ccb7d4c32d4255",
+    figures: "58f2d26c0312c6c5",
     constants: "09032456232a5db5",
   },
 };
@@ -214,7 +232,7 @@ export const SUNTIME_PAGE_REVISION: ContentRevision = {
     "copy.de": "a289462081a87c96",
     "copy.ru": "f14b45c7849f2daa",
     "copy.lt": "e61ab0b4db5bf4f9",
-    figures: "cd2575ac7a87bf70",
+    figures: "9bbaaf909851e513",
     reference: "4303d27a87c4a0dd",
     constants: "c9d5d03dc2b9c7b9",
   },
