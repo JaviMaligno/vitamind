@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { solarElev, vitDHrs, dayOfYear, getCurve, getWindow } from "../solar";
+import { solarElev, vitDHrs, dayOfYear, getCurve, getWindow, fmtDate } from "../solar";
 
 describe("solar calculations", () => {
   it("summer solstice at equator has high elevation", () => {
@@ -42,5 +42,61 @@ describe("solar calculations", () => {
     expect(dayOfYear(jan1)).toBe(1);
     const dec31 = new Date(Date.UTC(2026, 11, 31));
     expect(dayOfYear(dec31)).toBe(365);
+  });
+});
+
+/**
+ * `fmtDate` used to format every locale with a hardcoded Spanish array
+ * (`["Ene","Feb",…]`), so the English site printed "27 Ago" and the Russian and
+ * Lithuanian ones printed the wrong alphabet outright. It now takes the locale
+ * and delegates the month name to `Intl`, the same way PR #61 fixed the
+ * heatmap's month axis in this very file's sibling component.
+ *
+ * The expected strings below are the real `Intl` output, captured by running it
+ * — not guessed. Two of them are worth reading twice:
+ *
+ * - **lt is "08", not "rugp".** Lithuanian's CLDR *standalone* abbreviated month
+ *   is numeric. That is not a bug and it is not ours to override: the heatmap's
+ *   own X axis (PR #61, same `{ month: "short" }` call) already prints 01…12 in
+ *   Lithuanian, so the tooltip now agrees with the axis above it instead of
+ *   printing Spanish.
+ * - **es changed too, from "Ago" to "ago".** The old array capitalised; CLDR
+ *   does not. Spanish abbreviated months are lowercase.
+ */
+describe("fmtDate localisation", () => {
+  const aug27 = new Date(Date.UTC(2026, 7, 27));
+
+  it.each([
+    ["es", "27 ago"],
+    ["en", "27 Aug"],
+    ["fr", "27 août"],
+    ["de", "27 Aug"],
+    ["ru", "27 авг"],
+    ["lt", "27 08"],
+  ])("formats in %s as %s", (locale, expected) => {
+    expect(fmtDate(aug27, locale)).toBe(expected);
+  });
+
+  it("never leaks the old Spanish abbreviation into another locale", () => {
+    for (const locale of ["en", "fr", "de", "ru", "lt"]) {
+      expect(fmtDate(aug27, locale)).not.toContain("Ago");
+    }
+  });
+
+  it("writes Russian in Cyrillic and strips the trailing period", () => {
+    const ru = fmtDate(aug27, "ru");
+    expect(ru).toMatch(/\p{Script=Cyrillic}/u);
+    expect(ru.endsWith(".")).toBe(false);
+  });
+
+  /**
+   * Reads in UTC, matching the header on `fmtDate` and how `dateFromDoy` builds
+   * its dates. 23:00Z on the 27th is the 28th in Madrid, so a local-time read
+   * would print the wrong day for every European visitor after 22:00.
+   */
+  it("reads the date in UTC, not local time", () => {
+    const lateOn27th = new Date(Date.UTC(2026, 7, 27, 23, 0, 0));
+    expect(fmtDate(lateOn27th, "en")).toBe("27 Aug");
+    expect(fmtDate(lateOn27th, "es")).toBe("27 ago");
   });
 });
