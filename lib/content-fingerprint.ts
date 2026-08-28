@@ -100,6 +100,7 @@ import { baseSlug, localizedCityName } from "@/lib/city-routes";
 import { SUNRISE_CITIES } from "@/lib/sun-routes";
 import { DOY_REFERENCE_YEAR } from "@/lib/solar";
 import { isTreated } from "@/lib/phase2-cities";
+import { REFERENCE, SEASON_MONTHS } from "@/lib/suntime-content";
 import type { City } from "@/lib/types";
 
 /**
@@ -121,10 +122,21 @@ export const SUN_MONTH_NAMESPACES = [
  */
 export const CITY_PAGE_NAMESPACES = ["cityPage", "sunTimes"] as const;
 
+/**
+ * Message namespaces the four sun-time pages read
+ * (`app/[locale]/_suntime/SuntimePage.tsx`). Exactly one: that component passes
+ * nothing to a child that translates on its own, so the whole family's copy is
+ * `suntimePage`.
+ */
+export const SUNTIME_NAMESPACES = ["suntimePage"] as const;
+
 /** The route file each namespace list mirrors, for the guard test's grep. */
-export const NAMESPACE_SOURCES: Record<"sunMonth" | "cityPage", string> = {
+export const NAMESPACE_SOURCES: Record<"sunMonth" | "cityPage" | "suntime", string> = {
   sunMonth: "app/[locale]/[cityPrefix]/[city]/[month]/page.tsx",
   cityPage: "app/[locale]/[cityPrefix]/[city]/page.tsx",
+  // The twelve route folders are thin; the component they all call is where the
+  // namespace is actually read.
+  suntime: "app/[locale]/_suntime/SuntimePage.tsx",
 };
 
 /**
@@ -255,6 +267,23 @@ const CITY_PAGE_MODULES = [
 ] as const;
 
 /**
+ * The modules whose source decides every figure the sun-time pages print.
+ *
+ * `lib/suntime-routes.ts` is in the list and it is not obvious why: it holds
+ * BAND_TYPES, which is what maps each page to the two Fitzpatrick types whose
+ * minutes it quotes. Move a type from one band to another and three pages
+ * change their numbers without a single message string moving.
+ */
+const SUNTIME_MODULES = [
+  "lib/solar.ts",
+  "lib/uv-model.ts",
+  "lib/vitd.ts",
+  "lib/suntime-content.ts",
+  "lib/suntime-routes.ts",
+  "lib/city-copy.ts",
+] as const;
+
+/**
  * Source of each module, keyed by path so a RENAME shows up too. Throws rather
  * than skipping a missing file: a module that has moved and is silently dropped
  * from the hash is a hole in the guard, and a red test is the cheap version of
@@ -293,6 +322,26 @@ export function sunMonthParts(): Record<string, string> {
       // twelve pages ×6 locales without touching a single message string.
       phase2Treated: SUNRISE_CITIES.filter((base) => isTreated(base)),
     }),
+  };
+}
+
+/**
+ * The sun-time family's parts map: 24 URLs, one mother and three bands per
+ * locale.
+ *
+ * No `cities` part, because these pages have no city — that absence IS the
+ * point of the family (spec §1: the queries with demand carry no city). What
+ * takes its place is `reference`: the latitude, exposed area, age and target
+ * the pages quote. Those four are printed on every page as declared
+ * assumptions, so changing one changes what all 24 say, and nothing else in
+ * this map would notice.
+ */
+export function suntimeParts(): Record<string, string> {
+  return {
+    ...copyParts(SUNTIME_NAMESPACES),
+    figures: hash(moduleSources(SUNTIME_MODULES)),
+    reference: hash(REFERENCE),
+    constants: hash({ doyReferenceYear: DOY_REFERENCE_YEAR, seasonMonths: SEASON_MONTHS }),
   };
 }
 

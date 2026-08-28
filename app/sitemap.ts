@@ -8,7 +8,12 @@ import { baseSlug, cityUrl, buildCityAlternates } from "@/lib/city-routes";
 import {
   SUNRISE_CITIES, sunUrl, buildSunAlternates, sunCityUrl, buildSunCityAlternates,
 } from "@/lib/sun-routes";
-import { SUN_MONTH_REVISION, CITY_PAGE_REVISION } from "@/lib/content-revision";
+import {
+  BANDS, buildSuntimeAlternates, buildSuntimeBandAlternates, suntimeUrl, suntimeBandUrl,
+} from "@/lib/suntime-routes";
+import {
+  SUN_MONTH_REVISION, CITY_PAGE_REVISION, SUNTIME_PAGE_REVISION,
+} from "@/lib/content-revision";
 
 const PAGES = [
   { path: "/", changeFrequency: "weekly" as const, priority: 1 },
@@ -207,5 +212,31 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ).flat(),
   );
 
-  return [...staticEntries, ...cityEntries, ...sunHubEntries, ...sunEntries];
+  // The 24 "how long in the sun" pages: one mother and three bands × 6 locales.
+  // INDEXABLE, unlike the on-demand city pages, and that is the point of the
+  // family — they answer the query shape that has demand and no page (spec §1).
+  // Their own declared revision, not CITY_PAGE_REVISION: the two families move
+  // on different events, and sharing a constant would re-date 462 URLs for a
+  // change to 24. `monthly` rather than `yearly` because the copy is new and
+  // expected to move while it is being tuned.
+  const suntimeEntries = routing.locales.flatMap((locale) => [
+    {
+      url: suntimeUrl(locale),
+      lastModified: SUNTIME_PAGE_REVISION.date,
+      changeFrequency: "monthly" as const,
+      priority: 0.8,
+      alternates: { languages: buildSuntimeAlternates(locale).languages },
+    },
+    ...BANDS.map((band) => ({
+      url: suntimeBandUrl(locale, band),
+      lastModified: SUNTIME_PAGE_REVISION.date,
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+      alternates: { languages: buildSuntimeBandAlternates(locale, band).languages },
+    })),
+  ]);
+
+  return [
+    ...staticEntries, ...cityEntries, ...sunHubEntries, ...sunEntries, ...suntimeEntries,
+  ];
 }

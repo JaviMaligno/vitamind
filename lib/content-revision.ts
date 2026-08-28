@@ -183,3 +183,33 @@ export const CITY_PAGE_REVISION: ContentRevision = {
     constants: "09032456232a5db5",
   },
 };
+
+/**
+ * The 24 sun-time pages: `/{suntimePrefix}` and `/{suntimePrefix}/{band}`,
+ * × 6 locales.
+ *
+ * A third family rather than a reuse of `CITY_PAGE_REVISION`, and the reason is
+ * that the two move on different events. The city pages re-date when a city's
+ * shape or the sunrise copy changes; these re-date when the reference
+ * assumptions, the band mapping or the model change. Sharing a constant would
+ * mean every edit to either family announcing the other as changed — 462 URLs
+ * re-crawled for a change to 24, on a read meter that closed its last window at
+ * 95%.
+ *
+ * Born on 2026-08-28, which for once is genuinely the date the content first
+ * existed rather than a date reconstructed from `git log`.
+ */
+export const SUNTIME_PAGE_REVISION: ContentRevision = {
+  date: "2026-08-28",
+  parts: {
+    "copy.es": "bf6f40fd1d24c0b2",
+    "copy.en": "d5f4b1289d428a07",
+    "copy.fr": "567bd4f9f1f82632",
+    "copy.de": "6143d4b29e208799",
+    "copy.ru": "03ef4e4b1b350c84",
+    "copy.lt": "e61ab0b4db5bf4f9",
+    figures: "6f6fcf4339d65305",
+    reference: "4303d27a87c4a0dd",
+    constants: "c9d5d03dc2b9c7b9",
+  },
+};

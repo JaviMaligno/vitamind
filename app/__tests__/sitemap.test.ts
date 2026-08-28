@@ -3,21 +3,26 @@ import { readdirSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import sitemap from "@/app/sitemap";
 import { SITE_URL } from "@/lib/site";
+import { routing } from "@/i18n/routing";
 import { SUNRISE_CITIES } from "@/lib/sun-routes";
 import { CITY_SLUGS } from "@/lib/city-slugs";
-import { SUN_MONTH_REVISION, CITY_PAGE_REVISION } from "@/lib/content-revision";
+import { BANDS, SUNTIME_PREFIX, suntimeUrl, suntimeBandUrl } from "@/lib/suntime-routes";
+import {
+  SUN_MONTH_REVISION, CITY_PAGE_REVISION, SUNTIME_PAGE_REVISION,
+} from "@/lib/content-revision";
 
 describe("sitemap", () => {
   const entries = sitemap();
 
   it("emits the static, city, sunrise-hub and sunrise-month URLs", () => {
-    // 9 pages ×6 + 73 cities ×6 + every sunrise city ×(1 hub + 12 months) ×6.
+    // 9 pages ×6 + 73 cities ×6 + every sunrise city ×(1 hub + 12 months) ×6
+    // + the sun-time family: (1 mother + 3 bands) ×6.
     //
     // The sunrise term is derived from SUNRISE_CITIES rather than hardcoded, so adding
     // a wave does not require editing this number. What it still pins is the shape —
     // a hub plus twelve months in six locales for each configured city — which is what
     // would break if a locale, a month or the hub were ever dropped from the generator.
-    expect(entries).toHaveLength(54 + 438 + SUNRISE_CITIES.length * 13 * 6);
+    expect(entries).toHaveLength(54 + 438 + SUNRISE_CITIES.length * 13 * 6 + 24);
   });
 
   it("emits the city hub at the sunrise prefix, in every locale", () => {
@@ -97,6 +102,11 @@ describe("sitemap", () => {
       // Dynamic segments ([cityPrefix]) expand into the city and sunrise entries
       // the tests above already cover; only fixed paths belong in the static list.
       .filter((e) => e.isDirectory() && !e.name.startsWith("["))
+      // The sun-time mother folders look like app routes and are not: each one
+      // serves ONE locale at its own localized URL, so `/how-long-in-sun-vitamin-d`
+      // (no locale segment) is a 404 by design and must not be in the sitemap.
+      // The block below asserts all 24 of theirs positively instead.
+      .filter((e) => !Object.values(SUNTIME_PREFIX).includes(e.name))
       .filter((e) => existsSync(join(dir, e.name, "page.tsx")))
       .map((e) => `/${e.name}`);
 
@@ -112,6 +122,32 @@ describe("sitemap", () => {
       (p) => !entries.some((e) => e.url === `${SITE_URL}${p}`),
     );
     expect(missing).toEqual([]);
+  });
+
+  /**
+   * The sun-time family, asserted positively because the filesystem walk above
+   * cannot see it: twelve folders produce 24 LOCALIZED URLs, not twelve
+   * locale-agnostic ones.
+   *
+   * These are indexable, which is what separates them from the ~1.4 million
+   * on-demand city URLs that are deliberately absent from this file. They exist
+   * because the queries with demand carry no city and all 438 city pages do —
+   * measured at 39 impressions and 0 clicks in three months.
+   */
+  it("emits all 24 sun-time URLs, indexable and localized", () => {
+    const urls = new Set(entries.map((e) => e.url));
+    const wanted = routing.locales.flatMap((locale) => [
+      suntimeUrl(locale),
+      ...BANDS.map((band) => suntimeBandUrl(locale, band)),
+    ]);
+    expect(wanted).toHaveLength(24);
+    for (const url of wanted) expect(urls.has(url), `${url} missing`).toBe(true);
+
+    const mother = entries.find((e) => e.url === suntimeUrl("es"));
+    expect(mother?.lastModified).toBe(SUNTIME_PAGE_REVISION.date);
+    expect(mother?.alternates?.languages?.["x-default"]).toBe(suntimeUrl("es"));
+    // Every locale's alternate is that locale's own slug, never a shared one.
+    expect(mother?.alternates?.languages?.en).toBe(suntimeUrl("en"));
   });
 
   /**
@@ -179,10 +215,11 @@ describe("sitemap lastmod policy", () => {
     const built = at(RENDER_DAY);
     const moving = built.filter((e) => e.lastModified === RENDER_DAY);
 
-    // 54 app pages + the 240 today hubs. Everything else — 3318 URLs — carries a
-    // date that a deploy cannot move.
+    // 54 app pages + the 240 today hubs. Everything else — 3342 URLs — carries a
+    // date that a deploy cannot move. The sun-time 24 joined the frozen side:
+    // they are a pure function of latitude, the reference year and the model.
     expect(moving).toHaveLength(54 + hubCount);
-    expect(built.length - moving.length).toBe(438 + monthCount);
+    expect(built.length - moving.length).toBe(438 + monthCount + 24);
   });
 
   it("gives each family the date that family's content actually has", () => {

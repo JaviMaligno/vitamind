@@ -2,9 +2,12 @@ import { describe, it, expect } from "vitest";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
-import { SUN_MONTH_REVISION, CITY_PAGE_REVISION, type ContentRevision } from "@/lib/content-revision";
 import {
-  sunMonthParts, cityPageParts, SUN_MONTH_NAMESPACES, CITY_PAGE_NAMESPACES, NAMESPACE_SOURCES,
+  SUN_MONTH_REVISION, CITY_PAGE_REVISION, SUNTIME_PAGE_REVISION, type ContentRevision,
+} from "@/lib/content-revision";
+import {
+  sunMonthParts, cityPageParts, suntimeParts,
+  SUN_MONTH_NAMESPACES, CITY_PAGE_NAMESPACES, SUNTIME_NAMESPACES, NAMESPACE_SOURCES,
 } from "@/lib/content-fingerprint";
 
 /**
@@ -114,6 +117,10 @@ describe("content revision guard", () => {
     check("The city pages' content", 438, "CITY_PAGE_REVISION", CITY_PAGE_REVISION, cityPageParts());
   });
 
+  it("the sun-time pages' declared revision still matches what they render", () => {
+    check("The sun-time pages' content", 24, "SUNTIME_PAGE_REVISION", SUNTIME_PAGE_REVISION, suntimeParts());
+  });
+
   /**
    * A `lastmod` in the future is the one malformed value an engine may reject
    * outright, and it is what a hand-typed date gets wrong (a typo'd month, or
@@ -123,6 +130,7 @@ describe("content revision guard", () => {
   it.each([
     ["SUN_MONTH_REVISION", SUN_MONTH_REVISION],
     ["CITY_PAGE_REVISION", CITY_PAGE_REVISION],
+    ["SUNTIME_PAGE_REVISION", SUNTIME_PAGE_REVISION],
   ])("%s declares a plain past-or-present UTC date", (_name, revision) => {
     expect(revision.date).toMatch(/^\d{4}-\d{2}-\d{2}$/);
     expect(revision.date <= TODAY_UTC).toBe(true);
@@ -143,6 +151,7 @@ describe("content revision guard", () => {
   it.each([
     ["sunMonth" as const, SUN_MONTH_NAMESPACES],
     ["cityPage" as const, CITY_PAGE_NAMESPACES],
+    ["suntime" as const, SUNTIME_NAMESPACES],
   ])("the %s namespace list mirrors its route file", (family, declared) => {
     const source = readFileSync(join(process.cwd(), NAMESPACE_SOURCES[family]), "utf8");
     const found = [...source.matchAll(/namespace:\s*"([^"]+)"/g)].map((m) => m[1]);
