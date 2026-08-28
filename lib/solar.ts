@@ -1,5 +1,6 @@
 import type { SolarPoint, VitDWindow } from "./types";
 import { zoneOffsetAtLocalHour } from "./timezone";
+import { shortMonthName } from "./city-copy";
 
 const RAD = Math.PI / 180;
 
@@ -276,9 +277,30 @@ export function fmtDayLength(min: number): string {
   return `${h} h ${String(m).padStart(2, "0")} min`;
 }
 
-const MONTH_NAMES = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
-
-/** Reads in UTC, to match how `dateFromDoy` builds its dates. */
-export function fmtDate(d: Date): string {
-  return `${d.getUTCDate()} ${MONTH_NAMES[d.getUTCMonth()]}`;
+/**
+ * "27 ago" / "27 Aug" — day and abbreviated month in the caller's locale.
+ *
+ * Reads in UTC, to match how `dateFromDoy` builds its dates.
+ *
+ * `locale` is required rather than defaulting to `"es"`, because a default is
+ * how this function shipped Spanish month names to all six locales in the first
+ * place: the two call sites both have the locale to hand, and a required
+ * parameter makes `tsc` the thing that finds a third one.
+ *
+ * The month is formatted alone and composed by hand, rather than asking `Intl`
+ * for `{ day, month }` together. That is the shape PR #61 used for the heatmap's
+ * month axis in `GlobalHeatmap.tsx`, and it keeps one string shape across the
+ * six locales — `Intl`'s combined pattern would give "Aug 27" in English and
+ * "08-27" in Lithuanian, and the heatmap tooltip it feeds is a fixed 144px box.
+ * The trailing `.` some locales append (ru "авг.") is stripped for the same
+ * reason it is stripped there.
+ *
+ * The month comes from `shortMonthName` in lib/city-copy.ts rather than from
+ * `Intl` here, because `Intl`'s `{ month: "short" }` returns "08" in Lithuanian
+ * and this repo settled that case already — see the comment on LT_MONTH_LABELS.
+ * The UTC reading the header promises is preserved by passing `getUTCMonth()`:
+ * the helper takes an index, so no timezone can enter through it.
+ */
+export function fmtDate(d: Date, locale: string): string {
+  return `${d.getUTCDate()} ${shortMonthName(locale, d.getUTCMonth())}`;
 }

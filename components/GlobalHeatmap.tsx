@@ -165,7 +165,7 @@ export default function GlobalHeatmap({ selectedLat, selectedDoy, onSelect }: Pr
             <line x1={PAD.l} y1={hp.y} x2={PAD.l + plotW} y2={hp.y} stroke="rgba(255,255,255,0.2)" strokeWidth=".5" />
             <rect x={hp.x - 72} y={hp.y - 30} width="144" height="22" rx="4" fill="rgba(0,0,0,0.85)" stroke="rgba(255,255,255,0.1)" strokeWidth=".5" />
             <text x={hp.x} y={hp.y - 15} textAnchor="middle" fill="#FFD54F" fontSize="10" fontWeight="600" fontFamily="'JetBrains Mono',monospace">
-              {hover.lat.toFixed(1)}&deg; &middot; {fmtDate(dateFromDoy(hover.doy))} &middot; {hover.hrs > 0 ? `${hover.hrs.toFixed(1)}h` : "0h"}
+              {hover.lat.toFixed(1)}&deg; &middot; {fmtDate(dateFromDoy(hover.doy), locale)} &middot; {hover.hrs > 0 ? `${hover.hrs.toFixed(1)}h` : "0h"}
             </text>
           </g>
         )}

@@ -45,6 +45,13 @@ Same city, same hour, same exposed skin, 1000 IU target:
 Six times the difference. Advice that ignores it is wrong for two thirds of the people
 reading it.
 
+That comparison is a public page now — all six types, with every assumption behind the
+numbers written on the page itself:
+https://getvitamind.app/en/how-long-in-sun-vitamin-d
+
+It needs no install and no account, so you can check the claim before deciding whether the
+rest is worth your time.
+
 **What it does**
 
 Enter a city — any of 235,000+ — and it computes today's synthesis window from solar
@@ -126,6 +133,12 @@ subirlas, porque el rediseño bold es posterior a algunas.
 - [ ] Verificar que las cifras del primer comentario siguen siendo las que calcula el
       motor. Están medidas el 2026-08-27; si `lib/vitd.ts` o `lib/uv-model.ts` cambian,
       vuelven a medirse. Es la misma regla que el resto del copy del sitio.
+- [ ] Abrir https://getvitamind.app/en/how-long-in-sun-vitamin-d el día del lanzamiento y
+      comprobar que carga y que su tabla por tipo sigue sin contradecir al primer
+      comentario. Comprobado el 2026-08-28: coincide, con la única diferencia de que la
+      página redondea a minutos enteros y el comentario no. Ojo, la página no parte de
+      Madrid sino de la referencia de `REFERENCE` en `lib/suntime-content.ts`; si esa
+      referencia cambia, hay que volver a mirarlo.
 - [ ] Martes o miércoles, 00:01 PST.
 - [ ] Primer comentario listo para pegar en el mismo minuto.
 - [ ] Avisar a la red **antes**, no después.

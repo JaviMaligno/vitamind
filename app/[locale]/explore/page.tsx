@@ -52,7 +52,7 @@ export default function ExplorePage() {
   // Computed solar data
   const curve = useMemo(() => getCurve(lat, lon, doy, tz), [lat, lon, doy, tz]);
 
-  const dateLabel = fmtDate(date);
+  const dateLabel = fmtDate(date, locale);
 
   // Bridge: the heatmap handler needs setDoy
   const onSelectFromHeatmap = useCallback(
