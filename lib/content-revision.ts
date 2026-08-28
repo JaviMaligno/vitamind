@@ -198,6 +198,12 @@ export const CITY_PAGE_REVISION: ContentRevision = {
  *
  * Born on 2026-08-28, which for once is genuinely the date the content first
  * existed rather than a date reconstructed from `git log`.
+ *
+ * `copy.de`, `copy.ru` and `figures` were re-recorded the same day after the
+ * native review moved three band slugs and two German and Russian sentences.
+ * The DATE did not move with them, and the rule is the file's own: it answers
+ * "when did the content change", and this content has never been served — there
+ * is no earlier version out there for a `lastmod` to be wrong about.
  */
 export const SUNTIME_PAGE_REVISION: ContentRevision = {
   date: "2026-08-28",
@@ -205,10 +211,10 @@ export const SUNTIME_PAGE_REVISION: ContentRevision = {
     "copy.es": "bf6f40fd1d24c0b2",
     "copy.en": "d5f4b1289d428a07",
     "copy.fr": "567bd4f9f1f82632",
-    "copy.de": "6143d4b29e208799",
-    "copy.ru": "03ef4e4b1b350c84",
+    "copy.de": "a289462081a87c96",
+    "copy.ru": "f14b45c7849f2daa",
     "copy.lt": "e61ab0b4db5bf4f9",
-    figures: "6f6fcf4339d65305",
+    figures: "22a1c01136345e84",
     reference: "4303d27a87c4a0dd",
     constants: "c9d5d03dc2b9c7b9",
   },

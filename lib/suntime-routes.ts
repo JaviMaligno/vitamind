@@ -78,25 +78,37 @@ export const BAND_TYPES: Record<Band, [number, number]> = {
 };
 
 /**
- * ⚠️ fr, de, ru and lt ARE PENDING NATIVE REVIEW, and unlike the copy these
- * cannot be corrected after the fact — they are the URLs. Settle them in the
- * same review pass that clears the copy, BEFORE the first deploy; afterwards a
- * change costs a redirect and whatever authority the old URL had.
+ * REVIEWED 2026-08-28, before the first deploy — which is the only moment these
+ * can move cheaply. After a deploy a slug change costs a redirect and whatever
+ * authority the old URL had accumulated.
  *
- * Two are known to read awkwardly to a non-native ear and are kept as-is rather
- * than half-fixed: German "mittlere Haut" and Russian "средняя кожа" both parse
- * closer to "the middle skin" than to "medium skin tone" ("mittlerer Hautton",
- * "средний тон кожи"). They are left alone deliberately — fixing one language on
- * non-native judgement while the identical defect stands in the other is worse
- * than flagging both for the reviewer who can settle all four at once.
+ * THE MIDDLE BAND WAS WRONG IN THREE OF SIX LANGUAGES, and always the same way:
+ * "fair skin" and "dark skin" are real phrases in every language here, while
+ * "medium skin" is not — it needs "tone". `mittlere-haut`, `srednyaya-kozha` and
+ * `vidutine-oda` all parsed closer to "the middle skin" than to "medium skin
+ * tone", so they became `mittlerer-hautton`, `sredniy-ton-kozhi` and
+ * `vidutinio-tono-oda`.
+ *
+ * That leaves each language internally asymmetric — German pairs `helle-haut`
+ * with `mittlerer-hautton` — and the asymmetry is deliberate. "helle Haut" and
+ * "dunkle Haut" are what people actually type; forcing all three onto `-hautton`
+ * for tidiness would trade the search term for the symmetry, and the search term
+ * is the point.
+ *
+ * Russian took `sredniy-ton-kozhi` rather than the tempting `smuglaya-kozha`
+ * (смуглая, tan/olive) because смуглая already carries the DARK band's title
+ * ("при смуглой или тёмной коже"): two pages claiming one word.
+ *
+ * French needed nothing. `peau-mate` is precisely the French for olive or medium
+ * skin, and `peau-claire` / `peau-foncee` are the ordinary terms.
  */
 export const BAND_SLUGS: Record<string, Record<Band, string>> = {
   es: { fair: "piel-clara", medium: "piel-media", dark: "piel-oscura" },
   en: { fair: "fair-skin", medium: "medium-skin", dark: "dark-skin" },
   fr: { fair: "peau-claire", medium: "peau-mate", dark: "peau-foncee" },
-  de: { fair: "helle-haut", medium: "mittlere-haut", dark: "dunkle-haut" },
-  ru: { fair: "svetlaya-kozha", medium: "srednyaya-kozha", dark: "temnaya-kozha" },
-  lt: { fair: "sviesi-oda", medium: "vidutine-oda", dark: "tamsi-oda" },
+  de: { fair: "helle-haut", medium: "mittlerer-hautton", dark: "dunkle-haut" },
+  ru: { fair: "svetlaya-kozha", medium: "sredniy-ton-kozhi", dark: "temnaya-kozha" },
+  lt: { fair: "sviesi-oda", medium: "vidutinio-tono-oda", dark: "tamsi-oda" },
 };
 
 /* ------------------------------------------------------------------------- *
