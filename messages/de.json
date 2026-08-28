@@ -889,7 +889,7 @@
     "monthRange": "{month}: {min}–{max} Min.",
     "monthImpossible": "{month}: bei keiner Dauer möglich",
     "impossibleHeading": "Die Monate, in denen keine Menge Sonne reicht",
-    "impossibleSome": "Auf diesem Breitengrad steigt die Sonne in {months} nicht hoch genug. Das ist keine Frage des Längerbleibens: unterhalb eines UV-Index von 3 erreicht die Wellenlänge, die Vitamin D bildet, den Boden kaum noch — nach fünf Minuten gilt dieselbe Antwort wie nach fünf Stunden.",
+    "impossibleSome": "Auf diesem Breitengrad gibt es Monate, in denen die Sonne nicht hoch genug steigt: {months}. Und das ist keine Frage des Längerbleibens, denn unterhalb eines UV-Index von 3 erreicht die Wellenlänge, die Vitamin D bildet, den Boden kaum noch — nach fünf Minuten gilt dieselbe Antwort wie nach fünf Stunden.",
     "impossibleNone": "Auf diesem Breitengrad hat jeder Monat ein Zeitfenster, auch wenn die Randmonate ein Vielfaches der Hochsommerzeit verlangen.",
     "burnHeading": "Im Vergleich zum Sonnenbrand",
     "burnBody": "Am stärksten Tag der Saison brauchen Sie etwa {minutes} Min., gegenüber rund {burnMinutes} Min. bis zur sichtbaren Rötung. Das Vitamin D ist längst gebildet, bevor der Schaden beginnt — und genau darum geht es: bis zum Sonnenbrand zu bleiben bringt nichts.",
@@ -905,7 +905,7 @@
       "lead": "Es gibt eine Zahl, die alle nachsprechen, und für die meisten Menschen ist sie falsch.",
       "answer": "Zwischen {min} und {max} Minuten — gleicher Breitengrad, gleiche Uhrzeit, gleich viel unbedeckte Haut. Das Einzige, was sich ändert, ist die Haut.",
       "whyHeading": "Warum die übliche Antwort danebenliegt",
-      "whyBody": "„Zehn bis fünfzehn Minuten“ ist die Zahl, die kursiert, und sie ist eine echte Messung — an einem Hauttyp. Melanin absorbiert dasselbe Ultraviolett, das das Vitamin bildet, weshalb die dunkelste Haut für dieselbe Dosis etwa sechsmal so lange braucht wie die hellste. Zehn Minuten trifft die Mitte der Spanne und verfehlt beide Enden: zu lang für sehr helle Haut, weniger als die Hälfte dessen, was die dunkelste braucht. Eine Suchmaschine kann das nicht beheben, denn die Antwort hängt davon ab, wer fragt.",
+      "whyBody": "„Zehn bis fünfzehn Minuten“ ist die Zahl, die kursiert, und sie ist eine echte Messung — an einem Hauttyp. Melanin absorbiert dasselbe Ultraviolett, das das Vitamin bildet, weshalb die dunkelste Haut für dieselbe Dosis etwa sechsmal so lange braucht wie die hellste. Zehn Minuten treffen die Mitte der Spanne und verfehlen beide Enden: zu lang für sehr helle Haut, weniger als die Hälfte dessen, was die dunkelste braucht. Eine Suchmaschine kann das nicht beheben, denn die Antwort hängt davon ab, wer fragt.",
       "chooseHeading": "Ihre Spanne finden"
     },
     "bands": {

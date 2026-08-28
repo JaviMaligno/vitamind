@@ -889,7 +889,7 @@
     "monthRange": "{month}: {min}–{max} min",
     "monthImpossible": "{month}: no es posible con ninguna duración",
     "impossibleHeading": "Los meses en los que no sirve ninguna cantidad de sol",
-    "impossibleSome": "A esta latitud el sol no sube lo suficiente en {months}. No es cuestión de quedarse más rato: por debajo de un índice UV de 3, la longitud de onda que fabrica la vitamina D apenas llega al suelo, así que la respuesta es la misma con cinco minutos que con cinco horas.",
+    "impossibleSome": "A esta latitud hay meses en los que el sol no sube lo suficiente: {months}. Y no es cuestión de quedarse más rato, porque por debajo de un índice UV de 3 la longitud de onda que fabrica la vitamina D apenas llega al suelo, así que la respuesta es la misma con cinco minutos que con cinco horas.",
     "impossibleNone": "A esta latitud todos los meses tienen ventana, aunque los del principio y el final de la temporada piden varias veces más tiempo que pleno verano.",
     "burnHeading": "Comparado con quemarse",
     "burnBody": "En el día más fuerte de la temporada necesitas unos {minutes} min, frente a unos {burnMinutes} min para llegar al enrojecimiento visible. La vitamina D está hecha mucho antes de que empiece el daño, y esa es la idea: no se gana nada quedándose hasta quemarse.",

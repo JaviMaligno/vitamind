@@ -40,6 +40,32 @@ export function monthGenitive(locale: string, monthIndex: number): string {
 }
 
 /**
+ * A list of month names joined the way the locale joins lists: "enero y
+ * diciembre", "January and December", "janvier et décembre", "январь и
+ * декабрь".
+ *
+ * THE HAND-ROLLED VERSION SHIPPED TO PRODUCTION AND WAS WRONG TWICE OVER. It
+ * read `months.map(capFirst).join(locale === "en" ? ", " : ", ")` — both
+ * branches of that ternary are the same string, which is what an unfinished
+ * placeholder looks like — and it produced "en Enero, Diciembre" in Spanish and
+ * "en Janvier, Décembre" in French. Two separate errors: month names are
+ * lowercase in both languages, and a two-item list wants a conjunction, not a
+ * comma.
+ *
+ * `Intl.ListFormat` exists for exactly this and knows the conjunction for each
+ * locale. NOMINATIVE and uncapitalised on purpose: the sentences that take this
+ * list present it as an apposition after a colon, which is the one position
+ * that needs no case in Russian or Lithuanian. `в {months}` would have needed
+ * the prepositional ("в январе"), which is neither the nominative `monthName`
+ * gives nor the genitive `monthGenitive` gives — so the sentence was
+ * restructured rather than a third case invented.
+ */
+export function monthList(locale: string, monthIndexes: number[]): string {
+  const names = monthIndexes.map((m) => monthName(locale, m));
+  return new Intl.ListFormat(locale, { style: "long", type: "conjunction" }).format(names);
+}
+
+/**
  * French: put the city into "à <city>", contracting the definite article.
  * Only the FRENCH article contracts — "Las Palmas" and "Los Angeles" carry a
  * Spanish article and stay literal ("à Las Palmas").
