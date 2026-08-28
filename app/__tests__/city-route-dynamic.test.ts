@@ -6,6 +6,7 @@ import { getPathname } from "@/i18n/navigation";
 import { CITY_PREFIX, cityPathname, cityStaticParams } from "@/lib/city-routes";
 import { CITY_SLUGS } from "@/lib/city-slugs";
 import { SUN_PREFIX } from "@/lib/sun-routes";
+import { BANDS, BAND_SLUGS, SUNTIME_PREFIX, allSuntimePathnames } from "@/lib/suntime-routes";
 
 /**
  * THE TWO FAMILIES AND THE WALL BETWEEN THEM.
@@ -503,5 +504,72 @@ describe("the rewrite decides the split, and gets it right in both directions", 
   it("still refuses to touch a curated slug", () => {
     expect(rw(`/${CITY_PREFIX.es}/madrid`)).toBeNull();
     expect(rw(`/en/${CITY_PREFIX.en}/london`)).toBeNull();
+  });
+});
+
+/**
+ * THE 24 "HOW LONG IN THE SUN" URLS MUST SURVIVE THIS REWRITE.
+ *
+ * The band pages are `{prefix}/{band}` — two segments, which is the exact shape
+ * `onDemandCityRewrite` acts on. It stops only because the prefix is not that
+ * locale's `CITY_PREFIX`, and that check runs BEFORE the curated lookup and
+ * before the on-demand fallthrough. The order is what saves them, so it is
+ * pinned here rather than trusted: reorder those two checks and
+ * `/cuanto-sol-vitamina-d/piel-clara` becomes a nonexistent city, served
+ * `noindex` from the force-dynamic route. Silently — a 200 with the wrong page.
+ *
+ * The URLs are generated from `lib/suntime-routes.ts`, never written out, so a
+ * slug edit stays covered by this file instead of quietly leaving it behind.
+ */
+describe("the rewrite leaves the sun-time pages alone", () => {
+  /** The 24 public paths, locale prefix included where the locale carries one. */
+  function suntimeUrls(): string[] {
+    return allSuntimePathnames().map(({ locale, pathname }) =>
+      getPathname({ href: pathname, locale: locale as (typeof routing.locales)[number] }),
+    );
+  }
+
+  it("covers all 24, mothers and bands", () => {
+    const urls = suntimeUrls();
+    expect(urls).toHaveLength(24);
+    expect(new Set(urls).size).toBe(24);
+    // Half of them are the two-segment shape the rewrite acts on; if this ever
+    // reads 0 the test below has stopped testing anything.
+    const twoSegment = urls.filter((u) => {
+      const s = segments(u);
+      const hasLocale = (routing.locales as readonly string[]).includes(s[0]);
+      return (hasLocale ? s.slice(1) : s).length === 2;
+    });
+    expect(twoSegment).toHaveLength(18);
+  });
+
+  it("never rewrites one of them", () => {
+    for (const url of suntimeUrls()) {
+      expect(rw(url), `${url} was captured as an on-demand city`).toBeNull();
+    }
+  });
+
+  /**
+   * `de` and `ru` share `vitamin-d` with `en` as their CITY_PREFIX, so an
+   * English band URL under a German locale segment is the shape most likely to
+   * slip through a prefix comparison written against the wrong locale.
+   */
+  it("holds for the locales that share a city prefix", () => {
+    for (const locale of ["en", "de", "ru"] as const) {
+      expect(CITY_PREFIX[locale]).toBe("vitamin-d");
+      for (const band of BANDS) {
+        expect(rw(`/${locale}/${SUNTIME_PREFIX[locale]}/${BAND_SLUGS[locale][band]}`)).toBeNull();
+      }
+    }
+  });
+
+  /**
+   * The converse, and the reason the disjointness assert in
+   * lib/__tests__/suntime-routes.test.ts is not decoration: a band slug placed
+   * under a CITY_PREFIX IS eaten. This is the failure the split exists to avoid,
+   * demonstrated rather than described.
+   */
+  it("would eat a band slug parked under the city prefix", () => {
+    expect(rw(`/${CITY_PREFIX.es}/${BAND_SLUGS.es.fair}`)).not.toBeNull();
   });
 });
