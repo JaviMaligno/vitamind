@@ -151,7 +151,7 @@ export const SUN_MONTH_REVISION: ContentRevision = {
     "copy.ru": "7d0427fc5082438b",
     "copy.lt": "2fa9119bd4283f7d",
     cities: "35aebb84c49f350e",
-    figures: "c4e7d637658f0f50",
+    figures: "fa8bb25cf08d4ccd",
     constants: "a3b447afa17fa07c",
   },
 };
@@ -197,7 +197,7 @@ export const CITY_PAGE_REVISION: ContentRevision = {
     "copy.ru": "39c852cd4713ae68",
     "copy.lt": "ff610006e37f9b63",
     cities: "c66cfdadbf8dabad",
-    figures: "4c7d35f142e2f68b",
+    figures: "708163065b60056f",
     constants: "09032456232a5db5",
   },
 };
@@ -226,13 +226,13 @@ export const CITY_PAGE_REVISION: ContentRevision = {
 export const SUNTIME_PAGE_REVISION: ContentRevision = {
   date: "2026-08-28",
   parts: {
-    "copy.es": "bf6f40fd1d24c0b2",
-    "copy.en": "d5f4b1289d428a07",
-    "copy.fr": "567bd4f9f1f82632",
-    "copy.de": "a289462081a87c96",
-    "copy.ru": "f14b45c7849f2daa",
-    "copy.lt": "e61ab0b4db5bf4f9",
-    figures: "fb2551cbc491137e",
+    "copy.es": "9bd87dc996d45355",
+    "copy.en": "b9564f8355c27261",
+    "copy.fr": "f343e2849b651b6d",
+    "copy.de": "c72ec8cdf2df2ebb",
+    "copy.ru": "e6c6fcebda3a7911",
+    "copy.lt": "7f54b7c4c382e0ca",
+    figures: "0f3166ee0c095095",
     reference: "4303d27a87c4a0dd",
     constants: "c9d5d03dc2b9c7b9",
   },

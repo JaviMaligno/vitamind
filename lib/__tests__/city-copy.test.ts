@@ -1,8 +1,6 @@
 import { describe, it, expect } from "vitest";
-import {
-  capFirst, monthName, monthGenitive, frAtCity, frFromMonth,
-  monthLabels, cityLabels, verdictMonths,
-} from "@/lib/city-copy";
+import { routing } from "@/i18n/routing";
+import { capFirst, cityLabels, frAtCity, frFromMonth, monthGenitive, monthLabels, monthList, monthName, verdictMonths } from "@/lib/city-copy";
 
 describe("capFirst", () => {
   it("uppercases only the first character", () => {
@@ -144,5 +142,63 @@ describe("verdictMonths", () => {
     expect(verdictMonths("es", 0, 5)).toMatchObject({ startMonth: "enero", endMonth: "junio" });
     expect(verdictMonths("en", 0, 5)).toMatchObject({ startMonth: "January", endMonth: "June" });
     expect(verdictMonths("de", 0, 5)).toMatchObject({ startMonth: "Januar", endMonth: "Juni" });
+  });
+});
+
+/**
+ * `monthList`, and the two errors it replaces — both of which reached
+ * production on 2026-08-28 in the six sun-time pages.
+ *
+ * The hand-rolled version read
+ * `months.map(capFirst).join(locale === "en" ? ", " : ", ")`. Both branches of
+ * that ternary are the same string, which is what an unfinished placeholder
+ * looks like. It rendered "en Enero, Diciembre" in Spanish and "en Janvier,
+ * Décembre" in French: month names are lowercase in both languages, and a
+ * two-item list wants a conjunction rather than a comma.
+ *
+ * No `Intl` output is transcribed here. lib/content-fingerprint.ts states the
+ * rule and the reason — those strings come from the runtime's ICU data, and
+ * this repo runs Node 24 locally against Node 22 in CI — so what is asserted
+ * are the properties that were actually wrong.
+ */
+describe("monthList", () => {
+  const JAN_AND_DEC = [0, 11];
+
+  it("joins two months with the locale's conjunction, not a comma", () => {
+    for (const locale of routing.locales) {
+      const list = monthList(locale, JAN_AND_DEC);
+      // A bare ", " between exactly two items is the bug: every one of these
+      // locales uses a word there.
+      expect(list, `${locale}: "${list}"`).not.toMatch(/^\S+,\s\S+$/);
+      expect(list.split(/\s+/).length).toBeGreaterThanOrEqual(3);
+    }
+  });
+
+  it("keeps the month names in the case the language writes them", () => {
+    // Spanish and French write months lowercase; German capitalises every noun
+    // and English capitalises month names, so only the first two can be checked
+    // for a lowercase initial without asserting the opposite bug elsewhere.
+    for (const locale of ["es", "fr"]) {
+      const list = monthList(locale, JAN_AND_DEC);
+      expect(list[0], `${locale} capitalised a mid-sentence month`).toBe(
+        list[0].toLowerCase(),
+      );
+    }
+  });
+
+  it("names every month it is given, and only those", () => {
+    for (const locale of routing.locales) {
+      const list = monthList(locale, JAN_AND_DEC);
+      for (const index of JAN_AND_DEC) {
+        expect(list).toContain(monthName(locale, index));
+      }
+      expect(list).not.toContain(monthName(locale, 5));
+    }
+  });
+
+  it("handles a single month without inventing a conjunction", () => {
+    for (const locale of routing.locales) {
+      expect(monthList(locale, [0])).toBe(monthName(locale, 0));
+    }
   });
 });

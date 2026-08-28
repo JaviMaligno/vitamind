@@ -3,7 +3,7 @@ import { getTranslations } from "next-intl/server";
 import Card from "@/components/ui/Card";
 import A from "@/components/ui/A";
 import { authorship } from "@/lib/schema";
-import { capFirst, monthName } from "@/lib/city-copy";
+import { capFirst, monthList, monthName } from "@/lib/city-copy";
 import {
   BANDS,
   BAND_TYPES,
@@ -97,9 +97,13 @@ export default async function SuntimePage({
   const low = self ? self.minMinutes : Math.min(...perType);
   const high = self ? self.maxMinutes : Math.max(...perType);
 
+  // capFirst here and NOT in the list below: in the month table the name opens
+  // the line, so it is capitalised in every locale. Inside a sentence it is not
+  // — Spanish, French, Russian and Lithuanian all write months lowercase — and
+  // shipping `capFirst` into both is what put "en Enero, Diciembre" in
+  // production. See `monthList` in lib/city-copy.ts.
   const monthLabel = (month: number) => capFirst(monthName(locale, month - 1));
-  const listMonths = (months: number[]) =>
-    months.map(monthLabel).join(locale === "en" ? ", " : ", ");
+  const listMonths = (months: number[]) => monthList(locale, months.map((m) => m - 1));
 
   /**
    * `Article` and `BreadcrumbList`, and none of the three types the draft

@@ -889,7 +889,7 @@
     "monthRange": "{month}: {min}–{max} min",
     "monthImpossible": "{month}: not possible at any length of exposure",
     "impossibleHeading": "The months when no amount of sun works",
-    "impossibleSome": "At this latitude the sun does not climb high enough in {months}. That is not a matter of staying out longer: below a UV index of 3 the wavelength that makes vitamin D barely reaches the ground at all, so the answer is the same at five minutes and at five hours.",
+    "impossibleSome": "At this latitude there are months when the sun does not climb high enough: {months}. And it is not a matter of staying out longer, because below a UV index of 3 the wavelength that makes vitamin D barely reaches the ground at all, so the answer is the same at five minutes and at five hours.",
     "impossibleNone": "At this latitude every month of the year has a window, though the shoulder months need several times longer than midsummer.",
     "burnHeading": "How this compares with burning",
     "burnBody": "On the strongest day of the season you need about {minutes} min, against roughly {burnMinutes} min to reach visible redness. The vitamin D is done long before the damage starts — which is the point: there is nothing to gain by staying out until you burn.",
