@@ -80,6 +80,14 @@ Publicar **inmediatamente después** de darle al botón, con el enlace de Produc
 >
 > [enlace de Product Hunt]
 
+**Primer comentario, no en el cuerpo.** LinkedIn recorta el alcance de los posts con
+enlace, y el del cuerpo ya está gastado en el de Product Hunt, que es el que tiene que
+llevarse el clic del día. El segundo enlace va en el primer comentario, donde no compite:
+
+> La comparación completa está en una página abierta, sin registro: los seis tipos de
+> piel y los meses en los que no sirve ninguna duración.
+> https://getvitamind.app/cuanto-sol-vitamina-d
+
 **Imagen:** la comparación por tipo de piel. Es el argumento entero; si solo se ve una
 captura, que sea esa.
 
