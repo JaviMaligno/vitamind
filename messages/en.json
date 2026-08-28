@@ -871,6 +871,77 @@
     "faqMinutesQ": "How many minutes of sun do I need in {city}?",
     "faqMinutesA": "In summer, about {minutes} minutes with arms and face exposed is enough for 1000 IU (Fitzpatrick type III skin, clear sky)."
   },
+  "suntimePage": {
+    "eyebrow": "How long in the sun",
+    "assumptionsHeading": "What these numbers assume",
+    "assumptionArea": "{areaPercent}% of your skin uncovered — roughly arms and face",
+    "assumptionAge": "age {age}, because synthesis slows as skin ages",
+    "assumptionTarget": "a target of {targetIU} IU in one session",
+    "assumptionPlace": "latitude {lat}°, clear sky, at sea level",
+    "targetNote": "1000 IU is this tool's choice, not a settled consensus: national bodies recommend anywhere from 600 to 2000 IU a day, and which one you pick changes every number on this page.",
+    "methodHeading": "Where the numbers come from",
+    "methodBody": "Solar elevation is computed for each day of the year, the UV index from it using the Madronich model with van Heuklon's ozone column, and the exposure time from Holick and Dowdy (2010) with the photodegradation ceiling that makes long sessions stop paying. Nothing here is typed in by hand — change the model and this page changes with it.",
+    "disclaimer": "This is an estimate for a clear sky at a stated latitude, not medical advice, and it cannot know your skin, your medication or your blood levels. If you think you are deficient, that is a question for a doctor and a blood test, not for a calculator.",
+    "monthHeading": "Month by month",
+    "monthNote": "The quickest and slowest of the band, on the strongest and weakest day of each month.",
+    "monthRange": "{month}: {min}–{max} min",
+    "monthImpossible": "{month}: not possible at any length of exposure",
+    "impossibleHeading": "The months when no amount of sun works",
+    "impossibleSome": "At this latitude the sun does not climb high enough in {months}. That is not a matter of staying out longer: below a UV index of 3 the wavelength that makes vitamin D barely reaches the ground at all, so the answer is the same at five minutes and at five hours.",
+    "impossibleNone": "At this latitude every month of the year has a window, though the shoulder months need several times longer than midsummer.",
+    "burnHeading": "How this compares with burning",
+    "burnBody": "On the strongest day of the season you need about {minutes} min, against roughly {burnMinutes} min to reach visible redness. The vitamin D is done long before the damage starts — which is the point: there is nothing to gain by staying out until you burn.",
+    "typesHeading": "The six types in detail",
+    "typeRow": "Type {type}: {min}–{max} min",
+    "otherBandsHeading": "Not your skin?",
+    "ctaLabel": "Calculate it for my city and today's UV",
+    "backToMother": "Back to the general answer",
+    "mother": {
+      "title": "How long in the sun for vitamin D",
+      "metaDescription": "The honest answer is a range, not a number: from a few minutes to over an hour for the same day and place, depending on your skin. Computed from solar geometry and UV, with every assumption stated.",
+      "h1": "How long in the sun do you need for vitamin D?",
+      "lead": "There is a number everyone repeats, and it is wrong for most people.",
+      "answer": "Between {min} and {max} minutes, for the same latitude, the same hour and the same amount of skin uncovered. The only thing that changes is the skin.",
+      "whyHeading": "Why the usual answer misses",
+      "whyBody": "\"Ten to fifteen minutes\" is the figure that circulates, and it is a real measurement — of one kind of skin. Melanin absorbs the same ultraviolet that makes the vitamin, so the darkest skin needs about six times as long as the lightest for the identical dose. Ten minutes is close to right in the middle of the range and wrong at both ends: too long for very fair skin, less than half of what the darkest skin needs. A search engine cannot fix this, because the answer depends on who is asking.",
+      "chooseHeading": "Find your range"
+    },
+    "bands": {
+      "fair": {
+        "title": "How long in the sun for vitamin D with fair skin",
+        "metaDescription": "Fair skin makes vitamin D faster than any other — and burns first. The minutes you need month by month, with the time to visible redness beside them.",
+        "h1": "How long in the sun for vitamin D with fair skin",
+        "lead": "You need the least of anyone. The usual advice overshoots for you, and the cost of overshooting is a burn.",
+        "answer": "Between {min} and {max} minutes, depending on the month.",
+        "angleHeading": "The dose you need and the dose that hurts are close together",
+        "angleBody": "Fair skin has little melanin to absorb ultraviolet, so it makes vitamin D quickly — and reddens quickly for the same reason. In midsummer the gap between having enough and starting to burn is a matter of minutes, not hours. The advice that circulates was written around a darker default, so following it costs you nothing in vitamin D and buys you sun damage you did not need. Cumulative ultraviolet exposure is the main modifiable cause of skin cancer, and fair skin carries the highest baseline risk, which makes the short answer the safe one rather than the lazy one.",
+        "gloss": "Fitzpatrick I and II: skin that always burns and never tans, or burns easily and tans a little.",
+        "cardBlurb": "You need the least, and your margin before burning is the shortest."
+      },
+      "medium": {
+        "title": "How long in the sun for vitamin D with medium or olive skin",
+        "metaDescription": "Medium and olive skin is the default the generic advice was written for. What that means, where it still misses, and the minutes month by month.",
+        "h1": "How long in the sun for vitamin D with medium or olive skin",
+        "lead": "The advice you have already read was written for you. It is roughly right — and it is the only band it is roughly right for.",
+        "answer": "Between {min} and {max} minutes, depending on the month.",
+        "angleHeading": "You are the default, which is its own problem",
+        "angleBody": "Almost every public recommendation quietly assumes this band. That makes the familiar figure usable for you, but it also means you inherit a number that was never qualified, and the qualification matters more than the figure. Season moves it further than anything except skin: the same body at the same latitude needs a small fraction of the time at midsummer that it needs at the edge of the season, and below a certain sun angle no length of exposure works at all. The number you have been given is a midsummer number wearing no label.",
+        "gloss": "Fitzpatrick III and IV: skin that sometimes burns and tans gradually, or rarely burns and tans easily.",
+        "cardBlurb": "The band the generic advice was written for, unlabelled."
+      },
+      "dark": {
+        "title": "How long in the sun for vitamin D with brown or dark skin",
+        "metaDescription": "Brown and dark skin needs several times longer in the sun for the same vitamin D, which is why deficiency is more common at high latitudes. The minutes month by month, computed rather than assumed.",
+        "h1": "How long in the sun for vitamin D with brown or dark skin",
+        "lead": "You need several times longer than the figure that circulates, and at high latitudes the sun may not be able to supply it at all.",
+        "answer": "Between {min} and {max} minutes, depending on the month.",
+        "angleHeading": "Why deficiency is more common far from the equator",
+        "angleBody": "Melanin is effective sun protection, and it protects against the same wavelength that makes the vitamin. That is an advantage where the sun is strong and a disadvantage where it is weak: skin evolved for equatorial light gets a fraction of the yield from a northern winter. Health services single this out — the NHS names people of African, African-Caribbean and South Asian background as more likely to run low, and the reason is arithmetic, not behaviour. The practical consequence is that the shoulder months close earlier for you than the calendar suggests, and the months this page marks impossible are impossible however long you stay out.",
+        "gloss": "Fitzpatrick V and VI: skin that rarely or never burns and tans deeply.",
+        "cardBlurb": "Several times longer, and the season closes earlier than the calendar suggests."
+      }
+    }
+  },
   "offline": {
     "title": "You're offline",
     "description": "Vitamin D Explorer needs an internet connection to load weather and city data. Try again once you're back online.",

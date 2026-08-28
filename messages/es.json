@@ -871,6 +871,77 @@
     "faqMinutesQ": "¿Cuántos minutos de sol necesito en {city}?",
     "faqMinutesA": "En verano, unos {minutes} minutos con brazos y cara al sol bastan para 1000 UI (piel tipo III, cielo despejado)."
   },
+  "suntimePage": {
+    "eyebrow": "Cuánto sol necesitas",
+    "assumptionsHeading": "Qué dan por supuesto estas cifras",
+    "assumptionArea": "{areaPercent} % de piel descubierta — brazos y cara, más o menos",
+    "assumptionAge": "{age} años, porque la síntesis se ralentiza con la edad",
+    "assumptionTarget": "un objetivo de {targetIU} UI en una sola sesión",
+    "assumptionPlace": "latitud {lat}°, cielo despejado, a nivel del mar",
+    "targetNote": "Las 1000 UI son la elección de esta herramienta, no un consenso cerrado: los organismos nacionales recomiendan entre 600 y 2000 UI diarias, y cuál elijas cambia todas las cifras de esta página.",
+    "methodHeading": "De dónde salen estas cifras",
+    "methodBody": "Se calcula la altura del sol para cada día del año, de ahí el índice UV con el modelo de Madronich y la columna de ozono de van Heuklon, y de ahí el tiempo de exposición con Holick y Dowdy (2010), incluido el techo de fotodegradación que hace que alargar la sesión deje de compensar. Aquí no hay ningún número escrito a mano: si cambia el modelo, cambia esta página.",
+    "disclaimer": "Es una estimación para cielo despejado a una latitud concreta, no un consejo médico, y no puede saber cómo es tu piel, qué medicación tomas ni qué niveles tienes en sangre. Si sospechas que tienes déficit, eso se resuelve con un médico y una analítica, no con una calculadora.",
+    "monthHeading": "Mes a mes",
+    "monthNote": "El más rápido y el más lento de la franja, en el día más fuerte y el más débil de cada mes.",
+    "monthRange": "{month}: {min}–{max} min",
+    "monthImpossible": "{month}: no es posible con ninguna duración",
+    "impossibleHeading": "Los meses en los que no sirve ninguna cantidad de sol",
+    "impossibleSome": "A esta latitud el sol no sube lo suficiente en {months}. No es cuestión de quedarse más rato: por debajo de un índice UV de 3, la longitud de onda que fabrica la vitamina D apenas llega al suelo, así que la respuesta es la misma con cinco minutos que con cinco horas.",
+    "impossibleNone": "A esta latitud todos los meses tienen ventana, aunque los del principio y el final de la temporada piden varias veces más tiempo que pleno verano.",
+    "burnHeading": "Comparado con quemarse",
+    "burnBody": "En el día más fuerte de la temporada necesitas unos {minutes} min, frente a unos {burnMinutes} min para llegar al enrojecimiento visible. La vitamina D está hecha mucho antes de que empiece el daño, y esa es la idea: no se gana nada quedándose hasta quemarse.",
+    "typesHeading": "Los seis fototipos en detalle",
+    "typeRow": "Tipo {type}: {min}–{max} min",
+    "otherBandsHeading": "¿No es tu piel?",
+    "ctaLabel": "Calcularlo con mi ciudad y el UV de hoy",
+    "backToMother": "Volver a la respuesta general",
+    "mother": {
+      "title": "Cuánto tiempo al sol para la vitamina D",
+      "metaDescription": "La respuesta honesta es un rango, no un número: de unos pocos minutos a más de una hora el mismo día y en el mismo sitio, según tu piel. Calculado con geometría solar y UV, y con todos los supuestos declarados.",
+      "h1": "¿Cuánto tiempo al sol hace falta para la vitamina D?",
+      "lead": "Hay una cifra que repite todo el mundo, y para la mayoría de la gente está mal.",
+      "answer": "Entre {min} y {max} minutos, a la misma latitud, a la misma hora y con la misma piel descubierta. Lo único que cambia es la piel.",
+      "whyHeading": "Por qué la respuesta de siempre falla",
+      "whyBody": "«De diez a quince minutos» es la cifra que circula, y es una medida real: de un tipo de piel. La melanina absorbe el mismo ultravioleta que fabrica la vitamina, así que la piel más oscura necesita unas seis veces más que la más clara para la misma dosis. Diez minutos se acerca en la mitad del rango y falla en los dos extremos: le sobra a la piel muy clara y no llega ni a la mitad de lo que necesita la más oscura. Un buscador no puede arreglar esto, porque la respuesta depende de quién pregunta.",
+      "chooseHeading": "Encuentra tu rango"
+    },
+    "bands": {
+      "fair": {
+        "title": "Cuánto sol para la vitamina D con piel clara",
+        "metaDescription": "La piel clara fabrica vitamina D más rápido que ninguna, y se quema antes. Los minutos que necesitas mes a mes, con el tiempo hasta el enrojecimiento al lado.",
+        "h1": "Cuánto sol para la vitamina D con piel clara",
+        "lead": "Eres quien menos necesita. El consejo habitual se te pasa de largo, y pasarse te sale caro.",
+        "answer": "Entre {min} y {max} minutos, según el mes.",
+        "angleHeading": "La dosis que necesitas y la que hace daño están muy cerca",
+        "angleBody": "La piel clara tiene poca melanina que absorba el ultravioleta, así que fabrica vitamina D deprisa; y enrojece deprisa por el mismo motivo. En pleno verano, entre tener bastante y empezar a quemarse hay minutos, no horas. El consejo que circula está escrito alrededor de una piel más oscura, así que seguirlo no te da ni una unidad más de vitamina D y sí te deja un daño solar que no hacía falta. La exposición ultravioleta acumulada es la principal causa evitable de cáncer de piel, y la piel clara parte del riesgo más alto: eso convierte la respuesta corta en la prudente, no en la cómoda.",
+        "gloss": "Fototipos I y II: piel que siempre se quema y nunca se broncea, o que se quema con facilidad y se broncea poco.",
+        "cardBlurb": "Eres quien menos necesita, y quien menos margen tiene antes de quemarse."
+      },
+      "medium": {
+        "title": "Cuánto sol para la vitamina D con piel media u oliva",
+        "metaDescription": "La piel media es el supuesto por defecto sobre el que están escritas las recomendaciones genéricas. Qué implica, dónde sigue fallando y los minutos mes a mes.",
+        "h1": "Cuánto sol para la vitamina D con piel media u oliva",
+        "lead": "El consejo que ya has leído está escrito para ti. Se acerca bastante, y eres la única franja para la que se acerca.",
+        "answer": "Entre {min} y {max} minutos, según el mes.",
+        "angleHeading": "Ser el caso por defecto tiene su propio problema",
+        "angleBody": "Casi toda recomendación pública da por supuesta esta franja sin decirlo. Eso hace que la cifra conocida te sirva, pero también significa que heredas un número al que nadie puso la letra pequeña, y la letra pequeña importa más que el número. La estación lo mueve más que cualquier cosa salvo la piel: el mismo cuerpo a la misma latitud necesita una fracción del tiempo en pleno verano de la que necesita al borde de la temporada, y por debajo de cierta altura del sol no funciona ninguna duración. La cifra que te han dado es una cifra de junio sin etiqueta.",
+        "gloss": "Fototipos III y IV: piel que a veces se quema y se broncea de forma gradual, o que rara vez se quema y se broncea con facilidad.",
+        "cardBlurb": "La franja para la que se escribió el consejo genérico, sin decirlo."
+      },
+      "dark": {
+        "title": "Cuánto sol para la vitamina D con piel morena u oscura",
+        "metaDescription": "La piel oscura necesita varias veces más sol para la misma vitamina D, y por eso el déficit es más frecuente en latitudes altas. Los minutos mes a mes, calculados y no supuestos.",
+        "h1": "Cuánto sol para la vitamina D con piel morena u oscura",
+        "lead": "Necesitas varias veces más que la cifra que circula, y en latitudes altas puede que el sol no dé para tanto.",
+        "answer": "Entre {min} y {max} minutos, según el mes.",
+        "angleHeading": "Por qué el déficit es más frecuente lejos del ecuador",
+        "angleBody": "La melanina es un filtro solar eficaz, y filtra justo la longitud de onda que fabrica la vitamina. Eso es una ventaja donde el sol pega fuerte y un inconveniente donde llega débil: una piel adaptada a la luz ecuatorial saca una fracción del rendimiento a un invierno del norte. Los sistemas sanitarios lo señalan aparte — el NHS nombra a las personas de origen africano, afrocaribeño y del sur de Asia como más propensas a andar bajas — y el motivo es aritmético, no de hábitos. En la práctica, los meses de transición se te cierran antes de lo que sugiere el calendario, y los meses que esta página marca como imposibles lo son por mucho que te quedes.",
+        "gloss": "Fototipos V y VI: piel que rara vez o nunca se quema y se broncea intensamente.",
+        "cardBlurb": "Varias veces más tiempo, y una temporada que cierra antes de lo que dice el calendario."
+      }
+    }
+  },
   "offline": {
     "title": "Sin conexión",
     "description": "Vitamina D Explorer necesita conexión a internet para cargar datos meteorológicos y de ciudades. Vuelve a intentarlo cuando tengas conexión.",
