@@ -72,10 +72,30 @@ export default async function SuntimePage({
   const description = t(`${page}.metaDescription`);
   const url = band ? suntimeBandUrl(locale, band) : suntimeUrl(locale);
 
-  // The range the headline quotes. On the mother it spans every band, which is
-  // the whole point of that page: the honest answer is not a number.
-  const low = self ? self.minMinutes : Math.min(...BANDS.map((b) => figures[b].minMinutes));
-  const high = self ? self.maxMinutes : Math.max(...BANDS.map((b) => figures[b].maxMinutes));
+  /**
+   * The range the headline quotes, and the two pages quote DIFFERENT ranges on
+   * purpose — because their sentences make different claims.
+   *
+   * A band page says "between X and Y minutes, depending on the month", so it
+   * quotes its own seasonal span: fastest type on the strongest day to slowest
+   * type on the weakest viable one.
+   *
+   * The mother says "same latitude, same hour, same exposed skin — the only
+   * thing that changes is the skin". That sentence is only true at ONE INSTANT,
+   * so the range is the six types on the season's strongest day. Spanning the
+   * season here as well would print a number that varies by skin AND month under
+   * a sentence claiming only skin varies — measured wrong, not merely vague:
+   * it read "between 5 and 72 minutes" where the honest same-instant answer is 5
+   * to 30. It is also the stronger claim: six times over, same sun.
+   *
+   * `byType` carries all six types on every band's figures, so either band
+   * serves as the source.
+   */
+  const perType = figures.fair.byType
+    .map((t) => t.minMinutes)
+    .filter((m): m is number => m !== null);
+  const low = self ? self.minMinutes : Math.min(...perType);
+  const high = self ? self.maxMinutes : Math.max(...perType);
 
   const monthLabel = (month: number) => capFirst(monthName(locale, month - 1));
   const listMonths = (months: number[]) =>
@@ -260,7 +280,14 @@ export default async function SuntimePage({
         </div>
         {band && (
           <p className="mt-4">
-            <A href={suntimePathname(locale)}>{t("backToMother")}</A>
+            {/* min-h-[44px] is this repo's mobile tap-target floor; measured at
+                21px here before it was added. Same treatment as SiteFooter. */}
+            <A
+              href={suntimePathname(locale)}
+              className="inline-flex min-h-[44px] items-center"
+            >
+              {t("backToMother")}
+            </A>
           </p>
         )}
       </section>
@@ -269,7 +296,10 @@ export default async function SuntimePage({
           engine nor a general assistant has. The skin type travels in the URL so
           the app opens already set to the band the reader just chose. */}
       <Card className="mb-8">
-        <A href={band ? `/dashboard?skin=${BAND_TYPES[band][0]}` : "/dashboard"}>
+        <A
+          href={band ? `/dashboard?skin=${BAND_TYPES[band][0]}` : "/dashboard"}
+          className="inline-flex min-h-[44px] items-center font-semibold"
+        >
           {t("ctaLabel")}
         </A>
       </Card>

@@ -214,7 +214,7 @@ export const SUNTIME_PAGE_REVISION: ContentRevision = {
     "copy.de": "a289462081a87c96",
     "copy.ru": "f14b45c7849f2daa",
     "copy.lt": "e61ab0b4db5bf4f9",
-    figures: "22a1c01136345e84",
+    figures: "cd2575ac7a87bf70",
     reference: "4303d27a87c4a0dd",
     constants: "c9d5d03dc2b9c7b9",
   },

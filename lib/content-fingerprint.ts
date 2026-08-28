@@ -281,6 +281,16 @@ const SUNTIME_MODULES = [
   "lib/suntime-content.ts",
   "lib/suntime-routes.ts",
   "lib/city-copy.ts",
+  // The page component is here and its two siblings' are not, which is a
+  // deliberate difference. This one CHOOSES which of the computed figures each
+  // page prints — the mother quotes the six types at one instant, a band page
+  // quotes its own seasonal span — so an edit here changes the numbers on all
+  // 24 pages without touching a model file or a message string. That is exactly
+  // what the guard is for. (The equivalent gap for the month pages, lib/schema.ts,
+  // is documented as still open in lib/content-revision.ts; closing it there
+  // would force a date decision on 3318 URLs in one commit, which is why this
+  // family gets it and that one does not.)
+  "app/[locale]/_suntime/SuntimePage.tsx",
 ] as const;
 
 /**
