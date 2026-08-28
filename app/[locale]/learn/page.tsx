@@ -3,6 +3,7 @@ import { Sun, Pill, FlaskConical, Sunrise, ArrowLeft } from "lucide-react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
+import { suntimePathname } from "@/lib/suntime-routes";
 import { referencesFor } from "@/lib/references";
 import PosterHero from "@/components/PosterHero";
 import LearnQA from "@/components/LearnQA";
@@ -117,6 +118,20 @@ export default async function LearnPage({ params }: { params: Promise<{ locale: 
           ))}
           </div>
         </div>
+      </div>
+
+      {/*
+        The one question these 29 answers do not answer. This page explains the
+        mechanism; "how long" is the query with the volume and it now has pages
+        of its own (spec §5), so the two link rather than compete.
+      */}
+      <div className="mb-6 border-t border-border-subtle pt-4">
+        <Link
+          href={suntimePathname(locale)}
+          className="inline-flex min-h-[44px] items-center gap-1.5 text-body font-semibold text-sun-strong underline decoration-1 decoration-sun-strong/40 underline-offset-[3px] transition-colors hover:decoration-sun-strong"
+        >
+          {t("howLongLink")}
+        </Link>
       </div>
 
       {/* Footer link */}

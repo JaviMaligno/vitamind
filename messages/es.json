@@ -213,6 +213,7 @@
     "appHeading": "Aplicación",
     "citiesHeading": "Vitamina D por ciudad",
     "learn": "Guía",
+    "suntime": "Cuánto sol necesitas",
     "partners": "Colabora",
     "about": "Quién está detrás",
     "methodology": "Cómo se calcula",
@@ -435,7 +436,8 @@
         "a": "Por encima de los círculos polares (a partir de ~66,6° de latitud), la inclinación de la Tierra hace que en pleno verano el sol no llegue a ponerse (sol de medianoche) y en pleno invierno no llegue a salir (noche polar). Cuanto más cerca del polo, más dura el fenómeno: en Tromsø o Svalbard son semanas o meses enteros. La app lo señala en el panel del sol cuando ocurre, y durante el largo invierno polar la vitamina D solo puede venir de la dieta o de la suplementación."
       }
     },
-    "backToApp": "Volver a la app"
+    "backToApp": "Volver a la app",
+    "howLongLink": "¿Y cuánto tiempo al sol hace falta? →"
   },
   "cities": {
     "reikiavik": "Reikiavik",

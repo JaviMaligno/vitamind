@@ -12,6 +12,7 @@ import {
   buildIndexAlternates, indexStaticParams,
 } from "@/lib/city-routes";
 import { cityYearProfile } from "@/lib/city-content";
+import { suntimePathname } from "@/lib/suntime-routes";
 import { regionForFlag, REGION_ORDER } from "@/lib/continent";
 
 export function generateStaticParams() {
@@ -72,6 +73,7 @@ export default async function CityIndexPage({ params }: { params: Promise<Params
   setRequestLocale(p.locale);
 
   const t = await getTranslations({ locale: p.locale, namespace: "cityPage" });
+  const tSuntime = await getTranslations({ locale: p.locale, namespace: "suntimePage" });
 
   // Every city, enriched with its localized name/href and a one-line datum
   // (months of viable sun, all-year, or never) derived from the same solar
@@ -163,6 +165,21 @@ export default async function CityIndexPage({ params }: { params: Promise<Params
           </section>
         ))}
       </div>
+
+      {/*
+        Every page in this index is about a place. The query with the demand
+        carries no place at all (spec §1), so the index points at the family
+        that answers it — and picks up an internal link from a page that is
+        already crawled.
+      */}
+      <p className="mt-8 border-t border-border-subtle pt-4">
+        <Link
+          href={suntimePathname(p.locale)}
+          className="text-body font-semibold text-sun-strong underline decoration-1 decoration-sun-strong/40 underline-offset-[3px] transition-colors hover:decoration-sun-strong"
+        >
+          {tSuntime("mother.h1")}
+        </Link>
+      </p>
     </main>
   );
 }

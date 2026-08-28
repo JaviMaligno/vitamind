@@ -20,22 +20,37 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   const { locale } = await params;
 
+  /**
+   * REFOCUSED ON THE MECHANISM, 2026-08-28. Spec §5.
+   *
+   * This page used to be titled "Complete Guide to Vitamin D", which put it
+   * against MedlinePlus and university hospitals for the entry query — a fight
+   * that cannot be won with 19 inbound links, 12 of them our own. It also
+   * duplicated an intent it does not serve: the 29 answers explain WHY (why UVB
+   * and not UVA, why glass blocks it, what the UV index means) and not one of
+   * them answers "how long", which is the query with the volume.
+   *
+   * That query now has pages of its own — `/cuanto-sol-vitamina-d` and its three
+   * bands — so this page stops competing for it and claims what it actually
+   * covers. The 29 answers, the FAQPage markup and the URL are untouched: only
+   * the title, the description and the framing move.
+   */
   const titles: Record<string, string> = {
-    es: "Aprende sobre Vitamina D — Guía Completa de Síntesis Solar y Suplementación",
-    en: "Learn about Vitamin D — Complete Guide to Solar Synthesis & Supplementation",
-    fr: "Apprendre sur la Vitamine D — Guide Complet de Synthèse Solaire",
-    de: "Vitamin D lernen — Vollständiger Leitfaden zur Sonnensynthese",
-    ru: "Узнайте о витамине D — Полное руководство по синтезу на солнце",
-    lt: "Sužinokite apie vitaminą D — Pilnas saulės sintezės vadovas",
+    es: "Cómo funciona la vitamina D del sol — el mecanismo, explicado",
+    en: "How vitamin D from the sun works — the mechanism, explained",
+    fr: "Comment fonctionne la vitamine D du soleil — le mécanisme expliqué",
+    de: "Wie Vitamin D aus der Sonne entsteht — der Mechanismus erklärt",
+    ru: "Как работает витамин D от солнца — механизм, объяснённый",
+    lt: "Kaip veikia vitaminas D iš saulės — mechanizmas paaiškintas",
   };
 
   const descriptions: Record<string, string> = {
-    es: "Todo sobre la vitamina D: síntesis solar, suplementación con D3/K2/magnesio, dosis recomendadas, niveles óptimos en sangre, y beneficios del sol más allá de la vitamina D.",
-    en: "Everything about vitamin D: solar synthesis, D3/K2/magnesium supplementation, recommended doses, optimal blood levels, and sun benefits beyond vitamin D.",
-    fr: "Tout sur la vitamine D : synthèse solaire, supplémentation D3/K2/magnésium, doses recommandées et bienfaits du soleil.",
-    de: "Alles über Vitamin D: Sonnensynthese, D3/K2/Magnesium-Supplementierung, empfohlene Dosen und Vorteile der Sonne.",
-    ru: "Всё о витамине D: солнечный синтез, добавки D3/K2/магний, рекомендуемые дозы и польза солнца.",
-    lt: "Viskas apie vitaminą D: saulės sintezė, D3/K2/magnio papildai, rekomenduojamos dozės ir saulės nauda.",
+    es: "Por qué solo el UVB sirve, por qué el cristal lo bloquea y qué significa el índice UV. El mecanismo detrás de la síntesis solar, en 29 respuestas. Para saber cuánto tiempo necesitas, la respuesta está en su propia página.",
+    en: "Why only UVB works, why glass blocks it and what the UV index means. The mechanism behind solar synthesis, in 29 answers. For how long you actually need, that answer has a page of its own.",
+    fr: "Pourquoi seul l'UVB fonctionne, pourquoi le verre le bloque et ce que signifie l'indice UV. Le mécanisme de la synthèse solaire, en 29 réponses. Pour la durée, la réponse a sa propre page.",
+    de: "Warum nur UVB wirkt, warum Glas es blockiert und was der UV-Index bedeutet. Der Mechanismus hinter der Sonnensynthese, in 29 Antworten. Wie lange Sie brauchen, steht auf einer eigenen Seite.",
+    ru: "Почему работает только UVB, почему стекло его задерживает и что означает УФ-индекс. Механизм солнечного синтеза в 29 ответах. Сколько нужно времени — на отдельной странице.",
+    lt: "Kodėl veikia tik UVB, kodėl stiklas jį sulaiko ir ką reiškia UV indeksas. Saulės sintezės mechanizmas 29 atsakymuose. Kiek laiko reikia — atsakymas turi savo puslapį.",
   };
 
   return {

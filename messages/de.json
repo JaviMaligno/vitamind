@@ -213,6 +213,7 @@
     "appHeading": "App",
     "citiesHeading": "Vitamin D nach Stadt",
     "learn": "Ratgeber",
+    "suntime": "Wie viel Sonne",
     "partners": "Partner",
     "about": "Über uns",
     "methodology": "Methodik",
@@ -435,7 +436,8 @@
         "a": "Jenseits der Polarkreise (ab ~66,6° Breite) führt die Neigung der Erde dazu, dass die Sonne im Hochsommer nicht untergeht (Mitternachtssonne) und im tiefsten Winter nicht aufgeht (Polarnacht). Je näher am Pol, desto länger dauert das Phänomen: In Tromsø oder auf Spitzbergen sind es ganze Wochen oder Monate. Die App weist im Sonnenpanel darauf hin, wenn es so weit ist — und im langen Polarwinter kann Vitamin D nur aus der Ernährung oder über Nahrungsergänzung kommen."
       }
     },
-    "backToApp": "Zurück zur App"
+    "backToApp": "Zurück zur App",
+    "howLongLink": "Und wie lange muss man in die Sonne? →"
   },
   "cities": {
     "reikiavik": "Reykjavik",

@@ -213,6 +213,7 @@
     "appHeading": "Programėlė",
     "citiesHeading": "Vitaminas D pagal miestą",
     "learn": "Gidas",
+    "suntime": "Kiek saulės reikia",
     "partners": "Partneriams",
     "about": "Apie",
     "methodology": "Metodika",
@@ -435,7 +436,8 @@
         "a": "Už poliarinių ratų (nuo ~66,6° platumos) dėl Žemės ašies posvyrio vasaros įkarštyje saulė nenusileidžia (vidurnakčio saulė), o žiemos viduryje nepateka (poliarinė naktis). Kuo arčiau ašigalio, tuo ilgiau tai trunka: Tromsėje ar Svalbarde — ištisas savaites ar mėnesius. Programėlė tai pažymi saulės skydelyje, o per ilgą poliarinę žiemą vitamino D galima gauti tik su maistu arba papildais."
       }
     },
-    "backToApp": "Grįžti į programėlę"
+    "backToApp": "Grįžti į programėlę",
+    "howLongLink": "O kiek laiko reikia saulėje? →"
   },
   "cities": {
     "reikiavik": "Reikjavikas",

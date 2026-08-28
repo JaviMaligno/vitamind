@@ -213,6 +213,7 @@
     "appHeading": "App",
     "citiesHeading": "Vitamin D by city",
     "learn": "Learn",
+    "suntime": "How long in the sun",
     "partners": "Partners",
     "about": "About",
     "methodology": "Methodology",
@@ -435,7 +436,8 @@
         "a": "Above the polar circles (from ~66.6° latitude), Earth's tilt means the midsummer sun never sets (midnight sun) and the midwinter sun never rises (polar night). The closer to the pole, the longer it lasts: in Tromsø or Svalbard it spans whole weeks or months. The app flags it in the sun panel when it happens, and through the long polar winter vitamin D can only come from diet or supplementation."
       }
     },
-    "backToApp": "Back to the app"
+    "backToApp": "Back to the app",
+    "howLongLink": "And how long in the sun do you need? →"
   },
   "cities": {
     "reikiavik": "Reykjavik",

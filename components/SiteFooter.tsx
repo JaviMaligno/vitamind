@@ -4,6 +4,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { ArrowRight } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { cityPagePath, indexPath } from "@/lib/city-client-links";
+import { suntimePathname } from "@/lib/suntime-routes";
 
 // Keys of the generated CITY_SLUGS map. Short fixed list: these links render in
 // the HTML of every page, so each entry funnels sitewide link equity to one
@@ -37,6 +38,11 @@ export default function SiteFooter() {
     { href: "/explore", label: t("nav.explore") },
     { href: "/profile", label: t("nav.profile") },
     { href: "/learn", label: t("footer.learn") },
+    // Sitewide internal link to the page that answers the query with the
+    // volume. The label lives in `footer`, not `suntimePage`: this is a client
+    // component, and adding `suntimePage` to CLIENT_NAMESPACES would ship ~45 KB
+    // of copy to every response for one link.
+    { href: suntimePathname(locale), label: t("footer.suntime") },
     { href: "/partners", label: t("footer.partners") },
     { href: "/about", label: t("footer.about") },
     { href: "/methodology", label: t("footer.methodology") },

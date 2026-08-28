@@ -213,6 +213,7 @@
     "appHeading": "Application",
     "citiesHeading": "Vitamine D par ville",
     "learn": "Guide",
+    "suntime": "Combien de soleil",
     "partners": "Partenaires",
     "about": "À propos",
     "methodology": "Méthodologie",
@@ -435,7 +436,8 @@
         "a": "Au-delà des cercles polaires (à partir de ~66,6° de latitude), l'inclinaison de la Terre fait qu'en plein été le soleil ne se couche pas (soleil de minuit) et qu'en plein hiver il ne se lève pas (nuit polaire). Plus on s'approche du pôle, plus le phénomène dure : à Tromsø ou au Svalbard, il s'étend sur des semaines, voire des mois entiers. L'application le signale dans le panneau du soleil quand cela se produit, et pendant le long hiver polaire, la vitamine D ne peut venir que de l'alimentation ou de la supplémentation."
       }
     },
-    "backToApp": "Retour à l'application"
+    "backToApp": "Retour à l'application",
+    "howLongLink": "Et combien de temps au soleil faut-il ? →"
   },
   "cities": {
     "reikiavik": "Reykjavik",
