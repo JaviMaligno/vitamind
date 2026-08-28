@@ -125,7 +125,17 @@ function readState(): InstallBannerState {
     // (the boolean never recorded it) and 0 would make the cooldown look
     // already served, so the migration is dated at read time.
     if (localStorage.getItem(SEEN_KEY) === "true") {
-      return { shownAt: Date.now(), count: 1, outcome: "dismissed" };
+      // PERSISTED, and that is load-bearing rather than tidy. Returning this
+      // without writing it re-derives `shownAt` on EVERY read, so
+      // `now - state.shownAt` is always ~0 and the cooldown below can never
+      // elapse: a browser carrying the legacy flag would never be asked again.
+      // Which is the exact failure the test above this function is named for —
+      // "not into silence forever" — and it only passed because three calls
+      // could land in one millisecond. It failed a production deploy on
+      // 2026-08-28 when they did not.
+      const migrated: InstallBannerState = { shownAt: Date.now(), count: 1, outcome: "dismissed" };
+      writeState(migrated);
+      return migrated;
     }
   } catch { /* private mode / storage disabled — behave as never shown */ }
   return NEVER_SHOWN;

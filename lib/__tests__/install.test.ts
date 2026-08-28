@@ -226,6 +226,32 @@ describe("install banner state", () => {
     expect(canShowInstallBanner(state.shownAt + INSTALL_BANNER_COOLDOWN_MS)).toBe(true);
   });
 
+  /**
+   * THE ASSERT ABOVE PASSED FOR THE WRONG REASON UNTIL 2026-08-28, and this one
+   * exists so it cannot happen again.
+   *
+   * The migration returned a fresh `Date.now()` on every read WITHOUT writing
+   * it, so `shownAt` moved forward on each call and `now - shownAt` was always
+   * ~0: the cooldown could never elapse and a legacy browser would never be
+   * asked again. The assert above only caught it when a millisecond ticked
+   * between two calls — it passed in CI and failed the production deploy on the
+   * same commit an hour later.
+   *
+   * So this asserts the invariant directly and without a clock: the stamp is
+   * stable across reads. No timing, nothing to get lucky with.
+   */
+  it("stamps the migration once, not on every read", () => {
+    localStorage.setItem("vitamind:installBannerSeen", "true");
+    const first = getInstallBannerState().shownAt;
+    const second = getInstallBannerState().shownAt;
+    const third = getInstallBannerState().shownAt;
+    expect(second).toBe(first);
+    expect(third).toBe(first);
+    // And the legacy key is gone, which is what the comment in readState claims
+    // and what makes the migration run once per browser rather than forever.
+    expect(localStorage.getItem("vitamind:installBannerSeen")).toBeNull();
+  });
+
   it("drops the legacy key once a real record exists", () => {
     localStorage.setItem("vitamind:installBannerSeen", "true");
     markInstallBannerShown(2_000);
