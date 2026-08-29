@@ -351,6 +351,25 @@ function sunEvent({
     "@id": `${url}#${kind}-${startDate.slice(0, 10)}`,
     name: `${label} — ${cityName}`,
     startDate,
+    /**
+     * The same instant, because that is what this event IS.
+     *
+     * `HORIZON_DEG = -0.833` in lib/solar.ts defines sunrise as the moment the
+     * sun's upper limb crosses the horizon: one instant, and the single figure
+     * the page prints beside it. The disc takes two or three minutes to clear at
+     * mid latitudes and far longer near the poles, but this repo does not
+     * compute that, and a duration invented to fill a field is exactly what the
+     * header above refuses for every other optional property here.
+     *
+     * A COPY of the string rather than a second `localInstant` call. The offset
+     * is probed per instant (`offsetHoldsAtInstant`), so recomputing it could in
+     * principle land on a different side of a DST transition from its own
+     * `startDate`; copying cannot.
+     *
+     * Added 2026-08-29 after Search Console reported it missing on 80 items — a
+     * warning, not an error, and the only one of the nine that was a real gap.
+     */
+    endDate: startDate,
     location: { "@id": placeId },
     // Omitted rather than emitted empty when the page could not build one.
     ...(description ? { description } : {}),
