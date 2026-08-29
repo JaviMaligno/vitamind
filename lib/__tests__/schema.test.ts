@@ -353,6 +353,47 @@ describe("sunPageGraph", () => {
     expect(events[3].startDate).toBe("2026-08-31T20:45:00+02:00");
   });
 
+  /**
+   * `endDate`, added 2026-08-29 after Search Console emailed about it: 80 items
+   * carrying the warning "Falta el campo endDate". Warnings, not errors — the
+   * nodes were and are valid — but it was the one field of the nine that the
+   * code genuinely never emitted. The other eight are pages Google has not
+   * recrawled since the fields were added on 2026-08-18, and one (`url` inside
+   * `organizer`) stays unfixed on purpose: see the comment on `performer` in
+   * lib/schema.ts.
+   *
+   * IT EQUALS `startDate` BECAUSE THE EVENT IS AN INSTANT, and that is a claim
+   * about this model rather than a way to fill a field. `HORIZON_DEG = -0.833`
+   * in lib/solar.ts defines sunrise as the moment the sun's upper limb crosses
+   * the horizon — one instant, which is also the single figure the page prints
+   * beside it. The disc takes two to three minutes to clear at mid latitudes and
+   * much longer near the poles, but this repo does not compute that, and
+   * inventing a duration to look complete is exactly what the header of
+   * `sunEvent` refuses to do for every other optional property.
+   */
+  it("ends each Event at the instant it starts, because a sunrise is one", () => {
+    const events = nodesOfType(madridAugust(), "Event");
+    expect(events).toHaveLength(4);
+    for (const e of events) {
+      expect(e.endDate, "endDate is missing").toBeDefined();
+      expect(e.endDate).toBe(e.startDate);
+    }
+  });
+
+  it("carries the offset on endDate too, on a DST transition day", () => {
+    // The offset is probed per instant, so a stamped-then-copied endDate could
+    // in principle disagree with its own startDate. Copying the string cannot,
+    // and this pins that it is a copy rather than a second computation.
+    const january = nodesOfType(
+      madridAugust({ monthIndex: JANUARY, days: [{ day: 1, sunrise: 8.5, sunset: 17.9 }] }),
+      "Event",
+    );
+    for (const e of january) {
+      expect(e.endDate as string).toMatch(/\+01:00$/);
+      expect(e.endDate).toBe(e.startDate);
+    }
+  });
+
   it("labels the instant with the offset the zone is in there, not the record's fixed tz", () => {
     // The whole reason City.tz cannot be used: Madrid is tz=1 in the record and
     // sits at +02:00 for the whole of August. The probe reads the zone at the
