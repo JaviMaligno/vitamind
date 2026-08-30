@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { loadPreferences, savePreferences, loadHistory, saveHistory, mergeHistory, loadFavorites, loadCustomLocations, saveCustomLocation } from "@/lib/storage";
 import { loadProfile, updateProfile } from "@/lib/profile";
 import type { SkinType } from "@/lib/vitd";
 import type { City } from "@/lib/types";
 import type { User } from "@supabase/supabase-js";
+import { trackPrefsChanged } from "@/lib/analytics";
 
 export function usePreferences() {
   const [skinType, setSkinType] = useState<SkinType>(() => loadPreferences().skinType ?? 3);
@@ -13,6 +14,21 @@ export function usePreferences() {
   const [age, setAge] = useState<number | null>(() => loadPreferences().age ?? null);
   const [threshold, setThreshold] = useState(() => loadPreferences().threshold ?? 45);
   const [targetIU, setTargetIU] = useState(() => loadPreferences().targetIU ?? 1000);
+
+  // Tracked setters are what the UI gets; the raw ones stay private so the
+  // cloud->local sync in handleAuthChange can write the same state WITHOUT
+  // emitting "the user personalised this" for every field it restores.
+  const tracked = useMemo(() => ({
+    skin: <T,>(set: (v: T) => void) => (v: T) => { trackPrefsChanged("skin"); set(v); },
+    area: <T,>(set: (v: T) => void) => (v: T) => { trackPrefsChanged("area"); set(v); },
+    age: <T,>(set: (v: T) => void) => (v: T) => { trackPrefsChanged("age"); set(v); },
+    target: <T,>(set: (v: T) => void) => (v: T) => { trackPrefsChanged("target"); set(v); },
+  }), []);
+
+  const setSkinTypeTracked = useMemo(() => tracked.skin(setSkinType), [tracked]);
+  const setAreaFractionTracked = useMemo(() => tracked.area(setAreaFraction), [tracked]);
+  const setAgeTracked = useMemo(() => tracked.age(setAge), [tracked]);
+  const setTargetIUTracked = useMemo(() => tracked.target(setTargetIU), [tracked]);
   const [authUser, setAuthUser] = useState<User | null>(null);
 
   // Persist preferences callback (called by page when cityId changes)
@@ -65,15 +81,15 @@ export function usePreferences() {
 
   return {
     skinType,
-    setSkinType,
+    setSkinType: setSkinTypeTracked,
     areaFraction,
-    setAreaFraction,
+    setAreaFraction: setAreaFractionTracked,
     age,
-    setAge,
+    setAge: setAgeTracked,
     threshold,
     setThreshold,
     targetIU,
-    setTargetIU,
+    setTargetIU: setTargetIUTracked,
     authUser,
     persistPreferences,
     handleAuthChange,

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useId } from "react";
+import { trackAuth } from "@/lib/analytics";
 import { useTranslations, useLocale } from "next-intl";
 import { LogIn, LogOut } from "lucide-react";
 import { getSupabase } from "@/lib/supabase";
@@ -51,10 +52,13 @@ export default function AuthButton({ onAuthChange }: Props) {
     if (mode === "signup") {
       const { data, error: err } = await sb.auth.signUp({ email, password });
       if (err) {
+        trackAuth("signup", { outcome: "error" });
         setError(err.message);
       } else if (data.session) {
+        trackAuth("signup", { outcome: "session" });
         setShowForm(false);
       } else {
+        trackAuth("signup", { outcome: "confirm_email" });
         setMessage(t("checkEmail"));
         setMode("resend");
       }
@@ -68,10 +72,12 @@ export default function AuthButton({ onAuthChange }: Props) {
       // /reset-password page, which swaps the recovery session for a new password.
       const redirectTo = window.location.origin + getPathname({ href: "/reset-password", locale });
       const { error: err } = await sb.auth.resetPasswordForEmail(email, { redirectTo });
+      trackAuth("reset_requested", { outcome: err ? "error" : "ok" });
       if (err) setError(err.message);
       else setMessage(t("resetSent"));
     } else {
       const { error: err } = await sb.auth.signInWithPassword({ email, password });
+      trackAuth("login", { outcome: err ? "error" : "ok" });
       if (err) setError(err.message);
       else setShowForm(false);
     }
@@ -80,6 +86,7 @@ export default function AuthButton({ onAuthChange }: Props) {
 
   const handleLogout = useCallback(async () => {
     if (!sb) return;
+    trackAuth("logout");
     await sb.auth.signOut();
     setShowForm(false);
   }, [sb]);
@@ -111,7 +118,14 @@ export default function AuthButton({ onAuthChange }: Props) {
   return (
     <div className="relative">
       <button
-        onClick={() => setShowForm((v) => !v)}
+        onClick={() => {
+          // Only the opening edge is the funnel entry — "how many people even
+          // consider an account", the denominator every signup rate needs.
+          // Read from render state, never from inside the updater: React
+          // re-invokes updaters (twice under StrictMode) and would double-count.
+          if (!showForm) trackAuth("form_opened");
+          setShowForm((v) => !v);
+        }}
         className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center gap-1.5 rounded-lg bg-amber-400/[0.12] px-3 sm:px-3.5 text-caption font-medium text-accent cursor-pointer border-none hover:bg-amber-400/20 transition-colors"
         title={t("loginHint")}
         aria-label={t("login")}

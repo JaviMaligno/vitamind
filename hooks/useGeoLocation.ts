@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
+import { trackGpsDenied } from "@/lib/analytics";
 
 const LS_KEY = "vitamind:useGps";
 const GLOBAL_TIMEOUT = 20_000;
@@ -90,7 +91,13 @@ export function useGeoLocation() {
           setLoading(false);
           setSlow(false);
           setPermissionDenied(true);
-          if (!silent) setError("gpsDenied");
+          // Only the explicit ask counts. The silent auto-request on mount fires
+          // on every page load once permission is revoked, and counting it would
+          // drown the real signal: someone shown the prompt who said no.
+          if (!silent) {
+            trackGpsDenied();
+            setError("gpsDenied");
+          }
         }
         // TIMEOUT and POSITION_UNAVAILABLE are transient —
         // watchPosition keeps retrying, global timer handles the hard limit

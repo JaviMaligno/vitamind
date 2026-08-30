@@ -11,6 +11,7 @@ import {
   type InstallPlatform,
 } from "@/lib/install";
 import InstallInstructionsModal, { type InstallModalMode } from "@/components/InstallInstructionsModal";
+import { trackInstall } from "@/lib/analytics";
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
@@ -86,6 +87,7 @@ export default function InstallProvider({ children }: { children: ReactNode }) {
     const onInstalled = () => {
       // Terminal: the app is on the home screen, so the ask is never spent again.
       markInstallBannerOutcome("installed");
+      trackInstall("installed", "native");
       setDeferredPrompt(null);
       setIsInstalled(true);
       if (!installedToastShown.current) {
@@ -121,6 +123,7 @@ export default function InstallProvider({ children }: { children: ReactNode }) {
 
   const trigger = useCallback(async (): Promise<"accepted" | "dismissed" | "manual"> => {
     if (inApp) {
+      trackInstall("manual", "in-app");
       openModal("banner");
       return "manual";
     }
@@ -129,16 +132,20 @@ export default function InstallProvider({ children }: { children: ReactNode }) {
         await deferredPrompt.prompt();
         const { outcome } = await deferredPrompt.userChoice;
         setDeferredPrompt(null);
+        trackInstall(outcome, platform);
         return outcome;
       } catch {
         setDeferredPrompt(null);
+        trackInstall("dismissed", platform);
         return "dismissed";
       }
     }
     if (platform === "ios-manual" || platform === "manual") {
+      trackInstall("manual", platform);
       openModal("banner");
       return "manual";
     }
+    trackInstall("manual", platform);
     return "manual";
   }, [inApp, platform, deferredPrompt, openModal]);
 

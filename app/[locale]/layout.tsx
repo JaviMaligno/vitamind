@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { getMessages, setRequestLocale } from "next-intl/server";
 import { Analytics } from "@vercel/analytics/react";
+import VisitTracker from "@/components/VisitTracker";
 import AppShell from "@/components/AppShell";
 import { routing } from "@/i18n/routing";
 import { pickClientMessages } from "@/i18n/client-messages";
@@ -131,6 +132,7 @@ export default async function LocaleLayout(
           <AppShell>{children}</AppShell>
         </NextIntlClientProvider>
         <Analytics />
+        <VisitTracker />
       </body>
     </html>
   );

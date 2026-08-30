@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useMemo } from "react";
+import { trackInvestment } from "@/lib/analytics";
 import { loadHistory, upsertDayRecord, toggleDayOverride as toggleOverrideStorage } from "@/lib/storage";
 import { computeExposure } from "@/lib/vitd";
 import { updateProfile } from "@/lib/profile";
@@ -238,6 +239,7 @@ export function useHistory(
   );
 
   const toggleOverride = useCallback((date: string) => {
+    trackInvestment("history_override", { synced: Boolean(authUser) });
     const day = derived.find((d) => d.date === date);
     toggleOverrideStorage(date, day?.cityId ? { cityId: day.cityId, sufficient: day.sufficient } : undefined);
     if (authUser) syncHistoryToSupabase(authUser);

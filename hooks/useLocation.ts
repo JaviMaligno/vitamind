@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useMemo, useCallback, useEffect } from "react";
+import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import { BUILTIN_CITIES } from "@/lib/cities";
 import { loadFavorites, saveFavorites, loadCustomLocations, saveCustomLocation, deleteCustomLocation, loadPreferences } from "@/lib/storage";
+import { trackCitySelected, trackInvestment } from "@/lib/analytics";
 import type { City } from "@/lib/types";
 
 interface InitialLocation {
@@ -61,6 +62,14 @@ export function useLocation() {
     if (favorites.length > 0) saveFavorites(favorites);
   }, [favorites]);
 
+  // Mirror of `favorites` for the tracking call in toggleFav. Emitting from
+  // inside the setFavorites updater would double-count: React invokes updaters
+  // twice under StrictMode and may re-invoke them while rendering. The ref lets
+  // the event fire outside the updater without putting `favorites` in the
+  // callback's deps, which would churn its identity on every toggle.
+  const favoritesRef = useRef(favorites);
+  useEffect(() => { favoritesRef.current = favorites; }, [favorites]);
+
   // All cities = builtin + custom
   const allCities = useMemo(() => {
     const s = new Set(BUILTIN_CITIES.map((c) => c.id));
@@ -68,6 +77,9 @@ export function useLocation() {
   }, [customLocations]);
 
   const selectCity = useCallback((c: City) => {
+    // GPS results are synthesised with a `gps:` id, so the id — not the source —
+    // is what separates "used my location" from "picked/searched a city".
+    trackCitySelected(c.id.startsWith("gps:") ? "gps" : c.source);
     setLat(c.lat); setLon(c.lon); setTz(c.tz); setTimezone(c.timezone);
     setCityName(c.name); setCityFlag(c.flag || "\u{1F4CD}"); setCityId(c.id);
     if (c.source === "nominatim" && !BUILTIN_CITIES.find((b) => b.id === c.id)) {
@@ -92,6 +104,10 @@ export function useLocation() {
 
   const toggleFav = useCallback((c: City | string) => {
     const id = typeof c === "string" ? c : c.id;
+    const removing = favoritesRef.current.includes(id);
+    trackInvestment(removing ? "favorite_removed" : "favorite_added", {
+      total: removing ? favoritesRef.current.length - 1 : favoritesRef.current.length + 1,
+    });
     setFavorites((f) => f.includes(id) ? f.filter((x) => x !== id) : [...f, id]);
     if (typeof c !== "string" && c.source !== "builtin") {
       setCustomLocations((prev) => {
@@ -103,6 +119,7 @@ export function useLocation() {
   }, []);
 
   const handleSaveLocation = useCallback((city: City) => {
+    trackInvestment("custom_location_saved");
     saveCustomLocation(city);
     setCustomLocations((prev) => [...prev.filter((c) => c.id !== city.id), city]);
     setFavorites((f) => f.includes(city.id) ? f : [...f, city.id]);

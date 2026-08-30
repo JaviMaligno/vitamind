@@ -7,6 +7,7 @@ import { isStandalone, markInstallBannerShown } from "@/lib/install";
 import { Bell, BellOff, BellRing } from "lucide-react";
 import { useSolarPhase } from "@/hooks/useSolarPhase";
 import { PHASE_STYLE } from "@/lib/solar-phase";
+import { trackPush } from "@/lib/analytics";
 
 interface Props {
   lat: number;
@@ -126,6 +127,7 @@ export default function NotificationToggle({ lat, lon, tz, timezone, skinType, a
         await sub.unsubscribe();
       }
       setStatus("off");
+      trackPush("disabled", platform);
       return;
     }
 
@@ -135,10 +137,12 @@ export default function NotificationToggle({ lat, lon, tz, timezone, skinType, a
     // Flow D fires only when permission is still 'default' AND user is not already standalone.
     if (permission === "default" && !isStandalone()) {
       if (isInAppBrowser) {
+        trackPush("gated", "in-app");
         openModal("gating");
         return;
       }
       if (platform === "ios-manual") {
+        trackPush("gated", platform);
         openModal("gating");
         return;
       }
@@ -150,6 +154,7 @@ export default function NotificationToggle({ lat, lon, tz, timezone, skinType, a
       : await Notification.requestPermission();
     if (granted !== "granted") {
       setStatus("denied");
+      trackPush("denied", platform);
       return;
     }
 
@@ -178,9 +183,11 @@ export default function NotificationToggle({ lat, lon, tz, timezone, skinType, a
       });
       if (!res.ok) throw new Error(`subscribe endpoint returned ${res.status}`);
       setStatus("on");
+      trackPush("enabled", platform);
     } catch (err) {
       console.error("Push subscription failed:", err);
       setStatus("off");
+      trackPush("failed", platform);
       return;
     }
 

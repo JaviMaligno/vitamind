@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { trackInstallBannerShown } from "@/lib/analytics";
 import { useTranslations } from "next-intl";
 import { Smartphone, X } from "lucide-react";
 import { useInstallPrompt } from "@/hooks/useInstallPrompt";
@@ -57,6 +58,7 @@ export default function InstallBanner() {
     const show = () => {
       // Marked here, at the moment it goes on screen, so "seen" means seen.
       markInstallBannerShown();
+      trackInstallBannerShown(platform);
       setVisible(true);
     };
 
