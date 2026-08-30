@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useId } from "react";
-import { trackAuth } from "@/lib/analytics";
+import { trackAuth, setAuthed } from "@/lib/analytics";
 import { useTranslations, useLocale } from "next-intl";
 import { LogIn, LogOut } from "lucide-react";
 import { getSupabase } from "@/lib/supabase";
@@ -32,11 +32,15 @@ export default function AuthButton({ onAuthChange }: Props) {
     if (!sb) return;
     sb.auth.getUser().then(({ data }) => {
       setUser(data.user);
+      // A flag on every event, never a user id: "do account holders behave
+      // differently" is answerable without linking behaviour to an identity.
+      setAuthed(Boolean(data.user));
       onAuthChange(data.user);
     });
     const { data: { subscription } } = sb.auth.onAuthStateChange((_event, session) => {
       const u = session?.user ?? null;
       setUser(u);
+      setAuthed(Boolean(u));
       onAuthChange(u);
     });
     return () => subscription.unsubscribe();

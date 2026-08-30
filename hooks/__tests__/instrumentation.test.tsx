@@ -5,16 +5,17 @@ import type { City } from "@/lib/types";
 
 /**
  * The instrumentation is only worth having if it counts what actually happened.
- * These tests drive the real hooks and assert on the events that reach the
- * Vercel `track` boundary — the mock below is the only thing stubbed out.
+ * These tests drive the real hooks and assert on what reaches the NETWORK — the
+ * queue, the serialisation and the beacon all run for real; only `sendBeacon`
+ * itself is stubbed. Mocking one layer higher would have let a batching or
+ * encoding bug through while every test stayed green.
  *
  * Every case here is a way the counts could silently lie: a double-fire under
  * StrictMode, a cloud sync impersonating user intent, an ad blocker turning a
  * tracking call into a crash. A wrong number is worse than no number, because
  * a product decision gets made on it.
  */
-const track = vi.hoisted(() => vi.fn());
-vi.mock("@vercel/analytics", () => ({ track }));
+const beacon = vi.fn<(url: string, blob: unknown) => boolean>(() => true);
 
 // A stored cloud profile, so the login path really walks through the setters.
 vi.mock("@/lib/profile", () => ({
@@ -29,7 +30,7 @@ vi.mock("@/lib/profile", () => ({
 
 import { useLocation } from "../useLocation";
 import { usePreferences } from "../usePreferences";
-import { emit } from "@/lib/analytics";
+import { emit, flushEvents } from "@/lib/analytics";
 
 const city = (over: Partial<City> = {}): City => ({
   id: "madrid",
@@ -43,14 +44,40 @@ const city = (over: Partial<City> = {}): City => ({
   ...over,
 });
 
-/** Event names seen, in order. */
-const names = () => track.mock.calls.map((c) => c[0] as string);
-const propsOf = (name: string) =>
-  track.mock.calls.filter((c) => c[0] === name).map((c) => c[1]);
+interface SentEvent { name: string; props?: Record<string, unknown> }
+
+/** Every event actually serialised onto the wire, in order. */
+function sent(): SentEvent[] {
+  flushEvents();
+  return beacon.mock.calls.flatMap((call) => {
+    const body = (call as unknown as [string, Blob])[1] as unknown as { text?: () => string };
+    // jsdom's Blob has no sync reader; the stub below stores the raw string.
+    const raw = (body as unknown as { __raw: string }).__raw;
+    return (JSON.parse(raw).events ?? []) as SentEvent[];
+  });
+}
+
+const names = () => sent().map((e) => e.name);
+const propsOf = (name: string) => sent().filter((e) => e.name === name).map((e) => e.props);
 
 beforeEach(() => {
-  track.mockClear();
+  beacon.mockClear();
   localStorage.clear();
+  sessionStorage.clear();
+  // Capture the serialised body without depending on async Blob reading.
+  Object.defineProperty(navigator, "sendBeacon", {
+    configurable: true,
+    writable: true,
+    value: (url: string, blob: Blob & { __raw?: string }) => beacon(url, blob),
+  });
+  vi.stubGlobal("Blob", class {
+    __raw: string;
+    type: string;
+    constructor(parts: string[], opts?: { type?: string }) {
+      this.__raw = parts.join("");
+      this.type = opts?.type ?? "";
+    }
+  });
 });
 
 describe("city selection", () => {
@@ -138,8 +165,8 @@ describe("the tracking boundary itself", () => {
   // Ad blockers, offline, exhausted quota: `track` throwing must never surface.
   // A page that white-screens because analytics failed is strictly worse than
   // one with no analytics at all.
-  it("swallows a throwing track() instead of propagating it", () => {
-    track.mockImplementationOnce(() => { throw new Error("blocked by client"); });
-    expect(() => emit("anything")).not.toThrow();
+  it("swallows a throwing sendBeacon instead of propagating it", () => {
+    beacon.mockImplementationOnce(() => { throw new Error("blocked by client"); });
+    expect(() => { emit("anything"); flushEvents(); }).not.toThrow();
   });
 });

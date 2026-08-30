@@ -1,4 +1,5 @@
-import { track } from "@vercel/analytics";
+import { createQueue } from "./analytics-queue";
+import type { PropValue } from "./analytics-ingest";
 
 /**
  * Product instrumentation.
@@ -12,12 +13,22 @@ import { track } from "@vercel/analytics";
  *
  * Everything here is best-effort: a tracking call must never throw into a
  * render path, and must never block a user action.
+ *
+ * Events go to our own `/api/events` (Supabase behind it), NOT to Vercel Web
+ * Analytics: custom events are a Pro feature there and this project is on Hobby,
+ * where `track()` records nothing. Vercel's pageview script stays mounted and
+ * still works; this is the layer it cannot provide.
  */
 
 const VISIT_KEY = "vitamind:visit";
+const VISITOR_KEY = "vitamind:visitorId";
+const SESSION_KEY = "vitamind:sessionId";
+const ENDPOINT = "/api/events";
 
-/** Property values Vercel Web Analytics accepts on a custom event. */
-type EventProps = Record<string, string | number | boolean | null>;
+/** Batch size before an automatic flush. Kept well under the server's cap. */
+const MAX_BATCH = 20;
+
+type EventProps = Record<string, PropValue>;
 
 export interface VisitRecord {
   /** ISO calendar date (YYYY-MM-DD) of the first visit we ever saw. */
@@ -117,12 +128,116 @@ function writeVisit(record: VisitRecord): void {
   } catch { /* storage full or blocked — analytics is never worth an exception */ }
 }
 
+/** Random id, with a fallback for browsers without `crypto.randomUUID`. */
+function uuid(): string {
+  try {
+    if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+      return crypto.randomUUID();
+    }
+  } catch { /* fall through */ }
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
+    const r = (Math.random() * 16) | 0;
+    return (c === "x" ? r : (r & 0x3) | 0x8).toString(16);
+  });
+}
+
+/** Read an id from storage, minting and persisting one on first use. */
+function persistentId(store: "local" | "session", key: string): string {
+  const fallback = uuid();
+  if (typeof window === "undefined") return fallback;
+  try {
+    const s = store === "local" ? localStorage : sessionStorage;
+    const existing = s.getItem(key);
+    if (existing) return existing;
+    s.setItem(key, fallback);
+    return fallback;
+  } catch {
+    // Private mode, storage disabled: the id lives only for this page. Events
+    // still arrive; they just cannot be stitched into a returning visitor.
+    return fallback;
+  }
+}
+
+/**
+ * Whether a Supabase session exists. A flag, deliberately not a user id: the
+ * question is whether account holders behave differently, which a boolean
+ * answers without tying behaviour to an identity.
+ */
+let authed = false;
+export function setAuthed(value: boolean): void {
+  authed = value;
+}
+
+/**
+ * The referring site, or undefined for our own pages.
+ *
+ * An internal navigation sets document.referrer to our own URL, which would
+ * make `referrer_host` read "getvitamind.app" for most rows and destroy the one
+ * question the column exists to answer: where people arrived from.
+ */
+function externalReferrer(): string | undefined {
+  const ref = document.referrer;
+  if (!ref) return undefined;
+  try {
+    return new URL(ref).host === location.host ? undefined : ref;
+  } catch {
+    return undefined;
+  }
+}
+
+function post(batch: unknown[]): void {
+  const body = JSON.stringify({
+    visitorId: persistentId("local", VISITOR_KEY),
+    sessionId: persistentId("session", SESSION_KEY),
+    path: location.pathname,
+    locale: document.documentElement.lang || undefined,
+    referrer: externalReferrer(),
+    authed,
+    events: batch,
+  });
+
+  // sendBeacon survives the page unload that fetch() does not, which is exactly
+  // when the last events of a visit are sent. keepalive fetch is the fallback
+  // for browsers that refuse or lack it.
+  if (typeof navigator.sendBeacon === "function") {
+    const ok = navigator.sendBeacon(ENDPOINT, new Blob([body], { type: "application/json" }));
+    if (ok) return;
+  }
+  void fetch(ENDPOINT, {
+    method: "POST",
+    body,
+    headers: { "Content-Type": "application/json" },
+    keepalive: true,
+  }).catch(() => { /* nothing to do and nobody to tell */ });
+}
+
+const queue = createQueue({ maxBatch: MAX_BATCH, send: post, now: () => Date.now() });
+
+let listenersBound = false;
+function bindFlushListeners(): void {
+  if (listenersBound || typeof window === "undefined") return;
+  listenersBound = true;
+  // `visibilitychange`→hidden is the reliable end-of-visit signal on mobile,
+  // where `pagehide`/`beforeunload` are unreliable and `unload` never fires.
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "hidden") queue.flush();
+  });
+  window.addEventListener("pagehide", () => queue.flush());
+}
+
 /** Fire a custom event. Never throws; a no-op on the server. */
 export function emit(name: string, props?: EventProps): void {
   if (typeof window === "undefined") return;
   try {
-    track(name, props);
-  } catch { /* blocked by an ad blocker, offline, quota — all fine */ }
+    bindFlushListeners();
+    queue.push(name, props);
+  } catch { /* storage blocked, exotic browser — never the user's problem */ }
+}
+
+/** Send anything buffered right now. Exposed for tests and for callers that
+ *  know the page is about to go away. */
+export function flushEvents(): void {
+  queue.flush();
 }
 
 /**

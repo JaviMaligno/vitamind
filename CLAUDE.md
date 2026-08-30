@@ -38,6 +38,7 @@ Routes are locale-segmented via next-intl (`es` default without prefix; `en`, `f
 - **`app/[locale]/error.tsx`, `app/[locale]/not-found.tsx`, `app/global-error.tsx`** — error boundaries; localized copy under the `errorPage`/`notFoundPage` message keys.
 - **`app/api/weather/route.ts`** — Proxies Open-Meteo (UV index, cloud cover). Validates lat/lon/dates, 8s upstream timeout, opaque error responses.
 - **`app/api/cities/route.ts`** — Server-side city search against Supabase (localized RPCs with fallbacks).
+- **`app/api/events/route.ts`** — Product analytics ingest. Public and unauthenticated by necessity (the events come from browsers), so nothing is trusted: batch capped at 50, names/values truncated, non-scalar props dropped, browser clocks clamped to a plausible window, and an Origin check that keeps other people's pages out. All of that lives in the pure, separately tested `lib/analytics-ingest.ts`; the route is transport only. Writes via `lib/analytics-store.ts` (service role) to `analytics_events`, which has RLS on with no policies. **Custom events are a Pro feature on Vercel Web Analytics and this project is on Hobby**, which is why `track()` is not used — see `docs/analytics.md` for the event catalogue and the queries.
 - **`app/api/push/subscribe/route.ts`** — Push subscription CRUD (validates/clamps all input).
 - **`app/api/push/notify/route.ts`** — Cron-triggered push broadcaster, invoked once per UTC hour and sending only to the subscriptions whose LOCAL clock is in the morning window (`lib/push-schedule.ts`), at most once per subscriber-local day. Auth: `Authorization: Bearer $CRON_SECRET`. Logs a run summary; returns 500 if every delivery fails so Vercel marks the cron run failed.
 - **`app/api/mcp/[transport]/route.ts` + `app/api/mcp-auth/[transport]/route.ts`** — Remote MCP server (`mcp-handler`, stateless Streamable HTTP; no Redis, so no SSE transport), tool set registered once in `lib/mcp-server.ts` and served at TWO endpoints: `/api/mcp/mcp` (public, auth optional — never 401s) and `/api/mcp-auth/mcp` (auth REQUIRED — its 401 is what triggers the client's OAuth flow). Six public tools (`search_city`, `get_sun_times`, `get_vitamin_d_window` with `atTime`, `get_vitamin_d_year`, `get_current_status`, `estimate_sun_session`) plus four OAuth-scoped personal tools (`get_my_profile`, `get_my_cities`, `get_my_history`, `log_sun_session`). Tool logic is pure and unit-tested in `lib/mcp-tools.ts` / `lib/mcp-personal.ts`; per-call usage logging (tool + duration only, never args). User docs at `/connect`.
@@ -329,6 +330,10 @@ That matters mainly if the gate is ever made conditional on `VERCEL_ENV` (a temp
 
 `supabase/migrations/*.sql` are **not applied automatically**. After adding one, run it against the shared Supabase project (SQL editor or `supabase db push`) **before** deploying code that depends on it. Applied state worth knowing:
 
+- ⚠️ **`20260830_analytics_events.sql` is PENDING as of 2026-08-30.** It creates the
+  product analytics event stream. Until it is applied, `/api/events` answers 500 on every
+  batch and no events are recorded — the app is unaffected (the client ignores the
+  response), but the instrumentation silently collects nothing. See `docs/analytics.md`.
 - ⚠️ **`20260827_push_last_notified_on.sql` is PENDING as of 2026-08-27.** It adds
   `push_subscriptions.last_notified_on date`, the once-a-day guard the hourly push cron
   depends on. `/api/push/notify` claims that column before every push and **fails the run
