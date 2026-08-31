@@ -99,3 +99,28 @@ describe("trackVisit reports one visit per session", () => {
     });
   });
 });
+
+/**
+ * The app redirects from `/` to `/dashboard` moments after mounting, so `visit`
+ * is queued on a page that is about to be destroyed. Measured against the dev
+ * deployment while it waited for the batch: one visit of three arrived. It is
+ * sent on its own now.
+ */
+describe("the visit event does not wait for the batch", () => {
+  const beacon = vi.fn<(url: string, blob: unknown) => boolean>(() => true);
+
+  beforeEach(() => {
+    localStorage.clear();
+    sessionStorage.clear();
+    beacon.mockClear();
+    Object.defineProperty(navigator, "sendBeacon", {
+      configurable: true, writable: true,
+      value: (url: string, blob: unknown) => beacon(url, blob),
+    });
+  });
+
+  it("leaves for the network without anything else asking for a flush", () => {
+    trackVisit();
+    expect(beacon).toHaveBeenCalledTimes(1);
+  });
+});

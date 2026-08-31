@@ -279,6 +279,17 @@ export function trackVisit(now: Date = new Date()): VisitClassification {
       typeof window !== "undefined" &&
       window.matchMedia?.("(display-mode: standalone)").matches === true,
   });
+  // Sent immediately instead of waiting for the tab to hide.
+  //
+  // The app navigates from `/` to `/dashboard` within a moment of mounting, so
+  // this event is queued on a page that is about to be torn down, and a beacon
+  // fired during that unload is best-effort: measured against the dev
+  // deployment, one of three visits arrived. Losing visits would corrupt the
+  // one number this whole stream exists to produce — did anyone come back.
+  //
+  // The cost is one extra request per SESSION, not per event, because `visit`
+  // is emitted once per session. Everything else still rides the batch.
+  flushEvents();
   return result;
 }
 
