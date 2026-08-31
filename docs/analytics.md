@@ -26,6 +26,17 @@ invocación de función, y una visita que dispara ocho eventos costaría ocho. E
 vaciado ocurre cuando la pestaña se oculta (`visibilitychange`, la señal fiable
 en móvil) o al llegar a 20 eventos.
 
+**Separa entornos.** `host` lleva el dominio al que llegó la petición, puesto por el servidor
+desde la cabecera `Host` (nunca por el cliente). Producción y la preview de dev comparten este
+proyecto de Supabase, así que **toda consulta debe filtrar** o mezclarás pruebas con visitantes:
+
+```sql
+where host = 'getvitamind.app'   -- solo producción
+```
+
+Las consultas de abajo lo omiten por brevedad; añádelo cuando los números importen. Las filas
+anteriores al 31/8/2026 tienen `host` a NULL y su origen es desconocido.
+
 **Nada identifica a una persona:** no se guarda IP, ni user agent, ni el
 referrer completo (solo el host). `visitor_id` es un UUID aleatorio del
 navegador. `authed` es un booleano y no un id de usuario a propósito — la

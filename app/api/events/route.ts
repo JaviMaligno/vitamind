@@ -32,6 +32,21 @@ function isOwnOrigin(request: NextRequest): boolean {
   }
 }
 
+/**
+ * Which deployment this request reached, from the request itself.
+ *
+ * Never from the body: production and the dev preview share one Supabase
+ * project, so this is the only thing separating a real visitor from a QA pass —
+ * and a value the client could assert would separate nothing.
+ */
+function requestHost(request: NextRequest): string | null {
+  const host = request.headers.get("host");
+  if (!host) {
+    try { return new URL(request.url).host || null; } catch { return null; }
+  }
+  return host.slice(0, 128);
+}
+
 export async function POST(request: NextRequest) {
   if (!isOwnOrigin(request)) {
     return new NextResponse(null, { status: 403 });
@@ -55,7 +70,7 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    await insertEvents(payload);
+    await insertEvents(payload, requestHost(request));
   } catch (err: unknown) {
     // Logged, never swallowed: a store that fails quietly is how two outages
     // here lasted ~50 days each. The visitor's page is unaffected either way.

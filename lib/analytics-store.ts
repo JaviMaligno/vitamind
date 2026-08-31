@@ -29,7 +29,7 @@ function requireServiceClient() {
  * success. The route turns this into a 500 the client ignores; nobody's page
  * breaks, but the failure is visible in the logs instead of invisible everywhere.
  */
-export async function insertEvents(payload: CleanPayload): Promise<number> {
+export async function insertEvents(payload: CleanPayload, host: string | null): Promise<number> {
   const sb = requireServiceClient();
 
   const rows = payload.events.map((e) => ({
@@ -42,6 +42,7 @@ export async function insertEvents(payload: CleanPayload): Promise<number> {
     referrer_host: e.referrerHost,
     authed: e.authed,
     occurred_at: e.occurredAt,
+    host,
   }));
 
   const { error } = await sb.from("analytics_events").insert(rows);

@@ -15,7 +15,12 @@ function post(body: unknown, headers: Record<string, string> = {}) {
   return new NextRequest("https://getvitamind.app/api/events", {
     method: "POST",
     body: typeof body === "string" ? body : JSON.stringify(body),
-    headers: { "content-type": "application/json", origin: "https://getvitamind.app", ...headers },
+    headers: {
+      "content-type": "application/json",
+      origin: "https://getvitamind.app",
+      host: "getvitamind.app",
+      ...headers,
+    },
   });
 }
 
@@ -88,5 +93,23 @@ describe("POST /api/events", () => {
     insertEvents.mockRejectedValue(new Error("supabase down"));
     const res = await POST(post(body()));
     expect(res.status).toBe(500);
+  });
+});
+
+/**
+ * Production and the dev preview share one Supabase project. Without the host
+ * on every row a QA pass against dev is indistinguishable from a real visitor —
+ * which was found the hard way, with four ambiguous rows nobody could attribute
+ * on the day before a launch.
+ */
+describe("which deployment the event reached", () => {
+  it("records the host from the request", async () => {
+    await POST(post(body()));
+    expect(insertEvents.mock.calls[0][1]).toBe("getvitamind.app");
+  });
+
+  it("takes it from the Host header, never from the body", async () => {
+    await POST(post(body({ host: "getvitamind.app" }), { host: "getvitamind-dev.vercel.app" }));
+    expect(insertEvents.mock.calls[0][1]).toBe("getvitamind-dev.vercel.app");
   });
 });

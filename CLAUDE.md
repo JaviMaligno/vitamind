@@ -330,6 +330,11 @@ That matters mainly if the gate is ever made conditional on `VERCEL_ENV` (a temp
 
 `supabase/migrations/*.sql` are **not applied automatically**. After adding one, run it against the shared Supabase project (SQL editor or `supabase db push`) **before** deploying code that depends on it. Applied state worth knowing:
 
+- `20260831_analytics_events_host.sql` — **applied 2026-08-31**. Adds `analytics_events.host`,
+  filled by the route from the request's Host header. Production and the dev preview share this
+  Supabase project, so without it a QA pass on dev is indistinguishable from a real visitor —
+  the same problem `push_subscriptions` already solves with `vapid_public_key`. Filter every
+  analytics query on `host = 'getvitamind.app'` unless you mean to include preview traffic.
 - `20260830_analytics_events.sql` — **applied 2026-08-31** via `supabase db push`. Creates the
   product analytics event stream (`docs/analytics.md`). RLS verified from the outside after
   applying: with the anon key a seeded row returns `[]`, so the key that ships to every browser
