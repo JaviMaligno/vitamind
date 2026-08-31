@@ -330,15 +330,25 @@ That matters mainly if the gate is ever made conditional on `VERCEL_ENV` (a temp
 
 `supabase/migrations/*.sql` are **not applied automatically**. After adding one, run it against the shared Supabase project (SQL editor or `supabase db push`) **before** deploying code that depends on it. Applied state worth knowing:
 
-- ⚠️ **`20260830_analytics_events.sql` is PENDING as of 2026-08-30.** It creates the
-  product analytics event stream. Until it is applied, `/api/events` answers 500 on every
-  batch and no events are recorded — the app is unaffected (the client ignores the
-  response), but the instrumentation silently collects nothing. See `docs/analytics.md`.
-- ⚠️ **`20260827_push_last_notified_on.sql` is PENDING as of 2026-08-27.** It adds
-  `push_subscriptions.last_notified_on date`, the once-a-day guard the hourly push cron
-  depends on. `/api/push/notify` claims that column before every push and **fails the run
-  rather than pushing unguarded** if the claim errors, so until it is applied the cron
-  returns 500 and nobody is notified. Apply it before merging.
+- `20260830_analytics_events.sql` — **applied 2026-08-31** via `supabase db push`. Creates the
+  product analytics event stream (`docs/analytics.md`). RLS verified from the outside after
+  applying: with the anon key a seeded row returns `[]`, so the key that ships to every browser
+  can neither read the stream nor write to it.
+- `20260827_push_last_notified_on.sql` — **already applied; this note said PENDING until
+  2026-08-31, wrongly.** It adds `push_subscriptions.last_notified_on date`, the once-a-day
+  guard the hourly push cron depends on.
+
+**`supabase migration list` is not the source of truth for what is applied.** On 2026-08-31 it
+showed 20260719, 20260826 and 20260827 with an empty `remote` column while all three objects
+existed in the database — they had been applied through the SQL editor, which records nothing in
+`supabase_migrations.schema_migrations`. The bookkeeping was repaired with `supabase migration
+repair --status applied`, so `db push` is trustworthy again. **Before trusting either, probe the
+object itself** (a `select` on the column or table through PostgREST answers in one request).
+
+That gap was not cosmetic: a `db push` taken at face value would have re-run
+`20260826_city_slug_elevation.sql`, whose `DROP FUNCTION` + `CREATE FUNCTION` on
+`search_cities_localized` / `search_cities_nearby_localized` would have put city search — and so
+`/api/cities` — through a drop-and-recreate on a live site for no reason.
 - `20260716_lock_down_anon_access.sql` removes the anon-role RLS policies on `push_subscriptions` (they exposed all subscriber endpoints/locations to anyone with the public anon key) and enables RLS on `city_names`. The app never used anon access to those tables — all server access uses the service role.
 
 ### IndexNow (instant indexing for Bing/Yandex/Seznam/Naver)
