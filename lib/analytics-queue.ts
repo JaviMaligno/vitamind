@@ -16,6 +16,10 @@ export interface QueuedEvent {
   props?: Record<string, PropValue>;
   /** When it happened in the browser, not when the batch left. */
   ts: number;
+  /** The page it happened on. Captured here rather than at flush time: a batch
+   *  routinely leaves after a navigation, and the envelope's path would then
+   *  mislabel every event in it. */
+  path?: string;
 }
 
 export interface QueueOptions {
@@ -25,7 +29,7 @@ export interface QueueOptions {
 }
 
 export interface Queue {
-  push: (name: string, props?: Record<string, PropValue>) => void;
+  push: (name: string, props?: Record<string, PropValue>, path?: string) => void;
   flush: () => void;
   size: () => number;
 }
@@ -46,8 +50,8 @@ export function createQueue({ maxBatch, send, now }: QueueOptions): Queue {
   }
 
   return {
-    push(name, props) {
-      buffer.push({ name, props, ts: now() });
+    push(name, props, path) {
+      buffer.push({ name, props, ts: now(), path });
       if (buffer.length >= maxBatch) flush();
     },
     flush,

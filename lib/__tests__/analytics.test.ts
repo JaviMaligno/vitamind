@@ -1,5 +1,5 @@
-import { describe, it, expect } from "vitest";
-import { classifyVisit, type VisitRecord } from "../analytics";
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import { classifyVisit, trackVisit, flushEvents, type VisitRecord } from "../analytics";
 
 describe("classifyVisit", () => {
   it("treats a visitor with no stored record as first-ever", () => {
@@ -55,5 +55,47 @@ describe("classifyVisit", () => {
     expect(r.daysSinceFirst).toBe(0);
     expect(r.record.days).toBe(2);
     expect(r.isNewDay).toBe(false);
+  });
+});
+
+/**
+ * Observed in the dev deployment before this guard existed: two `visit` rows two
+ * seconds apart in one session, because `VisitTracker` sits in the layout and
+ * remounts on navigation. The day counter survived it (the second is `same_day`)
+ * but any count of visits would have been double.
+ */
+describe("trackVisit reports one visit per session", () => {
+  // jsdom implements no sendBeacon, so it is defined rather than spied on.
+  const beacon = vi.fn<(url: string, blob: unknown) => boolean>(() => true);
+
+  beforeEach(() => {
+    localStorage.clear();
+    sessionStorage.clear();
+    beacon.mockClear();
+    Object.defineProperty(navigator, "sendBeacon", {
+      configurable: true, writable: true,
+      value: (url: string, blob: unknown) => beacon(url, blob),
+    });
+  });
+
+  it("emits on the first call and stays quiet on later ones", () => {
+    trackVisit();
+    flushEvents();
+    expect(beacon).toHaveBeenCalledTimes(1);
+
+    trackVisit();
+    trackVisit();
+    flushEvents();
+    expect(beacon).toHaveBeenCalledTimes(1);
+  });
+
+  it("still advances the stored day record on the calls it does not report", () => {
+    const monday = new Date("2026-08-31T10:00:00");
+    const tuesday = new Date("2026-09-01T10:00:00");
+    expect(trackVisit(monday).record.days).toBe(1);
+    // Same session, next day: silent, but the record must still move.
+    expect(trackVisit(tuesday).record).toEqual({
+      firstSeen: "2026-08-31", lastSeen: "2026-09-01", days: 2,
+    });
   });
 });

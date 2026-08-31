@@ -121,7 +121,10 @@ export function parsePayload(body: unknown, now: Date): CleanPayload | null {
     clean.push({
       name,
       props: cleanProps(raw.props),
-      path,
+      // The event's own page wins. Batches flush after navigation, so the
+      // envelope's path is the page the visitor was on when the queue emptied —
+      // not where the event happened.
+      path: cleanPath(raw.path) ?? path,
       locale,
       referrerHost: host,
       authed,

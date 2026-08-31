@@ -230,7 +230,7 @@ export function emit(name: string, props?: EventProps): void {
   if (typeof window === "undefined") return;
   try {
     bindFlushListeners();
-    queue.push(name, props);
+    queue.push(name, props, location.pathname);
   } catch { /* storage blocked, exotic browser — never the user's problem */ }
 }
 
@@ -240,14 +240,37 @@ export function flushEvents(): void {
   queue.flush();
 }
 
+const VISIT_SENT_KEY = "vitamind:visitSent";
+
 /**
- * Record that the app was opened. Emits at most one `visit` event per page load,
+ * Whether this session has already reported its visit.
+ *
+ * `VisitTracker` lives in the layout and remounts on navigation, so without this
+ * a `visit` was emitted on every screen change: observed in the dev deployment as
+ * two `visit` rows two seconds apart. The day counter survived that (the second
+ * is `same_day`), but counting visits by this event would have doubled them.
+ */
+function visitAlreadySent(): boolean {
+  try {
+    if (sessionStorage.getItem(VISIT_SENT_KEY)) return true;
+    sessionStorage.setItem(VISIT_SENT_KEY, "1");
+    return false;
+  } catch {
+    // No sessionStorage: report the visit rather than lose it. A duplicate is a
+    // smaller error than a missing one, and it is still marked `same_day`.
+    return false;
+  }
+}
+
+/**
+ * Record that the app was opened. Emits at most one `visit` event per SESSION,
  * carrying whether this browser is new or returning and how many distinct days
  * it has used the app. Safe to call on every mount.
  */
 export function trackVisit(now: Date = new Date()): VisitClassification {
   const result = classifyVisit(todayKey(now), readVisit());
   writeVisit(result.record);
+  if (visitAlreadySent()) return result;
   emit("visit", {
     kind: result.kind,
     days: result.record.days,

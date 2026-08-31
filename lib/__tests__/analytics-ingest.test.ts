@@ -175,3 +175,34 @@ describe("referrer host is stored verbatim when present", () => {
     expect(out!.events[0].referrerHost).toBe("www.producthunt.com");
   });
 });
+
+/**
+ * The path used to live only on the envelope, so every event in a batch was
+ * labelled with whatever page the user happened to be on when the queue
+ * flushed. Observed in the dev deployment: a `visit` that happened on `/` was
+ * stored as `/dashboard` because the batch left after a navigation. An event
+ * carries its own page now; the envelope is only the fallback.
+ */
+describe("per-event path", () => {
+  it("prefers the path the event itself carries", () => {
+    const out = parsePayload(
+      payload({
+        path: "/dashboard",
+        events: [
+          { name: "visit", ts: NOW.getTime(), path: "/" },
+          { name: "city_selected", ts: NOW.getTime() },
+        ],
+      }),
+      NOW,
+    );
+    expect(out!.events.map((e) => e.path)).toEqual(["/", "/dashboard"]);
+  });
+
+  it("strips a query string from a per-event path too", () => {
+    const out = parsePayload(
+      payload({ events: [{ name: "visit", ts: NOW.getTime(), path: "/x?token=secret" }] }),
+      NOW,
+    );
+    expect(out!.events[0].path).toBe("/x");
+  });
+});
