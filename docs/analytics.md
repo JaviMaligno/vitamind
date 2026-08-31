@@ -34,8 +34,10 @@ proyecto de Supabase, así que **toda consulta debe filtrar** o mezclarás prueb
 where host = 'getvitamind.app'   -- solo producción
 ```
 
-Las consultas de abajo lo omiten por brevedad; añádelo cuando los números importen. Las filas
-anteriores al 31/8/2026 tienen `host` a NULL y su origen es desconocido.
+Todas las consultas de abajo ya lo llevan. Si escribes una nueva, **empieza por ese filtro**:
+es la diferencia entre un visitante de verdad y una pestaña que abrí yo para probar. Las filas
+anteriores al 31/8/2026 tienen `host` a NULL (origen desconocido) y quedan fuera del filtro, que
+es lo que se quiere.
 
 **Nada identifica a una persona:** no se guarda IP, ni user agent, ni el
 referrer completo (solo el host). `visitor_id` es un UUID aleatorio del
@@ -76,7 +78,8 @@ select
   count(*) filter (where name = 'install_accepted' or name = 'install_installed') as instalada,
   count(*) filter (where name = 'visit' and props->>'kind' = 'returning')  as volvieron
 from analytics_events
-where occurred_at > now() - interval '7 days';
+where host = 'getvitamind.app'
+  and occurred_at > now() - interval '7 days';
 ```
 
 Si `visitantes_nuevos` es alto y las otras tres son cero, comprar tráfico
@@ -89,7 +92,8 @@ select
   (props->>'days')::int as dias_distintos,
   count(distinct visitor_id) as personas
 from analytics_events
-where name = 'visit'
+where host = 'getvitamind.app'
+  and name = 'visit'
 group by 1
 order by 1;
 ```
@@ -102,7 +106,8 @@ select
   count(*) filter (where name = 'install_accepted')      as aceptaron,
   count(*) filter (where name = 'install_dismissed')     as rechazaron
 from analytics_events
-where occurred_at > now() - interval '30 days';
+where host = 'getvitamind.app'
+  and occurred_at > now() - interval '30 days';
 ```
 
 Sin `se_les_ofrecio` un número bajo de instalaciones es ilegible: puede ser una
@@ -114,15 +119,20 @@ oferta mala o una oferta que nadie vio.
 -- Gente que ha acumulado algo que una cuenta preservaría entre dispositivos.
 select count(distinct visitor_id) as personas_con_algo_que_perder
 from analytics_events
-where name in ('favorite_added', 'custom_location_saved', 'history_override');
+where host = 'getvitamind.app'
+  and name in ('favorite_added', 'custom_location_saved', 'history_override');
 
 -- Y de esos, cuántos vuelven otro día (los únicos a quienes sincronizar sirve).
 select count(distinct e.visitor_id)
 from analytics_events e
-where e.name in ('favorite_added', 'custom_location_saved', 'history_override')
+where e.host = 'getvitamind.app'
+  and e.name in ('favorite_added', 'custom_location_saved', 'history_override')
   and exists (
+    -- El filtro va también aquí dentro: una visita de vuelta hecha en dev
+    -- convertiría a esta persona en recurrente sin serlo.
     select 1 from analytics_events v
     where v.visitor_id = e.visitor_id
+      and v.host = 'getvitamind.app'
       and v.name = 'visit'
       and v.props->>'kind' = 'returning'
   );
@@ -136,7 +146,8 @@ y eso es un resultado, no un fracaso.
 ```sql
 select name, count(*)
 from analytics_events
-where name like 'auth_%'
+where host = 'getvitamind.app'
+  and name like 'auth_%'
 group by 1 order by 2 desc;
 ```
 
@@ -145,7 +156,9 @@ group by 1 order by 2 desc;
 ```sql
 select coalesce(referrer_host, '(directo)') as origen, count(distinct session_id) as visitas
 from analytics_events
-where name = 'visit' and occurred_at > now() - interval '30 days'
+where host = 'getvitamind.app'
+  and name = 'visit'
+  and occurred_at > now() - interval '30 days'
 group by 1 order by 2 desc limit 20;
 ```
 
@@ -155,6 +168,12 @@ La tabla crece sin límite. Cuando estorbe, borrar lo viejo:
 
 ```sql
 delete from analytics_events where occurred_at < now() - interval '12 months';
+```
+
+Y para tirar el ruido de las pruebas en dev sin tocar los datos de producción:
+
+```sql
+delete from analytics_events where host is distinct from 'getvitamind.app';
 ```
 
 No hay política de RLS a propósito: el acceso es solo por service role, igual que
