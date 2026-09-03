@@ -176,8 +176,21 @@ Las cuatro claves reescritas, en los seis idiomas, son `pageSubtitle`,
 
 | Cifra en el copy | De dónde sale | Cuándo se midió |
 |---|---|---|
-| «3.000 páginas indexadas» | Search Console, cobertura: 3,07 mil indexadas | 2026-08-14 |
-| «unas 35.000 impresiones al mes» | Search Console, 35,2 mil impresiones en 28 días | 2026-08-14 |
+| «3.000 páginas indexadas» | Search Console, cobertura: 3,18 mil indexadas | 2026-09-03 |
+| «unas 20.000 impresiones al mes» | Search Console, 23,6 mil impresiones en 28 días | 2026-09-03 |
+
+**Remedida el 2026-09-03 y corregida.** Las impresiones habían caído de 35,2 mil
+a **23,6 mil en 28 días** (4-31 de agosto; 69 clics, CTR 0,3 %, posición media
+9,3), así que la cifra del copy pasó de 35.000 a **20.000** en las seis locales
+— redondeada a la baja, como la anterior. La de páginas indexadas subió sola de
+3,07 a 3,18 mil, así que «3.000» sigue siendo cierta y no se toca.
+
+La caída es casi seguro **estacional**, no una penalización: las consultas que
+traen el tráfico son de puesta y salida de sol por mes (*«sonnenuntergang wien
+september»*, *«a qué hora se pone el sol en agosto»*), y el verano es su pico.
+Lo que implica para el pitch: **esta cifra va a seguir bajando hasta el
+invierno**. Conviene revisarla antes de cada conversación con un partner, no una
+vez al trimestre.
 
 Las dos están redondeadas **a la baja** a propósito, que es la dirección segura. Aun así:
 **si Search Console se aleja de ahí, hay que tocar el copy.** Es la misma regla que
