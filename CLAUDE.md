@@ -166,18 +166,22 @@ The Preview environment has its **own** VAPID keys, `CRON_SECRET` and `PUSH_TEST
 
 ## Vercel plan and usage limits — a deploy is not free
 
-The project is on the **Hobby (free)** plan, and as of 2026-08-22 it is **over** two of its
-limits. Measured from the Usage dashboard (30-day window ending 2026-08-22):
+The project is on the **Hobby (free)** plan and is **over** two of its limits. Measured from the
+Usage dashboard, 30-day window ending 2026-09-07 (the 2026-08-22 reading in brackets):
 
 | Resource | Used | Hobby limit |
 |---|---|---|
-| **ISR Writes** | 362,730 | 200,000 — **181%** |
-| **Fast Origin Transfer** | 10.58 GB | 10 GB — **106%** |
-| **ISR Reads** | 950,392 | 1,000,000 — 95% |
-| Fast Data Transfer | 6.5 GB | 100 GB |
-| Edge Requests | 383 K | 1 M |
-| Function Invocations | 230 K | 1 M |
-| Fluid Active CPU | 2 h 16 m | 4 h |
+| **ISR Reads** | 1,249,585 (950,392) | 1,000,000 — **125%** |
+| **Fast Origin Transfer** | 13.25 GB (10.58 GB) | 10 GB — **132%** |
+| ISR Writes | 393,378 (362,730) | 200,000 — see below |
+| Fast Data Transfer | 7.01 GB (6.5 GB) | 100 GB |
+| Edge Requests | 432 K (383 K) | 1 M |
+| Edge Request CPU | 2 m 38 s | 1 h |
+
+**Read the writes row as history, not as a rate.** The daily series collapsed on 2026-08-22 and
+has run under a thousand a day since; the 393,378 is the 2026-08-12 → 08-21 stretch still sitting
+inside the rolling window. Reads are the live problem — see the two subsections below, in this
+order: what the writes turned out to cost (answered), then what to re-measure after 2026-09-21.
 
 ### What is established
 
@@ -224,10 +228,11 @@ Four changes, all measured in production afterwards:
    when the day they carry is neither today's nor yesterday's (`lib/hub-freshness.ts`). It used to
    return `{revalidated: 240}` unconditionally, because `revalidatePath` returns void.
 
-### What is NOT established — do not write it down as fact
+### The write question, ANSWERED on 2026-09-07 — and neither model won
 
-Two models both fit the write series, and they make different predictions. This has already
-burned one pass of analysis, so it is recorded as an open question rather than answered:
+Two models both fit the write series and predicted different things. They were recorded as an
+open question, with a cheap experiment attached; the experiment has now been run and the answer
+is that the thing they disagreed about is not what bills:
 
 - **Sweep model:** a pass over the ISR set costs one sweep (~35.5 K), and both a deploy and a day
   of revalidation write one.
@@ -242,13 +247,42 @@ billed only 8 K writes, a third of a zero-deploy day. And the last three days of
 `/api/revalidate-today` cron's 240 hubs on its own, which is what "identical bytes are not
 billed" predicts.
 
-**The cheap experiment:** the month pages went static (`revalidate = false`) on 2026-08-22. Read
-the write series a fortnight later. If writes fall to roughly the cron's ~2,200/day, the sweep
-model was right. If they land near (remaining ISR page requests × ~10), the request-driven model
-was. Until then, do not claim a per-deploy write cost — and note that the comment history got
-this wrong once already: "at one hour this project hit the free ISR write quota within a day" is
-a misattribution, since `revalidate = 3600` was live for only 15.7 hours (2026-08-16 19:55 →
-2026-08-17 11:37) and the 200 K had already been crossed cumulatively around 2026-08-15.
+**The experiment, and its result.** The month pages went static (`revalidate = false`) on
+2026-08-22; the plan was to read the write series a fortnight later. Read on 2026-09-07 from the
+Usage dashboard (window 2026-08-08 → 2026-09-07):
+
+- **The series falls off a cliff on 2026-08-22**, the day the 3,318 routes left the ISR class:
+  from 30-56 K/day over 2026-08-12 → 08-21 to **under a thousand**, flat, for the following
+  fortnight.
+- **2026-09-06, no deploys: 980 write units.**
+- **2026-09-07, TWO production deploys and one dev deploy, read ~13 hours in: 762 write units.**
+
+**So a deploy costs no measurable writes, and the sweep model is dead** — a sweep per deploy
+would have shown up as ~1,200-1,400 units on top, and instead two deploys came in under a quiet
+day. The request-driven model does not win either; what actually governs is the third thing,
+already visible in the evidence above: **identical bytes are not billed.** Regenerating a hub
+whose content did not change writes nothing, whether a deploy or the cron asked for it.
+
+**The operational consequence: there is no ISR-quota reason to deploy less.** At ~1,000/day the
+month projects to ~30 K writes against a 200 K limit. The 393,378 the dashboard shows is history
+from the 2026-08-12 → 08-21 stretch, still inside the rolling 30-day window; it is not a rate.
+Deploy frequency is now a build-time and alias-correctness question (see `.github/workflows/ci.yml`,
+where the deploy jobs queue), not a billing one.
+
+Note that the comment history got the writes wrong once already: "at one hour this project hit the
+free ISR write quota within a day" is a misattribution, since `revalidate = 3600` was live for only
+15.7 hours (2026-08-16 19:55 → 2026-08-17 11:37) and the 200 K had already been crossed
+cumulatively around 2026-08-15.
+
+**What is over the limit now is READS, and they are a different animal** (same reading, 30-day
+window): ISR Reads **1,249,585 / 1,000,000 (125%)** and Fast Origin Transfer **13.25 GB / 10 GB
+(132%)** — the same traffic counted in bytes. Reads run flat at 30-40 K/day and bill served bytes
+regardless of cache class, so the lever is URLs crawled × bytes served, not `revalidate`. The
+biggest single client was Googlebot fetching `?_rsc=` prefetch URLs and getting the full HTML
+back: 240 K of the 270 K crawl requests in the 90 days to 2026-09-05, at ~200 KB each. `app/robots.ts`
+disallowed those on 2026-09-07. **Re-read ISR Reads and Fast Origin Transfer after 2026-09-21** —
+that is the open question now, and it is the one that matters, because reads are the meter this
+project is actually over.
 
 ### Facts about the plan itself
 
