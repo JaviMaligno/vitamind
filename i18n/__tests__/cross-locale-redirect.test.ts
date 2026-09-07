@@ -158,3 +158,46 @@ describe("crossLocaleRedirect on the sun-time family", () => {
     expect(crossLocaleRedirect("/en/cuanto-sol-vitamina-d/piel-clara/extra")).toBeNull();
   });
 });
+
+/**
+ * THE SUNRISE HUB, AND THE VALIDATION IT KEPT FAILING.
+ *
+ * The hub (`/amanecer/madrid`, prefix + city, no month) was left out when this
+ * module learned the sunrise family, which only ever matched prefix + city +
+ * month. Search Console's "Not found (404)" validation, started 2026-08-09,
+ * failed on 2026-09-05 with exactly two URLs: `/lever-du-soleil/madrid` and
+ * `/en/sonnenaufgang/madrid` — both hubs. The other 88 URLs in that report
+ * answer 301 → 200 today.
+ *
+ * The starter-city check covers the mirror-image defect on the month family: a
+ * city outside SUNRISE_CITIES has no sunrise page in ANY locale, so
+ * `/de/sunrise/denver/june` was answering 301 → `/de/sonnenaufgang/denver/juni`
+ * → 404. A redirect that lands on a 404 is worse than the honest 404 it replaced.
+ */
+describe("crossLocaleRedirect on the sunrise hub", () => {
+  it("recovers the two hubs that failed the Search Console validation", () => {
+    expect(crossLocaleRedirect("/lever-du-soleil/madrid")).toBe("/amanecer/madrid");
+    expect(crossLocaleRedirect("/en/sonnenaufgang/madrid")).toBe("/en/sunrise/madrid");
+  });
+
+  it("translates prefix and slug together", () => {
+    expect(crossLocaleRedirect("/lt/sonnenaufgang/madrid")).toBe("/lt/sauletekis/madridas");
+    expect(crossLocaleRedirect("/de/amanecer/nueva-york")).toBe("/de/sonnenaufgang/new-york");
+  });
+
+  it("leaves a correct hub alone", () => {
+    expect(crossLocaleRedirect("/amanecer/madrid")).toBeNull();
+    expect(crossLocaleRedirect("/de/sonnenaufgang/madrid")).toBeNull();
+    expect(crossLocaleRedirect("/lt/sauletekis/madridas")).toBeNull();
+  });
+
+  it("refuses a city that has no sunrise page in any locale", () => {
+    // Denver is a real city with a vitamin-D page, but it is not in SUNRISE_CITIES.
+    expect(crossLocaleRedirect("/de/sonnenaufgang/denver")).toBeNull();
+    expect(crossLocaleRedirect("/de/sunrise/denver/june")).toBeNull();
+  });
+
+  it("refuses a slug that names no city, so the 404 stands", () => {
+    expect(crossLocaleRedirect("/de/sonnenaufgang/not-a-city")).toBeNull();
+  });
+});

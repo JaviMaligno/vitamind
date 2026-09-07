@@ -1,7 +1,9 @@
 import { routing } from "./routing";
 import { getPathname } from "./navigation";
 import { CITY_PREFIX, cityIdFromSlug, cityPathname, indexPathname } from "@/lib/city-routes";
-import { SUN_PREFIX, monthIndexFromSlug, sunPathname } from "@/lib/sun-routes";
+import {
+  SUN_PREFIX, SUNRISE_CITIES, monthIndexFromSlug, sunPathname, sunCityPathname,
+} from "@/lib/sun-routes";
 import {
   SUNTIME_PREFIX, bandFromSlug, suntimePathname, suntimeBandPathname, type Band,
 } from "@/lib/suntime-routes";
@@ -20,7 +22,8 @@ type Locale = (typeof routing.locales)[number];
  * belongs to exactly one city) and states its target locale, so each can be redirected
  * to the page it was always meant to reach.
  *
- * Three families are covered: city, sunrise and — since 2026-08-28 — sun-time. The
+ * Three families are covered: city, sunrise (both the month page and the hub) and —
+ * since 2026-08-28 — sun-time. The
  * last one is NOT legacy debris like the other two: it is what keeps the
  * unprefixed Spanish URL shareable at all. See suntimeTarget below.
  *
@@ -96,17 +99,35 @@ function cityTarget(locale: Locale, prefix: string, tail: string[]): string | nu
   return cityPathname(locale, baseSlug(cityId));
 }
 
+/**
+ * The sunrise family has two shapes, and for a year this function knew only one.
+ *
+ * The month page (`/amanecer/madrid/julio`) was covered from the start; the hub
+ * (`/amanecer/madrid`, prefix + city, no month) was not, because it did not exist
+ * yet as a route of its own. Search Console's 404 validation, started 2026-08-09,
+ * failed on 2026-09-05 on exactly two URLs — `/lever-du-soleil/madrid` and
+ * `/en/sonnenaufgang/madrid` — both hubs, while the other 88 answered 301 → 200.
+ *
+ * Both shapes now require the city to be in SUNRISE_CITIES. Only those 40 have
+ * sunrise pages, so redirecting any other city replaced an honest 404 with a 301
+ * that lands on one: `/de/sunrise/denver/june` → `/de/sonnenaufgang/denver/juni`
+ * → 404, measured in production.
+ */
 function sunTarget(locale: Locale, prefix: string, tail: string[]): string | null {
   if (!isKnownPrefix(prefix, SUN_PREFIX)) return null;
-  if (tail.length !== 2) return null;
+  if (tail.length === 0 || tail.length > 2) return null;
 
   const cityId = findCityId(tail[0]);
   if (!cityId) return null;
+  const base = baseSlug(cityId);
+  if (!SUNRISE_CITIES.includes(base)) return null;
+
+  if (tail.length === 1) return sunCityPathname(locale, base);
 
   const monthIndex = findMonthIndex(tail[1]);
   if (monthIndex === null) return null;
 
-  return sunPathname(locale, baseSlug(cityId), monthIndex);
+  return sunPathname(locale, base, monthIndex);
 }
 
 /**
