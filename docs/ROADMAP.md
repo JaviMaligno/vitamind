@@ -193,3 +193,46 @@ Notas:
 - Lanzamiento: Product Hunt, Reddit, Hacker News, Twitter/X
 - B2C: freemium (gratis + Pro 2.99€/mes)
 - B2B: partnerships con marcas de suplementos
+
+---
+
+## Ideas / backlog
+
+### Detector de fototipo por cámara
+
+**Origen (2026-09-01):** al releer el tagline de Product Hunt —*"The sun calculator
+that knows your skin type"*— el propio autor esperó que la app **escaneara la piel con
+la cámara** y le dijera su fototipo a partir de una foto. No lo hace: el fototipo se
+elige a mano, y además vive en `/profile`, no en la primera pantalla.
+
+Eso es a la vez una idea de producto y el diagnóstico de un desajuste de expectativas
+(ver abajo).
+
+**Qué sería:** una foto (dorso de la mano o cara interna del antebrazo, luz natural) →
+estimación de fototipo Fitzpatrick → prerrellena el perfil, siempre editable.
+
+**Lo que habría que resolver antes de prometer nada:**
+- La clasificación Fitzpatrick real **no es sólo color**: es la respuesta al sol
+  (¿te quemas?, ¿te bronceas?) — ese es el cuestionario de dos preguntas que usa el
+  original, y una foto no lo contiene.
+- Balance de blancos: el mismo brazo cambia varios tonos entre luz cálida, sombra y
+  flash. Sin una referencia de color en la escena, la medida no es fiable.
+- Sesgo: los clasificadores de tono de piel fallan sistemáticamente más en pieles
+  oscuras, que es justo donde el error importa más (30 min contra 5).
+- Privacidad: una foto de piel es dato biométrico. Procesar en el dispositivo o no
+  hacerlo.
+
+**Alternativa barata mientras tanto:** el cuestionario Fitzpatrick de dos preguntas
+("¿te quemas al sol?" / "¿te bronceas?") en el primer uso. Es lo que valida el fototipo
+de verdad, no necesita cámara, y arregla lo de que el dato esté escondido en el perfil.
+
+### Desajuste entre lo que promete el tagline y lo que abre la app
+
+Mismo día, misma observación: **la app abre por ubicación y exposición**; el fototipo
+está en el perfil. El marketing lo pone en primer plano porque es el diferenciador real
+frente a Google, pero un usuario nuevo no lo encuentra hasta que va a buscarlo.
+
+Dos salidas posibles, y no son excluyentes:
+1. Ajustar el mensaje para no prometer una detección que no existe.
+2. Subir el fototipo a la primera pantalla (el cuestionario de dos preguntas de arriba
+   lo haría de forma natural).
