@@ -50,6 +50,13 @@ jobs:
   ci:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
+    # The opposite choice to the deploy jobs, for the opposite reason: this job
+    # produces nothing but a verdict, so a run against a commit that has already
+    # been superseded is pure waste. Nothing outside GitHub is touched, so there
+    # is no remote build to outlive the cancellation.
+    concurrency:
+      group: ci-pr-${{ github.event.pull_request.number }}
+      cancel-in-progress: true
     steps:
       - uses: actions/checkout@v4
 
@@ -81,6 +88,21 @@ jobs:
     if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     environment: production
+    # Two pushes to master close together used to run two 22-minute builds at
+    # once, and the production alias went to whichever FINISHED last — which is
+    # not necessarily the newer commit. A run that is green is then no proof that
+    # its code is live. Queueing removes that: the second deploy is not even
+    # created until the first has finished, so the last alias assignment is
+    # always the newest commit.
+    #
+    # `cancel-in-progress: false` is deliberate and is the whole point. Cancelling
+    # would NOT help: `vercel deploy --prod` creates the deployment on Vercel and
+    # then waits: killing the job here does not stop the remote build, which goes
+    # on to claim the alias anyway. So cancelling would keep the race and merely
+    # hide the losing run from the Actions list.
+    concurrency:
+      group: deploy-prod
+      cancel-in-progress: false
     steps:
       - uses: actions/checkout@v4
 
@@ -150,6 +172,12 @@ jobs:
     if: github.event_name == 'push' && github.ref == 'refs/heads/dev'
     runs-on: ubuntu-latest
     environment: dev
+    # Same reasoning as deploy-prod, for the `getvitamind-dev` alias: the alias is
+    # set by a second command here, so two overlapping runs could leave it on the
+    # older deployment. Its own group, so dev never waits on master.
+    concurrency:
+      group: deploy-dev
+      cancel-in-progress: false
     steps:
       - uses: actions/checkout@v4
       - name: Deploy to Vercel (dev preview + stable alias)
