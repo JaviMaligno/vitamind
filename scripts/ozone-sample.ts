@@ -6,12 +6,17 @@
  *   npx tsx scripts/ozone-sample.ts --from 2026-07-01 --to 2026-09-22
  *
  * Appends to `data/ozone-samples.json`, deduplicating on (city, hour), so it is
- * safe to run repeatedly as the year goes by — which it has to be, because the
- * forecast host only serves UV for a window around today (lib/weather-range.ts
- * puts it at about 92 days back; forward is roughly a fortnight). A full year
- * therefore takes several runs spread across it, or a source with a longer
- * archive. The script does not pretend otherwise: it reports the span it
- * actually received, per city.
+ * safe to re-run. It reads the HISTORICAL forecast host, which keeps
+ * `uv_index_clear_sky` back to 2022 — so one run covers whole years. (The live
+ * forecast host, the one the app uses, only serves about 92 days back.) The
+ * script reports the span it actually received, per city.
+ *
+ * TIME ALIGNMENT. Open-Meteo stamps an hourly reading at the END of the hour it
+ * describes; see FORECAST_STAMP_LAG_H in lib/vitd.ts for the measurement. The
+ * sun angle stored with each sample is therefore the one at the CENTRE of that
+ * hour, not at the stamp — at the stamp, every morning reading would be paired
+ * with a sun half an hour too high and every afternoon one with a sun half an
+ * hour too low, and the fitted ozone would carry that as signal.
  *
  * This is the ONLY part of the pipeline that needs the network, and it is
  * deliberately thin. Everything it feeds is pure and already tested in
@@ -25,7 +30,9 @@ import { solarElev, dayOfYear } from "../lib/solar";
 import { MIN_USEFUL_ELEVATION_DEG, type OzoneSample } from "../lib/ozone-fit";
 
 const OUT_DEFAULT = "data/ozone-samples.json";
-const ENDPOINT = "https://api.open-meteo.com/v1/forecast";
+const ENDPOINT = "https://historical-forecast-api.open-meteo.com/v1/forecast";
+/** Hours between the centre of the hour a reading describes and its stamp. */
+const STAMP_LAG_H = 0.5;
 /** Open-Meteo asks for courtesy on the free tier; this is well inside it. */
 const PAUSE_MS = 350;
 const TIMEOUT_MS = 20_000;
@@ -94,7 +101,7 @@ async function main() {
         if (seen.has(key)) return;
         const local = new Date(`${time}:00Z`);
         const doy = dayOfYear(local);
-        const localH = local.getUTCHours() + local.getUTCMinutes() / 60;
+        const localH = local.getUTCHours() + local.getUTCMinutes() / 60 - STAMP_LAG_H;
         const elevationDeg = solarElev(city.lat, city.lon, doy, localH - offsetH);
         // The fit discards these anyway; dropping them here keeps the file small.
         if (elevationDeg < MIN_USEFUL_ELEVATION_DEG) return;

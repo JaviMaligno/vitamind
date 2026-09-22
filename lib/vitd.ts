@@ -373,6 +373,41 @@ function lerpByHour(points: { hour: number; ratio: number }[], localHour: number
 }
 
 /**
+ * WHERE AN OPEN-METEO HOURLY UV READING SITS IN TIME: half an hour before its
+ * stamp. The value labelled 13:00 describes the hour from 12:00 to 13:00.
+ *
+ * Measured on 2026-09-22 against the historical and the forecast hosts alike:
+ * clear-sky readings pair up symmetrically about an instant ~30 min after solar
+ * noon, never about noon itself. London on 21 June 2025, solar noon 12:02 UTC,
+ * reads 7.15 at 12:00 and 7.20 at 13:00; Madrid centres near 12:40 against a
+ * 12:16 noon; Nairobi near 10:05 against 9:35. Divided by our model evaluated
+ * AT the stamp, the ratio runs 1.02 -> 0.76 -> 1.69 across London's day;
+ * divided by our model averaged over the hour BEFORE the stamp, 1.54 -> 0.79 ->
+ * 1.20 — symmetric, which is what two clear-sky models of one sun must be.
+ *
+ * Pairing a reading with our value at the stamp compares two different half
+ * hours. The morning ratio comes out low and the afternoon one high, and any
+ * window built from those ratios opens and closes late.
+ */
+const FORECAST_STAMP_LAG_H = 0.5;
+
+/**
+ * Our clear-sky UVI averaged over the hour an Open-Meteo reading stamped `stamp`
+ * describes — the like-for-like denominator for that reading.
+ */
+function modelHourMean(curve: SolarPoint[], stamp: number, ctx: ClearSkyContext): number {
+  let sum = 0;
+  let n = 0;
+  for (const p of curve) {
+    if (p.localHours >= stamp - 1 && p.localHours < stamp) {
+      sum += estimateUVFromElevation(p.elevation, ctx);
+      n += 1;
+    }
+  }
+  return n > 0 ? sum / n : 0;
+}
+
+/**
  * Cloud cover penalty factor for effective UVI.
  * Reduces UVI based on cloud cover percentage from Open-Meteo.
  */
@@ -488,10 +523,12 @@ export function getCurrentStatus(
    * this is the model's own answer — which is also what the city and hub pages
    * publish, so the fallback is consistent rather than merely safe.
    */
+  // Each reading is compared with our model over the SAME hour and placed at
+  // that hour's centre — see FORECAST_STAMP_LAG_H for why not at its stamp.
   const calibrationPoints: { hour: number; ratio: number }[] = [];
-  for (const cs of clearSkyHourly) {
-    const theirs = forecastClearSky.get(cs.hour);
-    if (theirs !== undefined && cs.uvi >= 0.5) calibrationPoints.push({ hour: cs.hour, ratio: theirs / cs.uvi });
+  for (const [stamp, theirs] of [...forecastClearSky].sort((a, b) => a[0] - b[0])) {
+    const ours = modelHourMean(curve, stamp, ctx);
+    if (ours >= 0.5) calibrationPoints.push({ hour: stamp - FORECAST_STAMP_LAG_H, ratio: theirs / ours });
   }
   const calibratedClearSky = (localHour: number, modelUVI: number) =>
     modelUVI * lerpByHour(calibrationPoints, localHour);
@@ -580,10 +617,12 @@ export function getCurrentStatus(
       // model, same grid cell, same hour, so the quotient is transmission and
       // nothing else. Falling back to ours mixes two models into one number and
       // calls the difference cloud.
+      // Both readings describe the hour BEFORE the stamp, so the ratio belongs at
+      // its centre; our fallback denominator is averaged over that same hour.
       const theirClear = forecastClearSky.get(cs.hour);
-      const reference = theirClear ?? cs.uvi;
+      const reference = theirClear ?? modelHourMean(curve, cs.hour, ctx);
       if (reference < RATIO_FLOOR_UVI) continue;
-      transmissionPoints.push({ hour: cs.hour, ratio: observed.effectiveUVI / reference });
+      transmissionPoints.push({ hour: cs.hour - FORECAST_STAMP_LAG_H, ratio: observed.effectiveUVI / reference });
     }
   }
 

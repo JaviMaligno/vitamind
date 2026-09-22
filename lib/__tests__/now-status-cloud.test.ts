@@ -27,11 +27,20 @@ import type { WeatherHour } from "@/lib/types";
 
 const LONDON = { lat: 51.51, lon: -0.13, tz: 0, timezone: "Europe/London", elevation: 11 };
 
-/** Open-Meteo hours for the city's own local day, at a fixed fraction of clear sky. */
+/**
+ * Open-Meteo hours for the city's own local day, at a fixed fraction of clear sky.
+ *
+ * Built the way Open-Meteo builds them: the reading stamped h:00 describes the
+ * hour BEFORE it (see FORECAST_STAMP_LAG_H in lib/vitd.ts for the measurement).
+ * This fixture used to take the model AT the stamp, i.e. it encoded the same
+ * misreading as the code under test, which is how that code passed.
+ */
 function attenuated(curve: { localHours: number; elevation: number }[], ozoneDu: number, factor: number): WeatherHour[] {
   return Array.from({ length: 24 }, (_, h) => {
-    const pt = curve.find((p) => Math.floor(p.localHours) === h);
-    const clear = estimateUVFromElevation(pt?.elevation ?? 0, { ozoneDu, elevationM: LONDON.elevation });
+    const inHour = curve.filter((p) => p.localHours >= h - 1 && p.localHours < h);
+    const clear = inHour.length === 0
+      ? 0
+      : inHour.reduce((sum, p) => sum + estimateUVFromElevation(p.elevation, { ozoneDu, elevationM: LONDON.elevation }), 0) / inHour.length;
     return {
       time: `2026-09-22T${String(h).padStart(2, "0")}:00`,
       uvIndex: clear * factor,
@@ -178,6 +187,34 @@ describe("getCurrentStatus — cloud vs sun", () => {
     // A stronger sun reaches the threshold earlier and holds it later.
     expect(live.clearSkyWindow!.start).toBeLessThan(modelOnly.clearSkyWindow!.start);
     expect(live.clearSkyWindow!.end).toBeGreaterThan(modelOnly.clearSkyWindow!.end);
+  });
+
+  it("reads each forecast hour where it sits — the hour BEFORE its stamp", () => {
+    /**
+     * THE FOURTH THING THIS FILE GUARDS. Open-Meteo stamps an hourly UV reading
+     * at the END of the hour it describes. Pairing it with our model AT the
+     * stamp compares two different half hours: the morning ratios come out low,
+     * the afternoon ones high, and the "with a clear sky" window opens and
+     * closes late.
+     *
+     * The property that catches it is the one the city pages already rely on: a
+     * clear-sky window is symmetric about solar noon. The forecast here is our
+     * model scaled by a constant, so the calibrated window must stay centred on
+     * the curve's peak, to within one five-minute step.
+     */
+    const hours = attenuated(curve, ozoneDu, 1).map((h) => ({
+      ...h,
+      uvIndex: h.uvIndex * 1.4,
+      uvIndexClearSky: h.uvIndex * 1.4,
+      cloudCover: 0,
+    }));
+    const live = getCurrentStatus({ hours }, curve, 3, 0.25, 1000, null, noon, LONDON.timezone, ctx);
+    expect(live.clearSkySource).toBe("forecast");
+    const peak = curve.reduce((a, b) => (b.elevation > a.elevation ? b : a)).localHours;
+    const mid = (live.clearSkyWindow!.start + live.clearSkyWindow!.end) / 2;
+    expect(Math.abs(mid - peak) * 60).toBeLessThanOrEqual(5);
+    // And the live window, a clear sky, is that same window.
+    expect(Math.abs((live.window!.start + live.window!.end) / 2 - peak) * 60).toBeLessThanOrEqual(5);
   });
 
   it("measures cloud against the forecast's own clear sky, not against ours", () => {
