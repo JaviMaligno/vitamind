@@ -32,7 +32,10 @@ describe("/api/weather input validation", () => {
 
 describe("/api/weather upstream handling", () => {
   it("maps hourly data through on success", async () => {
-    vi.mocked(global.fetch).mockResolvedValue(
+    // A fresh Response per call: a forecast request now makes two (the second
+    // is the five-model irradiance, lib/cloud-transmission.ts), and a body can
+    // only be read once.
+    vi.mocked(global.fetch).mockImplementation(async () =>
       new Response(JSON.stringify({
         hourly: { time: ["2026-07-16T12:00"], uv_index: [7.5], cloud_cover: [10] },
       })),
@@ -41,6 +44,52 @@ describe("/api/weather upstream handling", () => {
     expect(res.status).toBe(200);
     const body = await res.json();
     expect(body.hours).toEqual([{ time: "2026-07-16T12:00", uvIndex: 7.5, uvIndexClearSky: null, cloudCover: 10 }]);
+  });
+
+  it("takes a forecast's cloud from the five-model irradiance median", async () => {
+    // Madrid, 16 July, 13:00 local (11:00 UTC; hour centre 10:30 UTC, sun ~64°,
+    // clear-sky GHI ~930 W/m²). Open-Meteo alone says heavy cloud; the five
+    // models say half the clear sky gets through.
+    vi.mocked(global.fetch).mockImplementation(async (input) => {
+      const u = new URL(String(input));
+      if (u.searchParams.get("models")) {
+        return new Response(JSON.stringify({
+          utc_offset_seconds: 7200,
+          hourly: {
+            time: ["2026-07-16T13:00"],
+            shortwave_radiation_ukmo_seamless: [465], shortwave_radiation_meteofrance_seamless: [465],
+            shortwave_radiation_ecmwf_ifs025: [465], shortwave_radiation_icon_seamless: [100],
+            shortwave_radiation_gfs_seamless: [900],
+          },
+        }));
+      }
+      return new Response(JSON.stringify({
+        hourly: { time: ["2026-07-16T13:00"], uv_index: [1], uv_index_clear_sky: [9], cloud_cover: [95] },
+      }));
+    });
+    const body = await (await GET(request("lat=40.42&lon=-3.70"))).json();
+    const [h] = body.hours;
+    expect(h.cloudTransmission).toBeGreaterThan(0.45);
+    expect(h.cloudTransmission).toBeLessThan(0.55);
+    expect(h.uvIndex).toBeCloseTo(9 * h.cloudTransmission, 6);
+  });
+
+  it("answers exactly as before when the irradiance request fails", async () => {
+    vi.mocked(global.fetch).mockImplementation(async (input) =>
+      new URL(String(input)).searchParams.get("models")
+        ? new Response("boom", { status: 500 })
+        : new Response(JSON.stringify({ hourly: { time: ["2026-07-16T13:00"], uv_index: [1], uv_index_clear_sky: [9], cloud_cover: [95] } })),
+    );
+    const body = await (await GET(request("lat=40.42&lon=-3.70"))).json();
+    expect(body.hours).toEqual([{ time: "2026-07-16T13:00", uvIndex: 1, uvIndexClearSky: 9, cloudCover: 95 }]);
+  });
+
+  it("leaves history ranges on Open-Meteo's own UV, with no second request", async () => {
+    vi.mocked(global.fetch).mockImplementation(async () =>
+      new Response(JSON.stringify({ hourly: { time: ["2026-07-16T13:00"], uv_index: [1], uv_index_clear_sky: [9], cloud_cover: [95] } })),
+    );
+    await GET(request("lat=40.42&lon=-3.70&start=2026-07-10&end=2026-07-16"));
+    expect(global.fetch).toHaveBeenCalledTimes(1);
   });
 
   it("returns 502 without leaking the upstream body when Open-Meteo fails", async () => {

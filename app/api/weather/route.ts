@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { endpointFor, hoursFromPayload, FORECAST_URL } from "@/lib/weather-range";
+import { forecastHours, radiationUrl } from "@/lib/cloud-transmission";
 
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 const UPSTREAM_TIMEOUT_MS = 8000;
@@ -51,7 +52,21 @@ export async function GET(request: NextRequest) {
       url.searchParams.set("forecast_days", "3");
     }
 
-    const res = await fetch(url.toString(), { signal: AbortSignal.timeout(UPSTREAM_TIMEOUT_MS) });
+    // FORECASTS take their cloud from the five-model irradiance median
+    // (lib/cloud-transmission.ts), fetched alongside. Ranges (`start`/`end`)
+    // are the history view — what happened, not a forecast — and the archive
+    // host has no models to pool, so both keep Open-Meteo's own UV. A failed
+    // or slow second request costs nothing: the hours fall back to exactly
+    // what this route returned before.
+    const pooled = !(start && end) && url.origin + url.pathname === FORECAST_URL;
+    const main = fetch(url.toString(), { signal: AbortSignal.timeout(UPSTREAM_TIMEOUT_MS) });
+    const radiation = pooled
+      ? fetch(radiationUrl(url), { signal: AbortSignal.timeout(UPSTREAM_TIMEOUT_MS) })
+          .then((r) => (r.ok ? r.json() : null))
+          .catch(() => null)
+      : Promise.resolve(null);
+
+    const res = await main;
 
     if (!res.ok) {
       const body = await res.text().catch(() => "");
@@ -59,7 +74,8 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Upstream weather service error" }, { status: 502 });
     }
 
-    const hours = hoursFromPayload(await res.json());
+    const payload = await res.json();
+    const hours = pooled ? forecastHours(payload, await radiation, lat, lon) : hoursFromPayload(payload);
 
     if (!hours) {
       console.error(`[api/weather] Open-Meteo returned no hourly data for lat=${lat} lon=${lon}`);
