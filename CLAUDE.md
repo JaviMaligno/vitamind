@@ -99,6 +99,57 @@ the error rather than catching it.
 against the module that computes the figure* — naming the files. That instruction found a
 blocker in every one of the three AI-Overview phases. A general "review this" did not.
 
+## The UV numbers come from two models, and they disagree
+
+`lib/uv-model.ts` (Madronich 2007 on van Heuklon 1979 ozone) answers wherever a
+DATE must be computed — the 3,318 prerendered pages, `get_vitamin_d_year`, any
+day a forecast does not cover. Open-Meteo answers wherever a day can be
+OBSERVED: the dashboard, the forecast row, `get_current_status`.
+
+Measured on 2026-09-22 they disagree by up to a factor of two, and the mechanism
+is the ozone column: van Heuklon is a closed-form fit to pre-1979 data with no
+day-to-day term. **It is wrong in both directions** — about 69 DU high over
+London, 173 DU low over Nairobi — so nudging its baseline cannot repair it, and
+`lib/__tests__/uv-model-bias.test.ts` fails anyone who tries.
+
+Two things follow, and both are already done:
+
+- **The live path no longer depends on our ozone.** `getCurrentStatus` takes its
+  clear-sky reference from Open-Meteo's own `uv_index_clear_sky` and reads the
+  transmission as their cloudy value over their clear-sky value — one source, so
+  the quotient is cloud and nothing else. `NowStatus.clearSkySource` says which
+  model answered.
+- **The climatology has a seam.** `ozoneColumn` in `lib/uv-model.ts` reads
+  `OZONE_TABLE` (`lib/ozone-table.ts`) and falls back to `ozoneDU`. The table
+  ships EMPTY, so today it is van Heuklon exactly — proven cell by cell in
+  `lib/__tests__/ozone-fit.test.ts`, with `toBe`, because a last-decimal drift
+  would be a content change announced as none.
+
+**A re-base was run on 2026-09-22 and REJECTED.** Three years of Open-Meteo
+clear-sky UV, 73 cities: on a held-out year it halved the UV error against the
+provider (23.7% -> 11.3%, no city worse) — and it broke all three measured
+anchors, giving Boston February and Edmonton and London March.
+`docs/ozone-rebase.md` has the numbers. What it taught:
+
+- **`uv-literature.test.ts` was not checking the table.** It read `ozoneDU`, the
+  fallback, so it passed a table that failed every anchor. It now reads
+  `ozoneColumn`. Those anchors (Webb, Kline & Holick 1988; UK SACN 2016) are the
+  only ground truth in this repo, and a table that breaks them is wrong however
+  good its residual looks.
+- **The provider disagrees with our model in SHAPE, not only in scale.** The
+  ratio is U-shaped through the day, higher with a low sun, so a fitted "ozone"
+  drops wherever the sun is low — the high-latitude shoulder months the anchors
+  are about. The fitted column was 320-370 DU at the equator with an inverted
+  seasonal cycle at 65°N: a model-shape correction wearing an ozone label.
+- **Open-Meteo stamps an hourly UV reading at the END of the hour it
+  describes.** Pair it with anything at the stamp and you compare two different
+  half hours — the live path did, and its windows came out ~35 min late. See
+  `FORECAST_STAMP_LAG_H` in `lib/vitd.ts`.
+
+Adopting a table moves the figures on all 3,318 pages and costs a `lastmod`
+bump. That is a decision, which is why `scripts/ozone-fit.ts` prints the table
+instead of writing it.
+
 ## Search Console's query table is a sample. Never size a decision with it
 
 **Measured in the 2026-09-22 export, 90 days:** `Consultas.csv` carries 3,467 of the site's

@@ -8,7 +8,7 @@ import {
 import { notifyDecision } from "@/lib/push-schedule";
 import { getCurve, dayOfYear, fmtTime } from "@/lib/solar";
 import { minutesForVitD, computeExposureFromCurve, type SkinType } from "@/lib/vitd";
-import { ozoneDU } from "@/lib/uv-model";
+import { ozoneColumn } from "@/lib/uv-model";
 
 /**
  * The daily "go out in the sun" push, sent on the SUBSCRIBER's clock.
@@ -110,7 +110,7 @@ async function sendForSubscription(
     const curve = getCurve(sub.lat, sub.lon, doy, sub.tz, sub.timezone);
     // Real ozone column for this subscriber's location/day. Elevation is not
     // stored per subscription, so altitude defaults to sea level.
-    const ctx = { ozoneDu: ozoneDU(sub.lat, sub.lon, doy) };
+    const ctx = { ozoneDu: ozoneColumn(sub.lat, sub.lon, doy) };
     const exposure = computeExposureFromCurve(curve, sub.skinType as SkinType, sub.areaFraction, 1000, null, ctx);
     if (!exposure) return { sent: false, skipped: true, failed: false };
 

@@ -39,7 +39,7 @@ export function rangeUrl(lat: number, lon: number, from: string, to: string, now
   const url = new URL(endpointFor(from, now));
   url.searchParams.set("latitude", String(lat));
   url.searchParams.set("longitude", String(lon));
-  url.searchParams.set("hourly", "uv_index,cloud_cover");
+  url.searchParams.set("hourly", "uv_index,uv_index_clear_sky,cloud_cover");
   url.searchParams.set("timezone", "auto");
   url.searchParams.set("start_date", from);
   url.searchParams.set("end_date", to);
@@ -60,6 +60,7 @@ export function hoursFromPayload(data: unknown): WeatherHour[] | null {
   const times = hourly?.time;
   if (!Array.isArray(times)) return null;
   const uv = Array.isArray(hourly?.uv_index) ? hourly.uv_index : [];
+  const uvClear = Array.isArray(hourly?.uv_index_clear_sky) ? hourly.uv_index_clear_sky : [];
   const cloud = Array.isArray(hourly?.cloud_cover) ? hourly.cloud_cover : [];
   const hours: WeatherHour[] = [];
   times.forEach((time: string, i: number) => {
@@ -67,6 +68,11 @@ export function hoursFromPayload(data: unknown): WeatherHour[] | null {
     hours.push({
       time,
       uvIndex: uv[i] as number,
+      // Absent is NOT zero here, for the same reason `uv_index` drops an hour
+      // rather than zeroing it: a zero clear-sky reading would say the sun was
+      // down, and a caller dividing by it would get nonsense. Null means "no
+      // reference from this source", and the caller falls back to the model.
+      uvIndexClearSky: typeof uvClear[i] === "number" ? (uvClear[i] as number) : null,
       // Cloud cover may genuinely be absent while UV is not; zero is a safe
       // reading there because the UV already carries the attenuation.
       cloudCover: typeof cloud[i] === "number" ? (cloud[i] as number) : 0,

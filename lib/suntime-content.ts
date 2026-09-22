@@ -1,5 +1,5 @@
 import { getCurve, dateFromDoy } from "./solar";
-import { ozoneDU } from "./uv-model";
+import { ozoneColumn } from "./uv-model";
 import {
   MIN_UVI,
   erythemaMinutes,
@@ -99,7 +99,7 @@ function peakUviByDoy(opts: SuntimeOptions): (number | null)[] {
   const peaks = Array.from({ length: 365 }, (_, i) => {
     const doy = i + 1;
     const curve = getCurve(opts.lat, opts.lon, doy, 0);
-    const ctx = { ozoneDu: ozoneDU(opts.lat, opts.lon, doy), elevationM: opts.elevationM };
+    const ctx = { ozoneDu: ozoneColumn(opts.lat, opts.lon, doy), elevationM: opts.elevationM };
     let best = 0;
     for (let h = 0; h < 24; h++) {
       const pt = curve.find((p) => Math.floor(p.localHours) === h);

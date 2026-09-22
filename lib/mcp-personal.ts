@@ -4,10 +4,14 @@ import { buildHistoryWindow, datesBetween, locationSpans, parseGpsCityId } from 
 import { nearestCityWithin } from "./nearest-city";
 import type { WeatherRangeFetcher } from "./weather-range";
 import type { SkinType } from "./vitd";
+import { fmtTime } from "./solar";
 import type { City, DayRecord } from "./types";
 
-/** Whole hours as HH:MM, matching how the other tools spell a window. */
-const hhFromHour = (hour: number) => `${String(Math.floor(hour)).padStart(2, "0")}:${String(Math.round((hour % 1) * 60)).padStart(2, "0")}`;
+/** A local hour as HH:MM, matching how the other tools spell a window. */
+// `fmtTime`, not a second copy of it: the inline version this replaced rounded
+// the minute without carrying, so 12.999 formatted as "12:60" — the exact defect
+// CLAUDE.md records as having shipped on every sunrise page.
+const hhFromHour = (hour: number) => fmtTime(hour);
 
 /**
  * Personal (OAuth-scoped) MCP tools. Everything a user has lives in their

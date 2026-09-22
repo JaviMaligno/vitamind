@@ -9,7 +9,7 @@ import {
   DOY_REFERENCE_YEAR,
 } from "./solar";
 import { computeExposureFromCurve } from "./vitd";
-import { ozoneDU } from "./uv-model";
+import { ozoneColumn } from "./uv-model";
 import { zonedDate } from "./timezone";
 import { verdictMonths } from "./city-copy";
 import { sunRegime, type SunRegime, type SunFaqEntry } from "./sun-copy";
@@ -167,7 +167,7 @@ export interface SunTodayData {
  *
  * Every figure comes from the modules that already compute it — `getSunTimes`
  * for the clock times, `getCurve` + `computeExposureFromCurve` (UV from
- * `uvIndex`, ozone from `ozoneDU`) for the window. Nothing is recomputed here
+ * `uvIndex`, ozone from `ozoneColumn`) for the window. Nothing is recomputed here
  * and nothing is a constant.
  */
 export function sunTodayData(city: City, today: TodayInZone): SunTodayData {
@@ -177,7 +177,7 @@ export function sunTodayData(city: City, today: TodayInZone): SunTodayData {
   const exposure = computeExposureFromCurve(
     getCurve(lat, lon, today.doy, tz, timezone),
     DEFAULT_SKIN, DEFAULT_AREA, DEFAULT_TARGET_IU, null,
-    { ozoneDu: ozoneDU(lat, lon, today.doy), elevationM },
+    { ozoneDu: ozoneColumn(lat, lon, today.doy), elevationM },
   );
 
   return {

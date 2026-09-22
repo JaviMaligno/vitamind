@@ -2,12 +2,13 @@ import { BUILTIN_CITIES } from "./cities";
 import { CITY_SLUGS } from "./city-slugs";
 import { getSunTimes } from "./sun-times";
 import { getCurve, dayOfYear, fmtTime, fmtDayLength, dateFromDoy, doyFromMonthDay, daysInMonth, solarElev } from "./solar";
+import { hoursFromPayload } from "./weather-range";
 import { solarPhase, type SolarPhase } from "./solar-phase";
 import {
   computeExposureFromCurve, getCurrentStatus, maxSessionIU, MIN_UVI,
   iuForMinutes, erythemaMinutes, minutesForVitD, estimateUVFromElevation, type SkinType,
 } from "./vitd";
-import { ozoneDU } from "./uv-model";
+import { ozoneColumn } from "./uv-model";
 import { inferElevationM } from "./elevation";
 import { cityYearProfile, viableDateBoundaries, MIN_VIABLE_HOURS } from "./city-content";
 import type { SolarPoint, WeatherHour } from "./types";
@@ -92,8 +93,11 @@ function parseDate(date?: string): Date {
 
 const t = (h: number | null) => (h !== null ? fmtTime(h) : null);
 
-/** "11:00" with zero-padded hours, for whole-hour window bounds. */
-const hh = (hour: number) => `${String(hour).padStart(2, "0")}:00`;
+/** A local hour as "HH:MM". Bounds are fractional on the clear-sky path. */
+// Window bounds and peaks are fractional hours on the clear-sky path, so this
+// delegates to the site's own formatter rather than assuming :00 — which also
+// buys the 59.7 -> "20:60" carry that `fmtTime` already handles.
+const hh = (hour: number) => fmtTime(hour);
 
 
 /** Clear-sky UV at a local hour, from the day's elevation curve. */
@@ -194,7 +198,7 @@ export function vitaminDWindowTool(args: VitDArgs) {
   const doy = dayOfYear(date);
   const { skinType, area, targetIU, age, elevationM } = normalizeProfile(args);
   const curve = getCurve(args.lat, args.lon, doy, 0, args.timezone);
-  const ctx = { ozoneDu: ozoneDU(args.lat, args.lon, doy), elevationM };
+  const ctx = { ozoneDu: ozoneColumn(args.lat, args.lon, doy), elevationM };
   const result = computeExposureFromCurve(curve, skinType, area, targetIU, age, ctx);
 
   const base = {
@@ -285,7 +289,7 @@ function buildVitaminDYearResult(
     if (sampleDoy !== null) {
       const curve = getCurve(args.lat, args.lon, sampleDoy, 0, args.timezone);
       const exposure = computeExposureFromCurve(curve, skinType, area, targetIU, age, {
-        ozoneDu: ozoneDU(args.lat, args.lon, sampleDoy),
+        ozoneDu: ozoneColumn(args.lat, args.lon, sampleDoy),
         elevationM,
       });
       if (exposure) {
@@ -382,7 +386,7 @@ export function configureSunProfileFull(args: ProfileArgs) {
     const curve = getCurve(args.lat, args.lon, doy, 0, args.timezone);
     const peak = curve.reduce((best, p) => (p.elevation > best.elevation ? p : best), curve[0]);
     uvIndex = Math.round(estimateUVFromElevation(peak.elevation, {
-      ozoneDu: ozoneDU(args.lat, args.lon, doy),
+      ozoneDu: ozoneColumn(args.lat, args.lon, doy),
       elevationM: 0,
     }) * 10) / 10;
   }
@@ -619,7 +623,7 @@ export function estimateSunSessionTool(args: SessionArgs) {
   const { skinType, area, age, elevationM } = normalizeProfile({ ...args, targetIU: undefined });
   const minutes = Math.min(600, Math.max(1, Math.round(args.minutes)));
   const curve = getCurve(args.lat, args.lon, doy, 0, args.timezone);
-  const ctx = { ozoneDu: ozoneDU(args.lat, args.lon, doy), elevationM };
+  const ctx = { ozoneDu: ozoneColumn(args.lat, args.lon, doy), elevationM };
 
   // Default to the day's best hour when no start time is given.
   let startHour = parseLocalTime(args.startTime);
@@ -670,18 +674,17 @@ export const fetchWeatherHours: WeatherFetcher = async (lat, lon, days = 1) => {
     const url = new URL("https://api.open-meteo.com/v1/forecast");
     url.searchParams.set("latitude", String(lat));
     url.searchParams.set("longitude", String(lon));
-    url.searchParams.set("hourly", "uv_index,cloud_cover");
+    url.searchParams.set("hourly", "uv_index,uv_index_clear_sky,cloud_cover");
     url.searchParams.set("timezone", "auto");
     url.searchParams.set("forecast_days", String(Math.min(7, Math.max(1, Math.round(days)))));
     const res = await fetch(url.toString(), { signal: AbortSignal.timeout(UPSTREAM_TIMEOUT_MS) });
     if (!res.ok) return null;
-    const data = await res.json();
-    if (!data.hourly?.time) return null;
-    return data.hourly.time.map((time: string, i: number) => ({
-      time,
-      uvIndex: data.hourly.uv_index?.[i] ?? 0,
-      cloudCover: data.hourly.cloud_cover?.[i] ?? 0,
-    }));
+    // Parsed by `hoursFromPayload`, not by hand. The hand-rolled version this
+    // replaces read `uv_index?.[i] ?? 0`, which is the one thing that module's
+    // comment says never to do: a null UV reading means nobody measured, and
+    // calling it zero reports the sun as down. `lib/weather-range.ts` records
+    // the incident — a fortnight of London summer came back as darkness.
+    return hoursFromPayload(await res.json());
   } catch {
     return null;
   }
@@ -710,7 +713,7 @@ async function buildCurrentStatus(args: VitDArgs, fetcher: WeatherFetcher) {
   const doy = dayOfYear(now);
   const { skinType, area, targetIU, age, elevationM } = normalizeProfile(args);
   const curve = getCurve(args.lat, args.lon, doy, 0, args.timezone);
-  const ctx = { ozoneDu: ozoneDU(args.lat, args.lon, doy), elevationM };
+  const ctx = { ozoneDu: ozoneColumn(args.lat, args.lon, doy), elevationM };
 
   const hours = await fetcher(args.lat, args.lon);
   const status = getCurrentStatus(
@@ -724,7 +727,7 @@ async function buildCurrentStatus(args: VitDArgs, fetcher: WeatherFetcher) {
     const tomorrowDoy = doy >= 365 ? 1 : doy + 1;
     const tomorrowCurve = getCurve(args.lat, args.lon, tomorrowDoy, 0, args.timezone);
     const exposure = computeExposureFromCurve(tomorrowCurve, skinType, area, targetIU, age, {
-      ozoneDu: ozoneDU(args.lat, args.lon, tomorrowDoy),
+      ozoneDu: ozoneColumn(args.lat, args.lon, tomorrowDoy),
       elevationM,
     });
     if (exposure) {
@@ -741,6 +744,20 @@ async function buildCurrentStatus(args: VitDArgs, fetcher: WeatherFetcher) {
     currentUVIndex: Math.round(status.effectiveUVI * 10) / 10,
     minutesNeededNow: status.minutesNeeded !== null ? Math.round(status.minutesNeeded) : null,
     window: status.window ? { start: hh(status.window.start), end: hh(status.window.end) } : null,
+    // The window the SUN alone allows, alongside the one the forecast allows.
+    // Without it, a cloudy day answers `state: "no_synthesis"` with nothing to
+    // distinguish "London in December" from "London under cloud in September" —
+    // and the assistant reading this has no way to tell, so it guesses. The two
+    // fields below are what make `get_vitamin_d_window` unnecessary as a
+    // follow-up call.
+    clearSkyWindow: status.clearSkyWindow
+      ? { start: hh(status.clearSkyWindow.start), end: hh(status.clearSkyWindow.end) }
+      : null,
+    // Which model produced that clear-sky answer. The two disagree by up to a
+    // factor of two (docs/uv-sources.md), so an assistant repeating the number
+    // should be able to say where it came from.
+    clearSkySource: status.clearSkySource,
+    cloudDegraded: status.cloudDegraded,
     bestHour: status.bestHour !== null ? hh(status.bestHour) : null,
     minutesUntilWindow: status.minutesUntilWindow,
     windowClosesInMinutes: status.windowClosesIn,

@@ -1,6 +1,6 @@
 import { computeExposure, computeExposureFromCurve, type SkinType } from "./vitd";
 import { getCurve, dayOfYear } from "./solar";
-import { ozoneDU } from "./uv-model";
+import { ozoneColumn } from "./uv-model";
 import { fetchWeatherRange, type WeatherRangeFetcher } from "./weather-range";
 import { haversineKm } from "./nearest-city";
 import type { DayRecord, WeatherHour } from "./types";
@@ -245,7 +245,7 @@ export async function buildHistoryWindow(opts: {
 
     const hours = cityId ? observed.get(cityId)?.get(date) : undefined;
     const doy = dayOfYear(new Date(`${date}T12:00:00Z`));
-    const ctx = { ozoneDu: ozoneDU(place.lat, place.lon, doy), elevationM: 0 };
+    const ctx = { ozoneDu: ozoneColumn(place.lat, place.lon, doy), elevationM: 0 };
 
     // Measured hours when the provider answered; otherwise the clear-sky curve,
     // flagged, so a cloudy day is never quietly reported as a bright one.

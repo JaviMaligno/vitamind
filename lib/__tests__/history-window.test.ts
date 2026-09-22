@@ -34,6 +34,7 @@ const dayHours = (date: string, peak: number, cloud = 10): WeatherHour[] =>
   Array.from({ length: 24 }, (_, hour) => ({
     time: `${date}T${String(hour).padStart(2, "0")}:00`,
     uvIndex: Math.max(0, Math.round(peak * Math.sin((Math.PI * (hour - 6)) / 12) * 10) / 10),
+    uvIndexClearSky: null,
     cloudCover: cloud,
   }));
 

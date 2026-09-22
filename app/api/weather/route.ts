@@ -36,7 +36,7 @@ export async function GET(request: NextRequest) {
     const url = new URL(startDate ? endpointFor(startDate) : FORECAST_URL);
     url.searchParams.set("latitude", String(lat));
     url.searchParams.set("longitude", String(lon));
-    url.searchParams.set("hourly", "uv_index,cloud_cover");
+    url.searchParams.set("hourly", "uv_index,uv_index_clear_sky,cloud_cover");
     url.searchParams.set("timezone", "auto");
     if (start && end) {
       url.searchParams.set("start_date", start);

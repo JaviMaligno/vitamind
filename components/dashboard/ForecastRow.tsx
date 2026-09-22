@@ -5,6 +5,7 @@ import { useTranslations, useLocale } from "next-intl";
 import { computeExposure } from "@/lib/vitd";
 import type { ForecastDay } from "@/hooks/useForecast";
 import type { SkinType } from "@/lib/vitd";
+import { fmtTime } from "@/lib/solar";
 
 interface Props {
   forecast: ForecastDay[] | null;
@@ -21,9 +22,9 @@ function weatherIcon(avgCloud: number, peakUVI: number): string {
   return "\u{2600}\u{FE0F}";
 }
 
-function formatHour(h: number): string {
-  return `${String(h).padStart(2, "0")}:00`;
-}
+// Window bounds are fractional hours on the clear-sky path (see ExposureResult),
+// so this must not assume the minute is always :00.
+const formatHour = (h: number): string => fmtTime(h);
 
 function getAreaKey(areaFraction: number): string {
   if (areaFraction <= 0.10) return "faceHands";

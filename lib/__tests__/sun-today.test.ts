@@ -133,14 +133,40 @@ describe("today's synthesis window", () => {
   });
 
   /**
-   * The freshness argument rests on this: `computeExposureFromCurve` reports the
-   * window in WHOLE local hours, so a server-rendered window cannot drift by
-   * minutes as the days pass — it either holds or moves by exactly one hour.
+   * This used to assert the window came back in WHOLE local hours, and called
+   * that the basis of the freshness argument: a server-rendered window "either
+   * holds or moves by exactly one hour".
+   *
+   * That was the quantisation, not a guarantee, and it cut the wrong way. The
+   * window is now read at the curve's own five-minute resolution, so a hub one
+   * day stale is wrong by about two minutes instead of potentially snapping a
+   * whole hour. The freshness argument in lib/sun-today.ts is stronger under
+   * this, not weaker — which is why the assertion is inverted here rather than
+   * deleted: the property that mattered was small day-to-day drift, and it is
+   * now stated directly. Measured over the 73 built-in cities: mean 2.2 min.
    */
-  it("reports the window in whole hours", () => {
+  it("reports the window at the curve's resolution, not snapped to the hour", () => {
     const d = at("madrid", 7, 16).exposure!;
-    expect(Number.isInteger(d.windowStart)).toBe(true);
-    expect(Number.isInteger(d.windowEnd)).toBe(true);
+    // Five-minute curve, so bounds land on a multiple of five minutes.
+    for (const bound of [d.windowStart, d.windowEnd]) {
+      expect(Math.round((bound % 1) * 60) % 5).toBe(0);
+    }
+    // And at least one bound is genuinely off the hour, or this is pinning
+    // whole hours again by accident.
+    expect(Number.isInteger(d.windowStart) && Number.isInteger(d.windowEnd)).toBe(false);
+  });
+
+  it("drifts by minutes, not by an hour, from one day to the next", () => {
+    // The freshness claim the hub rests on, stated as the thing it actually is.
+    for (const slug of ["madrid", "londres", "sidney"]) {
+      for (let day = 10; day <= 20; day++) {
+        const a = at(slug, 8, day).exposure;
+        const b = at(slug, 8, day + 1).exposure;
+        if (!a || !b) continue;
+        expect(Math.abs(b.windowStart - a.windowStart) * 60, `${slug} ${day}`).toBeLessThanOrEqual(15);
+        expect(Math.abs(b.windowEnd - a.windowEnd) * 60, `${slug} ${day}`).toBeLessThanOrEqual(15);
+      }
+    }
   });
 
   it("moves by at most one hour from one day to the next, all year", () => {

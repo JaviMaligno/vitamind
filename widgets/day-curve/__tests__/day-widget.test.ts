@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { readDayMeta, statusKey, formatCountdown, fmtMin, DAY_CURVE_META_KEY, type DayMeta } from "../data";
 import { renderDay, verdict, stats } from "../render";
+import { fmtHour } from "../data";
+import { fmtTime as appFmtTime } from "@/lib/solar";
 import { DAY_COPY } from "../generated-copy";
 import { resolveWidgetLocale, emptyText, WIDGET_LOCALES } from "../i18n";
 import { getStatusKey, formatCountdown as appCountdown, fmtMin as appFmtMin } from "@/components/dashboard/day-status";
@@ -34,7 +36,7 @@ describe("agreement with the app", () => {
       expect(statusKey(c), JSON.stringify(c))
         .toBe(getStatusKey({ ...c, currentUVI: 0, effectiveUVI: 0, minutesNeeded: null, window: null,
           bestHour: null, bestMinutes: null, minutesUntilWindow: null, windowClosesIn: null,
-          cloudCover: null, cloudDegraded: false }));
+          cloudCover: null, clearSkyWindow: null, clearSkySource: "model" as const, cloudDegraded: false }));
     }
   });
 
@@ -210,5 +212,52 @@ describe("the sky follows the hour", () => {
 
   it("ignores a phase the server should never send", () => {
     expect(renderDay({ meta: withPhase("teatime"), locale: "es" })).toContain("#0a0e24");
+  });
+});
+
+describe("fractional hours never reach the screen as decimals", () => {
+  /**
+   * `11.833333333333334:00 – 13.916666666666666:00` shipped to the dashboard's
+   * stat row for exactly one build. Window bounds and the peak became fractional
+   * hours when the solar curve stopped being sampled once an hour, and three
+   * call sites were still pasting `:00` onto the raw number. Two were headlines
+   * and got caught; this one was a stat and did not, because nothing rendered it
+   * in a test.
+   *
+   * The assertion is deliberately dumb — no digit-dot-digit anywhere in the
+   * output — so it catches the next one wherever it appears.
+   */
+  const fractional = {
+    state: "good_now" as const, intensity: "optimal" as const, uvIndex: 3.4,
+    minutesNeeded: 17, windowStart: 11.833333333333334, windowEnd: 13.916666666666666,
+    minutesUntilWindow: null, windowClosesInMinutes: 72,
+    bestHour: 12.833333333333334, bestMinutes: 17, cloudCoverPercent: 20, cloudDegraded: false,
+    phase: "day" as const,
+  };
+
+  it("formats the window and the best hour as clock times", () => {
+    const rows = stats(fractional, "es");
+    const window = rows.find((r) => r.label === DAY_COPY.es.nowWindow)!;
+    expect(window.value).toBe("11:50 – 13:55");
+    // Every row that carries a clock time. The UV reading is excluded because
+    // "3.4" is the number it is supposed to print.
+    const clockRows = rows.filter((r) => r.label !== DAY_COPY.es.currentUVI);
+    for (const row of clockRows) {
+      expect(row.value, row.label).not.toMatch(/\d\.\d/);
+    }
+  });
+
+  it("formats them in the headline too", () => {
+    for (const state of ["upcoming", "window_closed"] as const) {
+      const v = verdict({ ...fractional, state, intensity: null, minutesUntilWindow: 30 }, "es");
+      expect(v.headline, state).not.toMatch(/\d\.\d/);
+    }
+  });
+
+  it("agrees with the app's own formatter", () => {
+    // Same parity rule the countdown helpers here already follow.
+    for (const h of [0, 9.5, 11.833333333333334, 13.916666666666666, 23.99]) {
+      expect(fmtHour(h), `h=${h}`).toBe(appFmtTime(h));
+    }
   });
 });

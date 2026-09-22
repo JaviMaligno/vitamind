@@ -148,7 +148,7 @@ export default async function CityPage({ params }: { params: Promise<Params> }) 
   // altitude, so the city's real position and elevation must both be passed.
   const elevationM = city.elevation ?? 0;
   const profile = cityYearProfile(city.lat, city.lon, elevationM);
-  const windows = citySeasonalWindows(city.lat, city.lon, city.tz, elevationM);
+  const windows = citySeasonalWindows(city.lat, city.lon, city.tz, elevationM, city.timezone);
   const labelsForChart = monthLabels(p.locale);
 
   // The month band hides the shoulder; this names the first and last day with at

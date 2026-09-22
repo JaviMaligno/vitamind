@@ -24,3 +24,7 @@ widget-preview.html
 
 # playwright-cli session artifacts (snapshots, console logs)
 .playwright-cli/
+
+# Collected by scripts/ozone-sample.ts; see docs/ozone-rebase.md.
+# Evidence, not source: commit it deliberately if you want the fit reproducible.
+data/ozone-samples.json

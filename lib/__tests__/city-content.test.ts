@@ -148,3 +148,40 @@ describe("citySeasonalWindows", () => {
     expect(high.minutesNeeded!).toBeLessThan(sea.minutesNeeded!);
   });
 });
+
+describe("citySeasonalWindows respects daylight saving", () => {
+  const LONDON = { lat: 51.51, lon: -0.13, tz: 0, timezone: "Europe/London", elevationM: 11 };
+
+  /**
+   * The city pages printed every seasonal window an hour early for any city on
+   * DST, because this was the one call site that passed `tz` (the standard-time
+   * offset) without `timezone` (the IANA name). London's September line read
+   * 10:40-13:05 while the hub, one day later and correctly on BST, said
+   * 11:45-14:00 — the same page family disagreeing with itself by an hour.
+   */
+  it("puts London's September window on BST, not GMT", () => {
+    const sep = citySeasonalWindows(LONDON.lat, LONDON.lon, LONDON.tz, LONDON.elevationM, LONDON.timezone)
+      .find((w) => w.doy === 264)!;
+    expect(sep.possible).toBe(true);
+    // 11:40, not 10:40.
+    expect(sep.windowStart!).toBeGreaterThan(11);
+    expect(sep.windowStart!).toBeLessThan(12);
+  });
+
+  it("differs from the DST-blind result by exactly one hour in summer", () => {
+    for (const doy of [172, 264]) {
+      const withTz = citySeasonalWindows(LONDON.lat, LONDON.lon, LONDON.tz, LONDON.elevationM, LONDON.timezone)
+        .find((w) => w.doy === doy)!;
+      const withoutTz = citySeasonalWindows(LONDON.lat, LONDON.lon, LONDON.tz, LONDON.elevationM)
+        .find((w) => w.doy === doy)!;
+      expect(Math.round((withTz.windowStart! - withoutTz.windowStart!) * 60), `doy ${doy}`).toBe(60);
+    }
+  });
+
+  it("leaves a city without DST untouched", () => {
+    // Tokyo keeps one offset all year, so naming the zone must change nothing.
+    const a = citySeasonalWindows(35.68, 139.69, 9, 40, "Asia/Tokyo");
+    const b = citySeasonalWindows(35.68, 139.69, 9, 40);
+    expect(a.map((w) => w.windowStart)).toEqual(b.map((w) => w.windowStart));
+  });
+});

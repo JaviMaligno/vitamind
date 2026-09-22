@@ -280,6 +280,7 @@
     "nowClosedHint": "There will be a new opportunity tomorrow",
     "cloudDegraded": "Cloudy now — may improve later",
     "cloudDegradedFull": "Clouds are blocking the UV needed for vitamin D synthesis",
+    "cloudDegradedFullWindow": "With a clear sky there would be a window today from {start} to {end} — it is cloud that is blocking it",
     "nowWindow": "Window",
     "nowTimeNeeded": "Estimated time",
     "nowClosesIn": "Closes in",

@@ -280,6 +280,7 @@
     "nowClosedHint": "Завтра будет новая возможность",
     "cloudDegraded": "Облачно сейчас — может улучшиться позже",
     "cloudDegradedFull": "Облака блокируют UV, необходимый для синтеза витамина D",
+    "cloudDegradedFullWindow": "При ясном небе сегодня было бы окно с {start} до {end} — его закрывают облака",
     "nowWindow": "Окно",
     "nowTimeNeeded": "Расчётное время",
     "nowClosesIn": "Закроется через",

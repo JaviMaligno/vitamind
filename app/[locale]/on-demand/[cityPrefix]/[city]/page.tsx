@@ -196,7 +196,7 @@ export default async function OnDemandCityPage({ params }: { params: Promise<Par
   // is the claim `cityPage.dynamicProvenance` prints at the bottom of the page.
   const elevationM = elevationFor(city);
   const profile = cityYearProfile(city.lat, city.lon, elevationM);
-  const windows = citySeasonalWindows(city.lat, city.lon, city.tz, elevationM);
+  const windows = citySeasonalWindows(city.lat, city.lon, city.tz, elevationM, city.timezone);
   const labelsForChart = monthLabels(p.locale);
 
   const bounds =

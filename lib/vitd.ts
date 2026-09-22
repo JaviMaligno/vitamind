@@ -195,13 +195,20 @@ export function iuForMinutes(
  * Find the best hour and compute exposure info from weather data.
  */
 export interface ExposureResult {
-  bestHour: number;        // Local hour with highest UVI
+  /**
+   * Local time of peak UVI, as a fractional hour (12.75 = 12:45). Whole hours
+   * from `computeExposure`, whose input is hourly; the curve's own resolution
+   * from `computeExposureFromCurve`. Format it with `fmtTime`, never `${h}:00`.
+   */
+  bestHour: number;
   bestUVI: number;         // UV index at best hour
   minutesNeeded: number;   // Minutes for target IU
   maxIU: number;           // Max IU achievable per session
   targetCapped: boolean;   // True if target exceeds safe max
-  windowStart: number;     // First hour with UVI >= 3
-  windowEnd: number;       // Last hour with UVI >= 3
+  /** Fractional local hour the window opens. See `bestHour` on formatting. */
+  windowStart: number;
+  /** Fractional local hour the window closes. See `bestHour` on formatting. */
+  windowEnd: number;
   hourlyMinutes: { hour: number; uvi: number; minutes: number | null }[];
 }
 
@@ -263,8 +270,36 @@ export function estimateUVFromElevation(elevationDeg: number, ctx: ClearSkyConte
 }
 
 /**
- * Compute exposure estimate from solar curve (no weather data needed).
- * Uses theoretical clear-sky UV. Labeled as "estimacion teorica".
+ * The clear-sky window a solar curve actually contains, at the curve's own
+ * resolution.
+ *
+ * WHY THIS IS NOT A LOOP OVER 24 CLOCK HOURS, WHICH IS WHAT IT USED TO BE.
+ * `getCurve` returns a point every five minutes. This function used to keep one
+ * point in twelve — the one at `h:00` — and answer from those 24 samples. Two
+ * things followed, and neither is a rounding error:
+ *
+ *   1. A WINDOW THAT CONTAINED NO CLOCK HOUR WAS REPORTED AS NO WINDOW AT ALL.
+ *      Near the edges of the season the window narrows to under an hour, and
+ *      whether it survived depended on where solar noon happened to fall
+ *      relative to the clock — a property of the city's longitude inside its
+ *      timezone, not of its sun. Measured over the 73 built-in cities × 365
+ *      days: 80 city-days where a real window was reported as none, across 36
+ *      cities. Casablanca loses 19 days a year, Phoenix 18.
+ *
+ *      The reason this matters more than 0.39% suggests: the dose is ~19 min at
+ *      UVI 3 for the page's default reader. A 35-minute window is not a
+ *      technicality, it is a usable one, and it was being thrown away for
+ *      arithmetic reasons on precisely the days a reader most needs the answer.
+ *
+ *   2. THE EDGES WERE WRONG BY UP TO AN HOUR ON EVERY OTHER DAY. Mean error
+ *      0.47 h on the start and 0.55 h on the end, max a full hour. London on
+ *      22 September: the real span is 11:45-14:00 and the page said 12:00-15:00
+ *      — an hour of synthesis advertised after the UV had already dropped
+ *      through the threshold.
+ *
+ * `hourlyMinutes` stays one row per clock hour on purpose: it is the day-curve
+ * chart's data, and a chart of hours wants hours. Only the window bounds and
+ * the peak, which are instants, are read at full resolution.
  */
 export function computeExposureFromCurve(
   curve: SolarPoint[],
@@ -275,26 +310,30 @@ export function computeExposureFromCurve(
   ctx: ClearSkyContext = {},
 ): ExposureResult | null {
   const hourlyMinutes: ExposureResult["hourlyMinutes"] = [];
+
+  // One row per clock hour, for the chart.
+  for (let h = 0; h < 24; h++) {
+    const pt = curve.find((p) => Math.floor(p.localHours) === h);
+    const uvi = estimateUVFromElevation(pt?.elevation ?? 0, ctx);
+    hourlyMinutes.push({ hour: h, uvi, minutes: minutesForVitD(uvi, skinType, areaFraction, targetIU, age) });
+  }
+
+  // The window and the peak, from every point the curve has.
   let bestUVI = 0;
   let bestHour = 12;
   let windowStart = -1;
   let windowEnd = -1;
-
-  // Sample one point per hour from the curve
-  for (let h = 0; h < 24; h++) {
-    const pt = curve.find((p) => Math.floor(p.localHours) === h);
-    const elev = pt?.elevation ?? 0;
-    const uvi = estimateUVFromElevation(elev, ctx);
-    const mins = minutesForVitD(uvi, skinType, areaFraction, targetIU, age);
-    hourlyMinutes.push({ hour: h, uvi, minutes: mins });
-
+  for (const p of curve) {
+    const uvi = estimateUVFromElevation(p.elevation, ctx);
     if (uvi >= MIN_UVI) {
-      if (windowStart === -1) windowStart = h;
-      windowEnd = h + 1;
+      if (windowStart === -1) windowStart = p.localHours;
+      // The last instant still above the threshold — not the end of the clock
+      // hour containing it, which is what overshot the close by up to an hour.
+      windowEnd = p.localHours;
     }
     if (uvi > bestUVI) {
       bestUVI = uvi;
-      bestHour = h;
+      bestHour = p.localHours;
     }
   }
 
@@ -307,6 +346,65 @@ export function computeExposureFromCurve(
   const targetCapped = targetIU >= maxIU;
 
   return { bestHour, bestUVI, minutesNeeded, maxIU, targetCapped, windowStart, windowEnd, hourlyMinutes };
+}
+
+/**
+ * Linear interpolation over hourly points, flat outside their range, 1 when
+ * there are none.
+ *
+ * Both ratios in `getCurrentStatus` — the calibration onto the forecast's
+ * clear-sky scale and the transmission through its clouds — are hourly series
+ * read at the ephemeris's five-minute resolution. One implementation, so they
+ * cannot drift apart.
+ */
+function lerpByHour(points: { hour: number; ratio: number }[], localHour: number): number {
+  if (points.length === 0) return 1;
+  if (localHour <= points[0].hour) return points[0].ratio;
+  const last = points[points.length - 1];
+  if (localHour >= last.hour) return last.ratio;
+  for (let i = 1; i < points.length; i++) {
+    const b = points[i];
+    if (b.hour < localHour) continue;
+    const a = points[i - 1];
+    const span = b.hour - a.hour;
+    return span === 0 ? b.ratio : a.ratio + (b.ratio - a.ratio) * ((localHour - a.hour) / span);
+  }
+  return last.ratio;
+}
+
+/**
+ * WHERE AN OPEN-METEO HOURLY UV READING SITS IN TIME: half an hour before its
+ * stamp. The value labelled 13:00 describes the hour from 12:00 to 13:00.
+ *
+ * Measured on 2026-09-22 against the historical and the forecast hosts alike:
+ * clear-sky readings pair up symmetrically about an instant ~30 min after solar
+ * noon, never about noon itself. London on 21 June 2025, solar noon 12:02 UTC,
+ * reads 7.15 at 12:00 and 7.20 at 13:00; Madrid centres near 12:40 against a
+ * 12:16 noon; Nairobi near 10:05 against 9:35. Divided by our model evaluated
+ * AT the stamp, the ratio runs 1.02 -> 0.76 -> 1.69 across London's day;
+ * divided by our model averaged over the hour BEFORE the stamp, 1.54 -> 0.79 ->
+ * 1.20 — symmetric, which is what two clear-sky models of one sun must be.
+ *
+ * Pairing a reading with our value at the stamp compares two different half
+ * hours. The morning ratio comes out low and the afternoon one high, and any
+ * window built from those ratios opens and closes late.
+ */
+const FORECAST_STAMP_LAG_H = 0.5;
+
+/**
+ * Our clear-sky UVI averaged over the hour an Open-Meteo reading stamped `stamp`
+ * describes — the like-for-like denominator for that reading.
+ */
+function modelHourMean(curve: SolarPoint[], stamp: number, ctx: ClearSkyContext): number {
+  let sum = 0;
+  let n = 0;
+  for (const p of curve) {
+    if (p.localHours >= stamp - 1 && p.localHours < stamp) {
+      sum += estimateUVFromElevation(p.elevation, ctx);
+      n += 1;
+    }
+  }
+  return n > 0 ? sum / n : 0;
 }
 
 /**
@@ -360,27 +458,104 @@ export function getCurrentStatus(
     currentMinutes = now.getMinutes();
   }
   const minutesFraction = currentMinutes / 60;
+  /** The exact local instant, so a fractional window bound can be compared to it. */
+  const nowHour = currentHour + minutesFraction;
 
   // Build hourly UVI + cloud data
   const hourlyUVI: { hour: number; uvi: number; cloud: number }[] = [];
 
+  /** The forecast's own clear-sky reading per hour, where it supplied one. */
+  const forecastClearSky = new Map<number, number>();
   if (weather && weather.hours.length > 0) {
     for (const wh of weather.hours) {
-      hourlyUVI.push({ hour: hourFromTimeString(wh.time), uvi: wh.uvIndex, cloud: wh.cloudCover });
+      const h = hourFromTimeString(wh.time);
+      hourlyUVI.push({ hour: h, uvi: wh.uvIndex, cloud: wh.cloudCover });
+      if (typeof wh.uvIndexClearSky === "number" && wh.uvIndexClearSky > 0) {
+        forecastClearSky.set(h, wh.uvIndexClearSky);
+      }
     }
-  } else if (curve.length > 0) {
+  }
+
+  /**
+   * What the SUN alone offers today, from the solar curve — computed whether or
+   * not there is weather, because it is the reference the forecast is judged
+   * against.
+   *
+   * This used to be built only in the `else` branch above, i.e. only when there
+   * was NO weather data, which is what made `cloudDegraded` dead code: in that
+   * branch the "theoretical" hours were the same hours the window was derived
+   * from (cloud is hardcoded to 0 there, so `cloudFactor` is a no-op), and in
+   * the weather branch there was no clear-sky reference at all. The flag could
+   * therefore never be true in either, and a reader standing under a bright sky
+   * was told the UV index was too low instead of that the forecast saw cloud.
+   */
+  // Hourly rows, which is what the interpolation below and the no-weather
+  // fallback both want.
+  const clearSkyHourly: { hour: number; uvi: number }[] = [];
+  if (curve.length > 0) {
     for (let h = 0; h < 24; h++) {
       const pt = curve.find((p) => Math.floor(p.localHours) === h);
       const elev = pt?.elevation ?? 0;
-      hourlyUVI.push({ hour: h, uvi: estimateUVFromElevation(elev, ctx), cloud: 0 });
+      clearSkyHourly.push({ hour: h, uvi: estimateUVFromElevation(elev, ctx) });
     }
   }
+
+  // No weather: the clear-sky curve IS the reading, cloud unknown (hence 0).
+  if (!weather) {
+    for (const h of clearSkyHourly) hourlyUVI.push({ hour: h.hour, uvi: h.uvi, cloud: 0 });
+  }
+
+  /**
+   * CALIBRATION: our clear-sky curve rescaled onto the forecast's clear-sky
+   * values, hour by hour, interpolated in between.
+   *
+   * `uv_index_clear_sky` is the same model that produced `uv_index`, with the
+   * clouds removed. Using it as the reference is what makes "the sun would
+   * allow a window from X to Y" a statement backed by the forecast's own
+   * physics rather than by ours — and ours is the one running on a 1979 ozone
+   * climatology that disagrees with it by up to a factor of two.
+   *
+   * It is hourly, so the curve still supplies the shape within the hour. One
+   * factor for the absolute scale, one ephemeris for the shape; the same split
+   * the attenuation below uses, and for the same reason.
+   *
+   * With no forecast, or a forecast that omitted the field, the factor is 1 and
+   * this is the model's own answer — which is also what the city and hub pages
+   * publish, so the fallback is consistent rather than merely safe.
+   */
+  // Each reading is compared with our model over the SAME hour and placed at
+  // that hour's centre — see FORECAST_STAMP_LAG_H for why not at its stamp.
+  const calibrationPoints: { hour: number; ratio: number }[] = [];
+  for (const [stamp, theirs] of [...forecastClearSky].sort((a, b) => a[0] - b[0])) {
+    const ours = modelHourMean(curve, stamp, ctx);
+    if (ours >= 0.5) calibrationPoints.push({ hour: stamp - FORECAST_STAMP_LAG_H, ratio: theirs / ours });
+  }
+  const calibratedClearSky = (localHour: number, modelUVI: number) =>
+    modelUVI * lerpByHour(calibrationPoints, localHour);
+
+  const clearSkySource: NowStatus["clearSkySource"] =
+    calibrationPoints.length > 0 ? "forecast" : "model";
+
+  // The BOUNDS come from every point the curve has, for the reason spelled out
+  // on `computeExposureFromCurve`: a sub-hour window that contains no clock
+  // hour is a real window, and sampling on the hour cannot see it.
+  let csStart = -1;
+  let csEnd = -1;
+  for (const p of curve) {
+    const clear = calibratedClearSky(p.localHours, estimateUVFromElevation(p.elevation, ctx));
+    if (clear >= MIN_UVI) {
+      if (csStart === -1) csStart = p.localHours;
+      csEnd = p.localHours;
+    }
+  }
+  const clearSkyWindow = csStart !== -1 ? { start: csStart, end: csEnd } : null;
 
   if (hourlyUVI.length === 0) {
     return {
       state: "no_synthesis", currentUVI: 0, effectiveUVI: 0, intensity: null,
       minutesNeeded: null, window: null, bestHour: null, bestMinutes: null,
-      minutesUntilWindow: null, windowClosesIn: null, cloudCover: null, cloudDegraded: false,
+      minutesUntilWindow: null, windowClosesIn: null, cloudCover: null,
+      clearSkyWindow, clearSkySource, cloudDegraded: false,
     };
   }
 
@@ -400,26 +575,88 @@ export function getCurrentStatus(
   const cf = useCloudFactor && currentCloud !== null ? cloudFactor(currentCloud) : 1.0;
   const effectiveUVI = rawUVI * cf;
 
-  // Compute effective UVI per hour for window detection
+  // Compute effective UVI per hour (the forecast's own resolution).
   const effectiveHourly = hourlyUVI.map((h) => ({
     hour: h.hour,
     effectiveUVI: useCloudFactor ? h.uvi * cloudFactor(h.cloud) : h.uvi,
     rawUVI: h.uvi,
   }));
 
-  // Find synthesis window
+  /**
+   * ATTENUATION PER HOUR: how much of the clear sky is getting through.
+   *
+   * This is the ratio that lets an hourly forecast be read at the curve's
+   * resolution without inventing anything. The two inputs have very different
+   * natures and the split follows it exactly:
+   *
+   *   - The SUN's contribution is known to the minute. `curve` is a five-minute
+   *     ephemeris; nothing about it is uncertain between one hour and the next.
+   *   - The SKY's contribution is what the forecast supplies hourly, and it is
+   *     the slowly-varying part. Interpolating cloud between 12:00 and 13:00 is
+   *     an ordinary thing to do; interpolating the SUN's position would not be,
+   *     because we already know it exactly.
+   *
+   * So the ratio is interpolated and the curve carries the shape. A useful
+   * property falls out: because it is a RATIO, a bias in our own clear-sky model
+   * cancels. Where Open-Meteo and `uvIndex` disagree on the absolute number —
+   * and they do, by up to a factor of two at high sun (see docs/uv-sources.md) —
+   * the result still tracks Open-Meteo's values, with our curve supplying only
+   * the within-the-hour shape.
+   *
+   * Ratios are taken only where the clear-sky value is large enough to divide
+   * by. Near sunrise it is not, and it does not matter: the window threshold is
+   * MIN_UVI, far above that end of the curve.
+   */
+  const RATIO_FLOOR_UVI = 0.5;
+  const transmissionPoints: { hour: number; ratio: number }[] = [];
+  if (weather) {
+    for (const cs of clearSkyHourly) {
+      const observed = effectiveHourly.find((h) => h.hour === cs.hour);
+      if (!observed) continue;
+      // Prefer the forecast's OWN clear-sky reading as the denominator: same
+      // model, same grid cell, same hour, so the quotient is transmission and
+      // nothing else. Falling back to ours mixes two models into one number and
+      // calls the difference cloud.
+      // Both readings describe the hour BEFORE the stamp, so the ratio belongs at
+      // its centre; our fallback denominator is averaged over that same hour.
+      const theirClear = forecastClearSky.get(cs.hour);
+      const reference = theirClear ?? modelHourMean(curve, cs.hour, ctx);
+      if (reference < RATIO_FLOOR_UVI) continue;
+      transmissionPoints.push({ hour: cs.hour - FORECAST_STAMP_LAG_H, ratio: observed.effectiveUVI / reference });
+    }
+  }
+
+  // The effective curve, at the ephemeris's resolution.
   let wsStart = -1;
   let wsEnd = -1;
   let bHour: number | null = null;
   let bEffUVI = 0;
+  for (const p of curve) {
+    const clear = calibratedClearSky(p.localHours, estimateUVFromElevation(p.elevation, ctx));
+    const eff = weather ? clear * lerpByHour(transmissionPoints, p.localHours) : clear;
+    if (eff >= MIN_UVI) {
+      if (wsStart === -1) wsStart = p.localHours;
+      wsEnd = p.localHours;
+      if (eff > bEffUVI) {
+        bEffUVI = eff;
+        bHour = p.localHours;
+      }
+    }
+  }
 
-  for (const h of effectiveHourly) {
-    if (h.effectiveUVI >= MIN_UVI) {
-      if (wsStart === -1) wsStart = h.hour;
-      wsEnd = h.hour + 1;
-      if (h.effectiveUVI > bEffUVI) {
-        bEffUVI = h.effectiveUVI;
-        bHour = h.hour;
+  /**
+   * Fall back to the hourly reading when there is no curve to read — the MCP
+   * and the widgets can call this with weather and an empty ephemeris.
+   */
+  if (curve.length === 0) {
+    for (const h of effectiveHourly) {
+      if (h.effectiveUVI >= MIN_UVI) {
+        if (wsStart === -1) wsStart = h.hour;
+        wsEnd = h.hour + 1;
+        if (h.effectiveUVI > bEffUVI) {
+          bEffUVI = h.effectiveUVI;
+          bHour = h.hour;
+        }
       }
     }
   }
@@ -429,10 +666,13 @@ export function getCurrentStatus(
     ? minutesForVitD(bEffUVI, skinType, areaFraction, targetIU, age)
     : null;
 
-  // cloudDegraded only meaningful with theoretical curve — with real API data,
-  // UVI already reflects clouds so there's no "theoretical vs effective" gap
+  // The sun would allow it, the sky does not. Judged against `clearSkyWindow`,
+  // which comes from the solar curve rather than from `hourlyUVI` — with real
+  // API data those hours ARE the cloud-attenuated ones, so comparing them with
+  // themselves is what made this flag permanently false.
+  const cloudDegraded = clearSkyWindow !== null && synthWindow === null;
+  // Whether some later hour is still worth waiting for, cloud included.
   const theoreticalWindow = hourlyUVI.some((h) => h.uvi >= MIN_UVI);
-  const cloudDegraded = useCloudFactor && theoreticalWindow && synthWindow === null;
   const minutesNeededNow = minutesForVitD(effectiveUVI, skinType, areaFraction, targetIU, age);
 
   // Determine state
@@ -448,7 +688,7 @@ export function getCurrentStatus(
       windowClosesIn = (synthWindow.end - currentHour) * 60 - currentMinutes;
       if (windowClosesIn < 0) windowClosesIn = 0;
     }
-  } else if (synthWindow && currentHour >= synthWindow.start && currentHour < synthWindow.end) {
+  } else if (synthWindow && nowHour >= synthWindow.start && nowHour < synthWindow.end) {
     // Inside window period but interpolated UVI dipped below threshold (e.g. cloud or transition)
     // Check if the current hour itself still has good UVI (interpolation with next hour may dip
     // but the hour's reported UVI is still valid for synthesis)
@@ -468,10 +708,10 @@ export function getCurrentStatus(
         state = "window_closed";
       }
     }
-  } else if (synthWindow && currentHour < synthWindow.start) {
+  } else if (synthWindow && nowHour < synthWindow.start) {
     state = "upcoming";
     minutesUntilWindow = (synthWindow.start - currentHour) * 60 - currentMinutes;
-  } else if (synthWindow && currentHour >= synthWindow.end) {
+  } else if (synthWindow && nowHour >= synthWindow.end) {
     state = "window_closed";
   } else if (!synthWindow && theoreticalWindow) {
     const futureGood = effectiveHourly.find((h) => h.hour > currentHour && h.effectiveUVI >= MIN_UVI);
@@ -488,6 +728,7 @@ export function getCurrentStatus(
   return {
     state, currentUVI: rawUVI, effectiveUVI, intensity,
     minutesNeeded: minutesNeededNow, window: synthWindow, bestHour: bHour, bestMinutes: bMinutes,
-    minutesUntilWindow, windowClosesIn, cloudCover: currentCloud, cloudDegraded,
+    minutesUntilWindow, windowClosesIn, cloudCover: currentCloud,
+    clearSkyWindow, clearSkySource, cloudDegraded,
   };
 }

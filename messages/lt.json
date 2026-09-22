@@ -280,6 +280,7 @@
     "nowClosedHint": "Rytoj bus nauja galimybė",
     "cloudDegraded": "Debesuota dabar — gali pagerėti vėliau",
     "cloudDegradedFull": "Debesys blokuoja UV, reikalingą vitamino D sintezei",
+    "cloudDegradedFullWindow": "Esant giedram dangui šiandien langas būtų nuo {start} iki {end} — jį blokuoja debesys",
     "nowWindow": "Langas",
     "nowTimeNeeded": "Numatomas laikas",
     "nowClosesIn": "Užsidaro po",

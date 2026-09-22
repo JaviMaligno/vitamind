@@ -274,9 +274,12 @@ describe("the day curve is sampled at the instants the city's clock names", () =
   it("the hub prints a window and a sunrise placed by the same offset", () => {
     process.env.TZ = "UTC";
     const cases = [
-      { id: "builtin:madrid", monthIndex: 9, day: 25, sunrise: "07:40", window: ["12:00", "15:00"] },
-      { id: "builtin:chicago", monthIndex: 2, day: 8, sunrise: "07:18", window: ["12:00", "15:00"] },
-      { id: "builtin:los-angeles", monthIndex: 10, day: 1, sunrise: "06:15", window: ["10:00", "14:00"] },
+      // Windows re-recorded when the curve stopped being sampled once an hour.
+      // Each midpoint now sits within 2.5 min of that city's solar noon; the old
+      // values were 25-30 min off centre, which is what hourly sampling costs.
+      { id: "builtin:madrid", monthIndex: 9, day: 25, sunrise: "07:40", window: ["11:35", "14:20"] },
+      { id: "builtin:chicago", monthIndex: 2, day: 8, sunrise: "07:18", window: ["11:25", "14:40"] },
+      { id: "builtin:los-angeles", monthIndex: 10, day: 1, sunrise: "06:15", window: ["09:40", "13:35"] },
     ];
     const got = cases.map(({ id, monthIndex, day }) => {
       const city = BUILTIN_CITIES.find((c) => c.id === id)!;

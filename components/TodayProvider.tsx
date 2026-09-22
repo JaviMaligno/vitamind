@@ -83,7 +83,7 @@ export default function TodayProvider({ city, cityName, initial, children }: Pro
     // Timers freeze while a PWA is backgrounded, so a tab left open overnight
     // needs the visibility hook as well as the interval — the same pair
     // SunTimesPanel uses. Ten minutes is enough for a value that changes once a
-    // day; the window itself is quantised to whole hours.
+    // day; the window itself moves ~2 min from one day to the next.
     const id = setInterval(compute, 600_000);
     const onVisible = () => {
       if (document.visibilityState === "visible") compute();

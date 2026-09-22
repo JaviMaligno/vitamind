@@ -85,6 +85,23 @@ export function formatCountdown(totalMinutes: number): string {
   return m > 0 ? `${h}h ${m}min` : `${h}h`;
 }
 
+/**
+ * `fmtTime` from lib/solar.ts, same output.
+ *
+ * Duplicated rather than imported for the reason the other two helpers here are:
+ * this module is bundled into the iframe, so anything it imports ships with it.
+ * `day-widget.test.ts` pins it against the real one.
+ */
+export function fmtHour(h: number): string {
+  let hr = Math.floor(h);
+  let mn = Math.round((h - hr) * 60);
+  if (mn === 60) {
+    mn = 0;
+    hr = (hr + 1) % 24;
+  }
+  return `${String(hr).padStart(2, "0")}:${String(mn).padStart(2, "0")}`;
+}
+
 /** `fmtMin` from components/dashboard/day-status.ts, same output. */
 export function fmtMin(m: number): string {
   if (m < 1) return "<1 min";
