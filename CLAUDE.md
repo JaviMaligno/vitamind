@@ -137,6 +137,41 @@ Adopting a table moves the figures on all 3,318 pages and costs a `lastmod`
 bump. That is a decision, which is why `scripts/ozone-fit.ts` prints the module
 instead of writing it.
 
+## Search Console's query table is a sample. Never size a decision with it
+
+**Measured in the 2026-09-22 export, 90 days:** `Consultas.csv` carries 3,467 of the site's
+39,863 impressions — **8.7%**. `Páginas.csv` carries 39,133 — **98.2%**. Google truncates the
+query table at 1,000 rows and anonymises rare queries; it does not truncate pages the same way.
+
+So counting impressions for a class of query in that table and comparing the total to the
+**site's** impressions understates that class by roughly 11×. It is not a sample you can scale
+by eye either, because the anonymised tail is not distributed like the visible head.
+
+**This already cost the site 99% of its traffic once.** Commit `b5ef203` (2026-08-15 22:06)
+rewrote the metadata and FAQ of all 2,880 month pages to stop competing for clock-time queries,
+on the reasoning that those queries "earn 3 clicks on 1738 impressions" in 28 days — about 3% of
+traffic on the arithmetic above, and so expendable. They were nearly all of it:
+
+| | 1–15 Aug | 16 Aug – 19 Sep |
+|---|---|---|
+| Impressions | 1,825/day | **18/day** |
+| Average position | ~8 | 12–53 |
+| Indexed pages | 3,132 | 3,171 |
+
+Indexation never moved, Googlebot kept crawling (270 K requests in the 90 days to 09-05), and
+there was no Google update in the window — the August spam update ran 18–21 August. 987 of the
+top 1,000 pages are month pages and they carry **98.0%** of every impression the site gets; 81%
+of named queries carry a month and ask for a clock time; **0.1%** mention vitamin D. The change
+removed the matching phrasing from the title, the meta description and the FAQ question at once.
+
+Restored on 2026-09-22. `lib/sun-copy.ts` carries the measurement above the FAQ entry, and
+`messages/__tests__/sunrise-copy.test.ts` now asserts the clock-time promise is in `metaTitle`
+— the inverse of the assertion it shipped with, which required vitamin D to be there instead.
+
+**The rule:** size a query class against the **page** table or against that class's own share of
+the query table — never against the site total. And before rewriting copy that ranks, check what
+the pages currently rank FOR.
+
 ## The client only gets the namespaces it can read
 
 `app/[locale]/layout.tsx` passes `pickClientMessages(messages)`, not `messages`, to

@@ -238,18 +238,23 @@ export interface ContentRevision {
  * So the date does not move, and the hashes do only because `figures` covers the
  * SOURCE of the modules. When a real table is pasted in, the date WILL move; the
  * procedure and that decision are written up in docs/ozone-rebase.md.
+ *
+ * 2026-09-22, MERGE WITH MASTER — hashes only. Master restored the month pages'
+ * sunrise copy (1d0c7f9) under the same date; both sides moved `figures`, which
+ * hashes the SOURCE of lib/sun-copy.ts among others, so the merged value is
+ * neither side's. Nothing new is printed beyond what the two entries describe.
  */
 export const SUN_MONTH_REVISION: ContentRevision = {
   date: "2026-09-22",
   parts: {
-    "copy.es": "19c8154efe44dd27",
-    "copy.en": "01d1084af16f6106",
-    "copy.fr": "cba7554aea029b9d",
-    "copy.de": "c5917fcf7f664286",
-    "copy.ru": "7d0427fc5082438b",
-    "copy.lt": "2fa9119bd4283f7d",
+    "copy.es": "b0a481a202a80a16",
+    "copy.en": "29004277b15cff5f",
+    "copy.fr": "b4aa6c1a79d01aaa",
+    "copy.de": "ccd8596ae8570ab3",
+    "copy.ru": "4fd942700575ec5d",
+    "copy.lt": "4f1c6f865e78e355",
     cities: "35aebb84c49f350e",
-    figures: "1d122d4a2dab73ed",
+    figures: "323b9ec8e1a8c9b2",
     constants: "a3b447afa17fa07c",
   },
 };
