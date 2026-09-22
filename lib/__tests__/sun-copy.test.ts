@@ -104,14 +104,17 @@ describe("sunPageCopy selects the metadata variant for the regime", () => {
 });
 
 describe("sunPageCopy routes the FAQ questions", () => {
-  it("leads with the direction question, then the day/twilight/vitamin D five", () => {
-    // Direction first because it is the measured highest-CTR query shape (9.1%
-    // against 0.17% for clock times) and the one no ephemeris rival answers.
+  it("leads with the clock time, then direction and the day/twilight/vitamin D five", () => {
+    // The sunrise time first because it is what 98% of this tree's impressions
+    // ask for; direction second on its 9.1% CTR, which is one click on eleven
+    // impressions. Both figures and the order are argued in lib/sun-copy.ts.
     expect(questionKeys("madrid", 7)).toEqual([
-      "faqDirectionQ", "faqDeltaQ", "faqLightQ", "faqDawnQ", "faqDarkQ", "faqVitdQ",
+      "faqSunriseQ", "faqDirectionQ", "faqDeltaQ", "faqLightQ", "faqDawnQ", "faqDarkQ",
+      "faqVitdQ",
     ]);
     expect(answerKeys("madrid", 7)).toEqual([
-      "faqDirectionA", "faqDeltaA", "faqLightA", "faqDawnA", "faqDarkA", "faqVitdASynthesis",
+      "faqSunriseA", "faqDirectionA", "faqDeltaA", "faqLightA", "faqDawnA", "faqDarkA",
+      "faqVitdASynthesis",
     ]);
   });
 
