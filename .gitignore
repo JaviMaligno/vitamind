@@ -28,3 +28,9 @@ widget-preview.html
 # Collected by scripts/ozone-sample.ts; see docs/ozone-rebase.md.
 # Evidence, not source: commit it deliberately if you want the fit reproducible.
 data/ozone-samples.json
+
+# Backtest data written by scripts/cloud-backtest/*.py; see docs/cloud-forecast.md.
+scripts/cloud-backtest/*.json
+scripts/cloud-backtest/*.csv
+scripts/cloud-backtest/*.log
+!scripts/cloud-backtest/cities.json

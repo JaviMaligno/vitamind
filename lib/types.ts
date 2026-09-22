@@ -64,6 +64,13 @@ export interface WeatherHour {
    */
   uvIndexClearSky: number | null;
   cloudCover: number;
+  /**
+   * Set when `uvIndex` was rebuilt from the five-model irradiance median
+   * (lib/cloud-transmission.ts): the fraction of the clear sky getting through,
+   * so `uvIndex === uvIndexClearSky * cloudTransmission`. Absent when the hour
+   * is Open-Meteo's own reading.
+   */
+  cloudTransmission?: number;
 }
 
 export interface WeatherData {

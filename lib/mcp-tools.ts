@@ -2,7 +2,7 @@ import { BUILTIN_CITIES } from "./cities";
 import { CITY_SLUGS } from "./city-slugs";
 import { getSunTimes } from "./sun-times";
 import { getCurve, dayOfYear, fmtTime, fmtDayLength, dateFromDoy, doyFromMonthDay, daysInMonth, solarElev } from "./solar";
-import { hoursFromPayload } from "./weather-range";
+import { forecastHours, radiationUrl } from "./cloud-transmission";
 import { solarPhase, type SolarPhase } from "./solar-phase";
 import {
   computeExposureFromCurve, getCurrentStatus, maxSessionIU, MIN_UVI,
@@ -677,14 +677,20 @@ export const fetchWeatherHours: WeatherFetcher = async (lat, lon, days = 1) => {
     url.searchParams.set("hourly", "uv_index,uv_index_clear_sky,cloud_cover");
     url.searchParams.set("timezone", "auto");
     url.searchParams.set("forecast_days", String(Math.min(7, Math.max(1, Math.round(days)))));
-    const res = await fetch(url.toString(), { signal: AbortSignal.timeout(UPSTREAM_TIMEOUT_MS) });
+    // Same cloud as the app's dashboard: the five-model irradiance median,
+    // with Open-Meteo's own UV as the fallback (lib/cloud-transmission.ts).
+    const main = fetch(url.toString(), { signal: AbortSignal.timeout(UPSTREAM_TIMEOUT_MS) });
+    const radiation = fetch(radiationUrl(url), { signal: AbortSignal.timeout(UPSTREAM_TIMEOUT_MS) })
+      .then((r) => (r.ok ? r.json() : null))
+      .catch(() => null);
+    const res = await main;
     if (!res.ok) return null;
-    // Parsed by `hoursFromPayload`, not by hand. The hand-rolled version this
+    // Parsed by `hoursFromPayload` (inside `forecastHours`), not by hand. The hand-rolled version this
     // replaces read `uv_index?.[i] ?? 0`, which is the one thing that module's
     // comment says never to do: a null UV reading means nobody measured, and
     // calling it zero reports the sun as down. `lib/weather-range.ts` records
     // the incident — a fortnight of London summer came back as darkness.
-    return hoursFromPayload(await res.json());
+    return forecastHours(await res.json(), await radiation, lat, lon);
   } catch {
     return null;
   }

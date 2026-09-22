@@ -147,6 +147,12 @@ Two things follow, and both are already done:
   transmission as their cloudy value over their clear-sky value — one source, so
   the quotient is cloud and nothing else. `NowStatus.clearSkySource` says which
   model answered.
+- **A forecast's cloud is the median of five models, not Open-Meteo's
+  `uv_index`.** `lib/cloud-transmission.ts`: `uv_index_clear_sky` times the
+  median of five models' forecast irradiance over clear-sky irradiance. Chosen
+  against ground stations in Germany and the US, where `best_match` was the
+  worst of the lot; numbers in `docs/cloud-forecast.md`. A failed second
+  request falls back to Open-Meteo's own UV, silently and by design.
 - **The climatology has a seam.** `ozoneColumn` in `lib/uv-model.ts` reads
   `OZONE_TABLE` (`lib/ozone-table.ts`) and falls back to `ozoneDU`. The table
   ships EMPTY, so today it is van Heuklon exactly — proven cell by cell in
