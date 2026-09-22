@@ -254,6 +254,10 @@ const SUN_MONTH_MODULES = [
   "lib/sun-prose.ts",
   "lib/uv-model.ts",
   "lib/vitd.ts",
+  // The ozone climatology `ozoneColumn` reads. Missing until 2026-09-22, when a
+  // fitted table was trialled and this guard did not notice it would move the
+  // figures; docs/ozone-rebase.md.
+  "lib/ozone-table.ts",
   "lib/city-copy.ts",
 ] as const;
 
@@ -263,6 +267,10 @@ const CITY_PAGE_MODULES = [
   "lib/city-content.ts",
   "lib/city-copy.ts",
   "lib/uv-model.ts",
+  // The ozone climatology `ozoneColumn` reads. Missing until 2026-09-22, when a
+  // fitted table was trialled and this guard did not notice it would move the
+  // figures; docs/ozone-rebase.md.
+  "lib/ozone-table.ts",
   "lib/vitd.ts",
 ] as const;
 
@@ -277,6 +285,10 @@ const CITY_PAGE_MODULES = [
 const SUNTIME_MODULES = [
   "lib/solar.ts",
   "lib/uv-model.ts",
+  // The ozone climatology `ozoneColumn` reads. Missing until 2026-09-22, when a
+  // fitted table was trialled and this guard did not notice it would move the
+  // figures; docs/ozone-rebase.md.
+  "lib/ozone-table.ts",
   "lib/vitd.ts",
   "lib/suntime-content.ts",
   "lib/suntime-routes.ts",

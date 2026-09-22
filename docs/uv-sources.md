@@ -148,7 +148,15 @@ would be fitting noise, so it has not been done.
    the shape within an hour, and a bias in it cancels. With (1) in place the
    live path no longer depends on our ozone column at all.
 
-3. **NOT DONE — re-base the ozone climatology.** This still governs all 3,318
+3. **RUN on 2026-09-22 and NOT ADOPTED — re-base the ozone climatology.**
+   Fitted to three years of Open-Meteo `uv_index_clear_sky` for the 73 cities
+   (the historical forecast host keeps that field back to 2022). It halved the
+   error against the provider and broke all three measured anchors in
+   `uv-literature.test.ts`; see docs/ozone-rebase.md. Fitting ozone alone to
+   this provider cannot work: the two models differ in their dependence on sun
+   angle. The paragraphs below are the state before that run.
+
+   This still governs all 3,318
    prerendered pages, which have no forecast to defer to. It needs a real
    dataset, not a table written from memory: a monthly zonal-mean total-column
    climatology (SBUV merged, OMI/TOMS era) at 10° latitude resolution.

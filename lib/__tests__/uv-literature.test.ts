@@ -1,20 +1,28 @@
 import { describe, it, expect } from "vitest";
 import { declination, dateFromDoy } from "@/lib/solar";
-import { ozoneDU, uvIndex, UVI_SYNTHESIS_THRESHOLD } from "@/lib/uv-model";
+import { ozoneColumn, uvIndex, UVI_SYNTHESIS_THRESHOLD } from "@/lib/uv-model";
 
 /** Noon solar elevation in degrees. */
 function noonElevation(lat: number, doy: number): number {
   return 90 - Math.abs(lat - declination(doy));
 }
 
-/** 1-12 month numbers where synthesis is impossible on most days. */
+/**
+ * 1-12 month numbers where synthesis is impossible on most days.
+ *
+ * Reads `ozoneColumn`, the column the app uses — NOT `ozoneDU`. This file is the
+ * gate docs/ozone-rebase.md makes non-negotiable before a fitted ozone table is
+ * adopted, and on 2026-09-22 it passed a table that broke all three measured
+ * anchors below, because it was reading the 1979 fallback the table replaces.
+ * With the table empty the two are identical, so this changes nothing today.
+ */
 function impossibleMonths(lat: number, lon: number, elevationM = 0): number[] {
   const days = Array.from({ length: 12 }, () => 0);
   const possible = Array.from({ length: 12 }, () => 0);
   for (let doy = 1; doy <= 365; doy++) {
     const m = dateFromDoy(doy).getMonth();
     days[m] += 1;
-    const uvi = uvIndex(noonElevation(lat, doy), ozoneDU(lat, lon, doy), elevationM);
+    const uvi = uvIndex(noonElevation(lat, doy), ozoneColumn(lat, lon, doy), elevationM);
     if (uvi >= UVI_SYNTHESIS_THRESHOLD) possible[m] += 1;
   }
   const out: number[] = [];

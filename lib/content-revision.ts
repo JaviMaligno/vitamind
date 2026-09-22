@@ -243,6 +243,18 @@ export interface ContentRevision {
  * sunrise copy (1d0c7f9) under the same date; both sides moved `figures`, which
  * hashes the SOURCE of lib/sun-copy.ts among others, so the merged value is
  * neither side's. Nothing new is printed beyond what the two entries describe.
+ *
+ * 2026-09-22, LAST — hashes only, on all three families, and nothing they print
+ * moves. Two source changes:
+ *
+ *   1. `getCurrentStatus` in lib/vitd.ts now reads each Open-Meteo hour at the
+ *      centre of the hour it describes rather than at its stamp. Live path only
+ *      — the same reasoning as the FOURTH entry above.
+ *   2. lib/ozone-table.ts joined the `figures` module lists. It had been left
+ *      out, and a fitted table trialled today would have moved the figures on
+ *      all 3,318 pages with this guard silent; the hashes happened to move
+ *      anyway because of (1). The table was NOT adopted (docs/ozone-rebase.md)
+ *      and still ships empty, so this is the list catching up, not content.
  */
 export const SUN_MONTH_REVISION: ContentRevision = {
   date: "2026-09-22",
@@ -254,7 +266,7 @@ export const SUN_MONTH_REVISION: ContentRevision = {
     "copy.ru": "4fd942700575ec5d",
     "copy.lt": "4f1c6f865e78e355",
     cities: "35aebb84c49f350e",
-    figures: "323b9ec8e1a8c9b2",
+    figures: "6eab19830dac0691",
     constants: "a3b447afa17fa07c",
   },
 };
@@ -300,7 +312,7 @@ export const CITY_PAGE_REVISION: ContentRevision = {
     "copy.ru": "39c852cd4713ae68",
     "copy.lt": "ff610006e37f9b63",
     cities: "c66cfdadbf8dabad",
-    figures: "1edc5e9661e046d0",
+    figures: "2deb5733bd502f5b",
     constants: "09032456232a5db5",
   },
 };
@@ -335,7 +347,7 @@ export const SUNTIME_PAGE_REVISION: ContentRevision = {
     "copy.de": "c72ec8cdf2df2ebb",
     "copy.ru": "e6c6fcebda3a7911",
     "copy.lt": "7f54b7c4c382e0ca",
-    figures: "772338678c672342",
+    figures: "1a1ea3f1e223988b",
     reference: "4303d27a87c4a0dd",
     constants: "c9d5d03dc2b9c7b9",
   },

@@ -125,16 +125,29 @@ Two things follow, and both are already done:
   `lib/__tests__/ozone-fit.test.ts`, with `toBe`, because a last-decimal drift
   would be a content change announced as none.
 
-**Re-basing the climatology is written, tested and NOT run**, because this
-environment could not reach Open-Meteo or NASA. `docs/ozone-rebase.md` is the
-runbook; `docs/uv-sources.md` is the evidence. It needs outbound HTTPS, several
-sampling runs across a year, and — the part that is not negotiable —
-`uv-literature.test.ts` still passing afterwards. Those measured anchors (Webb,
-Kline & Holick 1988; UK SACN 2016) are the only ground truth in this repo; the
-samples are one provider's model.
+**A re-base was run on 2026-09-22 and REJECTED.** Three years of Open-Meteo
+clear-sky UV, 73 cities: on a held-out year it halved the UV error against the
+provider (23.7% -> 11.3%, no city worse) — and it broke all three measured
+anchors, giving Boston February and Edmonton and London March.
+`docs/ozone-rebase.md` has the numbers. What it taught:
+
+- **`uv-literature.test.ts` was not checking the table.** It read `ozoneDU`, the
+  fallback, so it passed a table that failed every anchor. It now reads
+  `ozoneColumn`. Those anchors (Webb, Kline & Holick 1988; UK SACN 2016) are the
+  only ground truth in this repo, and a table that breaks them is wrong however
+  good its residual looks.
+- **The provider disagrees with our model in SHAPE, not only in scale.** The
+  ratio is U-shaped through the day, higher with a low sun, so a fitted "ozone"
+  drops wherever the sun is low — the high-latitude shoulder months the anchors
+  are about. The fitted column was 320-370 DU at the equator with an inverted
+  seasonal cycle at 65°N: a model-shape correction wearing an ozone label.
+- **Open-Meteo stamps an hourly UV reading at the END of the hour it
+  describes.** Pair it with anything at the stamp and you compare two different
+  half hours — the live path did, and its windows came out ~35 min late. See
+  `FORECAST_STAMP_LAG_H` in `lib/vitd.ts`.
 
 Adopting a table moves the figures on all 3,318 pages and costs a `lastmod`
-bump. That is a decision, which is why `scripts/ozone-fit.ts` prints the module
+bump. That is a decision, which is why `scripts/ozone-fit.ts` prints the table
 instead of writing it.
 
 ## Search Console's query table is a sample. Never size a decision with it

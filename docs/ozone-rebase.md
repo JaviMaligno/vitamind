@@ -1,10 +1,24 @@
 # Runbook: re-basing the ozone climatology
 
-**State: ready to run, not run.** Everything except the network call is written
-and tested. This environment could not reach Open-Meteo or NASA (egress policy
-refused CONNECT to `api.open-meteo.com`, `acd-ext.gsfc.nasa.gov` and
-`ozonewatch.gsfc.nasa.gov`), so the sampling step has never executed against
-real data. Run it somewhere with outbound HTTPS and the rest follows.
+**State: run on 2026-09-22 and NOT adopted.** The fit halved the error against
+Open-Meteo and broke all three measured anchors; `lib/ozone-table.ts` still
+ships empty. Numbers and reasons under *The 2026-09-22 run* at the end of this
+file. **Do not simply re-run this procedure expecting a different verdict** —
+read that section first: the failure is structural, not a matter of more data.
+
+The runbook was written in an environment with no network, and the first real
+run found three things it had wrong. All are fixed below and in the code:
+
+- **Open-Meteo stamps an hourly reading at the END of the hour it describes.**
+  The sampler took the sun angle at the stamp, which pairs every morning reading
+  with a sun half an hour too high. It now takes it at the centre of the hour.
+  Evidence on `FORECAST_STAMP_LAG_H` in `lib/vitd.ts`.
+- **One run covers whole years, not a season.** The historical forecast host
+  (`historical-forecast-api.open-meteo.com`) keeps `uv_index_clear_sky` back to
+  2022; the 92-day limit is the live host's. The sampler now reads the former.
+- **The non-negotiable check was not checking.** `uv-literature.test.ts` read
+  `ozoneDU` — the fallback — so it passed 16/16 with a table that failed every
+  measured anchor. It now reads `ozoneColumn`, the column the app uses.
 
 Read `docs/uv-sources.md` first for *why* — the short version is that
 `ozoneDU` is van Heuklon (1979), a closed-form fit to pre-1979 data with no
@@ -29,7 +43,7 @@ latitude, so nudging its baseline cannot fix it, and
 ### 1. Collect samples
 
 ```bash
-npx tsx scripts/ozone-sample.ts --from 2026-07-01 --to 2026-10-05
+npx tsx scripts/ozone-sample.ts --from 2023-09-01 --to 2026-08-31
 ```
 
 Appends to `data/ozone-samples.json`, deduplicating on (city, hour), so it is
@@ -37,12 +51,10 @@ safe to re-run. It keeps only hours with the sun above 30°, which is where
 Madronich's formula is stated valid and therefore the only place inverting it
 for ozone means anything.
 
-**You will need several runs spread across the year.** The forecast host serves
-UV for a window around today — `lib/weather-range.ts` puts it at about 92 days
-back, and roughly a fortnight forward. One run covers a season, not a year. The
-script prints the span each city actually returned, so check that rather than
-assuming. If you find a source with a longer UV archive, point `ENDPOINT` at it;
-nothing downstream cares where the numbers came from.
+Three whole years took about three minutes for the 73 cities and wrote 464,287
+samples (~60 MB, gitignored). Whole years matter more than recent ones: a
+climatology should not carry one year's anomaly. The script prints the span each
+city actually returned, so check that rather than assuming.
 
 Aim for coverage in every populated latitude band in every month the sun gets
 above 30° there. The fit leaves thin cells `null` rather than guessing, and
@@ -66,8 +78,9 @@ is large enough to be worth a re-crawl.
 
 ### 3. Adopt
 
-Paste the printed module over `lib/ozone-table.ts`. That is the whole change —
-no call site moves, because they already go through `ozoneColumn`.
+Replace the `OZONE_TABLE` constant in `lib/ozone-table.ts` with the one the
+script prints — the constant only: the file also holds `lookupOzone` and the
+types. No call site moves, because they already go through `ozoneColumn`.
 
 ### 4. Verify, in this order
 
@@ -117,3 +130,42 @@ difference between the two radiative-transfer models lands in that number. It is
 the ozone-shaped parameter that makes our formula agree with theirs, which is
 exactly what the static pages need — but nobody should publish it as an ozone
 dataset, and `lib/ozone-fit.ts` says so at the top.
+
+## The 2026-09-22 run
+
+Samples: Sep 2023 - Aug 2026, 73 cities, 464,287 hours with the sun above 30°,
+no failures. Coverage 123/216 cells; the 45° bands and everything above 65°N
+were empty because no city sits there.
+
+| | van Heuklon | fitted table |
+|---|---|---|
+| In-sample mean UV error vs Open-Meteo | 23.3% | 11.2% |
+| **Held-out year** (fit Sep 2023 - Aug 2025, test Sep 2025 - Aug 2026) | 23.7% | 11.3% |
+| Cities worse on the held-out year | | 0 / 73 |
+| Nine live-forecast samples in `uv-model-bias.test.ts` (mean DU error) | 47 | 31 |
+| Zenith peak, Nairobi / Bogotá | 19.3 / 20.1 | 11.4 / 12.7 |
+| **Boston, Webb et al. 1988** (no synthesis Nov-Feb) | passes | **fails: gains February** |
+| **Edmonton, Webb et al. 1988** (Oct-Mar) | passes | **fails: gains March** |
+| **London, SACN 2016** (Oct-Mar) | passes | **fails: gains March** |
+
+**Why it fails, and why more data will not fix it.** Even with the hours
+aligned, the ratio of Open-Meteo's clear-sky UV to ours is U-shaped through the
+day — London on 21 June 2025 runs 1.54 -> 0.79 -> 1.20 from morning to evening
+— so the two models differ in how UV falls off with a lower sun, not only in
+level. A single ozone number per cell can only move the level. Fitted to all
+hours, it lowers the column wherever the sun is low, and "wherever the sun is
+low" is exactly the high-latitude shoulder months the anchors pin. The fitted
+column says as much about itself: 320-370 DU over the equator, and at 65°N a
+cycle running from 247 DU in March to 305 in June — the real high-latitude
+cycle peaks in spring at 400+ DU, so this one is inverted.
+
+So the table improved agreement with a model and worsened agreement with
+measurements. Either Open-Meteo is too generous at low sun, or the UVI-3
+threshold stands in imperfectly for previtamin-D production at low sun, or both;
+the anchors do not say which, and that question is the real next step — not
+another ozone fit. If anything is fitted to Open-Meteo in future, it has to be
+the elevation dependence in `uvIndex` as well, and `uv-literature.test.ts` has
+to pass on the result.
+
+The rejected table is not committed. To reproduce it: the two commands in steps
+1 and 2 with the date range above.
