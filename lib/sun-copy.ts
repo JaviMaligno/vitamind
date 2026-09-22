@@ -237,12 +237,47 @@ export function sunPageCopy({
 
   const faq: SunFaqEntry[] = [
     /**
-     * FIRST, and deliberately. Search Console over 28 days: queries asking for a
-     * DIRECTION converted at 9.1% (1 click / 11 impressions), the highest CTR
-     * pattern in the whole report, against 0.17% for the clock-time queries this
-     * tree is otherwise full of. It is also the only question here that no
-     * ephemeris rival answers for a city and a month at once, so it leads the
-     * visible list and the FAQPage markup built from it.
+     * FIRST, because it is the question this tree is actually found for, and
+     * removing it cost the site 99% of its impressions overnight.
+     *
+     * It was dropped on 2026-08-15 (commit b5ef203) on the reasoning that
+     * clock-time queries "earn 3 clicks on 1738 impressions" in 28 days — about
+     * 3% of traffic, and so expendable. That reading came from Search Console's
+     * QUERY table, which in the 2026-09-22 export covers 3,467 of 39,863
+     * impressions: 8.7%. The PAGE table covers 98.2%, and in it 987 of the top
+     * 1,000 pages are these month pages, carrying 98.0% of every impression the
+     * site received. So the class was not 3% of the traffic; it was nearly all
+     * of it, understated ~11x by counting a truncated table against a full-site
+     * total.
+     *
+     * Measured: 1,825 impressions/day and position ~8 over 1-15 August; 18/day
+     * and position 12-53 from 16 August to 19 September, with the indexed count
+     * flat at ~3,170 throughout, no Google update in the window (the August
+     * spam update ran 18-21 August) and crawling unaffected. The one change on
+     * 15 August at 22:06 removed this question, the same phrasing from the meta
+     * description, and ": horas exactas" from the title — the three places the
+     * query matched — across all 2,880 month pages at once.
+     *
+     * So: before the direction answer, whose 9.1% CTR is one click on eleven
+     * impressions read from that same 8.7% table.
+     */
+    {
+      qKey: "faqSunriseQ",
+      qValues: { ...cityMonth },
+      aKey: "faqSunriseA",
+      aValues: {
+        month,
+        first: hhmm(first.sunrise!),
+        lastDay: days.length,
+        last: hhmm(last.sunrise!),
+      },
+    },
+    /**
+     * Search Console over 28 days: queries asking for a DIRECTION converted at
+     * 9.1% (1 click / 11 impressions), against 0.17% for the clock-time queries
+     * this tree is otherwise full of. It is the only question here that no
+     * ephemeris rival answers for a city and a month at once, so it stays high
+     * in the visible list and the FAQPage markup built from it.
      *
      * Absent on a polar month: `monthDirection` returns null when any day of the
      * month has no sunrise, so there is no one direction to name.

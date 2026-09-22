@@ -30,6 +30,7 @@ const LOCALES = { es, en, fr, de, ru, lt } as Record<
 const NEW_KEYS = [
   "metaTitleNone", "metaTitlePolar", "metaDescriptionNone", "metaDescriptionPolar",
   "faqHeading",
+  "faqSunriseQ", "faqSunriseA",
   "faqDeltaQ", "faqDeltaA",
   "faqLightQ", "faqLightA",
   "faqDawnQ", "faqDawnA", "faqDawnANoNight",
@@ -38,8 +39,14 @@ const NEW_KEYS = [
   "faqPolarQ", "faqPolarA",
 ];
 
-/** Keys the new FAQ replaces. faqSunriseA's figures live in faqDeltaA now. */
-const REMOVED_KEYS = ["faqSunriseQ", "faqSunriseA", "faqDayQ", "faqDayA"];
+/**
+ * Keys the new FAQ replaces. `faqDayQ`'s figure lives in `faqLightA` now.
+ *
+ * `faqSunriseQ`/`faqSunriseA` were on this list until 2026-09-22 and are back on
+ * the page: dropping them is what the impressions collapse traced to. See the
+ * measurement in `lib/sun-copy.ts` above the entry.
+ */
+const REMOVED_KEYS = ["faqDayQ", "faqDayA"];
 
 /**
  * The direction answer, phrased the way the query is typed ("por donde se pone
@@ -90,10 +97,22 @@ describe("sunrisePage regime copy", () => {
     expect(REMOVED_KEYS.filter((k) => k in ns)).toEqual([]);
   });
 
-  it.each(Object.keys(LOCALES))("%s stops promising exact times and names the differentiator", (locale) => {
-    // The AI Overview already satisfies "exact times"; the synthesis-regime
-    // title exists to promise the one thing no ephemeris rival carries.
-    expect(LOCALES[locale].sunrisePage.metaTitle).toMatch(/vitamin|витамин/i);
+  it.each(Object.keys(LOCALES))("%s promises the clock time its traffic asks for", (locale) => {
+    /**
+     * This assertion is the inverse of the one it replaces, which required the
+     * title to name vitamin D instead of the times, on the reasoning that the AI
+     * Overview already satisfies "exact times". The 2026-09-22 Search Console
+     * export settled it: 81% of named queries carry a month and a clock-time
+     * intent, 0.1% mention vitamin D, and the site lost 99% of its impressions
+     * the day after the promise was swapped. `lib/sun-copy.ts` carries the full
+     * measurement.
+     */
+    const CLOCK_PROMISE = {
+      es: /horas exactas/, en: /exact times/, fr: /heures exactes/,
+      de: /genaue Zeiten/, ru: /точное время/, lt: /tikslus laikas/,
+    };
+    expect(LOCALES[locale].sunrisePage.metaTitle, `${locale}.metaTitle`)
+      .toMatch(CLOCK_PROMISE[locale as keyof typeof CLOCK_PROMISE]);
   });
 
   it.each(Object.keys(LOCALES))("%s parses as valid ICU in every sunrisePage key", (locale) => {
@@ -237,6 +256,7 @@ describe("the page supplies every placeholder the Spanish source declares", () =
       city: "Ciudad", month: "mes",
       firstSunrise: "07:26", firstSunset: "21:26", lastSunrise: "08:00", lastSunset: "20:14",
       sunrise: "07:26", sunset: "21:12", dawn: "06:57", dusk: "21:41",
+      first: "07:26", last: "08:00",
       dayLength: "13 h 46 min", days: 31, lastDay: 31,
       windowStart: "11:00", windowEnd: "19:00",
     };
