@@ -225,6 +225,19 @@ export interface ContentRevision {
  * no forecast covers. `figures` moves because it hashes the SOURCE of
  * `lib/vitd.ts`, which is the mechanism this file's 2026-08-28 entry already
  * describes.
+ *
+ * 2026-09-22, FIFTH — hashes only, and the no-op is PROVEN rather than asserted.
+ * The ozone climatology gained a seam: `ozoneColumn` in `lib/uv-model.ts` reads
+ * `OZONE_TABLE` and falls back to `ozoneDU`, and every app call site moved onto
+ * it. `OZONE_TABLE` ships empty, so every cell falls back and the function is
+ * van Heuklon exactly — `lib/__tests__/ozone-fit.test.ts` checks that over a
+ * 5-degree latitude grid, four longitudes and every eleventh day, with `toBe`
+ * rather than `toBeCloseTo`, because a difference in the last decimal here would
+ * be a content change announced as none.
+ *
+ * So the date does not move, and the hashes do only because `figures` covers the
+ * SOURCE of the modules. When a real table is pasted in, the date WILL move; the
+ * procedure and that decision are written up in docs/ozone-rebase.md.
  */
 export const SUN_MONTH_REVISION: ContentRevision = {
   date: "2026-09-22",
@@ -236,7 +249,7 @@ export const SUN_MONTH_REVISION: ContentRevision = {
     "copy.ru": "7d0427fc5082438b",
     "copy.lt": "2fa9119bd4283f7d",
     cities: "35aebb84c49f350e",
-    figures: "9d801cabb4984a31",
+    figures: "1d122d4a2dab73ed",
     constants: "a3b447afa17fa07c",
   },
 };
@@ -282,7 +295,7 @@ export const CITY_PAGE_REVISION: ContentRevision = {
     "copy.ru": "39c852cd4713ae68",
     "copy.lt": "ff610006e37f9b63",
     cities: "c66cfdadbf8dabad",
-    figures: "7ab9aaaacec1f902",
+    figures: "1edc5e9661e046d0",
     constants: "09032456232a5db5",
   },
 };
@@ -317,7 +330,7 @@ export const SUNTIME_PAGE_REVISION: ContentRevision = {
     "copy.de": "c72ec8cdf2df2ebb",
     "copy.ru": "e6c6fcebda3a7911",
     "copy.lt": "7f54b7c4c382e0ca",
-    figures: "8832a5afd0aa3c81",
+    figures: "772338678c672342",
     reference: "4303d27a87c4a0dd",
     constants: "c9d5d03dc2b9c7b9",
   },

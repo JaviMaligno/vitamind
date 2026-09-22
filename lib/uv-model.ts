@@ -1,3 +1,5 @@
+import { OZONE_TABLE, lookupOzone } from "./ozone-table";
+
 /**
  * Clear-sky UV index model.
  *
@@ -83,6 +85,29 @@ export function ozoneDU(lat: number, lon: number, doy: number): number {
 
   const seasonal = A + C * sinDeg(D * (doy + F)) + G * sinDeg(H * (lon + I));
   return J + seasonal * sinDeg(B * lat) ** 2;
+}
+
+/**
+ * THE OZONE COLUMN THE APP SHOULD USE. Prefer this over `ozoneDU` everywhere a
+ * real place and day are being asked about.
+ *
+ * It reads `OZONE_TABLE` (lib/ozone-table.ts) and falls back to van Heuklon for
+ * any cell the table does not cover — which today is every cell, because the
+ * table ships empty. So this is currently `ozoneDU` with an extra lookup, and
+ * that is the point: the seam is in place, so replacing the climatology is
+ * pasting one generated file rather than editing call sites.
+ *
+ * `ozoneDU` stays exported and unchanged. It is the 1979 fit, its own tests pin
+ * it as such, and it remains the documented fallback.
+ *
+ * WHY THE TABLE HAS NO LONGITUDE TERM and this signature still takes one: the
+ * fallback needs it. van Heuklon carries a small longitude dependence; a zonal
+ * table does not. When a table is adopted, longitude stops mattering wherever
+ * it has coverage, which is a real (small) change and is called out in
+ * docs/ozone-rebase.md.
+ */
+export function ozoneColumn(lat: number, lon: number, doy: number): number {
+  return lookupOzone(OZONE_TABLE, lat, doy, () => ozoneDU(lat, lon, doy));
 }
 
 /**
@@ -177,5 +202,5 @@ export function minElevationForUVI(targetUVI: number, ozoneDu: number, elevation
  * @returns required solar elevation in degrees
  */
 export function synthesisThresholdElevation(lat: number, lon: number, doy: number, elevationM: number = 0): number {
-  return minElevationForUVI(UVI_SYNTHESIS_THRESHOLD, ozoneDU(lat, lon, doy), elevationM);
+  return minElevationForUVI(UVI_SYNTHESIS_THRESHOLD, ozoneColumn(lat, lon, doy), elevationM);
 }

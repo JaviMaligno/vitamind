@@ -8,7 +8,7 @@ import {
 } from "@/lib/solar";
 import { compassPoint, offsetFromDueEast } from "@/lib/compass";
 import { computeExposureFromCurve } from "@/lib/vitd";
-import { ozoneDU } from "@/lib/uv-model";
+import { ozoneColumn } from "@/lib/uv-model";
 
 /**
  * The figures a sunrise month page states, and which variant of each string
@@ -132,7 +132,7 @@ export function monthData(
   const doy15 = doyFromMonthDay(monthIndex, 15);
   const exposure = computeExposureFromCurve(
     getCurve(lat, lon, doy15, tz, timezone), 3, 0.25, 1000, null,
-    { ozoneDu: ozoneDU(lat, lon, doy15), elevationM },
+    { ozoneDu: ozoneColumn(lat, lon, doy15), elevationM },
   );
 
   return { days, first, last, deltaMin, mid, exposure, dayLen, direction: monthDirection(lat, monthIndex) };

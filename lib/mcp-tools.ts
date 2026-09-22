@@ -8,7 +8,7 @@ import {
   computeExposureFromCurve, getCurrentStatus, maxSessionIU, MIN_UVI,
   iuForMinutes, erythemaMinutes, minutesForVitD, estimateUVFromElevation, type SkinType,
 } from "./vitd";
-import { ozoneDU } from "./uv-model";
+import { ozoneColumn } from "./uv-model";
 import { inferElevationM } from "./elevation";
 import { cityYearProfile, viableDateBoundaries, MIN_VIABLE_HOURS } from "./city-content";
 import type { SolarPoint, WeatherHour } from "./types";
@@ -198,7 +198,7 @@ export function vitaminDWindowTool(args: VitDArgs) {
   const doy = dayOfYear(date);
   const { skinType, area, targetIU, age, elevationM } = normalizeProfile(args);
   const curve = getCurve(args.lat, args.lon, doy, 0, args.timezone);
-  const ctx = { ozoneDu: ozoneDU(args.lat, args.lon, doy), elevationM };
+  const ctx = { ozoneDu: ozoneColumn(args.lat, args.lon, doy), elevationM };
   const result = computeExposureFromCurve(curve, skinType, area, targetIU, age, ctx);
 
   const base = {
@@ -289,7 +289,7 @@ function buildVitaminDYearResult(
     if (sampleDoy !== null) {
       const curve = getCurve(args.lat, args.lon, sampleDoy, 0, args.timezone);
       const exposure = computeExposureFromCurve(curve, skinType, area, targetIU, age, {
-        ozoneDu: ozoneDU(args.lat, args.lon, sampleDoy),
+        ozoneDu: ozoneColumn(args.lat, args.lon, sampleDoy),
         elevationM,
       });
       if (exposure) {
@@ -386,7 +386,7 @@ export function configureSunProfileFull(args: ProfileArgs) {
     const curve = getCurve(args.lat, args.lon, doy, 0, args.timezone);
     const peak = curve.reduce((best, p) => (p.elevation > best.elevation ? p : best), curve[0]);
     uvIndex = Math.round(estimateUVFromElevation(peak.elevation, {
-      ozoneDu: ozoneDU(args.lat, args.lon, doy),
+      ozoneDu: ozoneColumn(args.lat, args.lon, doy),
       elevationM: 0,
     }) * 10) / 10;
   }
@@ -623,7 +623,7 @@ export function estimateSunSessionTool(args: SessionArgs) {
   const { skinType, area, age, elevationM } = normalizeProfile({ ...args, targetIU: undefined });
   const minutes = Math.min(600, Math.max(1, Math.round(args.minutes)));
   const curve = getCurve(args.lat, args.lon, doy, 0, args.timezone);
-  const ctx = { ozoneDu: ozoneDU(args.lat, args.lon, doy), elevationM };
+  const ctx = { ozoneDu: ozoneColumn(args.lat, args.lon, doy), elevationM };
 
   // Default to the day's best hour when no start time is given.
   let startHour = parseLocalTime(args.startTime);
@@ -713,7 +713,7 @@ async function buildCurrentStatus(args: VitDArgs, fetcher: WeatherFetcher) {
   const doy = dayOfYear(now);
   const { skinType, area, targetIU, age, elevationM } = normalizeProfile(args);
   const curve = getCurve(args.lat, args.lon, doy, 0, args.timezone);
-  const ctx = { ozoneDu: ozoneDU(args.lat, args.lon, doy), elevationM };
+  const ctx = { ozoneDu: ozoneColumn(args.lat, args.lon, doy), elevationM };
 
   const hours = await fetcher(args.lat, args.lon);
   const status = getCurrentStatus(
@@ -727,7 +727,7 @@ async function buildCurrentStatus(args: VitDArgs, fetcher: WeatherFetcher) {
     const tomorrowDoy = doy >= 365 ? 1 : doy + 1;
     const tomorrowCurve = getCurve(args.lat, args.lon, tomorrowDoy, 0, args.timezone);
     const exposure = computeExposureFromCurve(tomorrowCurve, skinType, area, targetIU, age, {
-      ozoneDu: ozoneDU(args.lat, args.lon, tomorrowDoy),
+      ozoneDu: ozoneColumn(args.lat, args.lon, tomorrowDoy),
       elevationM,
     });
     if (exposure) {

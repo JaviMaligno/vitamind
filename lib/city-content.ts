@@ -1,6 +1,6 @@
 import { vitDHrs, getCurve, dateFromDoy } from "./solar";
 import { computeExposureFromCurve, type SkinType } from "./vitd";
-import { ozoneDU, synthesisThresholdElevation } from "./uv-model";
+import { ozoneColumn, synthesisThresholdElevation } from "./uv-model";
 
 // Defaults used for the public page copy (Fitzpatrick III, arms+face, 1000 IU).
 const DEFAULT_SKIN: SkinType = 3;
@@ -157,7 +157,7 @@ export function citySeasonalWindows(
     // it; this call site was the only one that did not.
     const curve = getCurve(lat, lon, doy, tz, timezone);
     const exposure = computeExposureFromCurve(curve, DEFAULT_SKIN, DEFAULT_AREA, DEFAULT_TARGET_IU, null, {
-      ozoneDu: ozoneDU(lat, lon, doy),
+      ozoneDu: ozoneColumn(lat, lon, doy),
       elevationM,
     });
     const monthIndex = dateFromDoy(doy).getUTCMonth();

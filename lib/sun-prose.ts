@@ -3,7 +3,7 @@ import type { SkinType } from "@/lib/vitd";
 import { dailySunTimes, getSunTimes } from "@/lib/sun-times";
 import { getCurve, doyFromMonthDay, dateFromDoy, dayLengthMinutes } from "@/lib/solar";
 import { computeExposureFromCurve } from "@/lib/vitd";
-import { ozoneDU } from "@/lib/uv-model";
+import { ozoneColumn } from "@/lib/uv-model";
 
 /**
  * The facts a sunrise page's paragraph states, computed from the same functions
@@ -60,7 +60,7 @@ export function sunProse(city: City, monthIndex: number): SunProse {
   const mid = getSunTimes(city.lat, city.lon, dateFromDoy(doy15), city.timezone, city.tz);
   const curve = getCurve(city.lat, city.lon, doy15, city.tz, city.timezone);
   const exposure = computeExposureFromCurve(curve, SKIN_TYPE, EXPOSED_FRACTION, TARGET_IU, null, {
-    ozoneDu: ozoneDU(city.lat, city.lon, doy15),
+    ozoneDu: ozoneColumn(city.lat, city.lon, doy15),
     elevationM: city.elevation ?? 0,
   });
 
