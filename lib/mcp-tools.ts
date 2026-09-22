@@ -92,7 +92,7 @@ function parseDate(date?: string): Date {
 
 const t = (h: number | null) => (h !== null ? fmtTime(h) : null);
 
-/** "11:00" with zero-padded hours, for whole-hour window bounds. */
+/** A local hour as "HH:MM". Bounds are fractional on the clear-sky path. */
 // Window bounds and peaks are fractional hours on the clear-sky path, so this
 // delegates to the site's own formatter rather than assuming :00 — which also
 // buys the 59.7 -> "20:60" carry that `fmtTime` already handles.

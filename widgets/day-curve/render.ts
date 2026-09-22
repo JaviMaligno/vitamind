@@ -117,7 +117,7 @@ export function stats(meta: DayMeta, locale: unknown): Stat[] {
     out.push({ label: copy.nowClosesIn, value: formatCountdown(meta.windowClosesInMinutes) });
   }
   if (meta.state === "upcoming" && meta.bestHour !== null && meta.bestMinutes !== null) {
-    out.push({ label: copy.nowBestHour, value: `${fmtMin(meta.bestMinutes)} · ${meta.bestHour}:00` });
+    out.push({ label: copy.nowBestHour, value: `${fmtMin(meta.bestMinutes)} · ${fmtHour(meta.bestHour)}` });
   }
   return out;
 }

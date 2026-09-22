@@ -478,43 +478,101 @@ export function getCurrentStatus(
   const cf = useCloudFactor && currentCloud !== null ? cloudFactor(currentCloud) : 1.0;
   const effectiveUVI = rawUVI * cf;
 
-  // Compute effective UVI per hour for window detection
+  // Compute effective UVI per hour (the forecast's own resolution).
   const effectiveHourly = hourlyUVI.map((h) => ({
     hour: h.hour,
     effectiveUVI: useCloudFactor ? h.uvi * cloudFactor(h.cloud) : h.uvi,
     rawUVI: h.uvi,
   }));
 
-  // Find synthesis window
+  /**
+   * ATTENUATION PER HOUR: how much of the clear sky is getting through.
+   *
+   * This is the ratio that lets an hourly forecast be read at the curve's
+   * resolution without inventing anything. The two inputs have very different
+   * natures and the split follows it exactly:
+   *
+   *   - The SUN's contribution is known to the minute. `curve` is a five-minute
+   *     ephemeris; nothing about it is uncertain between one hour and the next.
+   *   - The SKY's contribution is what the forecast supplies hourly, and it is
+   *     the slowly-varying part. Interpolating cloud between 12:00 and 13:00 is
+   *     an ordinary thing to do; interpolating the SUN's position would not be,
+   *     because we already know it exactly.
+   *
+   * So the ratio is interpolated and the curve carries the shape. A useful
+   * property falls out: because it is a RATIO, a bias in our own clear-sky model
+   * cancels. Where Open-Meteo and `uvIndex` disagree on the absolute number —
+   * and they do, by up to a factor of two at high sun (see docs/uv-sources.md) —
+   * the result still tracks Open-Meteo's values, with our curve supplying only
+   * the within-the-hour shape.
+   *
+   * Ratios are taken only where the clear-sky value is large enough to divide
+   * by. Near sunrise it is not, and it does not matter: the window threshold is
+   * MIN_UVI, far above that end of the curve.
+   */
+  const RATIO_FLOOR_UVI = 0.5;
+  const ratioPoints: { hour: number; ratio: number }[] = [];
+  if (weather) {
+    for (const cs of clearSkyHourly) {
+      if (cs.uvi < RATIO_FLOOR_UVI) continue;
+      const observed = effectiveHourly.find((h) => h.hour === cs.hour);
+      if (observed) ratioPoints.push({ hour: cs.hour, ratio: observed.effectiveUVI / cs.uvi });
+    }
+  }
+
+  /** The attenuation at an arbitrary local hour: linear between the two nearest
+   *  hourly readings, flat outside them, and 1 when there is no forecast. */
+  function attenuationAt(localHour: number): number {
+    if (!weather) return 1;
+    if (ratioPoints.length === 0) return 1;
+    if (localHour <= ratioPoints[0].hour) return ratioPoints[0].ratio;
+    const last = ratioPoints[ratioPoints.length - 1];
+    if (localHour >= last.hour) return last.ratio;
+    for (let i = 1; i < ratioPoints.length; i++) {
+      const b = ratioPoints[i];
+      if (b.hour < localHour) continue;
+      const a = ratioPoints[i - 1];
+      const span = b.hour - a.hour;
+      return span === 0 ? b.ratio : a.ratio + (b.ratio - a.ratio) * ((localHour - a.hour) / span);
+    }
+    return last.ratio;
+  }
+
+  // The effective curve, at the ephemeris's resolution.
   let wsStart = -1;
   let wsEnd = -1;
   let bHour: number | null = null;
   let bEffUVI = 0;
-
-  for (const h of effectiveHourly) {
-    if (h.effectiveUVI >= MIN_UVI) {
-      if (wsStart === -1) wsStart = h.hour;
-      wsEnd = h.hour + 1;
-      if (h.effectiveUVI > bEffUVI) {
-        bEffUVI = h.effectiveUVI;
-        bHour = h.hour;
+  for (const p of curve) {
+    const eff = estimateUVFromElevation(p.elevation, ctx) * attenuationAt(p.localHours);
+    if (eff >= MIN_UVI) {
+      if (wsStart === -1) wsStart = p.localHours;
+      wsEnd = p.localHours;
+      if (eff > bEffUVI) {
+        bEffUVI = eff;
+        bHour = p.localHours;
       }
     }
   }
 
   /**
-   * With a forecast, the bounds are as precise as the forecast: Open-Meteo
-   * publishes one UV value per hour, and interpolating between them would be
-   * inventing a precision the source does not have.
-   *
-   * WITHOUT one, the reading IS the five-minute solar curve, so the bounds are
-   * `clearSkyWindow` — the same numbers the city and hub pages print. Taking
-   * the hourly sample here instead would have this function quietly disagree
-   * with those pages about the same clear-sky day, and drop the same sub-hour
-   * windows `computeExposureFromCurve` used to drop.
+   * Fall back to the hourly reading when there is no curve to read — the MCP
+   * and the widgets can call this with weather and an empty ephemeris.
    */
-  const hourlyWindow = wsStart !== -1 ? { start: wsStart, end: wsEnd } : null;
-  const synthWindow = weather ? hourlyWindow : clearSkyWindow;
+  if (curve.length === 0) {
+    for (const h of effectiveHourly) {
+      if (h.effectiveUVI >= MIN_UVI) {
+        if (wsStart === -1) wsStart = h.hour;
+        wsEnd = h.hour + 1;
+        if (h.effectiveUVI > bEffUVI) {
+          bEffUVI = h.effectiveUVI;
+          bHour = h.hour;
+        }
+      }
+    }
+  }
+
+  const synthWindow = wsStart !== -1 ? { start: wsStart, end: wsEnd } : null;
   const bMinutes = bHour !== null
     ? minutesForVitD(bEffUVI, skinType, areaFraction, targetIU, age)
     : null;

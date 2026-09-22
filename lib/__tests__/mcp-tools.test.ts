@@ -3,6 +3,9 @@ import {
   searchCity, sunTimesTool, vitaminDWindowTool, vitaminDYearTool, currentStatusTool,
   estimateSunSessionTool,
 } from "../mcp-tools";
+import { getCurve, dayOfYear } from "../solar";
+import { estimateUVFromElevation } from "../vitd";
+import { ozoneDU } from "../uv-model";
 
 describe("searchCity", () => {
   it("finds a city by its Spanish base name", () => {
@@ -178,17 +181,38 @@ describe("currentStatusTool", () => {
   });
 
   it("uses injected weather data when available", async () => {
-    const hours = Array.from({ length: 24 }, (_, h) => ({
-      time: `2026-07-19T${String(h).padStart(2, "0")}:00`,
-      uvIndex: h >= 10 && h <= 18 ? 7 : 0,
-      cloudCover: 10,
-    }));
+    // A physically-shaped day: the forecast follows the sun's own curve at a
+    // steady 85% transmission, which is what a thin, even haze looks like.
+    //
+    // It used to be a step — UV 0 until 10:00, then 7 flat until 18:00 — and the
+    // window was asserted as exactly 10:00-19:00. That expectation was really
+    // pinning the old hourly sampling: no sky goes from UV 0 to 7 in one hour
+    // with the sun already up, so the step's edges were an artefact of the
+    // fixture, and the "window" was just the hours the fixture switched on.
+    const doy = dayOfYear(new Date());
+    const curve = getCurve(40.42, -3.7, doy, 1, "Europe/Madrid");
+    const ctx = { ozoneDu: ozoneDU(40.42, -3.7, doy), elevationM: 0 };
+    const hours = Array.from({ length: 24 }, (_, h) => {
+      const pt = curve.find((p) => Math.floor(p.localHours) === h);
+      return {
+        time: `2026-09-22T${String(h).padStart(2, "0")}:00`,
+        uvIndex: estimateUVFromElevation(pt?.elevation ?? 0, ctx) * 0.85,
+        cloudCover: 20,
+      };
+    });
     const r = await currentStatusTool(
       { lat: 40.42, lon: -3.7, timezone: "Europe/Madrid" },
       async () => hours,
     );
     expect(r.uvSource).toContain("open-meteo");
-    expect(r.window).toEqual({ start: "10:00", end: "19:00" });
+    expect(r.window).not.toBeNull();
+    // Read at the curve's resolution, not snapped to the hour — the dashboard
+    // and the hub have to be able to agree about the same day.
+    expect(`${r.window!.start} ${r.window!.end}`).not.toMatch(/00 .*00$/);
+    // 85% of clear sky, so the window sits strictly inside the clear-sky one.
+    expect(r.clearSkyWindow).not.toBeNull();
+    expect(r.window!.start > r.clearSkyWindow!.start).toBe(true);
+    expect(r.window!.end < r.clearSkyWindow!.end).toBe(true);
   });
 
   it("separates 'too cloudy' from 'sun too low' when the forecast kills the window", async () => {

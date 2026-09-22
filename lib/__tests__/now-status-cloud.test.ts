@@ -101,6 +101,43 @@ describe("getCurrentStatus — cloud vs sun", () => {
     expect(overcast.window).toBeNull();
   });
 
+  it("agrees with the hub about the same day, to within a few minutes", () => {
+    /**
+     * THE SECOND BUG THIS FILE GUARDS, and it was self-inflicted.
+     *
+     * The first fix here made the no-weather path read the five-minute curve
+     * while the WITH-weather path stayed on Open-Meteo's whole hours. So the hub
+     * said London's window was 11:45-14:00 and the dashboard, same city same
+     * day, said 12:00-15:00 — two screens of one app contradicting each other,
+     * which is the complaint the whole investigation started from.
+     *
+     * The forecast is still hourly and still decides the numbers. What is read
+     * at the curve's resolution is the ATTENUATION between its readings, which
+     * is the slowly-varying part; the sun's position was never uncertain.
+     */
+    const transmission = 0.98; // a near-clear sky, so the two should nearly coincide
+    const w = { hours: attenuated(curve, ozoneDu, transmission) };
+    const live = getCurrentStatus(w, curve, 3, 0.25, 1000, null, noon, LONDON.timezone, ctx);
+    expect(live.window).not.toBeNull();
+    expect(live.clearSkyWindow).not.toBeNull();
+    // Within one sampling step of the clear-sky window the hub publishes.
+    expect(Math.abs(live.window!.start - live.clearSkyWindow!.start) * 60).toBeLessThanOrEqual(10);
+    expect(Math.abs(live.window!.end - live.clearSkyWindow!.end) * 60).toBeLessThanOrEqual(10);
+    // And not snapped to the hour.
+    expect(Number.isInteger(live.window!.start) && Number.isInteger(live.window!.end)).toBe(false);
+  });
+
+  it("keeps the forecast's own values — the curve only supplies the shape", () => {
+    // Halve the sky's transmission and the window must shrink, not merely shift:
+    // the ratio is what carries Open-Meteo's numbers through.
+    const clear = getCurrentStatus({ hours: attenuated(curve, ozoneDu, 1) }, curve, 3, 0.25, 1000, null, noon, LONDON.timezone, ctx);
+    const hazy = getCurrentStatus({ hours: attenuated(curve, ozoneDu, 0.92) }, curve, 3, 0.25, 1000, null, noon, LONDON.timezone, ctx);
+    expect(clear.window).not.toBeNull();
+    expect(hazy.window).not.toBeNull();
+    const span = (w: { start: number; end: number }) => w.end - w.start;
+    expect(span(hazy.window!)).toBeLessThan(span(clear.window!));
+  });
+
   it("makes no cloud claim when there is no weather to make it from", () => {
     // Without a forecast the reading IS the clear-sky curve, so there is no gap
     // to attribute to cloud — and claiming one would be inventing weather.

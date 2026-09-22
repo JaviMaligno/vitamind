@@ -184,7 +184,7 @@ export default function DayHeroBold({ nowStatus, cityName, cityFlag, targetIU, l
                 {ns.window && (
                   <div>
                     <span className="block text-caption uppercase tracking-wider text-white/55">{t("nowWindow")}</span>
-                    <span className="text-xl text-white/90">{ns.window.start}:00 – {ns.window.end}:00</span>
+                    <span className="text-xl text-white/90">{fmtTime(ns.window.start)} – {fmtTime(ns.window.end)}</span>
                   </div>
                 )}
                 {ns.state === "good_now" && ns.minutesNeeded !== null && (
@@ -203,7 +203,7 @@ export default function DayHeroBold({ nowStatus, cityName, cityFlag, targetIU, l
                 {ns.state === "upcoming" && ns.bestHour !== null && ns.bestMinutes !== null && (
                   <div>
                     <span className="block text-caption uppercase tracking-wider text-white/55">{t("nowBestHour")}</span>
-                    <span className="text-xl text-white/90">{fmtMin(ns.bestMinutes)} {t("atHour", { hour: `${ns.bestHour}:00` })}</span>
+                    <span className="text-xl text-white/90">{fmtMin(ns.bestMinutes)} {t("atHour", { hour: fmtTime(ns.bestHour) })}</span>
                     <span className="ml-1 text-caption text-white/50">{t("forIU", { iu: targetIU })}</span>
                   </div>
                 )}

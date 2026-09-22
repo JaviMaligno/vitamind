@@ -134,15 +134,28 @@ export interface SeasonWindow {
  * Sun windows on the four representative days, using the page's default profile.
  * Ozone (from the city's position and the day) and altitude both feed the UV
  * estimate, so a high city needs fewer minutes for the same dose.
+ *
+ * `timezone` is the IANA name and is what makes the clock times right across a
+ * DST boundary; `tz` alone is the standard-time offset. Optional only because
+ * a city record may lack one, in which case the fixed offset is all there is.
  */
 export function citySeasonalWindows(
   lat: number,
   lon: number,
   tz: number,
   elevationM = 0,
+  timezone?: string,
 ): SeasonWindow[] {
   return REPRESENTATIVE_DOYS.map((doy) => {
-    const curve = getCurve(lat, lon, doy, tz);
+    // `timezone` matters and was missing: without it `getCurve` places the day
+    // on the fixed `tz` offset, i.e. STANDARD time all year, so every window on
+    // these pages was an hour early for any city observing DST on the day in
+    // question. London's September line read 10:40-13:05 (GMT) beside a hub
+    // that correctly said 11:45-14:00 (BST) for the following day.
+    //
+    // The hub (`sunTodayData`) and the month pages (`monthData`) always passed
+    // it; this call site was the only one that did not.
+    const curve = getCurve(lat, lon, doy, tz, timezone);
     const exposure = computeExposureFromCurve(curve, DEFAULT_SKIN, DEFAULT_AREA, DEFAULT_TARGET_IU, null, {
       ozoneDu: ozoneDU(lat, lon, doy),
       elevationM,

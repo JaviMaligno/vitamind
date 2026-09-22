@@ -196,6 +196,25 @@ export interface ContentRevision {
  * the day's peak. The new values do, within half a sampling step; the old ones
  * were off by up to half an hour and no test noticed for as long as they shipped.
  * `lib/__tests__/sub-hour-window.test.ts` now asserts that directly.
+ *
+ * 2026-09-22, THIRD RECORDING OF THE DAY — hashes only, the date was already
+ * moved by the entry above and this change lands under the same one. Two fixes,
+ * both found by looking at the rendered page rather than at the code:
+ *
+ *   1. `citySeasonalWindows` passed `tz` (the standard-time offset) without
+ *      `timezone` (the IANA name), so all four seasonal lines on all 438 city
+ *      pages were an hour early for any city observing DST on that day. London's
+ *      September line read 10:40-13:05 against a hub that said 11:45-14:00 for
+ *      the next day. It was the ONLY call site missing the argument; the hub and
+ *      the month pages always passed it, which is why they were right and this
+ *      was not.
+ *   2. `getCurrentStatus` now reads the forecast's ATTENUATION at the curve's
+ *      resolution instead of reporting whole-hour bounds, so the dashboard and
+ *      the hub can no longer publish different windows for the same day.
+ *
+ * Only (1) touches these three families. It moves clock times on the city pages
+ * by an hour in the DST half of the year, which is squarely a content change —
+ * and it rides today's already-moved date rather than buying a second re-crawl.
  */
 export const SUN_MONTH_REVISION: ContentRevision = {
   date: "2026-09-22",
@@ -207,7 +226,7 @@ export const SUN_MONTH_REVISION: ContentRevision = {
     "copy.ru": "7d0427fc5082438b",
     "copy.lt": "2fa9119bd4283f7d",
     cities: "35aebb84c49f350e",
-    figures: "492cf6bfb2d4d6bf",
+    figures: "2380f427a8694995",
     constants: "a3b447afa17fa07c",
   },
 };
@@ -253,7 +272,7 @@ export const CITY_PAGE_REVISION: ContentRevision = {
     "copy.ru": "39c852cd4713ae68",
     "copy.lt": "ff610006e37f9b63",
     cities: "c66cfdadbf8dabad",
-    figures: "c5b707cf73124b4e",
+    figures: "5c65f3ae72fb2702",
     constants: "09032456232a5db5",
   },
 };
@@ -288,7 +307,7 @@ export const SUNTIME_PAGE_REVISION: ContentRevision = {
     "copy.de": "c72ec8cdf2df2ebb",
     "copy.ru": "e6c6fcebda3a7911",
     "copy.lt": "7f54b7c4c382e0ca",
-    figures: "809f2fae2d4953bd",
+    figures: "96b50f2f4d1ab5d9",
     reference: "4303d27a87c4a0dd",
     constants: "c9d5d03dc2b9c7b9",
   },
