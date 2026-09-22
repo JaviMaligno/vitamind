@@ -23,6 +23,34 @@ npm run e2e         # Standalone Playwright install-awareness script (needs BASE
 
 **Quality gate:** `.github/workflows/ci.yml` runs lint + typecheck + test + build on every push/PR. All four must pass before deploying. See `docs/PRODUCTION_READINESS.md` for the practices that keep this project production-ready — read it before touching deploys, env vars, Supabase policies, or the push pipeline.
 
+## `next dev` 500s on every request: two causes, both outside the source tree
+
+Measured 2026-09-22 on the Windows checkout. Both produce a dev server that says `Ready`
+and then 500s on every page, so they read as a code bug and are not one.
+
+**1. A stray `node_modules` in the PARENT directory.** The log is a long Turbopack
+resolution trace for `tailwindcss` that walks up and ends in `…/GitHub/node_modules
+doesn't exist or is not a directory`. Turbopack infers the workspace root by walking up
+for a `node_modules`, and this checkout sits at `…/github/vitamind/vitamind` while
+`…/github/vitamind/` collects an empty one every time a tool runs from there — vitest
+alone drops `node_modules/.vite/vitest/`. That stray directory becomes the inferred root
+and `@import "tailwindcss"` stops resolving.
+
+Look at what is in it before deleting — if it is only cache, delete the directory:
+
+```bash
+find ../node_modules -mindepth 1        # expect only .vite/vitest/…
+rm -rf ../node_modules
+```
+
+**2. Mixing Turbopack and webpack in the same `.next`.** Next 16 defaults to Turbopack;
+`next dev --webpack` is the escape hatch. Running one after the other leaves incompatible
+artefacts and the first request fails with `ENOENT: no such file or directory` on
+`.next/dev/server/app/[locale]/[cityPrefix]/[city]/[month]/page/build-manifest.json`.
+Delete `.next` and restart; it is build cache and regenerates.
+
+Neither needs a reinstall, and neither is worth debugging in the app code.
+
 ## Architecture
 
 ### Next.js App Router (`app/`)
