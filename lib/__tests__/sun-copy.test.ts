@@ -176,9 +176,29 @@ describe("sunPageCopy states only figures the page already computes", () => {
   it("gives the vitamin D answer the window the page's own card renders", () => {
     const { data, copy } = copyFor("madrid", 7);
     const vitd = copy.faq.find((e) => e.aKey === "faqVitdASynthesis")!;
-    expect(vitd.aValues.windowStart).toBe("11:00");
-    expect(vitd.aValues.windowEnd).toBe("19:00");
+    // Was 11:00-19:00, from a window sampled once an hour. Madrid's solar noon
+    // in mid-August is 14:20, so that span sat 40 minutes off centre; this one
+    // is centred on it exactly. The check below is the reason to trust the
+    // figures rather than the fact that they are recorded here.
+    expect(vitd.aValues.windowStart).toBe("10:35");
+    expect(vitd.aValues.windowEnd).toBe("18:05");
     expect(vitd.aValues.minutes).toBe(Math.round(data.exposure!.minutesNeeded));
+  });
+
+  it("puts the window symmetrically around solar noon", () => {
+    // A clear-sky window is the span where the sun is above a fixed elevation,
+    // so it is symmetric about the day's peak by construction. Sampling it once
+    // an hour broke that symmetry by up to half an hour and nothing noticed;
+    // this is the invariant that would have.
+    for (const [slug, month] of [["madrid", 7], ["londres", 5], ["sidney", 0], ["tokio", 3]] as const) {
+      const { data } = copyFor(slug, month);
+      const ex = data.exposure;
+      if (!ex) continue;
+      const midpoint = (ex.windowStart + ex.windowEnd) / 2;
+      // Half the curve's 5-minute step is the most the discretisation can cost.
+      // The epsilon is float noise, not slack: London lands on 2.500000000000071.
+      expect(Math.abs(midpoint - ex.bestHour) * 60, `${slug}/${month}`).toBeLessThanOrEqual(2.5 + 1e-9);
+    }
   });
 
   it("never renders an em dash or a NaN inside an answer", () => {

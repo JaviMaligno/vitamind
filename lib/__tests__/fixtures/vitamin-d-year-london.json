@@ -59,8 +59,8 @@
       "viableDays": 8,
       "partialMonth": true,
       "window": {
-        "start": "12:00",
-        "end": "14:00"
+        "start": "11:05",
+        "end": "13:05"
       },
       "minutesNeededAtBestHour": 17
     },
@@ -70,8 +70,8 @@
       "viableDays": 30,
       "partialMonth": false,
       "window": {
-        "start": "11:00",
-        "end": "16:00"
+        "start": "10:45",
+        "end": "15:15"
       },
       "minutesNeededAtBestHour": 13
     },
@@ -81,8 +81,8 @@
       "viableDays": 31,
       "partialMonth": false,
       "window": {
-        "start": "10:00",
-        "end": "17:00"
+        "start": "09:40",
+        "end": "16:10"
       },
       "minutesNeededAtBestHour": 9
     },
@@ -92,8 +92,8 @@
       "viableDays": 30,
       "partialMonth": false,
       "window": {
-        "start": "10:00",
-        "end": "17:00"
+        "start": "09:20",
+        "end": "16:45"
       },
       "minutesNeededAtBestHour": 8
     },
@@ -103,8 +103,8 @@
       "viableDays": 31,
       "partialMonth": false,
       "window": {
-        "start": "10:00",
-        "end": "17:00"
+        "start": "09:25",
+        "end": "16:45"
       },
       "minutesNeededAtBestHour": 8
     },
@@ -115,7 +115,7 @@
       "partialMonth": false,
       "window": {
         "start": "10:00",
-        "end": "17:00"
+        "end": "16:10"
       },
       "minutesNeededAtBestHour": 10
     },
@@ -125,8 +125,8 @@
       "viableDays": 27,
       "partialMonth": true,
       "window": {
-        "start": "12:00",
-        "end": "15:00"
+        "start": "11:10",
+        "end": "14:40"
       },
       "minutesNeededAtBestHour": 15
     },

@@ -6,6 +6,7 @@ import { Pill } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import PartnerBadge from "@/components/PartnerBadge";
 import { computeExposure, computeExposureFromCurve, type SkinType } from "@/lib/vitd";
+import { fmtTime } from "@/lib/solar";
 import type { WeatherData, SolarPoint } from "@/lib/types";
 
 interface Props {
@@ -77,8 +78,8 @@ export default function VitDEstimate({ weather, curve, skinType, areaFraction, a
               </span>
             </div>
             <div className="text-caption text-text-muted leading-relaxed">
-              <div>{t("bestHour")} <strong className="text-accent">{result.bestHour}:00</strong> (UVI {result.bestUVI.toFixed(1)})</div>
-              <div>{t("uvWindow")} <strong className="text-text-secondary">{result.windowStart}:00 – {result.windowEnd}:00</strong></div>
+              <div>{t("bestHour")} <strong className="text-accent">{fmtTime(result.bestHour)}</strong> (UVI {result.bestUVI.toFixed(1)})</div>
+              <div>{t("uvWindow")} <strong className="text-text-secondary">{fmtTime(result.windowStart)} – {fmtTime(result.windowEnd)}</strong></div>
             </div>
           </div>
 

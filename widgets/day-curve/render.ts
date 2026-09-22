@@ -1,5 +1,5 @@
 import { DAY_COPY } from "./generated-copy";
-import { statusKey, formatCountdown, fmtMin, type DayMeta, type SolarPhase, type StatusKey } from "./data";
+import { statusKey, formatCountdown, fmtMin, fmtHour, type DayMeta, type SolarPhase, type StatusKey } from "./data";
 import { resolveWidgetLocale } from "./i18n";
 
 const escapeHtml = (value: string) => value
@@ -72,14 +72,14 @@ export function verdict(meta: DayMeta, locale: unknown): Verdict {
     return {
       headline: interpolate(copy.nowUpcomingTitle, {
         countdown: formatCountdown(meta.minutesUntilWindow ?? 0),
-        hour: `${meta.windowStart ?? 0}:00`,
+        hour: fmtHour(meta.windowStart ?? 0),
       }),
       hint: meta.cloudDegraded ? copy.cloudDegraded : null,
     };
   }
   if (key === "windowClosed") {
     return {
-      headline: interpolate(copy.nowClosedTitle, { hour: `${meta.windowEnd ?? 0}:00` }),
+      headline: interpolate(copy.nowClosedTitle, { hour: fmtHour(meta.windowEnd ?? 0) }),
       hint: copy.nowClosedHint,
     };
   }
@@ -108,7 +108,7 @@ export function stats(meta: DayMeta, locale: unknown): Stat[] {
   const out: Stat[] = [{ label: copy.currentUVI, value: meta.uvIndex.toFixed(1) }];
 
   if (meta.windowStart !== null && meta.windowEnd !== null) {
-    out.push({ label: copy.nowWindow, value: `${meta.windowStart}:00 – ${meta.windowEnd}:00` });
+    out.push({ label: copy.nowWindow, value: `${fmtHour(meta.windowStart)} – ${fmtHour(meta.windowEnd)}` });
   }
   if (meta.state === "good_now" && meta.minutesNeeded !== null) {
     out.push({ label: copy.nowTimeNeeded, value: fmtMin(meta.minutesNeeded) });

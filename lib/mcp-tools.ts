@@ -93,7 +93,10 @@ function parseDate(date?: string): Date {
 const t = (h: number | null) => (h !== null ? fmtTime(h) : null);
 
 /** "11:00" with zero-padded hours, for whole-hour window bounds. */
-const hh = (hour: number) => `${String(hour).padStart(2, "0")}:00`;
+// Window bounds and peaks are fractional hours on the clear-sky path, so this
+// delegates to the site's own formatter rather than assuming :00 — which also
+// buys the 59.7 -> "20:60" carry that `fmtTime` already handles.
+const hh = (hour: number) => fmtTime(hour);
 
 
 /** Clear-sky UV at a local hour, from the day's elevation curve. */

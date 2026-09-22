@@ -161,9 +161,44 @@ export interface ContentRevision {
  * question that had to be answered rather than assumed. It was answered by call
  * graph, not by inspection of the hash: a hash cannot tell you which pages
  * render what it covers.
+ *
+ * 2026-09-22, LATER THE SAME DAY — ALL THREE DATES MOVED. The first entry in
+ * this file that does move them, and the contrast with the entry directly above
+ * is the point: same three hashes, same file (`lib/vitd.ts`), opposite verdict,
+ * because this time the pages really do print something different.
+ *
+ * `computeExposureFromCurve` stopped sampling the five-minute solar curve once
+ * an hour. It had been keeping one point in twelve and answering from those, so
+ * every window it reported had both edges dragged to a clock hour, and a window
+ * that contained no clock hour came back as no window at all. Measured over the
+ * 73 built-in cities × 365 days: 80 city-days where a real window was published
+ * as none (Casablanca 19, Phoenix 18), and on the rest a mean edge error of
+ * 0.47 h opening and 0.55 h closing, up to a full hour.
+ *
+ * So EVERY city page's four seasonal lines, EVERY month page's window sentence
+ * and every hub's panel print different clock times than they did this morning.
+ * Madrid in August was published as 11:00-19:00 and is 10:35-18:05; London on
+ * 22 September was 12:00-15:00 and is 11:45-14:00 — an hour of synthesis
+ * advertised after the UV had already dropped through the threshold.
+ *
+ * That is the case this file's opening paragraph reserves the date for: a
+ * corrected figure that would otherwise ship to 3,318 pages announced as
+ * unchanged, leaving the engines serving the wrong one. The five incidents in
+ * CLAUDE.md are all exactly that.
+ *
+ * THE COST, STATED SO IT IS NOT PAID BLIND. This re-dates 3,318 URLs and asks
+ * for a re-crawl on a plan whose ISR Reads closed its last window at 125% of a
+ * rolling 1 M. It is bought knowingly: the alternative is leaving a wrong clock
+ * time in the SERP for as long as the engines take to re-crawl on their own.
+ *
+ * HOW TO CHECK THE NEW FIGURES WITHOUT RE-RUNNING THE MODEL. A clear-sky window
+ * is symmetric about solar noon by construction, so its midpoint must land on
+ * the day's peak. The new values do, within half a sampling step; the old ones
+ * were off by up to half an hour and no test noticed for as long as they shipped.
+ * `lib/__tests__/sub-hour-window.test.ts` now asserts that directly.
  */
 export const SUN_MONTH_REVISION: ContentRevision = {
-  date: "2026-08-26",
+  date: "2026-09-22",
   parts: {
     "copy.es": "19c8154efe44dd27",
     "copy.en": "01d1084af16f6106",
@@ -172,7 +207,7 @@ export const SUN_MONTH_REVISION: ContentRevision = {
     "copy.ru": "7d0427fc5082438b",
     "copy.lt": "2fa9119bd4283f7d",
     cities: "35aebb84c49f350e",
-    figures: "8b73f5afe094a148",
+    figures: "492cf6bfb2d4d6bf",
     constants: "a3b447afa17fa07c",
   },
 };
@@ -209,7 +244,7 @@ export const SUN_MONTH_REVISION: ContentRevision = {
  * touches a key these pages actually render.
  */
 export const CITY_PAGE_REVISION: ContentRevision = {
-  date: "2026-08-17",
+  date: "2026-09-22",
   parts: {
     "copy.es": "34ca0e375247fe2a",
     "copy.en": "bca2707728053e22",
@@ -218,7 +253,7 @@ export const CITY_PAGE_REVISION: ContentRevision = {
     "copy.ru": "39c852cd4713ae68",
     "copy.lt": "ff610006e37f9b63",
     cities: "c66cfdadbf8dabad",
-    figures: "19cee00799044a41",
+    figures: "c5b707cf73124b4e",
     constants: "09032456232a5db5",
   },
 };
@@ -245,7 +280,7 @@ export const CITY_PAGE_REVISION: ContentRevision = {
  * is no earlier version out there for a `lastmod` to be wrong about.
  */
 export const SUNTIME_PAGE_REVISION: ContentRevision = {
-  date: "2026-08-28",
+  date: "2026-09-22",
   parts: {
     "copy.es": "9bd87dc996d45355",
     "copy.en": "b9564f8355c27261",
@@ -253,7 +288,7 @@ export const SUNTIME_PAGE_REVISION: ContentRevision = {
     "copy.de": "c72ec8cdf2df2ebb",
     "copy.ru": "e6c6fcebda3a7911",
     "copy.lt": "7f54b7c4c382e0ca",
-    figures: "44b735cc7b237981",
+    figures: "809f2fae2d4953bd",
     reference: "4303d27a87c4a0dd",
     constants: "c9d5d03dc2b9c7b9",
   },

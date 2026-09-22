@@ -5,6 +5,7 @@ import type { NowStatus } from "@/lib/types";
 import { useSolarPhase } from "@/hooks/useSolarPhase";
 import { PHASE_STYLE } from "@/lib/solar-phase";
 import Flag from "@/components/ui/Flag";
+import { fmtTime } from "@/lib/solar";
 import { formatCountdown, fmtMin, getStatusKey, type StatusKey } from "./day-status";
 
 /**
@@ -59,10 +60,10 @@ export default function DayHeroBold({ nowStatus, cityName, cityFlag, targetIU, l
     headline = t("nowModerateTitle");
     hint = t("nowModerateHint");
   } else if (ns.state === "upcoming") {
-    headline = t("nowUpcomingTitle", { countdown: formatCountdown(ns.minutesUntilWindow ?? 0), hour: `${ns.window?.start ?? 0}:00` });
+    headline = t("nowUpcomingTitle", { countdown: formatCountdown(ns.minutesUntilWindow ?? 0), hour: fmtTime(ns.window?.start ?? 0) });
     hint = ns.cloudDegraded ? t("cloudDegraded") : null;
   } else if (ns.state === "window_closed") {
-    headline = t("nowClosedTitle", { hour: `${ns.window?.end ?? 0}:00` });
+    headline = t("nowClosedTitle", { hour: fmtTime(ns.window?.end ?? 0) });
     hint = t("nowClosedHint");
   } else {
     headline = t("noWindowToday");
@@ -74,8 +75,8 @@ export default function DayHeroBold({ nowStatus, cityName, cityFlag, targetIU, l
     hint = ns.cloudDegraded
       ? ns.clearSkyWindow
         ? t("cloudDegradedFullWindow", {
-            start: `${ns.clearSkyWindow.start}:00`,
-            end: `${ns.clearSkyWindow.end}:00`,
+            start: fmtTime(ns.clearSkyWindow.start),
+            end: fmtTime(ns.clearSkyWindow.end),
           })
         : t("cloudDegradedFull")
       : t("noWindowHint");
