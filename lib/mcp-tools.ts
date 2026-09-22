@@ -3,6 +3,7 @@ import { CITY_SLUGS } from "./city-slugs";
 import { getSunTimes } from "./sun-times";
 import { getCurve, dayOfYear, fmtTime, fmtDayLength, dateFromDoy, doyFromMonthDay, daysInMonth, solarElev } from "./solar";
 import { forecastHours, radiationUrl } from "./cloud-transmission";
+import { reportOpsEvent, upstreamFailure } from "./ops-events";
 import { solarPhase, type SolarPhase } from "./solar-phase";
 import {
   computeExposureFromCurve, getCurrentStatus, maxSessionIU, MIN_UVI,
@@ -670,8 +671,12 @@ const UPSTREAM_TIMEOUT_MS = 5000;
 /** Today's hourly UV/clouds from Open-Meteo; null on any failure (the caller
  *  falls back to the clear-sky model — same policy as the app's UI). */
 export const fetchWeatherHours: WeatherFetcher = async (lat, lon, days = 1) => {
+  // Failures also go to `ops_events` (docs/ops-alerts.md): the caller's
+  // fallback to the clear-sky model keeps the answer useful, which is exactly
+  // why nobody would otherwise notice Open-Meteo refusing us.
+  let upstreamUrl = "https://api.open-meteo.com/v1/forecast";
   try {
-    const url = new URL("https://api.open-meteo.com/v1/forecast");
+    const url = new URL(upstreamUrl);
     url.searchParams.set("latitude", String(lat));
     url.searchParams.set("longitude", String(lon));
     url.searchParams.set("hourly", "uv_index,uv_index_clear_sky,cloud_cover");
@@ -679,19 +684,32 @@ export const fetchWeatherHours: WeatherFetcher = async (lat, lon, days = 1) => {
     url.searchParams.set("forecast_days", String(Math.min(7, Math.max(1, Math.round(days)))));
     // Same cloud as the app's dashboard: the five-model irradiance median,
     // with Open-Meteo's own UV as the fallback (lib/cloud-transmission.ts).
-    const main = fetch(url.toString(), { signal: AbortSignal.timeout(UPSTREAM_TIMEOUT_MS) });
-    const radiation = fetch(radiationUrl(url), { signal: AbortSignal.timeout(UPSTREAM_TIMEOUT_MS) })
-      .then((r) => (r.ok ? r.json() : null))
-      .catch(() => null);
+    upstreamUrl = url.toString();
+    const main = fetch(upstreamUrl, { signal: AbortSignal.timeout(UPSTREAM_TIMEOUT_MS) });
+    const radUrl = radiationUrl(url);
+    const radiation = fetch(radUrl, { signal: AbortSignal.timeout(UPSTREAM_TIMEOUT_MS) })
+      .then((r) => {
+        if (r.ok) return r.json();
+        reportOpsEvent(upstreamFailure("mcp-weather-radiation", radUrl, r, "fallback"));
+        return null;
+      })
+      .catch((err) => {
+        reportOpsEvent(upstreamFailure("mcp-weather-radiation", radUrl, err, "fallback"));
+        return null;
+      });
     const res = await main;
-    if (!res.ok) return null;
+    if (!res.ok) {
+      reportOpsEvent(upstreamFailure("mcp-weather", upstreamUrl, res));
+      return null;
+    }
     // Parsed by `hoursFromPayload` (inside `forecastHours`), not by hand. The hand-rolled version this
     // replaces read `uv_index?.[i] ?? 0`, which is the one thing that module's
     // comment says never to do: a null UV reading means nobody measured, and
     // calling it zero reports the sun as down. `lib/weather-range.ts` records
     // the incident — a fortnight of London summer came back as darkness.
     return forecastHours(await res.json(), await radiation, lat, lon);
-  } catch {
+  } catch (err) {
+    reportOpsEvent(upstreamFailure("mcp-weather", upstreamUrl, err));
     return null;
   }
 };

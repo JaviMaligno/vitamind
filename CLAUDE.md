@@ -23,6 +23,18 @@ npm run e2e         # Standalone Playwright install-awareness script (needs BASE
 
 **Quality gate:** `.github/workflows/ci.yml` runs lint + typecheck + test + build on every push/PR. All four must pass before deploying. See `docs/PRODUCTION_READINESS.md` for the practices that keep this project production-ready — read it before touching deploys, env vars, Supabase policies, or the push pipeline.
 
+## Upstream failures page someone: `docs/ops-alerts.md`
+
+Hobby keeps Vercel runtime logs for **one hour** and has no alerts, so upstream
+failures (Open-Meteo, today) are written to `ops_events` via `reportOpsEvent` in
+`lib/ops-events.ts`, and `.github/workflows/ops-alerts.yml` polls
+`/api/ops/alerts` hourly: over threshold it opens an `ops-alert` issue that
+@mentions the owner and fails the run; on recovery it comments and closes it.
+When adding a new upstream call that the app survives failing, report the
+failure the same way — a fallback nobody hears about is how a degraded app
+stays degraded. Needs `OPS_ALERT_TOKEN` in Vercel production AND in the repo's
+Actions secrets.
+
 ## `next dev` 500s on every request: two causes, both outside the source tree
 
 Measured 2026-09-22 on the Windows checkout. Both produce a dev server that says `Ready`
@@ -483,6 +495,9 @@ That matters mainly if the gate is ever made conditional on `VERCEL_ENV` (a temp
 ### Supabase migrations
 
 `supabase/migrations/*.sql` are **not applied automatically**. After adding one, run it against the shared Supabase project (SQL editor or `supabase db push`) **before** deploying code that depends on it. Applied state worth knowing:
+
+- `20260922_ops_events.sql` — upstream incidents for the hourly ops alerts (`docs/ops-alerts.md`).
+  Service role only (RLS, no policies). Rows carry `env` = `VERCEL_ENV`; alerts count `production` only.
 
 - `20260831_analytics_events_host.sql` — **applied 2026-08-31**. Adds `analytics_events.host`,
   filled by the route from the request's Host header. Production and the dev preview share this

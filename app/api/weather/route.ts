@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { endpointFor, hoursFromPayload, FORECAST_URL } from "@/lib/weather-range";
 import { forecastHours, radiationUrl } from "@/lib/cloud-transmission";
+import { reportOpsEvent, upstreamFailure } from "@/lib/ops-events";
 
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 const UPSTREAM_TIMEOUT_MS = 8000;
@@ -30,6 +31,10 @@ export async function GET(request: NextRequest) {
     }
   }
 
+  // Every upstream failure below is also written to `ops_events`, after the
+  // response: on Hobby the runtime log is gone within the hour, and an hourly
+  // job turns those rows into alerts (docs/ops-alerts.md).
+  let upstreamUrl: string = FORECAST_URL;
   try {
     // Which host carries the requested dates is decided in lib/weather-range.ts,
     // so the MCP server reconstructing a past day applies the same rule.
@@ -59,18 +64,28 @@ export async function GET(request: NextRequest) {
     // or slow second request costs nothing: the hours fall back to exactly
     // what this route returned before.
     const pooled = !(start && end) && url.origin + url.pathname === FORECAST_URL;
-    const main = fetch(url.toString(), { signal: AbortSignal.timeout(UPSTREAM_TIMEOUT_MS) });
+    upstreamUrl = url.toString();
+    const main = fetch(upstreamUrl, { signal: AbortSignal.timeout(UPSTREAM_TIMEOUT_MS) });
+    const radUrl = radiationUrl(url);
     const radiation = pooled
-      ? fetch(radiationUrl(url), { signal: AbortSignal.timeout(UPSTREAM_TIMEOUT_MS) })
-          .then((r) => (r.ok ? r.json() : null))
-          .catch(() => null)
+      ? fetch(radUrl, { signal: AbortSignal.timeout(UPSTREAM_TIMEOUT_MS) })
+          .then((r) => {
+            if (r.ok) return r.json();
+            reportOpsEvent(upstreamFailure("weather-radiation", radUrl, r, "fallback"));
+            return null;
+          })
+          .catch((err) => {
+            reportOpsEvent(upstreamFailure("weather-radiation", radUrl, err, "fallback"));
+            return null;
+          })
       : Promise.resolve(null);
 
     const res = await main;
 
     if (!res.ok) {
-      const body = await res.text().catch(() => "");
-      console.error(`[api/weather] Open-Meteo ${res.status} for lat=${lat} lon=${lon}: ${body.slice(0, 300)}`);
+      const failure = await upstreamFailure("weather", upstreamUrl, res);
+      console.error(`[api/weather] Open-Meteo ${res.status} for lat=${lat} lon=${lon}: ${failure.detail ?? ""}`);
+      reportOpsEvent(failure);
       return NextResponse.json({ error: "Upstream weather service error" }, { status: 502 });
     }
 
@@ -87,6 +102,7 @@ export async function GET(request: NextRequest) {
     });
   } catch (err: unknown) {
     console.error("[api/weather] failed:", err);
+    reportOpsEvent(upstreamFailure("weather", upstreamUrl, err));
     return NextResponse.json({ error: "Failed to fetch weather" }, { status: 500 });
   }
 }
