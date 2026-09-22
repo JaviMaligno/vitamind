@@ -140,6 +140,27 @@ export interface ContentRevision {
  * module* moved is not a content change for pages that do not call the moved
  * function. Moving it would announce 3342 URLs as changed for a change none of
  * them render, on a read meter that closed its last window at 95%.
+ *
+ * 2026-09-22 — `figures` RE-RECORDED IN ALL THREE FAMILIES AGAIN, NO DATE MOVED.
+ * The same shape as the 2026-08-28 entry above, and for the same reason.
+ * `getCurrentStatus` in `lib/vitd.ts` was fixed: its `cloudDegraded` flag was
+ * structurally unreachable, so a dashboard reader under a bright sky was told
+ * "UV index too low" when the truth was that the forecast saw cloud. `vitd.ts`
+ * is in all three module lists, so all three `figures` hashes moved together.
+ *
+ * None of the three families calls the changed function. Grepped: its only call
+ * sites are `hooks/useNowStatus.ts` — reached solely by `app/[locale]/dashboard`,
+ * an app page that keeps a build `lastmod` — and `lib/mcp-tools.ts`, which
+ * serves the MCP endpoint and no URL in the sitemap. The city pages' own figures
+ * come from `citySeasonalWindows` and `cityYearProfile`, which call
+ * `computeExposureFromCurve`; that function is untouched, and every one of the
+ * three families' printed numbers is byte-for-byte what it was.
+ *
+ * Worth recording because it is the FIRST time the moved lines were live code
+ * rather than a comment or a formatter, which makes "did the output move?" a
+ * question that had to be answered rather than assumed. It was answered by call
+ * graph, not by inspection of the hash: a hash cannot tell you which pages
+ * render what it covers.
  */
 export const SUN_MONTH_REVISION: ContentRevision = {
   date: "2026-08-26",
@@ -151,7 +172,7 @@ export const SUN_MONTH_REVISION: ContentRevision = {
     "copy.ru": "7d0427fc5082438b",
     "copy.lt": "2fa9119bd4283f7d",
     cities: "35aebb84c49f350e",
-    figures: "fa8bb25cf08d4ccd",
+    figures: "8b73f5afe094a148",
     constants: "a3b447afa17fa07c",
   },
 };
@@ -197,7 +218,7 @@ export const CITY_PAGE_REVISION: ContentRevision = {
     "copy.ru": "39c852cd4713ae68",
     "copy.lt": "ff610006e37f9b63",
     cities: "c66cfdadbf8dabad",
-    figures: "708163065b60056f",
+    figures: "19cee00799044a41",
     constants: "09032456232a5db5",
   },
 };
@@ -232,7 +253,7 @@ export const SUNTIME_PAGE_REVISION: ContentRevision = {
     "copy.de": "c72ec8cdf2df2ebb",
     "copy.ru": "e6c6fcebda3a7911",
     "copy.lt": "7f54b7c4c382e0ca",
-    figures: "0f3166ee0c095095",
+    figures: "44b735cc7b237981",
     reference: "4303d27a87c4a0dd",
     constants: "c9d5d03dc2b9c7b9",
   },

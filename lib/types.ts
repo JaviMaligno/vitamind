@@ -89,7 +89,22 @@ export interface NowStatus {
   minutesUntilWindow: number | null;
   windowClosesIn: number | null;
   cloudCover: number | null;
-  cloudDegraded: boolean; // true if theoretical UVI >= 3 but effective < 3
+  /**
+   * The window the SUN alone allows today: hours whose clear-sky UVI reaches
+   * MIN_UVI, computed from the solar curve and this place's ozone column. It
+   * ignores the sky entirely, so it is the same claim the city and hub pages
+   * publish — which is exactly why it belongs here. Null on a day the sun never
+   * gets high enough at all.
+   */
+  clearSkyWindow: { start: number; end: number } | null;
+  /**
+   * True when the sun WOULD allow synthesis today (`clearSkyWindow` is set) but
+   * the forecast's cloud-attenuated UV never reaches the threshold, so `window`
+   * is null. The difference between "the sun is too low today" and "it is too
+   * cloudy today" — two sentences a reader can tell apart by looking out of a
+   * window, and which the app must not confuse.
+   */
+  cloudDegraded: boolean;
 }
 
 export interface DayRecord {

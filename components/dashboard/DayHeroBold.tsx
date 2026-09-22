@@ -66,7 +66,19 @@ export default function DayHeroBold({ nowStatus, cityName, cityFlag, targetIU, l
     hint = t("nowClosedHint");
   } else {
     headline = t("noWindowToday");
-    hint = ns.cloudDegraded ? t("cloudDegradedFull") : t("noWindowHint");
+    // Two different sentences, and a reader can tell them apart by looking out
+    // of the window: the sun is too low today, or the sun is high enough and
+    // the sky is in the way. Naming the window a clear sky would have given is
+    // what reconciles this hero with the city page, which publishes the
+    // clear-sky season and knows nothing about today's cloud.
+    hint = ns.cloudDegraded
+      ? ns.clearSkyWindow
+        ? t("cloudDegradedFullWindow", {
+            start: `${ns.clearSkyWindow.start}:00`,
+            end: `${ns.clearSkyWindow.end}:00`,
+          })
+        : t("cloudDegradedFull")
+      : t("noWindowHint");
   }
 
   const showData = ns.state === "good_now" || ns.state === "upcoming";

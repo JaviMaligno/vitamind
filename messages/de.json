@@ -280,6 +280,7 @@
     "nowClosedHint": "Morgen gibt es eine neue Gelegenheit",
     "cloudDegraded": "Bewölkt gerade — könnte sich später bessern",
     "cloudDegradedFull": "Wolken blockieren die für die Vitamin-D-Synthese nötige UV-Strahlung",
+    "cloudDegradedFullWindow": "Bei klarem Himmel gäbe es heute ein Fenster von {start} bis {end} — die Wolken blockieren es",
     "nowWindow": "Fenster",
     "nowTimeNeeded": "Geschätzte Zeit",
     "nowClosesIn": "Schließt in",

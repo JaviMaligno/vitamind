@@ -741,6 +741,16 @@ async function buildCurrentStatus(args: VitDArgs, fetcher: WeatherFetcher) {
     currentUVIndex: Math.round(status.effectiveUVI * 10) / 10,
     minutesNeededNow: status.minutesNeeded !== null ? Math.round(status.minutesNeeded) : null,
     window: status.window ? { start: hh(status.window.start), end: hh(status.window.end) } : null,
+    // The window the SUN alone allows, alongside the one the forecast allows.
+    // Without it, a cloudy day answers `state: "no_synthesis"` with nothing to
+    // distinguish "London in December" from "London under cloud in September" —
+    // and the assistant reading this has no way to tell, so it guesses. The two
+    // fields below are what make `get_vitamin_d_window` unnecessary as a
+    // follow-up call.
+    clearSkyWindow: status.clearSkyWindow
+      ? { start: hh(status.clearSkyWindow.start), end: hh(status.clearSkyWindow.end) }
+      : null,
+    cloudDegraded: status.cloudDegraded,
     bestHour: status.bestHour !== null ? hh(status.bestHour) : null,
     minutesUntilWindow: status.minutesUntilWindow,
     windowClosesInMinutes: status.windowClosesIn,

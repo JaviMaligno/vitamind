@@ -190,4 +190,39 @@ describe("currentStatusTool", () => {
     expect(r.uvSource).toContain("open-meteo");
     expect(r.window).toEqual({ start: "10:00", end: "19:00" });
   });
+
+  it("separates 'too cloudy' from 'sun too low' when the forecast kills the window", async () => {
+    // Madrid in June: the sun is emphatically high enough. A forecast that
+    // reports UV below the threshold all day can therefore only mean cloud, and
+    // the answer must say so rather than leave the caller to guess — the London
+    // 2026-09-22 report, where the city page said the season ran to 27 September
+    // and the live answer said "no synthesis" with nothing to reconcile them.
+    const overcast = Array.from({ length: 24 }, (_, h) => ({
+      time: `2026-06-21T${String(h).padStart(2, "0")}:00`,
+      uvIndex: 1.2,
+      cloudCover: 95,
+    }));
+    const r = await currentStatusTool(
+      { lat: 40.42, lon: -3.7, timezone: "Europe/Madrid" },
+      async () => overcast,
+    );
+    expect(r.window).toBeNull();
+    expect(r.clearSkyWindow).not.toBeNull();
+    expect(r.cloudDegraded).toBe(true);
+  });
+
+  it("makes no cloud claim when the sun itself never gets high enough", async () => {
+    // Tromsø in December: no cloud on earth is responsible for this.
+    const dark = Array.from({ length: 24 }, (_, h) => ({
+      time: `2026-12-21T${String(h).padStart(2, "0")}:00`,
+      uvIndex: 0,
+      cloudCover: 0,
+    }));
+    const r = await currentStatusTool(
+      { lat: 69.65, lon: 18.96, timezone: "Europe/Oslo" },
+      async () => dark,
+    );
+    expect(r.clearSkyWindow).toBeNull();
+    expect(r.cloudDegraded).toBe(false);
+  });
 });

@@ -368,19 +368,51 @@ export function getCurrentStatus(
     for (const wh of weather.hours) {
       hourlyUVI.push({ hour: hourFromTimeString(wh.time), uvi: wh.uvIndex, cloud: wh.cloudCover });
     }
-  } else if (curve.length > 0) {
+  }
+
+  /**
+   * What the SUN alone offers today, from the solar curve — computed whether or
+   * not there is weather, because it is the reference the forecast is judged
+   * against.
+   *
+   * This used to be built only in the `else` branch above, i.e. only when there
+   * was NO weather data, which is what made `cloudDegraded` dead code: in that
+   * branch the "theoretical" hours were the same hours the window was derived
+   * from (cloud is hardcoded to 0 there, so `cloudFactor` is a no-op), and in
+   * the weather branch there was no clear-sky reference at all. The flag could
+   * therefore never be true in either, and a reader standing under a bright sky
+   * was told the UV index was too low instead of that the forecast saw cloud.
+   */
+  const clearSkyHourly: { hour: number; uvi: number }[] = [];
+  if (curve.length > 0) {
     for (let h = 0; h < 24; h++) {
       const pt = curve.find((p) => Math.floor(p.localHours) === h);
       const elev = pt?.elevation ?? 0;
-      hourlyUVI.push({ hour: h, uvi: estimateUVFromElevation(elev, ctx), cloud: 0 });
+      clearSkyHourly.push({ hour: h, uvi: estimateUVFromElevation(elev, ctx) });
     }
   }
+
+  // No weather: the clear-sky curve IS the reading, cloud unknown (hence 0).
+  if (!weather) {
+    for (const h of clearSkyHourly) hourlyUVI.push({ hour: h.hour, uvi: h.uvi, cloud: 0 });
+  }
+
+  let csStart = -1;
+  let csEnd = -1;
+  for (const h of clearSkyHourly) {
+    if (h.uvi >= MIN_UVI) {
+      if (csStart === -1) csStart = h.hour;
+      csEnd = h.hour + 1;
+    }
+  }
+  const clearSkyWindow = csStart !== -1 ? { start: csStart, end: csEnd } : null;
 
   if (hourlyUVI.length === 0) {
     return {
       state: "no_synthesis", currentUVI: 0, effectiveUVI: 0, intensity: null,
       minutesNeeded: null, window: null, bestHour: null, bestMinutes: null,
-      minutesUntilWindow: null, windowClosesIn: null, cloudCover: null, cloudDegraded: false,
+      minutesUntilWindow: null, windowClosesIn: null, cloudCover: null,
+      clearSkyWindow, cloudDegraded: false,
     };
   }
 
@@ -429,10 +461,13 @@ export function getCurrentStatus(
     ? minutesForVitD(bEffUVI, skinType, areaFraction, targetIU, age)
     : null;
 
-  // cloudDegraded only meaningful with theoretical curve — with real API data,
-  // UVI already reflects clouds so there's no "theoretical vs effective" gap
+  // The sun would allow it, the sky does not. Judged against `clearSkyWindow`,
+  // which comes from the solar curve rather than from `hourlyUVI` — with real
+  // API data those hours ARE the cloud-attenuated ones, so comparing them with
+  // themselves is what made this flag permanently false.
+  const cloudDegraded = clearSkyWindow !== null && synthWindow === null;
+  // Whether some later hour is still worth waiting for, cloud included.
   const theoreticalWindow = hourlyUVI.some((h) => h.uvi >= MIN_UVI);
-  const cloudDegraded = useCloudFactor && theoreticalWindow && synthWindow === null;
   const minutesNeededNow = minutesForVitD(effectiveUVI, skinType, areaFraction, targetIU, age);
 
   // Determine state
@@ -488,6 +523,7 @@ export function getCurrentStatus(
   return {
     state, currentUVI: rawUVI, effectiveUVI, intensity,
     minutesNeeded: minutesNeededNow, window: synthWindow, bestHour: bHour, bestMinutes: bMinutes,
-    minutesUntilWindow, windowClosesIn, cloudCover: currentCloud, cloudDegraded,
+    minutesUntilWindow, windowClosesIn, cloudCover: currentCloud,
+    clearSkyWindow, cloudDegraded,
   };
 }
