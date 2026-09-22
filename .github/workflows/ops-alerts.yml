@@ -1,0 +1,80 @@
+name: Ops alerts
+
+# Hourly: ask production whether any upstream-failure threshold was crossed in
+# the last hour, and say so where a person will see it.
+#
+# Why here and not in Vercel: on Hobby, Vercel keeps runtime logs for one hour
+# and has no alerts or drains. The app writes incidents to `ops_events`;
+# /api/ops/alerts turns the last hour into counts and alerts. docs/ops-alerts.md.
+#
+# On a problem: open an issue labelled `ops-alert` that @mentions the owner (or
+# comment on the one already open) and fail the run. On recovery: comment and
+# close it — so the all-clear arrives through the same channel as the alarm.
+# The check failing to run at all is itself a problem: blind monitoring must
+# not look like a quiet hour.
+
+on:
+  schedule:
+    - cron: "17 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: ops-alerts
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Poll /api/ops/alerts and raise or clear the alert issue
+        env:
+          OPS_ALERT_TOKEN: ${{ secrets.OPS_ALERT_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          OWNER: ${{ github.repository_owner }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -uo pipefail
+          gh label create ops-alert -R "$REPO" --color B60205 \
+            --description "Raised by the hourly ops check (docs/ops-alerts.md)" 2>/dev/null || true
+          open=$(gh issue list -R "$REPO" --label ops-alert --state open --json number -q '.[0].number // empty')
+
+          problem=""
+          if [ -z "${OPS_ALERT_TOKEN:-}" ]; then
+            problem="- **critical** — the \`OPS_ALERT_TOKEN\` secret is not set, so the ops check cannot run."
+          else
+            code=$(curl -sS -o body.json -w '%{http_code}' --max-time 60 \
+              -H "Authorization: Bearer $OPS_ALERT_TOKEN" https://getvitamind.app/api/ops/alerts || echo 000)
+            if [ "$code" != "200" ]; then
+              problem="- **critical** — the ops check itself failed (HTTP $code): monitoring is blind until this is fixed. $(jq -r '.error // empty' body.json 2>/dev/null)"
+            elif [ "$(jq '.alerts | length' body.json)" -gt 0 ]; then
+              problem=$(jq -r '.alerts[] | "- **\(.severity)** — \(.message)"' body.json)
+            fi
+          fi
+
+          now=$(date -u +"%Y-%m-%d %H:%M UTC")
+          if [ -n "$problem" ]; then
+            details=""
+            if [ -s body.json ]; then
+              details=$(printf '\n<details><summary>Last hour</summary>\n\n```json\n%s\n```\n</details>\n' "$(jq . body.json 2>/dev/null || cat body.json)")
+            fi
+            text=$(printf '@%s — %s\n\n%s\n%s\nRun: %s · Runbook: docs/ops-alerts.md' "$OWNER" "$now" "$problem" "$details" "$RUN_URL")
+            if [ -n "$open" ]; then
+              gh issue comment "$open" -R "$REPO" --body "$text"
+            else
+              gh issue create -R "$REPO" --label ops-alert --title "Ops alert: upstream failures in production" --body "$text"
+            fi
+            echo "$problem"
+            exit 1
+          fi
+
+          if [ -n "$open" ]; then
+            gh issue comment "$open" -R "$REPO" --body "@$OWNER — recovered at $now: no threshold crossed in the last hour. Run: $RUN_URL"
+            gh issue close "$open" -R "$REPO"
+          fi
+          echo "OK — $(jq -c .counts body.json)"

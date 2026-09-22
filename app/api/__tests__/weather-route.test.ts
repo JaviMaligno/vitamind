@@ -1,6 +1,16 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { NextRequest } from "next/server";
 import { GET } from "@/app/api/weather/route";
+import type { OpsEvent } from "@/lib/ops-events";
+
+// Incidents are reported, not written, here: collect them instead of reaching
+// for Supabase.
+const reported: Promise<OpsEvent>[] = [];
+vi.mock("@/lib/ops-events", async (orig) => ({
+  ...(await orig<typeof import("@/lib/ops-events")>()),
+  reportOpsEvent: (e: OpsEvent | Promise<OpsEvent>) => { reported.push(Promise.resolve(e)); },
+}));
+const reportedEvents = () => Promise.all(reported);
 
 const realFetch = global.fetch;
 
@@ -10,6 +20,7 @@ function request(qs: string) {
 
 beforeEach(() => {
   global.fetch = vi.fn();
+  reported.length = 0;
 });
 
 afterEach(() => {
@@ -108,11 +119,48 @@ describe("/api/weather upstream handling", () => {
   });
 
   it("clamps forecast days into Open-Meteo's supported range", async () => {
-    vi.mocked(global.fetch).mockResolvedValue(
+    // Fresh per call: a forecast makes two requests and a body reads once.
+    vi.mocked(global.fetch).mockImplementation(async () =>
       new Response(JSON.stringify({ hourly: { time: [] } })),
     );
     await GET(request("lat=40&lon=-3&days=999"));
     const calledUrl = vi.mocked(global.fetch).mock.calls[0][0] as string;
     expect(calledUrl).toContain("forecast_days=16");
+  });
+});
+
+describe("/api/weather incident reporting (docs/ops-alerts.md)", () => {
+  const ok = () => new Response(JSON.stringify({ hourly: { time: ["2026-07-16T13:00"], uv_index: [5], uv_index_clear_sky: [9], cloud_cover: [0] } }));
+
+  it("reports an upstream refusal with its status, and never the reader's coordinates", async () => {
+    vi.mocked(global.fetch).mockImplementation(async () => new Response('{"reason":"Too many requests"}', { status: 429 }));
+    const res = await GET(request("lat=40.42&lon=-3.70&days=2"));
+    expect(res.status).toBe(502);
+    const events = await reportedEvents();
+    const main = events.find((e) => e.source === "weather")!;
+    expect(main).toMatchObject({ kind: "upstream_error", status: 429, upstream: "api.open-meteo.com" });
+    expect(JSON.stringify(events)).not.toContain("40.42");
+  });
+
+  it("reports a timeout as a timeout", async () => {
+    vi.mocked(global.fetch).mockRejectedValue(new DOMException("t", "TimeoutError"));
+    await GET(request("lat=40&lon=-3&start=2026-07-10&end=2026-07-11"));
+    expect(await reportedEvents()).toEqual([expect.objectContaining({ source: "weather", kind: "upstream_timeout" })]);
+  });
+
+  it("reports the five-model request falling back, while still answering", async () => {
+    vi.mocked(global.fetch).mockImplementation(async (input) =>
+      new URL(String(input)).searchParams.get("models") ? new Response("boom", { status: 503 }) : ok());
+    const res = await GET(request("lat=40.42&lon=-3.70&days=2"));
+    expect(res.status).toBe(200);
+    expect(await reportedEvents()).toEqual([
+      expect.objectContaining({ source: "weather-radiation", kind: "fallback", status: 503 }),
+    ]);
+  });
+
+  it("reports nothing on a normal request", async () => {
+    vi.mocked(global.fetch).mockImplementation(async () => ok());
+    await GET(request("lat=40.42&lon=-3.70&days=2"));
+    expect(await reportedEvents()).toEqual([]);
   });
 });
