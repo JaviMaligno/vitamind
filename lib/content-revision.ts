@@ -215,6 +215,16 @@ export interface ContentRevision {
  * Only (1) touches these three families. It moves clock times on the city pages
  * by an hour in the DST half of the year, which is squarely a content change —
  * and it rides today's already-moved date rather than buying a second re-crawl.
+ *
+ * 2026-09-22, FOURTH AND LAST RECORDING OF THE DAY — hashes only, no date move,
+ * and this one genuinely changes nothing these pages print. `getCurrentStatus`
+ * learned to take its clear-sky reference from Open-Meteo's own
+ * `uv_index_clear_sky` instead of from `lib/uv-model.ts`. That is the live path;
+ * the three families call `computeExposureFromCurve`, which is untouched, and
+ * they have no forecast to prefer in any case — they are prerendered for dates
+ * no forecast covers. `figures` moves because it hashes the SOURCE of
+ * `lib/vitd.ts`, which is the mechanism this file's 2026-08-28 entry already
+ * describes.
  */
 export const SUN_MONTH_REVISION: ContentRevision = {
   date: "2026-09-22",
@@ -226,7 +236,7 @@ export const SUN_MONTH_REVISION: ContentRevision = {
     "copy.ru": "7d0427fc5082438b",
     "copy.lt": "2fa9119bd4283f7d",
     cities: "35aebb84c49f350e",
-    figures: "2380f427a8694995",
+    figures: "9d801cabb4984a31",
     constants: "a3b447afa17fa07c",
   },
 };
@@ -272,7 +282,7 @@ export const CITY_PAGE_REVISION: ContentRevision = {
     "copy.ru": "39c852cd4713ae68",
     "copy.lt": "ff610006e37f9b63",
     cities: "c66cfdadbf8dabad",
-    figures: "5c65f3ae72fb2702",
+    figures: "7ab9aaaacec1f902",
     constants: "09032456232a5db5",
   },
 };
@@ -307,7 +317,7 @@ export const SUNTIME_PAGE_REVISION: ContentRevision = {
     "copy.de": "c72ec8cdf2df2ebb",
     "copy.ru": "e6c6fcebda3a7911",
     "copy.lt": "7f54b7c4c382e0ca",
-    figures: "96b50f2f4d1ab5d9",
+    figures: "8832a5afd0aa3c81",
     reference: "4303d27a87c4a0dd",
     constants: "c9d5d03dc2b9c7b9",
   },

@@ -25,7 +25,7 @@ describe("rangeUrl", () => {
   it("asks for the hours the exposure model needs", () => {
     const url = new URL(rangeUrl(51.56, -0.1, "2026-07-21", "2026-07-26", NOW));
     expect(url.origin + url.pathname).toBe(FORECAST_URL);
-    expect(url.searchParams.get("hourly")).toBe("uv_index,cloud_cover");
+    expect(url.searchParams.get("hourly")).toBe("uv_index,uv_index_clear_sky,cloud_cover");
     expect(url.searchParams.get("start_date")).toBe("2026-07-21");
     expect(url.searchParams.get("end_date")).toBe("2026-07-26");
     // Local time, so an hour string lines up with the day it belongs to.
@@ -36,11 +36,16 @@ describe("rangeUrl", () => {
 describe("hoursFromPayload", () => {
   it("flattens the parallel arrays Open-Meteo returns", () => {
     const hours = hoursFromPayload({
-      hourly: { time: ["2026-07-23T10:00", "2026-07-23T11:00"], uv_index: [3.1, 3.8], cloud_cover: [95, 96] },
+      hourly: {
+        time: ["2026-07-23T10:00", "2026-07-23T11:00"],
+        uv_index: [3.1, 3.8],
+        uv_index_clear_sky: [6.2, 6.6],
+        cloud_cover: [95, 96],
+      },
     });
     expect(hours).toEqual([
-      { time: "2026-07-23T10:00", uvIndex: 3.1, cloudCover: 95 },
-      { time: "2026-07-23T11:00", uvIndex: 3.8, cloudCover: 96 },
+      { time: "2026-07-23T10:00", uvIndex: 3.1, uvIndexClearSky: 6.2, cloudCover: 95 },
+      { time: "2026-07-23T11:00", uvIndex: 3.8, uvIndexClearSky: 6.6, cloudCover: 96 },
     ]);
   });
 
@@ -51,13 +56,13 @@ describe("hoursFromPayload", () => {
     const hours = hoursFromPayload({
       hourly: { time: ["2026-07-23T10:00", "2026-07-23T11:00"], uv_index: [null, 3.8], cloud_cover: [95, 96] },
     });
-    expect(hours).toEqual([{ time: "2026-07-23T11:00", uvIndex: 3.8, cloudCover: 96 }]);
+    expect(hours).toEqual([{ time: "2026-07-23T11:00", uvIndex: 3.8, uvIndexClearSky: null, cloudCover: 96 }]);
   });
 
   it("still keeps an hour whose cloud cover is missing", () => {
     // The UV already carries the attenuation, so a gap there costs nothing.
     const hours = hoursFromPayload({ hourly: { time: ["2026-07-23T11:00"], uv_index: [3.8], cloud_cover: [] } });
-    expect(hours).toEqual([{ time: "2026-07-23T11:00", uvIndex: 3.8, cloudCover: 0 }]);
+    expect(hours).toEqual([{ time: "2026-07-23T11:00", uvIndex: 3.8, uvIndexClearSky: null, cloudCover: 0 }]);
   });
 
   it("refuses an archive payload, which carries cloud cover but no UV", () => {
@@ -71,5 +76,31 @@ describe("hoursFromPayload", () => {
     expect(hoursFromPayload({ hourly: {} })).toBeNull();
     expect(hoursFromPayload({ error: true, reason: "nope" })).toBeNull();
     expect(hoursFromPayload(null)).toBeNull();
+  });
+});
+
+describe("the clear-sky reference", () => {
+  it("is null when the upstream omits it, never zero", () => {
+    // Zero would be a claim that the sun could not have produced any UV, and
+    // `getCurrentStatus` divides by this to measure cloud. Null means "no
+    // reference from this source" and sends the caller back to the model.
+    const hours = hoursFromPayload({
+      hourly: { time: ["2026-07-23T11:00"], uv_index: [3.8], cloud_cover: [20] },
+    })!;
+    expect(hours[0].uvIndexClearSky).toBeNull();
+  });
+
+  it("survives a partially-populated clear-sky array", () => {
+    const hours = hoursFromPayload({
+      hourly: {
+        time: ["2026-07-23T10:00", "2026-07-23T11:00"],
+        uv_index: [3.1, 3.8],
+        uv_index_clear_sky: [null, 6.6],
+        cloud_cover: [95, 96],
+      },
+    })!;
+    expect(hours.map((h) => h.uvIndexClearSky)).toEqual([null, 6.6]);
+    // The hour is kept: a missing reference is not a missing reading.
+    expect(hours).toHaveLength(2);
   });
 });

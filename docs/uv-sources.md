@@ -109,23 +109,58 @@ So the split stands: **a model where a date must be computed, a forecast where
 one can be observed.** What should change is the quality of each side, not which
 one exists.
 
+## The error changes sign, which kills the obvious repair
+
+The tempting fix is to nudge van Heuklon's equatorial baseline (`J = 235`)
+upward, since the code's own comment says it runs 15–25 DU low there, and
+published satellite-era work puts tropical minima around
+[255–260 DU](https://amt.copernicus.org/articles/17/5201/2024/). But `J` is
+added uniformly across latitude, and the errors are not uniform:
+
+```
+  52  London     333 ours    264 implied    +69
+  40  Madrid     306 ours    326 implied    -20
+ -34  Sydney     315 ours    358 implied    -43
+  -1  Nairobi    235 ours    408 implied   -173
+```
+
+**Too much ozone over London, too little over Nairobi.** Any constant that fixes
+one end makes the other worse, so what is wrong is the fit's amplitude across
+latitude, not its offset. `lib/__tests__/uv-model-bias.test.ts` asserts exactly
+this, so the next person reaching for `J = 235 + something` fails a test that
+explains why.
+
+Fitting a per-latitude correction to nine samples from one day of one forecast
+would be fitting noise, so it has not been done.
+
 ## What follows
 
-1. **Fetch `uv_index_clear_sky`.** It is another field on the `hourly=` request
-   the app already makes — no extra call, no new dependency. It gives a
-   same-source clear-sky reference, so cloud attenuation stops being measured by
-   dividing their number by ours. It also lets the app answer the reader who can
-   see a clear sky: *their* clear-sky value, rather than their cloud estimate.
+1. **DONE — fetch `uv_index_clear_sky`.** Another field on the `hourly=` request
+   the app already makes: no extra call, no new dependency. `getCurrentStatus`
+   now takes its clear-sky reference from it, so `clearSkyWindow` and
+   `cloudDegraded` are the forecast's own physics rather than a quotient of two
+   models. `NowStatus.clearSkySource` says which one answered, and the MCP
+   reports it. When the field is missing the model answers, as before.
 
-2. **Re-base the ozone climatology.** van Heuklon is a 1979 fit to pre-1979
-   data. A modern monthly lat-band table (OMI/TOMS era) is a few hundred numbers,
-   embeds fine, needs no network, and would fix both the equatorial baseline and
-   the seasonal shape. It would move the figures on all 3,318 pages, so it is a
-   deliberate piece of work with a `lastmod` cost, not a drive-by.
+2. **DONE — the ratio method.** `getCurrentStatus` reads the forecast's
+   *attenuation* — its cloudy value over its clear-sky value at the same hour —
+   and applies it to the five-minute solar curve. Our model now supplies only
+   the shape within an hour, and a bias in it cancels. With (1) in place the
+   live path no longer depends on our ozone column at all.
 
-3. **Already done: the ratio method.** `getCurrentStatus` reads the forecast's
-   *attenuation* — its value divided by our clear-sky value at the same hour —
-   and applies it to the five-minute solar curve. Because it is a ratio, a bias
-   in our model cancels, so the live answer tracks Open-Meteo's numbers even
-   where the two models disagree on absolutes. This is why the dashboard is
-   correct today despite everything above.
+3. **NOT DONE — re-base the ozone climatology.** This still governs all 3,318
+   prerendered pages, which have no forecast to defer to. It needs a real
+   dataset, not a table written from memory: a monthly zonal-mean total-column
+   climatology (SBUV merged, OMI/TOMS era) at 10° latitude resolution.
+
+   It was not attempted here because the environment could reach neither
+   Open-Meteo nor NASA (egress policy — `api.open-meteo.com`,
+   `acd-ext.gsfc.nasa.gov` and `ozonewatch.gsfc.nasa.gov` all refused CONNECT),
+   and inventing the numbers is the precise failure CLAUDE.md documents five
+   times over. What unblocks it: network access to Open-Meteo's
+   `uv_index_clear_sky` for the 73 cities across twelve months, which is enough
+   to derive a correction AND to verify it, or a fetchable copy of a published
+   climatology.
+
+   Whoever does it should expect it to move the figures on every city, month and
+   sun-time page, and to cost a `lastmod` bump.

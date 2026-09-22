@@ -197,6 +197,7 @@ describe("currentStatusTool", () => {
       return {
         time: `2026-09-22T${String(h).padStart(2, "0")}:00`,
         uvIndex: estimateUVFromElevation(pt?.elevation ?? 0, ctx) * 0.85,
+        uvIndexClearSky: estimateUVFromElevation(pt?.elevation ?? 0, ctx),
         cloudCover: 20,
       };
     });
@@ -224,6 +225,7 @@ describe("currentStatusTool", () => {
     const overcast = Array.from({ length: 24 }, (_, h) => ({
       time: `2026-06-21T${String(h).padStart(2, "0")}:00`,
       uvIndex: 1.2,
+      uvIndexClearSky: null,
       cloudCover: 95,
     }));
     const r = await currentStatusTool(
@@ -240,6 +242,7 @@ describe("currentStatusTool", () => {
     const dark = Array.from({ length: 24 }, (_, h) => ({
       time: `2026-12-21T${String(h).padStart(2, "0")}:00`,
       uvIndex: 0,
+      uvIndexClearSky: null,
       cloudCover: 0,
     }));
     const r = await currentStatusTool(

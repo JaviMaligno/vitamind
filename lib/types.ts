@@ -46,7 +46,23 @@ export interface HoverInfo {
 
 export interface WeatherHour {
   time: string;
+  /** Open-Meteo's `uv_index`: what reaches the ground, clouds included. */
   uvIndex: number;
+  /**
+   * Open-Meteo's `uv_index_clear_sky` for the same hour: the same model with
+   * the clouds taken out.
+   *
+   * It is the reference `uvIndex` should be judged against, and the reason is
+   * that the alternative is judging it against OURS. `lib/uv-model.ts` runs on
+   * van Heuklon (1979) ozone, which has no day-to-day term and a documented low
+   * equatorial baseline, so the two models disagree by up to a factor of two
+   * (docs/uv-sources.md). Dividing their number by ours measured that
+   * disagreement as if it were cloud.
+   *
+   * Null when the upstream did not return it — the archive host does not carry
+   * UV at all, and the field is young enough not to be assumed.
+   */
+  uvIndexClearSky: number | null;
   cloudCover: number;
 }
 
@@ -97,6 +113,14 @@ export interface NowStatus {
    * gets high enough at all.
    */
   clearSkyWindow: { start: number; end: number } | null;
+  /**
+   * Where `clearSkyWindow` got its absolute values: `"forecast"` when
+   * Open-Meteo supplied `uv_index_clear_sky` for this day, `"model"` when it
+   * did not and `lib/uv-model.ts` answered alone. Worth surfacing because the
+   * two disagree by up to a factor of two (docs/uv-sources.md), so a reader —
+   * or a reviewer — should be able to tell which one is talking.
+   */
+  clearSkySource: "forecast" | "model";
   /**
    * True when the sun WOULD allow synthesis today (`clearSkyWindow` is set) but
    * the forecast's cloud-attenuated UV never reaches the threshold, so `window`

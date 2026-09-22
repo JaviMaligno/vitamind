@@ -2,6 +2,7 @@ import { BUILTIN_CITIES } from "./cities";
 import { CITY_SLUGS } from "./city-slugs";
 import { getSunTimes } from "./sun-times";
 import { getCurve, dayOfYear, fmtTime, fmtDayLength, dateFromDoy, doyFromMonthDay, daysInMonth, solarElev } from "./solar";
+import { hoursFromPayload } from "./weather-range";
 import { solarPhase, type SolarPhase } from "./solar-phase";
 import {
   computeExposureFromCurve, getCurrentStatus, maxSessionIU, MIN_UVI,
@@ -673,18 +674,17 @@ export const fetchWeatherHours: WeatherFetcher = async (lat, lon, days = 1) => {
     const url = new URL("https://api.open-meteo.com/v1/forecast");
     url.searchParams.set("latitude", String(lat));
     url.searchParams.set("longitude", String(lon));
-    url.searchParams.set("hourly", "uv_index,cloud_cover");
+    url.searchParams.set("hourly", "uv_index,uv_index_clear_sky,cloud_cover");
     url.searchParams.set("timezone", "auto");
     url.searchParams.set("forecast_days", String(Math.min(7, Math.max(1, Math.round(days)))));
     const res = await fetch(url.toString(), { signal: AbortSignal.timeout(UPSTREAM_TIMEOUT_MS) });
     if (!res.ok) return null;
-    const data = await res.json();
-    if (!data.hourly?.time) return null;
-    return data.hourly.time.map((time: string, i: number) => ({
-      time,
-      uvIndex: data.hourly.uv_index?.[i] ?? 0,
-      cloudCover: data.hourly.cloud_cover?.[i] ?? 0,
-    }));
+    // Parsed by `hoursFromPayload`, not by hand. The hand-rolled version this
+    // replaces read `uv_index?.[i] ?? 0`, which is the one thing that module's
+    // comment says never to do: a null UV reading means nobody measured, and
+    // calling it zero reports the sun as down. `lib/weather-range.ts` records
+    // the incident — a fortnight of London summer came back as darkness.
+    return hoursFromPayload(await res.json());
   } catch {
     return null;
   }
@@ -753,6 +753,10 @@ async function buildCurrentStatus(args: VitDArgs, fetcher: WeatherFetcher) {
     clearSkyWindow: status.clearSkyWindow
       ? { start: hh(status.clearSkyWindow.start), end: hh(status.clearSkyWindow.end) }
       : null,
+    // Which model produced that clear-sky answer. The two disagree by up to a
+    // factor of two (docs/uv-sources.md), so an assistant repeating the number
+    // should be able to say where it came from.
+    clearSkySource: status.clearSkySource,
     cloudDegraded: status.cloudDegraded,
     bestHour: status.bestHour !== null ? hh(status.bestHour) : null,
     minutesUntilWindow: status.minutesUntilWindow,

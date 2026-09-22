@@ -40,7 +40,7 @@ describe("/api/weather upstream handling", () => {
     const res = await GET(request("lat=40.4&lon=-3.7"));
     expect(res.status).toBe(200);
     const body = await res.json();
-    expect(body.hours).toEqual([{ time: "2026-07-16T12:00", uvIndex: 7.5, cloudCover: 10 }]);
+    expect(body.hours).toEqual([{ time: "2026-07-16T12:00", uvIndex: 7.5, uvIndexClearSky: null, cloudCover: 10 }]);
   });
 
   it("returns 502 without leaking the upstream body when Open-Meteo fails", async () => {

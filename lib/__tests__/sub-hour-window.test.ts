@@ -50,7 +50,11 @@ describe("the clear-sky window is read at the curve's resolution", () => {
     // Hourly sampling lost 80 city-days across 36 cities — Casablanca 19,
     // Phoenix 18 — because their solar noon sits far from a clock hour.
     expect(lost).toEqual([]);
-  });
+    // 73 cities x 365 days x two window scans is a few seconds of real work, and
+    // it drifted over the 5s default when the machine was busy. The sweep is the
+    // point of the test — sampling it would let the lost days back in — so it
+    // gets a budget instead of a trim.
+  }, 30_000);
 
   it("reports the window's real edges, not the clock hours around them", () => {
     for (const c of BUILTIN_CITIES) {

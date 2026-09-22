@@ -16,7 +16,7 @@ const MADRID = { lat: 40.42, lon: -3.7, timezone: "Europe/Madrid" } as const;
 function dayOfHours(date: string, peak: number, cloud: number): WeatherHour[] {
   return Array.from({ length: 24 }, (_, hour) => {
     const arc = Math.max(0, Math.sin((Math.PI * (hour - 6)) / 12));
-    return { time: `${date}T${String(hour).padStart(2, "0")}:00`, uvIndex: Math.round(peak * arc * 10) / 10, cloudCover: cloud };
+    return { time: `${date}T${String(hour).padStart(2, "0")}:00`, uvIndex: Math.round(peak * arc * 10) / 10, uvIndexClearSky: null, cloudCover: cloud };
   });
 }
 

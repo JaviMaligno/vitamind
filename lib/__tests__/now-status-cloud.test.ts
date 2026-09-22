@@ -32,7 +32,15 @@ function attenuated(curve: { localHours: number; elevation: number }[], ozoneDu:
   return Array.from({ length: 24 }, (_, h) => {
     const pt = curve.find((p) => Math.floor(p.localHours) === h);
     const clear = estimateUVFromElevation(pt?.elevation ?? 0, { ozoneDu, elevationM: LONDON.elevation });
-    return { time: `2026-09-22T${String(h).padStart(2, "0")}:00`, uvIndex: clear * factor, cloudCover: 87 };
+    return {
+      time: `2026-09-22T${String(h).padStart(2, "0")}:00`,
+      uvIndex: clear * factor,
+      // The forecast's own clear-sky reading agrees with the model here, so the
+      // calibration is 1:1 and these cases isolate the cloud. The forecast
+      // disagreeing with the model is its own test below.
+      uvIndexClearSky: clear,
+      cloudCover: 87,
+    };
   });
 }
 
@@ -136,6 +144,70 @@ describe("getCurrentStatus — cloud vs sun", () => {
     expect(hazy.window).not.toBeNull();
     const span = (w: { start: number; end: number }) => w.end - w.start;
     expect(span(hazy.window!)).toBeLessThan(span(clear.window!));
+  });
+
+  it("takes the clear-sky reference from the forecast when it supplies one", () => {
+    /**
+     * THE THIRD THING THIS FILE GUARDS: which model is allowed to say what the
+     * sun alone would do.
+     *
+     * `cloudDegraded` is a comparison, and it used to compare Open-Meteo's
+     * cloudy number against OUR clear-sky number. Those come from two different
+     * models on two different ozone fields — ours a 1979 climatology with no
+     * day-to-day term — and they disagree by up to a factor of two
+     * (docs/uv-sources.md). Every bit of that disagreement was being reported as
+     * cloud.
+     *
+     * Open-Meteo publishes `uv_index_clear_sky` in the same response. Here it
+     * says the clear sky is worth 40% more than our model thinks, with no cloud
+     * at all: the honest answer is a WIDER window than the model alone would
+     * give, and no cloud claim, because nothing is being blocked.
+     */
+    const hours = attenuated(curve, ozoneDu, 1).map((h) => ({
+      ...h,
+      uvIndex: h.uvIndex * 1.4,
+      uvIndexClearSky: h.uvIndex * 1.4,
+      cloudCover: 0,
+    }));
+    const live = getCurrentStatus({ hours }, curve, 3, 0.25, 1000, null, noon, LONDON.timezone, ctx);
+    expect(live.clearSkySource).toBe("forecast");
+    expect(live.cloudDegraded).toBe(false);
+
+    const modelOnly = getCurrentStatus(null, curve, 3, 0.25, 1000, null, noon, LONDON.timezone, ctx);
+    expect(modelOnly.clearSkySource).toBe("model");
+    // A stronger sun reaches the threshold earlier and holds it later.
+    expect(live.clearSkyWindow!.start).toBeLessThan(modelOnly.clearSkyWindow!.start);
+    expect(live.clearSkyWindow!.end).toBeGreaterThan(modelOnly.clearSkyWindow!.end);
+  });
+
+  it("measures cloud against the forecast's own clear sky, not against ours", () => {
+    // Same 40% disagreement between the models, now with real cloud on top:
+    // half of that stronger clear sky gets through. The transmission is 0.5 and
+    // must be read as 0.5 — if our model were still the denominator it would
+    // read as 0.7 and the day would look sunnier than the forecast says.
+    const hours = attenuated(curve, ozoneDu, 1).map((h) => ({
+      ...h,
+      uvIndexClearSky: h.uvIndex * 1.4,
+      uvIndex: h.uvIndex * 1.4 * 0.5,
+      cloudCover: 70,
+    }));
+    const live = getCurrentStatus({ hours }, curve, 3, 0.25, 1000, null, noon, LONDON.timezone, ctx);
+    expect(live.clearSkySource).toBe("forecast");
+    // Half of a clear sky that peaks near 4.7 is about 2.4 — under the threshold
+    // all day, so the window is gone and the cloud is what took it.
+    expect(live.window).toBeNull();
+    expect(live.clearSkyWindow).not.toBeNull();
+    expect(live.cloudDegraded).toBe(true);
+  });
+
+  it("falls back to the model when the forecast omits the clear-sky field", () => {
+    // The archive host carries no UV at all, and the field is young; a caller
+    // must not be left without a reference just because one is missing.
+    const hours = attenuated(curve, ozoneDu, 0.5).map((h) => ({ ...h, uvIndexClearSky: null }));
+    const live = getCurrentStatus({ hours }, curve, 3, 0.25, 1000, null, noon, LONDON.timezone, ctx);
+    expect(live.clearSkySource).toBe("model");
+    expect(live.clearSkyWindow).not.toBeNull();
+    expect(live.cloudDegraded).toBe(true);
   });
 
   it("makes no cloud claim when there is no weather to make it from", () => {

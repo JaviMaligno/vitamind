@@ -36,7 +36,7 @@ describe("agreement with the app", () => {
       expect(statusKey(c), JSON.stringify(c))
         .toBe(getStatusKey({ ...c, currentUVI: 0, effectiveUVI: 0, minutesNeeded: null, window: null,
           bestHour: null, bestMinutes: null, minutesUntilWindow: null, windowClosesIn: null,
-          cloudCover: null, clearSkyWindow: null, cloudDegraded: false }));
+          cloudCover: null, clearSkyWindow: null, clearSkySource: "model" as const, cloudDegraded: false }));
     }
   });
 
