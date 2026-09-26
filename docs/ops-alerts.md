@@ -32,6 +32,12 @@ Never recorded: coordinates (only the upstream's host is kept, and numbers that
 look like coordinates are scrubbed from the upstream's error text), IPs, user
 agents, identifiers. `env` is `VERCEL_ENV`; alerts only count `production`.
 
+**"Hourly" is what we ask for, not what GitHub delivers.** Scheduled workflows
+are best-effort; the first 23 runs (2026-09-22 → 09-26) landed every 3-6 hours.
+The check only sees the last hour, so a burst between runs goes unreported, and
+an open issue stays open until the next run happens to land. Trigger a run by
+hand (`gh workflow run ops-alerts.yml`) to re-check or close it sooner.
+
 ## Thresholds (last hour, production)
 
 In `lib/ops-events.ts`, `ALERT_THRESHOLDS`:

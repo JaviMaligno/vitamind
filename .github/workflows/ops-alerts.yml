@@ -48,10 +48,14 @@ jobs:
           if [ -z "${OPS_ALERT_TOKEN:-}" ]; then
             problem="- **critical** — the \`OPS_ALERT_TOKEN\` secret is not set, so the ops check cannot run."
           else
+            # Actions runs this under `bash -e`. A failed curl or a jq on a
+            # missing body would otherwise end the script here, BEFORE the
+            # issue is raised: a timed-out check failed the run on 2026-09-24
+            # and nobody was told. Hence `|| code=000` and `|| true`.
             code=$(curl -sS -o body.json -w '%{http_code}' --max-time 60 \
-              -H "Authorization: Bearer $OPS_ALERT_TOKEN" https://getvitamind.app/api/ops/alerts || echo 000)
+              -H "Authorization: Bearer $OPS_ALERT_TOKEN" https://getvitamind.app/api/ops/alerts) || code=000
             if [ "$code" != "200" ]; then
-              problem="- **critical** — the ops check itself failed (HTTP $code): monitoring is blind until this is fixed. $(jq -r '.error // empty' body.json 2>/dev/null)"
+              problem="- **critical** — the ops check itself failed (HTTP $code): monitoring is blind until this is fixed. $(jq -r '.error // empty' body.json 2>/dev/null || true)"
             elif [ "$(jq '.alerts | length' body.json)" -gt 0 ]; then
               problem=$(jq -r '.alerts[] | "- **\(.severity)** — \(.message)"' body.json)
             fi
