@@ -4,7 +4,7 @@
 - **Rama:** B (producto ya lanzado, gratuito, sin ingresos)
 - **Fase actual:** 1 · Entrevista y básicos (lectura del material hecha; entrevista en curso)
 - **Plataforma ajena:** sí, en parte. El MCP vive dentro de Claude y ChatGPT (Anthropic y OpenAI son también competidores). Se hará la prueba de absorción al cerrar los básicos.
-- **Ficheros:** `estado.md`
+- **Ficheros:** `estado.md`, `basicos.md` (a falta de la prueba de absorción)
 
 ## Pregunta de la sprint (borrador)
 ¿Hay alguna dirección en la que VitaminD consiga usuarios de verdad y en la que tenga sentido registrarse para algo más que el MCP? ¿O conviene aparcarlo?
@@ -51,3 +51,6 @@ Descarta por ahora, por no estar comprobadas: «el problema no duele» y «hace 
 - **Único cliente real identificado:** el fundador y su pareja.
 - **Uso real:** esporádico. Ya «le tiene cogido el truco» a la regla local. Vuelve a la app cuando tiene dudas o **cuando viaja y pierde la referencia**.
 - **Lectura (supuesto):** para quien la usa, el valor es episódico. Se aprende una vez y se vuelve cuando cambia el contexto: viaje, cambio de estación, sitio nuevo. Una herramienta así no genera hábito diario, así que push, historial e instalación empujan contra la naturaleza del uso. Se comprueba preguntando a 5 usuarios potenciales en qué momento concreto lo consultarían.
+
+## Criterio de éxito (entrevista)
+- **Éxito:** personas que la usan; el registro vale como métrica. **Misión:** contacto con la naturaleza y una buena relación con el sol. **Tiempo:** unas 3 h/semana.
