@@ -51,7 +51,11 @@ Cada candidato se ha comprobado contra al menos dos competidores. El proxy bloqu
 C2 · Aviso cuando cambia. C3 · Dónde falla la regla. C4 · Origen frente a destino.
 
 ## 4. Votación y decisión
-Pendiente.
+Ver D2 en `decisiones.md`. Resultado: **W, ninguno aguanta.**
+- C2 (aviso cuando cambia la ventana) se lo monta el usuario con una tarea programada de ChatGPT o Claude (verificado, https://help.openai.com/en/articles/10291617-scheduled-tasks-in-chatgpt).
+- C4 (origen frente a destino) se resuelve con una pregunta.
+- C3 (dónde falla la regla) es presentación.
+- **No hay 2x2 en el que VitaminD quede sola arriba a la derecha para el usuario final.**
 
 ## Crítica (hasta ahora)
 - **De los 8 candidatos solo sobreviven 3, y dos son frágiles.** C2 ya lo cubre a medias RayDay. C3 es copiable con un prompt. VitaminD no tiene hoy un foso técnico; como mucho, tiene un encuadre que nadie usa.

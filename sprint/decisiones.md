@@ -104,4 +104,10 @@ C2 = aviso cuando cambia tu ventana (incluido el desplazamiento de hora), C3 = d
 3. Probar C2 a mano con 10 personas antes de escribir código; construir solo si al menos 3 cambian de hora o piden el siguiente aviso.
 4. En C4, el protagonista es el tope antes de quemarse.
 
-**Decisión final:** pendiente.
+**Respuesta del Decider a la objeción:** «La verdad que no caen: también caen fácilmente a quien se lo quiera hacer él mismo.» → **Objeción aceptada.**
+
+**Decisión final:** **W · ninguno aguanta.** No hay diferenciación suficiente.
+- **Cambió respecto a la apuesta:** sí (Y → W).
+- **Contra la mayoría:** no (empate Y/W).
+- **Aplicación del punto 5 de la fase 2:** no se fuerza un segundo eje. Antes de la fase 3 se decide si revisar el cliente, el problema o el producto, o aparcar (D3).
+
