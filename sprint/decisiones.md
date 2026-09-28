@@ -171,3 +171,40 @@ C2 = aviso cuando cambia tu ventana (incluido el desplazamiento de hora), C3 = d
 
 **Decisión final:** se decide en D3b.
 
+
+## D3b · 2026-09-28 · ¿Qué hacemos con VitaminD?
+**Opciones:**
+- E1 · Aparcar + sonda a integradores.
+- E2 · Educativa acotada, con el producto congelado.
+- E3 · Educativa abierta.
+- E4 · Cerrar.
+
+**Apuesta:** E2, confianza 4. E1 con 3, E3 con 2, E4 con 1.
+
+**Modo:** rivales agrupados. Dinero, cliente, crecimiento y pragmática en un solo rival, y foco, confianza y misión en otro, escritos de forma secuencial. Absorción y abogado del diablo por separado.
+
+| | Absorción | Dinero | Cliente | Crecimiento | Pragmática | Foco | Confianza | Misión | Total |
+|---|---|---|---|---|---|---|---|---|---|
+| E1 | 3 | 3 | 1 | 2 | 5 | 4 | 4 | 1 | 23 |
+| E2 | 2 | 2 | 3 | 3 | 4 | 3 | 2 | 3 | 22 |
+| E3 | 1 | 1 | 2 | 2 | 1 | 1 | 1 | 2 | 11 |
+| E4 | 5 | 4 | 1 | 1 | 4 | 4 | 5 | 2 | **26** |
+
+**Hallazgo:**
+- Los AI Overviews aparecen en ~89 % de las búsquedas de salud (verificado, https://www.brightedge.com/resources/weekly-ai-search-insights/healthcare-ai-evolution-google-2023-2025).
+- Con AI Overview, el CTR informativo cae un 61 % (verificado, https://www.seerinteractive.com/insights/aio-impact-on-google-ctr-2026-update).
+
+**Minoría:** E2 es la mejor en cliente, crecimiento y misión.
+
+**Objeción:**
+- Falta distribución: si no se llega al umbral, significará «no lo leyó nadie», no «no le importa a nadie».
+- E2 es E1 más escritura de consuelo, sin sonda.
+
+**Ajustes:**
+1. El contenido va en las páginas de mes que ya posicionan (ventana y dónde falla la regla), no en el blog. Sin tocar title, meta ni FAQ, y con subida de revisión.
+2. Máximo 3 piezas, con el umbral escrito de antemano.
+3. Girar en torno al amanecer; reto de 2 semanas con 10 personas.
+4. Solo fuentes primarias y aviso de eritema.
+5. E1 + E2: correos a integradores pidiendo una cifra en la semana 1.
+
+**Decisión final:** pendiente.
