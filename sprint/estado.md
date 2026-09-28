@@ -2,7 +2,7 @@
 
 - **Inicio:** 2026-09-28
 - **Rama:** B (producto ya lanzado, gratuito, sin ingresos)
-- **Fase actual:** 2 · Diferenciación (fase 1 cerrada; D1 decidida: C′ «la ventana que cambia»)
+- **Fase actual:** 3 · Principios. Fase 2 sin diferenciación suficiente (D2 = W). D3/D3b: E2 educativa acotada con el producto congelado. Las fases 4–5 quedan en gran parte resueltas por D3b.
 - **Plataforma ajena:** sí, en parte. El MCP vive dentro de Claude y ChatGPT (Anthropic y OpenAI son también competidores). Se hará la prueba de absorción al cerrar los básicos.
 - **Ficheros:** `estado.md`, `basicos.md`, `decisiones.md`, `diferenciacion.md` (en curso)
 
@@ -59,3 +59,6 @@ Descarta por ahora, por no estar comprobadas: «el problema no duele» y «hace 
 
 ## Criterio de éxito (entrevista)
 - **Éxito:** personas que la usan; el registro vale como métrica. **Misión:** contacto con la naturaleza y una buena relación con el sol. **Tiempo:** unas 3 h/semana.
+
+## Entradas para la fase 3 (principios)
+- El Decider rechaza la OMS como fuente: «prefiero fracasar a formar parte del mainstream en esta cuestión». Es un principio candidato; ver la crítica en la fase 3.

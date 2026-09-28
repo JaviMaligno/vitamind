@@ -207,4 +207,19 @@ C2 = aviso cuando cambia tu ventana (incluido el desplazamiento de hora), C3 = d
 4. Solo fuentes primarias y aviso de eritema.
 5. E1 + E2: correos a integradores pidiendo una cifra en la semana 1.
 
-**Decisión final:** pendiente.
+**Respuesta del Decider:**
+- «Que me pongas la OMS como fuente primaria me parece antitético a mi propósito. Prefiero fracasar a formar parte del mainstream en esta cuestión.» → Rechaza el ajuste 4 tal como estaba redactado.
+- Contra la objeción: «no lo leyó nadie» y «no le importa a nadie» se distinguen midiendo las visitas.
+
+**Decisión final:** **E2 · Educativa acotada**, con el producto congelado.
+- ¿Cambió respecto a la apuesta? No.
+- ¿Contra la mayoría? Sí (E4 sacó 26, E2 22).
+- Objeción rebatida, con una forma de medirla.
+- Los detalles (piezas, umbral, fecha) se fijan en la fase 6.
+
+**Aviso de sesgo (3 decisiones cerradas: D1, D2, D3b):**
+- 2 de 3 coinciden con la apuesta (67 %).
+- 1 va contra la mayoría (D3b).
+- Las lentes que más pierden son la de dinero y la de foco, que prefirieron la opción no elegida en D1 y en D3b.
+- No llega al umbral del aviso fuerte (80 % y 2 contra la mayoría).
+
