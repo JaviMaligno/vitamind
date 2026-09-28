@@ -79,6 +79,7 @@ Leyenda de estado:
 | Product Hunt | #154, 2 puntos, 1 visita | M `ESTADO.md` |
 | Perfiles | 7, uno del fundador | M `donde-estamos.md` |
 | Partners | MARNYS y otro: «vuelve cuando tengas usuarios». Resto sin respuesta | M `partner-research.md`, `vitamind-marnys-historial.md` |
+| Quién lo probó y lo dejó | Familia, amigos y gente de internet: «buena idea, promuévela más»; pocos volvieron | E |
 | SEO | Caída de 1.825 a 18 impresiones/día por el commit b5ef203; restaurado el 22/09, recuperación sin medir | M `CLAUDE.md` |
 
 ## Diagnóstico del Decider [E]

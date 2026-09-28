@@ -164,5 +164,8 @@ C2 = aviso cuando cambia tu ventana (incluido el desplazamiento de hora), C3 = d
 - Qué hace que alguien vuelva es una pregunta de comportamiento, y eso no se resuelve investigando.
 - Lo que pasó al enseñar la app es un dato de la rama B que faltaba: quién la probó y la dejó, y qué dijo.
 
+**Dato nuevo de la rama B (quién lo probó y lo dejó):** familia, amigos y gente de internet vieron la app. «Varios pensaron que era buena idea y que debería promoverla más; pocos volvieron.» Conclusión del Decider: «suena a muy buena idea, pero no hay mucha gente a la que de verdad le importe».
+→ Lo que R4 quería medir ya se ha probado de forma informal, con resultado negativo. Sin R4, las lentes dejan R5 (21) ≈ R3 (20) > R1 (18).
+
 **Decisión final:** pendiente.
 
