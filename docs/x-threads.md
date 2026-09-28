@@ -36,12 +36,11 @@ Over 60? Your skin produces ~50% less than at age 20.
 Most "get some sun" advice ignores this completely.
 
 **Tweet 4:**
-When synthesis isn't possible, it switches to supplementation mode:
+When synthesis isn't possible, it links to educational information:
 
-→ D3 dose recommendation
-→ K2 synergy (helps calcium go to bones, not arteries)
-→ Magnesium as cofactor
-→ Take with fat for absorption
+→ Vitamin D and food sources
+→ What the sunlight model can and cannot tell you
+→ Supplement questions to discuss with a healthcare professional
 
 **Tweet 5:**
 It's free, no account needed, works worldwide.
@@ -81,7 +80,7 @@ How long synthesis is impossible each year:
 🌍 Equator: possible year-round
 
 **Tweet 4:**
-During those months, supplementation isn't optional — it's the only way.
+During those months, the app points to educational information about other vitamin D sources.
 
 But even in summer, timing matters. The UV window might only be 3-4 hours in the middle of the day.
 
@@ -90,7 +89,7 @@ I built a free tool that calculates all this for your exact city:
 
 → Today's synthesis window
 → Minutes needed for your skin type
-→ When to supplement instead
+→ When sunlight is insufficient for synthesis
 
 getvitamind.app
 
@@ -127,7 +126,7 @@ Person B (Type V, age 55, face+hands only): ~95 min for 1000 IU
 The app also tracks your synthesis history over 90 days, so you can see patterns:
 
 → Which months you're actually producing vitamin D
-→ When you need to start supplementing
+→ When no sunlight synthesis window is available
 → How weather affects your real exposure
 
 **Tweet 5:**
@@ -201,16 +200,15 @@ Sound like winter? That's not a coincidence.
 **Tweet 4:**
 What to do:
 
-→ Supplement with D3 (1000-2000 IU/day is a common recommendation)
-→ Add K2 (MK-7) for calcium routing
-→ Take with a fatty meal
-→ Get levels tested if you can (target: 40-60 ng/mL)
+→ Check the sunlight window for your city
+→ Read about food sources of vitamin D
+→ Discuss supplement and testing questions with a healthcare professional
 
 **Tweet 5:**
 I built a free tool that monitors this for your city year-round:
 
 → Alerts you when synthesis becomes possible again in spring
-→ Tells you when to start/stop supplementing
+→ Shows how the sunlight window changes throughout the year
 → Push notifications when your UV window opens
 
 getvitamind.app
@@ -244,20 +242,17 @@ It's not about temperature or sunshine hours — it's about the angle of UVB ray
 Check your city: getvitamind.app
 
 **Tweet D:**
-The vitamin D supplement stack:
+Can sunlight support vitamin D synthesis in your city today?
 
-→ D3 (not D2 — more bioavailable)
-→ K2 MK-7 (directs calcium to bones)
-→ Magnesium (cofactor for D metabolism)
-→ Take with fat (D is fat-soluble)
+Check the UV window for your location and skin type. Explore educational information about vitamin D and food sources.
 
-When do you need it? Check: getvitamind.app
+getvitamind.app
 
 **Tweet E:**
 Built a PWA that sends you a push notification every morning telling you if you can make vitamin D today.
 
 If yes: your time window + how many minutes for your skin type.
-If no: supplementation guidance.
+If no: educational information about other vitamin D sources.
 
 Free: getvitamind.app
 

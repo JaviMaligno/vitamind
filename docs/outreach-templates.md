@@ -4,7 +4,7 @@
 
 - **Corto**: LinkedIn connection requests tienen límite de 300 chars. Emails < 150 palabras.
 - **Personalización mínima pero efectiva**: nombre, empresa, y 1 detalle específico de su producto.
-- **No vender**: ofrecer valor. Tú tienes usuarios que necesitan SU producto.
+- **Valor verificable**: ofrecer contenido educativo y espacios contextuales. Citar métricas con fecha y fuente; no inferir una necesidad de suplementos a partir de la ventana solar.
 - **CTA claro**: una sola acción (ver la app, responder al email, agendar una llamada).
 
 ---
@@ -13,11 +13,11 @@
 
 ### Para marcas de suplementos de vitamina D
 
-Hola {nombre}, he creado una app de salud (getvitamind.app) que recomienda suplementación de vitamina D cuando el sol no es suficiente. Creo que {empresa} encajaría bien como marca recomendada. ¿Te interesa que te cuente más?
+Hola {nombre}, he creado una app de salud (getvitamind.app) que calcula cuándo es posible sintetizar vitamina D con el sol. Creo que {empresa} encajaría bien como marca recomendada. ¿Te interesa que te cuente más?
 
 ### English version
 
-Hi {name}, I built a health app (getvitamind.app) that recommends vitamin D supplementation when sunlight isn't enough. I think {company} would be a great fit as our recommended brand. Interested in learning more?
+Hi {name}, I built a health app (getvitamind.app) that calculates when vitamin D synthesis from sunlight is possible. I think {company} would be a great fit as our recommended brand. Interested in learning more?
 
 ---
 
@@ -27,7 +27,7 @@ Hi {name}, I built a health app (getvitamind.app) that recommends vitamin D supp
 
 Hola {nombre}, gracias por conectar.
 
-Te cuento brevemente: Vitamina D Explorer (getvitamind.app) es una app gratuita que calcula cuándo puedes sintetizar vitamina D con el sol según tu ubicación y tipo de piel. Cuando no es posible (invierno, latitudes altas, mal tiempo), la app recomienda suplementar.
+Te cuento brevemente: Vitamina D Explorer (getvitamind.app) es una app gratuita que calcula cuándo puedes sintetizar vitamina D con el sol según tu ubicación y tipo de piel. Cuando no es posible (invierno, latitudes altas, mal tiempo), la app ofrece información educativa sobre vitamina D, alimentación y suplementación para comentar con un profesional sanitario.
 
 Ahí es donde entra {empresa}: tu marca podría aparecer como la recomendación de suplemento en ese momento exacto. No es un banner genérico — es publicidad contextual en el punto de necesidad.
 
@@ -42,7 +42,7 @@ Javier
 
 Hi {name}, thanks for connecting.
 
-Quick intro: Vitamin D Explorer (getvitamind.app) is a free app that calculates when you can synthesize vitamin D from sunlight based on your location and skin type. When it's not possible (winter, high latitudes, overcast), the app recommends supplementation.
+Quick intro: Vitamin D Explorer (getvitamind.app) is a free app that calculates when you can synthesize vitamin D from sunlight based on your location and skin type. When it's not possible (winter, high latitudes, overcast), the app offers educational information about vitamin D, food sources and supplementation to discuss with a healthcare professional.
 
 That's where {company} comes in: your brand could appear as the recommended supplement at that exact moment. It's not a generic banner — it's contextual advertising at the point of need.
 
@@ -85,7 +85,7 @@ Hola {nombre}, he creado una app de vitamina D solar (getvitamind.app) y creo qu
 
 Hola {nombre},
 
-Vitamina D Explorer tiene usuarios que activamente rastrean su síntesis de vitamina D y reciben alertas cuando necesitan suplementar. El siguiente paso natural para muchos de ellos es medir sus niveles en sangre.
+Vitamina D Explorer tiene usuarios que activamente rastrean su síntesis de vitamina D y reciben alertas sobre su ventana de síntesis solar. El siguiente paso natural para muchos de ellos es medir sus niveles en sangre.
 
 Propuesta: podríamos recomendar {empresa} como servicio de testing dentro de nuestra sección educativa o dashboard. Cada usuario que mida sus niveles gracias a nuestra app sería una conversión directa para vosotros.
 
@@ -107,9 +107,9 @@ Hola {nombre},
 
 Me llamo Javier y he desarrollado Vitamina D Explorer (getvitamind.app), una app gratuita que calcula cuándo puedes sintetizar vitamina D con el sol según tu ubicación y tipo de piel.
 
-Cuando la síntesis no es posible — en invierno, latitudes altas o días nublados — la app recomienda suplementar con D3, K2 y magnesio. Es en ese momento donde {empresa} podría aparecer como la marca recomendada.
+Cuando la síntesis no es posible — en invierno, latitudes altas o días nublados — la app ofrece información educativa sobre vitamina D, alimentación y suplementación para comentar con un profesional sanitario. Es en ese momento donde {empresa} podría aparecer como la marca recomendada.
 
-No es publicidad genérica. Es una recomendación contextual en el punto exacto de necesidad: un usuario que HOY no puede producir vitamina D y busca activamente cómo suplementarse.
+No es publicidad genérica. Es una recomendación contextual en el punto exacto de necesidad: una página que explica cuándo la síntesis solar es posible y qué otras fuentes de vitamina D existen.
 
 He preparado una propuesta con los modelos de colaboración en getvitamind.app/partners. Estoy abierto a patrocinio, afiliados o contenido conjunto.
 
@@ -128,9 +128,9 @@ Hi {name},
 
 I'm Javier, and I built Vitamin D Explorer (getvitamind.app), a free app that calculates when you can synthesize vitamin D from sunlight based on your location and skin type.
 
-When synthesis isn't possible — during winter, at high latitudes, or on overcast days — the app recommends D3, K2, and magnesium supplementation. That's the moment where {company} could appear as the recommended brand.
+When synthesis isn't possible — during winter, at high latitudes, or on overcast days — the app offers educational information about vitamin D, food sources and supplementation to discuss with a healthcare professional. That's the moment where {company} could appear as the recommended brand.
 
-This isn't generic advertising. It's a contextual recommendation at the exact point of need: a user who TODAY cannot produce vitamin D and is actively looking for supplement guidance.
+This isn't generic advertising. It's a contextual recommendation at the exact point of need: a page explaining when sunlight can support vitamin D synthesis and what other vitamin D sources exist.
 
 I've outlined partnership models at getvitamind.app/partners. I'm open to sponsorship, affiliate, or content partnerships.
 
@@ -146,7 +146,7 @@ javiturco33@gmail.com
 ## F. Respuestas a objeciones comunes
 
 ### "¿Cuántos usuarios tenéis?"
-"Estamos en fase de lanzamiento y creciendo. Lo que te ofrezco ahora es ser partner fundador a un coste muy competitivo antes de que escalemos. Los primeros partners siempre obtienen las mejores condiciones."
+"Te comparto las métricas de producción del periodo consultado, con fecha y fuente. Los identificadores de navegador no equivalen a personas verificadas; la propuesta se basa en el contenido y el contexto de la app."
 
 ### "No tenemos presupuesto para esto"
 "Precisamente por eso propongo el modelo de afiliados — no hay coste fijo. Solo pagas por conversiones reales. Riesgo cero para vosotros."

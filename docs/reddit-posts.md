@@ -22,7 +22,7 @@ You enter your city (or use GPS), your Fitzpatrick skin type, age, and how much 
 - The exact UV window (start and end time)
 - How many minutes you need for your target IU (400, 1000, 2000, or 4000)
 - A 5-day forecast so you can plan ahead
-- When you should supplement instead (with D3 + K2 + magnesium guidance)
+- Educational information about vitamin D and food sources
 
 It uses real UV data from Open-Meteo and the Holick/Dowdy estimation model. Works worldwide, in 6 languages.
 
@@ -34,7 +34,7 @@ Would love feedback from this community. What would make it more useful for you?
 
 ## Post 2: r/Supplements (~500k miembros)
 
-**Título:** Free tool: find out if you actually need to supplement vitamin D today based on real UV data for your city
+**Título:** Free tool: check the vitamin D sunlight window using UV data for your city
 
 **Cuerpo:**
 
@@ -42,7 +42,7 @@ I built a free calculator that tells you whether the sun in your location is str
 
 The key insight: it's not about whether it's sunny — it's about the solar elevation angle. Below ~45-50°, UVB doesn't penetrate the atmosphere enough to trigger synthesis. This depends on your latitude, date, and time of day.
 
-When synthesis isn't possible, the app tells you and provides supplementation guidance (D3 dose, K2 synergy, magnesium cofactor, fat absorption, etc.).
+When synthesis isn't possible, the app tells you and links to educational information about vitamin D, food sources and supplementation to discuss with a healthcare professional.
 
 Link: [getvitamind.app](https://getvitamind.app)
 
@@ -99,7 +99,7 @@ Your skin type matters too — darker skin needs 3-6x more exposure than lighter
 
 I built a free app that calculates all of this for your exact location: [getvitamind.app](https://getvitamind.app)
 
-It tells you today's synthesis window, how many minutes you need, and recommends supplementation when the sun can't help. Based on peer-reviewed research (Holick/Dowdy 2010).
+It tells you today's synthesis window, how many minutes you need, and links to educational information about other vitamin D sources when the sun can't help. Based on peer-reviewed research (Holick/Dowdy 2010).
 
 ---
 
@@ -115,7 +115,7 @@ I built a free web app that tells you:
 - Whether synthesis is possible today in your city
 - The exact time window and minutes needed
 - Personalized by your skin type and age
-- When you should supplement instead
+- Educational information about other vitamin D sources
 
 Works for any city worldwide. No account needed.
 

@@ -1,0 +1,39 @@
+{
+  "asOf": "2026-09-28T12:38:07.000Z",
+  "cutoff": "2026-08-31T12:38:07.000Z",
+  "host": "getvitamind.app",
+  "totalEvents": 711,
+  "source": "Supabase REST API; grouped locally; visitor IDs not persisted",
+  "rows": [
+    {
+      "name": "visit",
+      "eventos": 627,
+      "personas": 483
+    },
+    {
+      "name": "install_banner_shown",
+      "eventos": 36,
+      "personas": 36
+    },
+    {
+      "name": "city_selected",
+      "eventos": 7,
+      "personas": 6
+    },
+    {
+      "name": "gps_denied",
+      "eventos": 8,
+      "personas": 3
+    },
+    {
+      "name": "history_override",
+      "eventos": 32,
+      "personas": 2
+    },
+    {
+      "name": "prefs_changed",
+      "eventos": 1,
+      "personas": 1
+    }
+  ]
+}

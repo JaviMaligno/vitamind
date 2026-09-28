@@ -68,8 +68,8 @@ tools quietly return a number anyway.
   van Heuklon for ozone. The methodology page shows the actual formulas — and the
   assumptions, including the ones that would make the number wrong for you.
 - **It's an MCP server too.** If you use Claude or another MCP client, you can ask your
-  assistant directly — it connects to the same engine, with your skin type. Ten tools,
-  six of them public.
+  assistant directly — it connects to the same engine, with your skin type. 15 tools:
+  9 public and 6 with an account.
 - **Daily notifications**, only on days when synthesis is actually possible. Sent at your
   local morning, not at a fixed UTC hour (that one took an embarrassing while to notice).
 - **No account needed** for any of it. Sign-in exists only to sync across devices.

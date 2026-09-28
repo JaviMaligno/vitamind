@@ -1,5 +1,8 @@
 # Plan: publicar el MCP en directorios (bloque C del plan del 19/7)
 
+> Plan histórico: el inventario actual es de **15 herramientas (9 públicas, 6 con cuenta)**.
+> Para copy reutilizable, usar [mcp-listing-copy.md](../mcp-listing-copy.md); las cifras de julio describen aquel momento.
+
 **Fecha:** 2026-07-27
 **Estado (2026-07-27, final del día):** registro oficial y npm publicados; PR a punkpeye
 abierta y bloqueada por Glama; Glama caído. Detalle en «Marcador» abajo.

@@ -81,7 +81,7 @@ Routes are locale-segmented via next-intl (`es` default without prefix; `en`, `f
 - **`app/api/events/route.ts`** — Product analytics ingest. Public and unauthenticated by necessity (the events come from browsers), so nothing is trusted: batch capped at 50, names/values truncated, non-scalar props dropped, browser clocks clamped to a plausible window, and an Origin check that keeps other people's pages out. All of that lives in the pure, separately tested `lib/analytics-ingest.ts`; the route is transport only. Writes via `lib/analytics-store.ts` (service role) to `analytics_events`, which has RLS on with no policies. **Custom events are a Pro feature on Vercel Web Analytics and this project is on Hobby**, which is why `track()` is not used — see `docs/analytics.md` for the event catalogue and the queries.
 - **`app/api/push/subscribe/route.ts`** — Push subscription CRUD (validates/clamps all input).
 - **`app/api/push/notify/route.ts`** — Cron-triggered push broadcaster, invoked once per UTC hour and sending only to the subscriptions whose LOCAL clock is in the morning window (`lib/push-schedule.ts`), at most once per subscriber-local day. Auth: `Authorization: Bearer $CRON_SECRET`. Logs a run summary; returns 500 if every delivery fails so Vercel marks the cron run failed.
-- **`app/api/mcp/[transport]/route.ts` + `app/api/mcp-auth/[transport]/route.ts`** — Remote MCP server (`mcp-handler`, stateless Streamable HTTP; no Redis, so no SSE transport), tool set registered once in `lib/mcp-server.ts` and served at TWO endpoints: `/api/mcp/mcp` (public, auth optional — never 401s) and `/api/mcp-auth/mcp` (auth REQUIRED — its 401 is what triggers the client's OAuth flow). Six public tools (`search_city`, `get_sun_times`, `get_vitamin_d_window` with `atTime`, `get_vitamin_d_year`, `get_current_status`, `estimate_sun_session`) plus four OAuth-scoped personal tools (`get_my_profile`, `get_my_cities`, `get_my_history`, `log_sun_session`). Tool logic is pure and unit-tested in `lib/mcp-tools.ts` / `lib/mcp-personal.ts`; per-call usage logging (tool + duration only, never args). User docs at `/connect`.
+- **`app/api/mcp/[transport]/route.ts` + `app/api/mcp-auth/[transport]/route.ts`** — Remote MCP server (`mcp-handler`, stateless Streamable HTTP; no Redis, so no SSE transport), tool set registered once in `lib/mcp-server.ts` and served at TWO endpoints: `/api/mcp/mcp` (public, auth optional — never 401s) and `/api/mcp-auth/mcp` (auth REQUIRED — its 401 is what triggers the client's OAuth flow). 15 tools: nine public (`search_city`, `get_sun_times`, `get_vitamin_d_window` with `atTime`, `get_vitamin_d_year`, `configure_sun_profile`, `get_sun_forecast`, `compare_vitamin_d_year`, `get_current_status`, `estimate_sun_session`) plus six OAuth-scoped personal tools (`get_my_profile`, `get_my_cities`, `update_my_profile`, `get_my_history`, `log_sun_session`, `set_history_location`). Current inventory: `docs/mcp-listing-copy.md`, checked against `lib/mcp-server.ts` and its protocol test. Tool logic is pure and unit-tested in `lib/mcp-tools.ts` / `lib/mcp-personal.ts`; persistent usage in `mcp_call_events` via `lib/mcp-analytics.ts` (tool, time, duration, outcome, environment only; never args or identities), written with `after()`; no routine per-call logs. User docs at `/connect`.
 - **`app/api/oauth/*` + `app/.well-known/oauth-*`** — Minimal OAuth 2.1 authorization server for the MCP personal tools (`lib/oauth.ts`): dynamic client registration, PKCE S256 mandatory, single-use hashed codes, hashed opaque tokens (`vd_at_…`) with refresh rotation. Identity = Supabase Auth via the consent page at `/oauth-consent` (namespace `oauth` in messages). Supabase JWTs are never accepted at the MCP endpoint. Tables in `supabase/migrations/20260719_mcp_oauth.sql` (service-role only, RLS with no policies).
 
 State lives in `context/` providers (`AppProvider`, `ThemeProvider`, `InstallProvider`) and `hooks/` — there is no single-page monolith.
@@ -456,10 +456,11 @@ Both jobs use the `VERCEL_TOKEN` repo secret (GitHub → repo Settings → Secre
 > Next waves (expand `SUNRISE_CITIES` toward all 73 when Search Console shows
 > traction): `docs/plans/2026-07-19-sunrise-seo-pages.md`.
 
-> **Shipped 2026-07-19/20 — MCP evolution:** 10 tools (6 public incl.
+> **Historical release, 2026-07-19/20 — MCP evolution:** initially 10 tools (6 public incl.
 > `get_vitamin_d_year` + `estimate_sun_session`, 4 personal via OAuth 2.1),
 > live-audited with agent user-simulations, hardened (rate limits, revocation
 > UI in profile, lazy cleanup) and documented for users at `/connect`.
+> Current inventory: **15 tools (9 public, 6 personal)**; see `docs/mcp-listing-copy.md`.
 > Remaining marketing items (MCP directories, announcement) in
 > `docs/plans/2026-07-19-mcp-evolution-account-marketing.md`.
 
@@ -495,6 +496,8 @@ That matters mainly if the gate is ever made conditional on `VERCEL_ENV` (a temp
 ### Supabase migrations
 
 `supabase/migrations/*.sql` are **not applied automatically**. After adding one, run it against the shared Supabase project (SQL editor or `supabase db push`) **before** deploying code that depends on it. Applied state worth knowing:
+
+- `20260928_mcp_call_events.sql` — **applied 2026-09-28** via Supabase CLI. RLS enabled, zero policies, no anon/authenticated SELECT, service-role INSERT verified. MCP usage analytics; collection starts with the collector deployment. SQL and counting semantics in `docs/analytics.md`.
 
 - `20260922_ops_events.sql` — upstream incidents for the hourly ops alerts (`docs/ops-alerts.md`).
   Service role only (RLS, no policies). Rows carry `env` = `VERCEL_ENV`; alerts count `production` only.

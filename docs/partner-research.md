@@ -66,7 +66,7 @@ Empresas pequeñas/medianas donde un email personal o conexión de LinkedIn pued
 - **Tamaño:** Mediano (marca icónica española, enorme presencia en redes)
 - **LinkedIn:** Buscar "Ana Maria Lajusticia"
 - **Contactar a:** Director de Marketing Digital / Community Manager
-- **Ángulo de pitch:** "Nuestra app explica que el magnesio es cofactor esencial para metabolizar la vitamina D. Vuestros productos de magnesio + D3 son exactamente lo que recomendamos. Partnership educativo natural."
+- **Ángulo de pitch:** "Nuestra app ofrece información educativa sobre vitamina D y fuentes alimentarias. Podemos explorar contenido educativo patrocinado, identificado como tal, sin recomendar combinaciones de suplementos."
 
 ### 4. Nutravita
 - **Qué venden:** D3, D3+K2, magnesio, multivitaminas. Líderes en Amazon UK
@@ -161,7 +161,7 @@ necesitan.
 
 ---
 
-## ⚠️ El copy de `/partners` ahora cita números. Hay que revisarlos.
+## Métricas de `/partners`: historial y copy vigente
 
 El 2026-08-26 se reescribió el pitch: dejó de vender una audiencia («audiencia
 comprometida», «nuestros usuarios vuelven regularmente») y pasó a vender lo que sí es
@@ -172,7 +172,11 @@ partner es preguntar cuántos, y con 101 clics en 28 días esa conversación se 
 Las cuatro claves reescritas, en los seis idiomas, son `pageSubtitle`,
 `heroDescription`, `why4Title` y `why4Text`.
 
-**Dos cifras viven ahora en `messages/*.json` y van a caducar:**
+**Actualización 2026-09-28:** retirada la cifra de impresiones de `partners.heroDescription` en los seis idiomas. El copy describe páginas por ciudad y mes, seis idiomas y colaboración educativa; no promete tráfico mensual. Las mediciones de abajo son históricas y no deben reutilizarse como datos actuales.
+
+Los datos reales de uso del 31/08 al 28/09 están en [analytics-results/2026-09-28-28-days.json](analytics-results/2026-09-28-28-days.json): 711 eventos; `visit`, 627 eventos y 483 identificadores de navegador. No equivalen a impresiones de Google ni a personas verificadas.
+
+**Cifras utilizadas anteriormente:**
 
 | Cifra en el copy | De dónde sale | Cuándo se midió |
 |---|---|---|
@@ -185,15 +189,15 @@ a **23,6 mil en 28 días** (4-31 de agosto; 69 clics, CTR 0,3 %, posición media
 — redondeada a la baja, como la anterior. La de páginas indexadas subió sola de
 3,07 a 3,18 mil, así que «3.000» sigue siendo cierta y no se toca.
 
-La caída es casi seguro **estacional**, no una penalización: las consultas que
+La explicación propuesta entonces fue la estacionalidad, sin comprobar la causa: las consultas que
 traen el tráfico son de puesta y salida de sol por mes (*«sonnenuntergang wien
 september»*, *«a qué hora se pone el sol en agosto»*), y el verano es su pico.
 Lo que implica para el pitch: **esta cifra va a seguir bajando hasta el
 invierno**. Conviene revisarla antes de cada conversación con un partner, no una
 vez al trimestre.
 
-Las dos están redondeadas **a la baja** a propósito, que es la dirección segura. Aun así:
-**si Search Console se aleja de ahí, hay que tocar el copy.** Es la misma regla que
+Redondear a la baja una medición antigua no garantiza su vigencia.
+**Antes de citar una cifra, obtener una medición reciente con fuente y periodo.** Es la misma regla que
 CLAUDE.md documenta cinco veces para las afirmaciones sobre `lib/`, aplicada a una
 afirmación sobre el propio producto. Un pitch que exagera es lo que nos dejó sin partner
 la primera vez.
@@ -216,6 +220,6 @@ las cubre `messages/__tests__/key-parity.test.ts`, así que ya no pueden existir
 español ni quedarse atrás sin que falle un test.
 
 La descripción tiene que seguir diciendo lo que dicen `partners.pageSubtitle` y
-`partners.why4Text` — superficie, no audiencia. Deliberadamente **no** repite las dos cifras
+`partners.why4Text` — superficie, no audiencia. Deliberadamente **no** repite las cifras históricas
 de la tabla de arriba: son las que caducan, y un snippet cacheado por un buscador es el peor
 sitio donde tener una cifra vieja.

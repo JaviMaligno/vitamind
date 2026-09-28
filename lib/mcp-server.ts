@@ -2,6 +2,7 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { AuthInfo } from "@modelcontextprotocol/sdk/server/auth/types.js";
 import { registerAppResource, registerAppTool, RESOURCE_MIME_TYPE } from "@modelcontextprotocol/ext-apps/server";
 import { z } from "zod";
+import { measureMcpCall as timed } from "@/lib/mcp-analytics";
 import {
   searchCity, sunTimesTool, vitaminDWindowTool, vitaminDYearFull, currentStatusFull,
   compareVitaminDYearFull, configureSunProfileFull, sunForecastFull, estimateSunSessionTool,
@@ -66,7 +67,7 @@ function personal<A>(
     return built ? { ...json(withHint), _meta: built } : json(withHint);
   };
 
-  return async (args: A, extra: { authInfo?: AuthInfo }): Promise<ToolResult> => {
+  return async (args: A, extra: { authInfo?: AuthInfo }): Promise<ToolResult> => timed(tool, async () => {
     const auth = extra.authInfo;
     const userId = (auth?.extra as { userId?: string } | undefined)?.userId;
     if (!userId) {
@@ -78,19 +79,8 @@ function personal<A>(
     if (!auth!.scopes.includes(scope)) {
       return wrap({ error: "insufficient_scope", requiredScope: scope }, false);
     }
-    return timed(tool, async () => wrap(await run(userId, args), true));
-  };
-}
-
-/** Usage log: tool name + duration only — never arguments (they carry the
- *  caller's location). Enough to spot which tools get used and which cascade. */
-async function timed<T>(tool: string, run: () => T | Promise<T>): Promise<T> {
-  const t0 = Date.now();
-  try {
-    return await run();
-  } finally {
-    console.log(`[api/mcp] ${tool} ${Date.now() - t0}ms`);
-  }
+    return wrap(await run(userId, args), true);
+  });
 }
 
 const LAT = z.number().min(-90).max(90).describe("Latitude in decimal degrees");

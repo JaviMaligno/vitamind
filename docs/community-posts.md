@@ -20,13 +20,13 @@ Te dice:
 - Si hoy puedes sintetizar vitamina D en tu ciudad y a qué hora exacta
 - Cuántos minutos necesitas según tu tipo de piel (Fitzpatrick I-VI)
 - Previsión a 5 días para que planifiques tu exposición
-- Cuándo toca suplementar (con guía de D3 + K2 + magnesio)
+- Información educativa sobre vitamina D y fuentes alimentarias
 
 Basada en modelos científicos publicados (Holick/Dowdy 2010) y datos UV reales. No es una app genérica de "toma el sol 15 minutos" — calcula tu caso concreto.
 
 Gratuita, sin registro. Es una PWA que puedes instalar en el móvil desde el navegador.
 
-Si lleváis al día vuestro kaizen de salud, esto os da un dato más que trackear. Y si no estáis suplementando en los meses que no hay ventana solar, probablemente tenéis los niveles por los suelos.
+Si lleváis al día vuestro kaizen de salud, esto os da un dato más que trackear. La ventana solar no permite conocer vuestros niveles de vitamina D.
 
 ---
 
@@ -46,11 +46,11 @@ He creado getvitamind.app — te calcula:
 - Si hoy hay ventana de síntesis en tu ciudad
 - A qué hora y cuántos minutos necesitas
 - Ajustado a tu tipo de piel y edad
-- Cuándo te toca suplementar sí o sí
+- Cuándo no hay ventana solar de síntesis
 
 Usa datos UV reales y modelos científicos (Holick/Dowdy 2010). Gratuita, sin registro.
 
-Para los que suplementáis D3 + K2 + magnesio en invierno: la app os dice exactamente el día que podéis dejar de suplementar y el día que tenéis que volver a empezar. No más adivinanzas.
+La app muestra cómo cambia la ventana solar durante el año. Las decisiones sobre suplementos requieren valorar tu situación con un profesional sanitario.
 
 ---
 
@@ -111,7 +111,7 @@ Ey, os comparto una app que he hecho: getvitamind.app
 
 Os dice si hoy podéis sintetizar vitamina D con el sol en vuestra ciudad, a qué hora y cuántos minutos. Ajustado a vuestro tipo de piel.
 
-En invierno en media España es imposible sintetizar vitamina D aunque haga sol — la app os dice cuándo toca suplementar.
+En invierno en media España es imposible sintetizar vitamina D aunque haga sol — la app muestra la ventana solar y enlaza a información educativa sobre otras fuentes de vitamina D.
 
 Es gratis, sin registro, se instala desde el navegador. Probadla y me decís qué os parece, que me viene bien el feedback.
 

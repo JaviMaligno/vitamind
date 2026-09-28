@@ -1,4 +1,10 @@
 import { describe, expect, it, vi } from "vitest";
+// These protocol/render tests do not write analytics. The real wrapper and
+// registration integration are exercised in mcp-analytics.test.ts.
+vi.mock("@/lib/mcp-analytics", () => ({
+  measureMcpCall: async (_tool: string, run: () => unknown) => run(),
+}));
+
 import { RESOURCE_MIME_TYPE } from "@modelcontextprotocol/ext-apps";
 import { initMcpServer } from "../mcp-server";
 import { YEAR_STRIP_META_KEY } from "@/widgets/year-strip/data";

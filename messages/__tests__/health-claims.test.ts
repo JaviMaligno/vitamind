@@ -1,4 +1,6 @@
 import { describe, it, expect } from "vitest";
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import es from "@/messages/es.json";
 import en from "@/messages/en.json";
 import fr from "@/messages/fr.json";
@@ -133,5 +135,27 @@ describe("learn K2 FAQ (block3.q2)", () => {
     };
     const { a } = LOCALES[locale].learn.block3.q2;
     expect(a).toMatch(attribution[locale as keyof typeof attribution]);
+  });
+});
+
+
+// Outreach is also product copy. Catalogue mentions are fine, but the app must
+// not promise a combined regimen, K2 synergy or supplement stop dates.
+const OUTREACH_DOCS = [
+  "outreach-templates.md", "linkedin-outreach-drafts.md", "community-posts.md",
+  "reddit-posts.md", "social-media-posts.md", "x-threads.md", "partner-research.md",
+];
+
+describe("outreach health claims", () => {
+  it.each(OUTREACH_DOCS)("%s does not promise a supplement regimen", (file) => {
+    const copy = readFileSync(resolve(process.cwd(), "docs", file), "utf8");
+    const forbidden = [
+      /(?:gu[ií]a|guidance|suplement\w*|supplement\w*|points users|orienta)[^\n]*D3[^\n]*K2[^\n]*(?:magnes|Mg\b)/i,
+      /D3[^\n]*K2[^\n]*(?:magnes|Mg\b)[^\n]*guidance/i,
+      /K2[^\n]*(?:synergy|sinergia|calcium routing|directs calcium|arteries)/i,
+      /magnes[^\n]*D3[^\n]*recomendamos/i,
+      /start\/stop supplementing|dejar de suplementar|suplementar sí o sí/i,
+    ];
+    for (const claim of forbidden) expect(copy, file).not.toMatch(claim);
   });
 });

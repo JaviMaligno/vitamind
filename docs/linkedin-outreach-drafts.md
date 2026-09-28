@@ -48,7 +48,7 @@ Follow-up after accepted:
 ```text
 Hi Andrew, thanks for connecting.
 
-Quick context: VitaminD Explorer calculates when someone can synthesize vitamin D from sunlight based on location, skin type, UV data and age. When the sun cannot help, the app explains supplementation and points users toward D3, K2 and magnesium.
+Quick context: VitaminD Explorer calculates when someone can synthesize vitamin D from sunlight based on location, skin type, UV data and age. When the sun cannot help, the app offers educational information about vitamin D, food sources and supplementation to discuss with a healthcare professional.
 
 BetterYou seems unusually relevant because your oral sprays are built around exactly that moment: simple, pill-free vitamin D support when people need a practical option.
 
@@ -86,7 +86,7 @@ Follow-up after accepted:
 ```text
 Hi Sarah, thanks for connecting.
 
-VitaminD Explorer helps users answer a simple question: "Can I make vitamin D from sunlight today?" It uses location, UV data, skin type and age. When synthesis is not possible, the app explains why and recommends supplementation.
+VitaminD Explorer helps users answer a simple question: "Can I make vitamin D from sunlight today?" It uses location, UV data, skin type and age. When synthesis is not possible, the app explains why and links to educational information about vitamin D and food sources.
 
 That creates a very natural moment for BetterYou: the user has just learned they need a practical vitamin D option, and your D3/K2 oral sprays are easy to understand and use.
 
@@ -210,9 +210,9 @@ Follow-up after accepted:
 ```text
 Hola Luna, gracias por conectar.
 
-Te cuento brevemente: VitaminD Explorer calcula si una persona puede sintetizar vitamina D con el sol segun ubicacion, tipo de piel, edad y datos UV reales. Cuando no es posible, la app explica la necesidad de suplementacion con D3, K2 y magnesio.
+Te cuento brevemente: VitaminD Explorer calcula si una persona puede sintetizar vitamina D con el sol segun ubicacion, tipo de piel, edad y datos UV reales. Cuando no es posible, la app ofrece información educativa sobre vitamina D, alimentación y suplementación para comentar con un profesional sanitario.
 
-Vi vuestra linea K2-D3 liquida y la campana "Mi complemento perfecto". La sinergia es muy directa: no seria un banner generico, sino una recomendacion en el momento exacto en el que el usuario descubre que hoy no puede producir vitamina D.
+Vi vuestra linea K2-D3 liquida y la campana "Mi complemento perfecto". Podriamos explorar contenido educativo patrocinado sobre vitamina D, identificado como tal, junto a la informacion sobre la ventana solar.
 
 Estoy buscando partners fundadores para probar afiliacion, recomendacion patrocinada o contenido educativo conjunto.
 
@@ -248,7 +248,7 @@ Follow-up after accepted:
 ```text
 Hola Luca, gracias por conectar.
 
-VitaminD Explorer calcula si una persona puede sintetizar vitamina D con el sol segun ubicacion, tipo de piel, edad y datos UV reales. Cuando no es posible, la app explica la necesidad de suplementacion con D3, K2 y magnesio.
+VitaminD Explorer calcula si una persona puede sintetizar vitamina D con el sol segun ubicacion, tipo de piel, edad y datos UV reales. Cuando no es posible, la app ofrece información educativa sobre vitamina D, alimentación y suplementación para comentar con un profesional sanitario.
 
 MARNYS encaja muy bien por la linea K2-D3 liquida y el posicionamiento de "Mi complemento perfecto". La propuesta no es publicidad generica: es una recomendacion en el momento exacto en el que el usuario necesita suplementar.
 
@@ -285,7 +285,7 @@ Follow-up after accepted:
 ```text
 Hola Lara, gracias por conectar.
 
-VitaminD Explorer ayuda a saber cuando el sol realmente permite sintetizar vitamina D segun ciudad, tipo de piel, edad y datos UV. Cuando no es posible, la app explica como suplementar mejor: D3, K2, magnesio y toma con grasa.
+VitaminD Explorer ayuda a saber cuando el sol realmente permite sintetizar vitamina D segun ciudad, tipo de piel, edad y datos UV. Cuando no es posible, la app ofrece información educativa sobre vitamina D, alimentación y suplementación para comentar con un profesional sanitario.
 
 Vuestra marca encaja especialmente por el angulo educativo del magnesio. No lo veo como un simple anuncio, sino como contenido util: explicar por que el magnesio importa en el metabolismo de la vitamina D y recomendar una opcion de confianza cuando el usuario necesita suplementar.
 
@@ -468,7 +468,7 @@ Verificado en:
 Connection request:
 
 ```text
-Hola Nuria, he creado VitaminD Explorer, una app gratuita que indica cuando el sol no basta para sintetizar vitamina D. Drasanvi tiene D3, K2 y magnesio, asi que veo una sinergia clara. Te cuento?
+Hola Nuria, he creado VitaminD Explorer, una app gratuita que indica cuando el sol no basta para sintetizar vitamina D. Drasanvi tiene productos de vitamina D, asi que veo un posible encaje para contenido educativo. Te cuento?
 ```
 
 Follow-up after accepted:
@@ -476,7 +476,7 @@ Follow-up after accepted:
 ```text
 Hola Nuria, gracias por conectar.
 
-VitaminD Explorer calcula ventanas reales de sintesis de vitamina D con el sol segun ciudad, tipo de piel, edad y datos UV. Cuando no es posible, la app explica suplementacion con D3, K2 y magnesio.
+VitaminD Explorer calcula ventanas reales de sintesis de vitamina D con el sol segun ciudad, tipo de piel, edad y datos UV. Cuando no es posible, la app ofrece información educativa sobre vitamina D, alimentación y suplementación para comentar con un profesional sanitario.
 
 Drasanvi encaja muy bien porque ya teneis productos en esas tres areas: vitamina D3, D3+K2 y magnesio. La propuesta seria una recomendacion contextual en el punto de necesidad, no publicidad generica.
 
@@ -515,7 +515,7 @@ Follow-up after accepted:
 ```text
 Hola Monica, gracias por conectar.
 
-VitaminD Explorer calcula si hoy puedes sintetizar vitamina D con el sol segun ubicacion, tipo de piel, edad y datos UV. Cuando no es posible, orienta al usuario hacia suplementacion con D3, K2 y magnesio.
+VitaminD Explorer calcula si hoy puedes sintetizar vitamina D con el sol segun ubicacion, tipo de piel, edad y datos UV. Cuando no es posible, ofrece información educativa sobre vitamina D, alimentación y suplementación para comentar con un profesional sanitario.
 
 Soria Natural encaja bien porque teneis productos de D3, K2+D3 y D3 con magnesio/calcio, y ademas una marca muy asociada a salud natural y educacion.
 
@@ -554,9 +554,9 @@ Follow-up after accepted:
 ```text
 Hi {name}, thanks for connecting.
 
-VitaminD Explorer calculates whether users can synthesize vitamin D from sunlight based on location, skin type, age and UV data. When synthesis is not possible, the app explains supplementation with D3, K2 and magnesium.
+VitaminD Explorer calculates whether users can synthesize vitamin D from sunlight based on location, skin type, age and UV data. When synthesis is not possible, the app offers educational information about vitamin D, food sources and supplementation to discuss with a healthcare professional.
 
-Nutravita's D3+K2 products seem like a very natural recommendation at that point of need, especially for UK users during low-UV months.
+Nutravita could support educational content about vitamin D for UK users during low-UV months, with any sponsorship clearly identified.
 
 I am exploring founding partners for contextual recommendations, affiliate links or educational content.
 

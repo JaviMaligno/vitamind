@@ -1,5 +1,8 @@
 # MCP Apps + migration to the 2026-07-28 spec
 
+> Plan histórico: el inventario actual es de **15 herramientas (9 públicas, 6 con cuenta)**.
+> Para copy reutilizable, usar [mcp-listing-copy.md](../mcp-listing-copy.md); las cifras de julio describen aquel momento.
+
 Written 2026-07-29 from a session in the `personal-website` repo. Everything in
 "Current state" below was verified against this repo, not assumed. The widget
 audit (part A) is done — this document is the audit, not a request to run one.

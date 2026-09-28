@@ -1,5 +1,8 @@
 # Plan: evolución del MCP, cuenta de usuario y marketing IA
 
+> Plan histórico: el inventario actual es de **15 herramientas (9 públicas, 6 con cuenta)**.
+> Para copy reutilizable, usar [mcp-listing-copy.md](../mcp-listing-copy.md); las cifras de julio describen aquel momento.
+
 **Estado: aprobado en conjunto; sin fecha por fase.** El MCP v1 anónimo está en
 producción (`/api/mcp/mcp`, 4 herramientas, ver CLAUDE.md). Este plan recoge lo
 que viene después, en tres bloques independientes.

@@ -179,3 +179,86 @@ delete from analytics_events where host is distinct from 'getvitamind.app';
 No hay política de RLS a propósito: el acceso es solo por service role, igual que
 `push_subscriptions`. **No añadir un `using (true)`** para "que funcione algo" —
 la clave anon viaja a todos los navegadores.
+
+
+## Medición de producción del 2026-09-28
+
+Resultado guardado en [analytics-results/2026-09-28-28-days.json](analytics-results/2026-09-28-28-days.json).
+Ventana: 2026-08-31 12:38:07 UTC a 2026-09-28 12:38:07 UTC; host getvitamind.app.
+Obtenido mediante la API de Supabase y agrupado en memoria con la misma lógica que
+count(*) y count(distinct visitor_id); no se guardaron identificadores. El reloj del
+servidor fijó el corte de 28 días; la lectura paginada no es una transacción SQL.
+
+| Evento | Eventos | Identificadores de navegador distintos |
+|---|---:|---:|
+| visit | 627 | 483 |
+| install_banner_shown | 36 | 36 |
+| city_selected | 7 | 6 |
+| gps_denied | 8 | 3 |
+| history_override | 32 | 2 |
+| prefs_changed | 1 | 1 |
+
+Total: 711 eventos. No aparecen eventos de instalación completada, activación de push
+ni autenticación en esta ventana. Esto describe eventos registrados, no demuestra que
+ninguna de esas acciones haya ocurrido. No sumar los visitantes de distintas filas.
+
+## Uso persistente del MCP
+
+La implementación guarda una fila en mcp_call_events por invocación que entra en un
+handler registrado en lib/mcp-server.ts, en ambos endpoints MCP. No utiliza
+analytics_events: una llamada de un asistente no tiene visitor_id de navegador.
+No permite contar personas únicas ni atribuir llamadas a usuarios o clientes.
+
+**Migración aplicada el 2026-09-28:** supabase/migrations/20260928_mcp_call_events.sql.
+RLS y permisos comprobados en el proyecto remoto. La recogida empieza al desplegar
+el colector; no hay histórico MCP anterior que reconstruir a partir del navegador.
+
+Campos: tool, occurred_at (inicio), duration_ms, outcome y env (VERCEL_ENV; development
+fuera de Vercel). Las consultas de producción siempre filtran env = 'production'.
+No se almacenan argumentos, coordenadas, respuestas, mensajes de error, tokens ni IDs.
+RLS está habilitado sin políticas públicas; anon y authenticated no tienen acceso.
+
+La escritura se programa con Next.js after(): termina después de enviar la respuesta,
+con un timeout de 3 segundos. No hay log por llamada; solo un mensaje genérico si falla
+la persistencia. No se reintenta para evitar duplicados. Una caída de Supabase puede
+perder eventos: una tabla vacía no distingue falta de uso de un fallo del colector.
+Fuera de una petición Next (scripts/tests), el wrapper espera la escritura.
+
+Resultados: success, tool_error (incluye errores JSON devueltos por las herramientas),
+authentication_required, insufficient_scope y exception. Un resultado legítimo sin
+ventana solar cuenta como success. No se cuentan tools/list, initialize, recursos,
+JSON-RPC malformado, argumentos rechazados por el SDK ni HTTP 401 anteriores al handler.
+Las negativas de autenticación dentro de una herramienta personal sí se cuentan.
+La duración mide el handler, sin incluir la escritura de analytics ni el transporte.
+
+### Volumen y latencia por herramienta: últimos 28 días
+
+```sql
+select tool,
+       count(*) as llamadas,
+       count(*) filter (where outcome = 'success') as correctas,
+       count(*) filter (where outcome in ('tool_error', 'exception')) as errores,
+       count(*) filter (where outcome in ('authentication_required', 'insufficient_scope')) as rechazos_auth,
+       round(avg(duration_ms)) as media_ms,
+       percentile_cont(0.95) within group (order by duration_ms) as p95_ms
+from public.mcp_call_events
+where env = 'production' and occurred_at > now() - interval '28 days'
+group by tool order by llamadas desc;
+```
+
+### Serie diaria y cobertura temporal
+
+```sql
+select (occurred_at at time zone 'UTC')::date as dia_utc, outcome, count(*) as llamadas
+from public.mcp_call_events
+where env = 'production' and occurred_at > now() - interval '28 days'
+group by 1, 2 order by 1, 2;
+
+select min(occurred_at) as primera_llamada, max(occurred_at) as ultima_llamada,
+       count(*) as llamadas_guardadas
+from public.mcp_call_events where env = 'production';
+```
+
+Tras desplegar, ejecutar get_sun_times una vez y comprobar su fila, entorno y resultado
+con service role; comprobar que la clave anon no puede leer la tabla. Esa llamada de
+verificación contará como uso técnico. No hay borrado automático de este histórico.

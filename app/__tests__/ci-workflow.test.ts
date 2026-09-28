@@ -11,7 +11,7 @@ import { join } from "node:path";
  * of three jobs is not worth it, so the blocks are sliced by indentation.
  */
 function jobBlock(yaml: string, job: string): string {
-  const lines = yaml.split("\n");
+  const lines = yaml.split(/\r?\n/);
   const start = lines.findIndex((l) => l === `  ${job}:`);
   expect(start, `job "${job}" not found in ci.yml`).toBeGreaterThan(-1);
   const rest = lines.slice(start + 1);

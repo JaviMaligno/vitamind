@@ -30,7 +30,7 @@ La app te dice:
 - Si hay ventana de síntesis hoy y a qué hora
 - Cuántos minutos necesitas según tu tipo de piel
 - Previsión a 5 días
-- Cuándo deberías suplementar (con guía de D3, K2 y magnesio)
+- Información educativa sobre vitamina D y fuentes alimentarias
 
 Basada en investigación científica (Holick/Dowdy 2010) y datos UV reales de Open-Meteo.
 
@@ -46,7 +46,7 @@ The app tells you:
 - Whether there's a synthesis window today and at what time
 - How many minutes you need based on your skin type
 - 5-day forecast
-- When you should supplement (with D3, K2, and magnesium guidance)
+- Educational information about vitamin D and food sources
 
 Based on peer-reviewed science (Holick/Dowdy 2010) and real UV data from Open-Meteo.
 
@@ -72,7 +72,7 @@ Features:
 - Interactive world map
 - Push notifications (Web Push API)
 - 90-day synthesis history
-- Supplementation guidance (D3/K2/Mg)
+- Educational information about vitamin D and food sources
 - 6 languages (en, es, fr, de, ru, lt)
 
 Stack: Next.js 16 (App Router), React 19, D3.js, Tailwind CSS v4, Supabase (auth + data), Web Push API, Vercel. PWA with offline support.
@@ -88,7 +88,7 @@ Título: "Moving to Northern Europe? Your vitamin D is about to take a hit"
 
 If you've moved from a sunny country to the UK, Nordics, or northern Europe, you've probably heard about the "vitamin D problem." But do you know exactly when the sun can't help you anymore?
 
-I built a free app that shows you the exact months and hours when vitamin D synthesis is possible in your city — and when you need to supplement. Personalized to your skin type.
+I built a free app that shows you the exact months and hours when vitamin D synthesis is possible in your city — and when sunlight is insufficient for synthesis. Personalized to your skin type.
 
 getvitamind.app — free, no sign-up, works in 6 languages.
 
@@ -106,7 +106,7 @@ Título: "¿Tu hijo está recibiendo suficiente vitamina D?"
 
 Los pediatras suelen recomendar suplementar vitamina D, especialmente en invierno. Pero ¿sabes exactamente cuándo el sol puede ayudar y cuándo no en tu ciudad?
 
-He creado una app gratuita que te dice si hoy es posible sintetizar vitamina D con el sol en tu ubicación, a qué hora, y cuánto tiempo necesitas. Cuando no es posible, te recuerda que toca suplementar.
+He creado una app gratuita que te dice si hoy es posible sintetizar vitamina D con el sol en tu ubicación, a qué hora, y cuánto tiempo necesitas. Cuando no es posible, enlaza a información educativa sobre otras fuentes de vitamina D.
 
 getvitamind.app — gratuita, sin registro.
 

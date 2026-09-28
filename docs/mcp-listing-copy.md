@@ -8,6 +8,10 @@ volver a contar antes de rellenar nada.
 > ya publicadas (registro oficial, Glama, mcpservers.org) y conviene corregirlo cuando se
 > toquen.
 
+**Inventario del repo comprobado el 2026-09-28:** 15 herramientas (9 públicas, 6 con
+cuenta) en `lib/mcp-server.ts`; el test de protocolo contrasta `tools/list` con
+`TOOL_COUNT`. La comprobación de producción de arriba es histórica.
+
 ## Datos
 
 | Campo | Valor |
@@ -164,7 +168,7 @@ que cambie el precio o el modelo.
 
 El «10 herramientas» hay que corregirlo en cada sitio ya publicado. Comprobado el 2/8:
 
-- **`CLAUDE.md:113`** — «10 tools (6 public…)». En el repo, se arregla con un commit.
+- **`CLAUDE.md` y `PRODUCT_HUNT.md`** — corregidos en el repo el 2026-09-28: 15 herramientas (9 públicas, 6 con cuenta). Las fichas externas siguen pendientes de comprobar.
 - **Registro MCP oficial** — `server.json` no enumera herramientas, así que puede que no
   haga falta republicar; el registro las introspecciona. **Verificar** en la ficha antes
   de tocar nada: republicar exige el binario Go y login de GitHub.
