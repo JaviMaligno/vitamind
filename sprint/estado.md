@@ -4,7 +4,7 @@
 - **Rama:** B (producto ya lanzado, gratuito, sin ingresos)
 - **Fase actual:** 2 · Diferenciación (fase 1 cerrada; D1 decidida: C′ «la ventana que cambia»)
 - **Plataforma ajena:** sí, en parte. El MCP vive dentro de Claude y ChatGPT (Anthropic y OpenAI son también competidores). Se hará la prueba de absorción al cerrar los básicos.
-- **Ficheros:** `estado.md`, `basicos.md`, `decisiones.md`
+- **Ficheros:** `estado.md`, `basicos.md`, `decisiones.md`, `diferenciacion.md` (en curso)
 
 ## Pregunta de la sprint (borrador)
 ¿Hay alguna dirección en la que VitaminD consiga usuarios de verdad y en la que tenga sentido registrarse para algo más que el MCP? ¿O conviene aparcarlo?
