@@ -210,8 +210,15 @@ analytics_events: una llamada de un asistente no tiene visitor_id de navegador.
 No permite contar personas únicas ni atribuir llamadas a usuarios o clientes.
 
 **Migración aplicada el 2026-09-28:** supabase/migrations/20260928_mcp_call_events.sql.
-RLS y permisos comprobados en el proyecto remoto. La recogida empieza al desplegar
-el colector; no hay histórico MCP anterior que reconstruir a partir del navegador.
+RLS y permisos comprobados en el proyecto remoto. Colector desplegado y verificado
+en producción el 2026-09-28 a las 13:01 UTC (commit 139dba2). No hay histórico MCP
+anterior que reconstruir a partir del navegador.
+
+[Evidencia del despliegue](analytics-results/2026-09-28-mcp-deployment.json): inventario
+de 15 herramientas, escritura de éxito y rechazo de autenticación, clave anon bloqueada
+y partners actualizado en seis idiomas. Los eventos **id 1 y 2** son llamadas técnicas
+de esta verificación, no uso de clientes; añadir `and id not in (1, 2)` a las consultas
+si se quiere excluirlas del análisis de adopción.
 
 Campos: tool, occurred_at (inicio), duration_ms, outcome y env (VERCEL_ENV; development
 fuera de Vercel). Las consultas de producción siempre filtran env = 'production'.

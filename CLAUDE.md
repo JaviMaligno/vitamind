@@ -497,7 +497,7 @@ That matters mainly if the gate is ever made conditional on `VERCEL_ENV` (a temp
 
 `supabase/migrations/*.sql` are **not applied automatically**. After adding one, run it against the shared Supabase project (SQL editor or `supabase db push`) **before** deploying code that depends on it. Applied state worth knowing:
 
-- `20260928_mcp_call_events.sql` — **applied 2026-09-28** via Supabase CLI. RLS enabled, zero policies, no anon/authenticated SELECT, service-role INSERT verified. MCP usage analytics; collection starts with the collector deployment. SQL and counting semantics in `docs/analytics.md`.
+- `20260928_mcp_call_events.sql` — **applied 2026-09-28** via Supabase CLI. RLS enabled, zero policies, no anon/authenticated SELECT, service-role INSERT verified. MCP usage analytics; collector deployed and verified in production at 2026-09-28 13:01 UTC (`139dba2`). Events 1 and 2 are deployment probes, not customer usage. SQL and counting semantics in `docs/analytics.md`.
 
 - `20260922_ops_events.sql` — upstream incidents for the hourly ops alerts (`docs/ops-alerts.md`).
   Service role only (RLS, no policies). Rows carry `env` = `VERCEL_ENV`; alerts count `production` only.
