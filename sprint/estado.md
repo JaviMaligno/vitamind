@@ -22,3 +22,20 @@
 | Aparcar VitaminD (regla del 03-09: si los multiplicadores de salud callan) | 4 · Enfoque |
 | Piloto con residencias UK (3 correos sin respuesta, 452 candidatos) | 4 · Enfoque |
 | Monetizar el tráfico de horas de sol (98 % de las impresiones) | 4 · Enfoque |
+
+## Datos aportados en la entrevista (2026-09-28)
+**analytics_events, últimos 28 días, host = getvitamind.app** (demostrado)
+
+| Evento | Eventos | Personas (id de navegador) |
+|---|---|---|
+| visit | 629 | 484 |
+| install_banner_shown | 37 | 37 |
+| city_selected | 7 | 6 |
+| gps_denied | 8 | 3 |
+| history_override | 32 | 2 |
+| prefs_changed | 1 | 1 |
+
+- Ninguna instalación completada, ninguna activación de push, ninguna autenticación.
+- Embudo: 484 → 6 eligen ciudad (1,2 %) → 2 usan el historial (0,4 %). De 37 a quienes se ofreció instalar la PWA, 0 la instalaron.
+- MCP: el registro empezó el 28/09 a las 13:01 UTC. Solo hay 2 llamadas, ambas de prueba propia. No hay histórico. No se miden las instalaciones del puente npm ni los usuarios únicos.
+- Supuesto: la mayoría de las visitas llega a páginas SEO de amanecer, que no disparan `city_selected`. Falta partir las visitas por página de entrada.
