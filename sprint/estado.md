@@ -2,9 +2,9 @@
 
 - **Inicio:** 2026-09-28
 - **Rama:** B (producto ya lanzado, gratuito, sin ingresos)
-- **Fase actual:** 3 · Principios. Fase 2 sin diferenciación suficiente (D2 = W). D3/D3b: E2 educativa acotada con el producto congelado. Las fases 4–5 quedan en gran parte resueltas por D3b.
+- **Fase actual:** 5 · Hipótesis (fase 3 aprobada; fase 4 resuelta por D3b). Fase 2 sin diferenciación suficiente (D2 = W). D3/D3b: E2 educativa acotada con el producto congelado. Las fases 4–5 quedan en gran parte resueltas por D3b.
 - **Plataforma ajena:** sí, en parte. El MCP vive dentro de Claude y ChatGPT (Anthropic y OpenAI son también competidores). Se hará la prueba de absorción al cerrar los básicos.
-- **Ficheros:** `estado.md`, `basicos.md`, `decisiones.md`, `diferenciacion.md` (en curso)
+- **Ficheros:** `estado.md`, `basicos.md`, `decisiones.md`, `diferenciacion.md`, `principios.md`, `hipotesis.md` (borrador)
 
 ## Pregunta de la sprint (borrador)
 ¿Hay alguna dirección en la que VitaminD consiga usuarios de verdad y en la que tenga sentido registrarse para algo más que el MCP? ¿O conviene aparcarlo?
@@ -62,3 +62,14 @@ Descarta por ahora, por no estar comprobadas: «el problema no duele» y «hace 
 
 ## Entradas para la fase 3 (principios)
 - El Decider rechaza la OMS como fuente: «prefiero fracasar a formar parte del mainstream en esta cuestión». Es un principio candidato; ver la crítica en la fase 3.
+
+## Fase 4 · Enfoque: resuelta por D3/D3b. Qué pasó con los aplazados
+| Aplazado | Resultado |
+|---|---|
+| App nativa frente a PWA | No se eligió. El problema no es el formato (fase 1) y P3 la excluye antes del umbral de E2. Se reabre si E2 lo cumple |
+| Aviso por temporada o viaje | Se lo monta el usuario con una tarea programada (D2); P1 lo excluye |
+| Ser la fuente fiable (integradores) | R1/E1: no elegido. OpenUV ya ocupa el hueco. La sonda de 5 correos quedó fuera por decisión del Decider |
+| Protección solar como propuesta | R2: descartada, va contra la visión del Decider |
+| Piloto con residencias UK | No evaluado como opción. 3 correos sin respuesta y sin segundo ni tercer toque; bajo E2 no es prioridad |
+| Monetizar el tráfico de horas de sol | Absorbido por Google (R3, absorción 1); P1 lo excluye |
+| Aparcar | Queda como salida de E2 si no se cumple el umbral |
