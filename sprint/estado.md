@@ -2,9 +2,9 @@
 
 - **Inicio:** 2026-09-28
 - **Rama:** B (producto ya lanzado, gratuito, sin ingresos)
-- **Fase actual:** 1 → decisión por absorción ALTA en el canal asistente (Apuesta ciega en curso)
+- **Fase actual:** 2 · Diferenciación (fase 1 cerrada; D1 decidida: C′ «la ventana que cambia»)
 - **Plataforma ajena:** sí, en parte. El MCP vive dentro de Claude y ChatGPT (Anthropic y OpenAI son también competidores). Se hará la prueba de absorción al cerrar los básicos.
-- **Ficheros:** `estado.md`, `basicos.md` (a falta de la prueba de absorción)
+- **Ficheros:** `estado.md`, `basicos.md`, `decisiones.md`
 
 ## Pregunta de la sprint (borrador)
 ¿Hay alguna dirección en la que VitaminD consiga usuarios de verdad y en la que tenga sentido registrarse para algo más que el MCP? ¿O conviene aparcarlo?
@@ -17,6 +17,9 @@
 ## Aplazados
 | Qué | Fase de destino |
 |---|---|
+| Plazo y umbral del experimento C′ (con salida a D) | 6 · Experimentos |
+| Aviso por temporada o viaje (ajuste 5 de D1) como forma de retorno | 4 · Enfoque |
+| El asistente como requisito de interfaz: ningún eje de la fase 2 puede ser «estar en el asistente» | 2 · Diferenciación |
 | App nativa (React Native/Expo) frente a PWA | 4 · Enfoque |
 | «Dentro de la IA que ya usas» (MCP/ChatGPT app) como enfoque principal | 4 · Enfoque |
 | Aparcar VitaminD (regla del 03-09: si los multiplicadores de salud callan) | 4 · Enfoque |

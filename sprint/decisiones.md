@@ -53,9 +53,9 @@
 - **Ajustes que valora más:** 4 (conversaciones) y 5 (aviso por temporada o viaje).
 - **Guardarraíl:** que C no acabe en «500 páginas nuevas» queda a cargo del facilitador.
 
-**Decisión final (propuesta, pendiente de confirmar):** C′ · **la ventana que cambia.**
+**Decisión final (confirmada 2026-09-28):** C′ · **la ventana que cambia.**
 - **Para quién:** personas en latitudes medias durante las estaciones de transición, cuando la ventana se estrecha, se ensancha o se cierra, y viajeros que cambian de ventana.
 - **Canales:** web y asistente como interfaces, las dos como requisito.
-- **Ajustes:** 1–5, con plazo de 6–8 semanas y salida a D si no se alcanza el umbral.
+- **Ajustes:** 1–5. El plazo y el umbral se deciden en la fase 6; si no se alcanza el umbral, se pasa a D.
 - **¿Cambió respecto a la apuesta?** No; C con A como canal transversal. **¿Contra la mayoría?** No.
-- **Revisión:** 2026-11-23.
+- **Revisión:** se fija en la fase 6.
