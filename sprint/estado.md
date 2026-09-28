@@ -20,6 +20,8 @@
 | Plazo y umbral del experimento C′ (con salida a D) | 6 · Experimentos |
 | Aviso por temporada o viaje (ajuste 5 de D1) como forma de retorno | 4 · Enfoque |
 | El asistente como requisito de interfaz: ningún eje de la fase 2 puede ser «estar en el asistente» | 2 · Diferenciación |
+| «Ser la fuente fiable de cuándo cambia tu ventana» que consultan la tarea del asistente, el calendario (.ics) o la página (D2) | 4 · Enfoque |
+| Protección solar (tope de quemadura) como propuesta principal para el viajero (Jonas, D2) | 4 · Enfoque |
 | App nativa (React Native/Expo) frente a PWA | 4 · Enfoque |
 | ~~«Dentro de la IA» como enfoque principal~~ → resuelto en D1: es un requisito de interfaz, no una dirección | — |
 | Aparcar VitaminD (regla del 03-09: si los multiplicadores de salud callan) | 4 · Enfoque |

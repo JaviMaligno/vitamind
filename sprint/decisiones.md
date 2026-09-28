@@ -59,3 +59,49 @@
 - **Ajustes:** 1–5. El plazo y el umbral se deciden en la fase 6; si no se alcanza el umbral, se pasa a D.
 - **¿Cambió respecto a la apuesta?** No; C con A como canal transversal. **¿Contra la mayoría?** No.
 - **Revisión:** se fija en la fase 6.
+
+## D2 · 2026-09-28 · Ejes del 2x2
+**Opciones:**
+- X = C2 × C3
+- Y = C2 × C4
+- Z = C3 × C4
+- W = ninguno aguanta
+
+C2 = aviso cuando cambia tu ventana (incluido el desplazamiento de hora), C3 = dónde falla la regla, C4 = origen frente a destino.
+
+**Apuesta:** Y, confianza 4. X con 3, Z con 1. Porqué: C3 es presentación y cualquiera lo reproduce con una memoria o un GPT.
+
+**Votos de los votantes (3 cada uno):**
+
+| Diferenciador | Marta | Jonas | Estratega | Total |
+|---|---|---|---|---|
+| C2 | 2 | 0 | 2 | 4 |
+| C4 | 0 | 2 | 1 | 3 |
+| C3 | 1 | 1 | 0 | 2 |
+
+**Puntuación de las opciones (1–5):**
+
+| | Absorción | Marta | Jonas | Estratega | Requisito/dif. | Total |
+|---|---|---|---|---|---|---|
+| X | 2 | 4 | 1 | 3 | 2 | 12 |
+| Y | 2 | 2 | 2 | 4 | 4 | **14** |
+| Z | 3 | 1 | 4 | 2 | 2 | 12 |
+| W | 4 | 3 | 3 | 2 | 2 | **14** |
+
+**Hallazgo de absorción (verificado):** el usuario puede montarse C2 él mismo con tareas programadas.
+- ChatGPT, relanzadas el 17/06/2026 y disponibles en el plan gratuito desde el 25/08/2026 (https://help.openai.com/en/articles/10291617-scheduled-tasks-in-chatgpt).
+- Claude, desde el 25/02/2026 (https://support.claude.com/en/articles/13854387-schedule-recurring-tasks-in-claude-cowork).
+
+**Riesgo común:** C2 no tiene canal de entrega (0 push, 0 cuentas, 0 instalaciones).
+
+**Minoría:** W. Jonas: «para mí el producto es protegerme del sol».
+
+**Objeción:** el argumento contra C3 tumba también a C2 y C4. Además, C2 depende de un canal que hoy no funciona.
+
+**Ajustes:**
+1. Ser la fuente que consulta la tarea del asistente: una herramienta `window_changed` y el prompt de la tarea ya escrito.
+2. Suscripción .ics por ciudad, sin cuenta.
+3. Probar C2 a mano con 10 personas antes de escribir código; construir solo si al menos 3 cambian de hora o piden el siguiente aviso.
+4. En C4, el protagonista es el tope antes de quemarse.
+
+**Decisión final:** pendiente.
