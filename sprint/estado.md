@@ -38,4 +38,11 @@
 - Ninguna instalación completada, ninguna activación de push, ninguna autenticación.
 - Embudo: 484 → 6 eligen ciudad (1,2 %) → 2 usan el historial (0,4 %). De 37 a quienes se ofreció instalar la PWA, 0 la instalaron.
 - MCP: el registro empezó el 28/09 a las 13:01 UTC. Solo hay 2 llamadas, ambas de prueba propia. No hay histórico. No se miden las instalaciones del puente npm ni los usuarios únicos.
-- Supuesto: la mayoría de las visitas llega a páginas SEO de amanecer, que no disparan `city_selected`. Falta partir las visitas por página de entrada.
+- **Corregido por el Decider:** amanecer NO concentra las entradas. De 631 visitas: 211 inicio, 161 amanecer (25,5 %), 100 páginas de vitamina D, 38 dashboard, 121 otras.
+- `visit` se registra una vez por sesión. No demuestra rebote; demuestra muy poca interacción registrada.
+- Recurrencia: 4 navegadores generan 56 visitas de retorno. No se sabe cuántos son pruebas propias (supuesto: al menos uno es el fundador).
+
+## Diagnóstico provisional del Decider (fase 1)
+> Hemos construido muchas capacidades sin demostrar una razón suficientemente fuerte para usarlas y volver. La necesidad recurrente y la activación están sin validar; el formato (nativa, PWA, MCP) va después.
+
+Descarta por ahora, por no estar comprobadas: «el problema no duele» y «hace falta app nativa».
