@@ -103,8 +103,30 @@ Leyenda de estado:
 3. **Salud y regulación.** Los health claims (Reglamento UE 432/2012) limitan el mensaje y alejan a partners y divulgadores. → **Lente de confianza:** ¿qué opción gana credibilidad sanitaria sin prometer de más?
 4. **Infraestructura.** Hobby se ha pasado de cuota de lecturas y prohíbe el uso comercial; un pausado da 503 en todo el SEO. Se tiene en cuenta en la lente pragmática.
 
-## Prueba de absorción
-Pendiente. La lente está trabajando y el resultado se añade aquí.
+## Prueba de absorción (2026-09-28)
+Plataformas evaluadas: Anthropic, OpenAI, Google y Apple.
+
+**(a) Canal asistente (MCP): riesgo ALTO, 0–12 meses.**
+- **Parte expuesta:** la pregunta episódica «¿cuántos minutos hoy?», que es justo el uso real observado. Tres cosas la cubren sin nosotros:
+  - El modelo base ya responde con el orden de magnitud correcto.
+  - El UV ya llega dentro del asistente: AccuWeather en ChatGPT desde el 24/03/2026 (verificado, https://www.accuweather.com/en/press/accuweather-launches-first-of-a-kind-weather-app-in-chatgpt/1875980), además de la búsqueda.
+  - Los conectores de salud dan el perfil: Claude con Apple Health desde el 22/01/2026 (verificado, https://www.macrumors.com/2026/01/22/claude-ai-adds-apple-health-connectivity/) y ChatGPT Health con Apple Health desde el 23/07/2026 (verificado, https://www.macrumors.com/2026/07/23/chatgpt-apple-health-integration/).
+- **Prueba práctica, Madrid a las 13:00, fototipo III, cara y brazos:**
+  - Respuesta genérica sin herramienta: 10–20 minutos, unas 1.000 UI.
+  - Respuesta de `estimate_sun_session`: 15 minutos, UV 5,5, unas 1.004 UI y quemadura a los 55 minutos.
+  - Para el usuario medio, la respuesta genérica es suficientemente buena.
+- **Sobrevive:**
+  - El historial y el registro personal usados desde varios asistentes.
+  - Los casos límite donde la heurística falla: invierno, latitudes altas, nubes reales, la ventana exacta con UV de 3 o más, los viajes.
+
+**(b) Web/PWA: riesgo MEDIO, con dos mitades.**
+- **Horas de amanecer y atardecer (SEO): riesgo ALTO, ya ocurre.** Google responde en la propia página de resultados (verificado, https://developers.google.com/maps/documentation/weather/hourly-forecast). Es el 98 % de las impresiones en Search Console, aunque solo el 25,5 % de las entradas medidas.
+- **Calculadora de vitamina D: riesgo BAJO en 12–24 meses.**
+  - Apple, Google y OpenAI evitan dar cifras médicas de síntesis. **S:** por la exposición regulatoria.
+  - iOS 27 y watchOS 27 no traen nada de sol (verificado, https://www.dcrainmaker.com/2026/06/apple-watchos27-new-features-detailed.html).
+  - La competencia real son terceros, como Sola en el Apple Watch (verificado, https://getsola.com/apple-watch/).
+
+**Consecuencia:** el riesgo es alto en el canal que el Decider proponía como dirección («meterlo en la IA que ya usa la gente»). Antes de la fase 2 se decide con la Apuesta ciega.
 
 ## Crítica de la fase
 - **No hay cliente externo demostrado.** El único usuario con uso real es el fundador, y lo usa poco. Si las entrevistas de S1 y S2 no encuentran a nadie con la duda recurrente, el producto no tiene sentido como producto: queda como una herramienta personal y un caso de portfolio. Sería un resultado legítimo.

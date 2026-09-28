@@ -2,7 +2,7 @@
 
 - **Inicio:** 2026-09-28
 - **Rama:** B (producto ya lanzado, gratuito, sin ingresos)
-- **Fase actual:** 1 · Entrevista y básicos (lectura del material hecha; entrevista en curso)
+- **Fase actual:** 1 → decisión por absorción ALTA en el canal asistente (Apuesta ciega en curso)
 - **Plataforma ajena:** sí, en parte. El MCP vive dentro de Claude y ChatGPT (Anthropic y OpenAI son también competidores). Se hará la prueba de absorción al cerrar los básicos.
 - **Ficheros:** `estado.md`, `basicos.md` (a falta de la prueba de absorción)
 
