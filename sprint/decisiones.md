@@ -150,4 +150,10 @@ C2 = aviso cuando cambia tu ventana (incluido el desplazamiento de hora), C3 = d
 5. Reclutar entre las visitas reales de las páginas de mes (solo con enlace a un formulario externo).
 6. Preguntar «¿de quién te fiarías?».
 
-**Decisión final:** pendiente.
+**Respuesta del Decider:**
+- Open-Meteo no es una buena referencia: hace poco corrigió un bug porque sus datos de tiempo no tenían sentido. La discrepancia ×2 frente a Open-Meteo no cuenta como argumento contra el modelo propio. *Nota del facilitador: el camino en vivo de la app también depende de Open-Meteo (cielo despejado + nubes), así que esto es un riesgo para el requisito «cielo real».*
+- Sobre R3: falta definir qué es «relación con el sol» (vitamina D, amanecer y atardecer…), quizá con un enfoque más holístico.
+- «Bien visto, sí estoy evitando R4.» → **Objeción aceptada.**
+
+**Decisión final:** pendiente de confirmar la formulación R4′.
+
