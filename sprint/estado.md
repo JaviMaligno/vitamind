@@ -46,3 +46,8 @@
 > Hemos construido muchas capacidades sin demostrar una razón suficientemente fuerte para usarlas y volver. La necesidad recurrente y la activación están sin validar; el formato (nativa, PWA, MCP) va después.
 
 Descarta por ahora, por no estar comprobadas: «el problema no duele» y «hace falta app nativa».
+
+## Cliente conocido (entrevista)
+- **Único cliente real identificado:** el fundador y su pareja.
+- **Uso real:** esporádico. Ya «le tiene cogido el truco» a la regla local. Vuelve a la app cuando tiene dudas o **cuando viaja y pierde la referencia**.
+- **Lectura (supuesto):** para quien la usa, el valor es episódico. Se aprende una vez y se vuelve cuando cambia el contexto: viaje, cambio de estación, sitio nuevo. Una herramienta así no genera hábito diario, así que push, historial e instalación empujan contra la naturaleza del uso. Se comprueba preguntando a 5 usuarios potenciales en qué momento concreto lo consultarían.
