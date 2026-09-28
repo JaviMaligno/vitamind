@@ -1,4 +1,4 @@
-# Fase 5 · Founding Hypothesis (borrador, 2026-09-28)
+# Fase 5 · Founding Hypothesis (aprobada, 2026-09-28)
 
 > Si ayudamos a **entender cuándo el sol te sirve y cuándo no, más allá del discurso oficial** [problema · S], a **personas que buscan una relación más natural con el sol y desconfían del «sol = peligro»** [cliente · S, nicho] con **contenido educativo a contracorriente que desemboca en el cálculo de su ventana, en la web y en su asistente** [enfoque · decidido en D3b, sin validar], creemos que lo elegirán frente a **la regla genérica de ChatGPT y Google, las apps de protección solar y el suplemento** [competidores · D, investigados] porque **da una postura propia argumentada con datos** [dif. 1 · S] y **la traduce a su ciudad, su mes y su piel** [dif. 2 · S, y en fase 2 salió como requisito].
 

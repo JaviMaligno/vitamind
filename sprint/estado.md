@@ -2,9 +2,9 @@
 
 - **Inicio:** 2026-09-28
 - **Rama:** B (producto ya lanzado, gratuito, sin ingresos)
-- **Fase actual:** 5 · Hipótesis (fase 3 aprobada; fase 4 resuelta por D3b). Fase 2 sin diferenciación suficiente (D2 = W). D3/D3b: E2 educativa acotada con el producto congelado. Las fases 4–5 quedan en gran parte resueltas por D3b.
+- **Fase actual:** 6 cerrada · experimentos en marcha. Próxima sesión: **Retomar** con los resultados (19/10, 26/10, 02/11, 30/11). Fase 2 sin diferenciación suficiente (D2 = W). D3/D3b: E2 educativa acotada con el producto congelado. Las fases 4–5 quedan en gran parte resueltas por D3b.
 - **Plataforma ajena:** sí, en parte. El MCP vive dentro de Claude y ChatGPT (Anthropic y OpenAI son también competidores). Se hará la prueba de absorción al cerrar los básicos.
-- **Ficheros:** `estado.md`, `basicos.md`, `decisiones.md`, `diferenciacion.md`, `principios.md`, `hipotesis.md` (borrador)
+- **Ficheros:** `estado.md`, `basicos.md`, `decisiones.md`, `diferenciacion.md`, `principios.md`, `hipotesis.md` (aprobada), `experimentos.md`, `tablero.md`
 
 ## Pregunta de la sprint (borrador)
 ¿Hay alguna dirección en la que VitaminD consiga usuarios de verdad y en la que tenga sentido registrarse para algo más que el MCP? ¿O conviene aparcarlo?
@@ -17,7 +17,7 @@
 ## Aplazados
 | Qué | Fase de destino |
 |---|---|
-| Plazo y umbral del experimento C′ (con salida a D) | 6 · Experimentos |
+| ~~Plazo y umbral del experimento~~ → fijados en `experimentos.md` (30/11) | — |
 | Aviso por temporada o viaje (ajuste 5 de D1) como forma de retorno | 4 · Enfoque |
 | El asistente como requisito de interfaz: ningún eje de la fase 2 puede ser «estar en el asistente» | 2 · Diferenciación |
 | «Ser la fuente fiable de cuándo cambia tu ventana» que consultan la tarea del asistente, el calendario (.ics) o la página (D2) | 4 · Enfoque |
