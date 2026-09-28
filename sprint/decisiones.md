@@ -155,5 +155,14 @@ C2 = aviso cuando cambia tu ventana (incluido el desplazamiento de hora), C3 = d
 - Sobre R3: falta definir qué es «relación con el sol» (vitamina D, amanecer y atardecer…), quizá con un enfoque más holístico.
 - «Bien visto, sí estoy evitando R4.» → **Objeción aceptada.**
 
-**Decisión final:** pendiente de confirmar la formulación R4′.
+**Segunda respuesta del Decider (antes de confirmar R4′):**
+- Ya ha enseñado la app a familia, amigos y gente de internet, y duda de que R4 aporte mucho más.
+- La pregunta de R3 (qué es una buena relación con el sol) se resuelve investigando, no hablando con gente: «la gente no sabe cómo tiene que relacionarse con el sol», por la desinformación y la distancia con el entorno natural.
+
+**Lectura del facilitador:**
+- Qué es sano es una pregunta de investigación.
+- Qué hace que alguien vuelva es una pregunta de comportamiento, y eso no se resuelve investigando.
+- Lo que pasó al enseñar la app es un dato de la rama B que faltaba: quién la probó y la dejó, y qué dijo.
+
+**Decisión final:** pendiente.
 
