@@ -167,5 +167,7 @@ C2 = aviso cuando cambia tu ventana (incluido el desplazamiento de hora), C3 = d
 **Dato nuevo de la rama B (quién lo probó y lo dejó):** familia, amigos y gente de internet vieron la app. «Varios pensaron que era buena idea y que debería promoverla más; pocos volvieron.» Conclusión del Decider: «suena a muy buena idea, pero no hay mucha gente a la que de verdad le importe».
 → Lo que R4 quería medir ya se ha probado de forma informal, con resultado negativo. Sin R4, las lentes dejan R5 (21) ≈ R3 (20) > R1 (18).
 
-**Decisión final:** pendiente.
+**Opción nueva que propone el Decider:** la puerta educativa. Generar demanda haciendo ver a la gente que la relación con el sol sí debería importarle. → Se abre D3b.
+
+**Decisión final:** se decide en D3b.
 
