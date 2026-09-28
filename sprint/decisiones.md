@@ -42,4 +42,20 @@
 4. Hablar con unas 10 personas.
 5. Aviso por temporada o por viaje, no push diario.
 
-**Decisión final:** pendiente.
+**Respuesta del Decider a la objeción de absorción:**
+> A no es una dirección ni un diferenciador: es parte de la interfaz. Si ChatGPT accede a Apple Health, irse de ChatGPT no nos hace mejores, nos hace invisibles.
+
+→ **Objeción rebatida.** El asistente se reclasifica como **requisito de interfaz** y deja de ser un eje de diferenciación. Consecuencia para la fase 2: ningún diferenciador puede apoyarse en «estar en el asistente».
+
+**Otras correcciones del Decider:**
+- **Vercel:** su peso en las lentes baja.
+- **El cliente con más uso no es el nórdico.** Si la ventana está cerrada 9 meses, no hay nada que consultar, salvo por un recordatorio. El valor está donde **la ventana va variando** y hay que consultarla.
+- **Ajustes que valora más:** 4 (conversaciones) y 5 (aviso por temporada o viaje).
+- **Guardarraíl:** que C no acabe en «500 páginas nuevas» queda a cargo del facilitador.
+
+**Decisión final (propuesta, pendiente de confirmar):** C′ · **la ventana que cambia.**
+- **Para quién:** personas en latitudes medias durante las estaciones de transición, cuando la ventana se estrecha, se ensancha o se cierra, y viajeros que cambian de ventana.
+- **Canales:** web y asistente como interfaces, las dos como requisito.
+- **Ajustes:** 1–5, con plazo de 6–8 semanas y salida a D si no se alcanza el umbral.
+- **¿Cambió respecto a la apuesta?** No; C con A como canal transversal. **¿Contra la mayoría?** No.
+- **Revisión:** 2026-11-23.
