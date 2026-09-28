@@ -111,3 +111,43 @@ C2 = aviso cuando cambia tu ventana (incluido el desplazamiento de hora), C3 = d
 - **Contra la mayoría:** no (empate Y/W).
 - **Aplicación del punto 5 de la fase 2:** no se fuerza un segundo eje. Antes de la fase 3 se decide si revisar el cliente, el problema o el producto, o aparcar (D3).
 
+
+## D3 · 2026-09-28 · Qué se revisa tras quedarse sin diferenciación
+**Opciones:**
+- R1 · Cliente integrador.
+- R2 · Protección solar.
+- R3 · Misión amplia, «estar fuera con el sol».
+- R4 · Validar primero.
+- R5 · Aparcar.
+
+**Apuesta:** empate R1 y R3, confianza 3. R4 y R5 con 2, R2 con 1 (va contra su visión).
+
+| | Absorción | Dinero | Cliente | Crecimiento | Pragmática | Foco | Confianza | Misión | Total |
+|---|---|---|---|---|---|---|---|---|---|
+| R1 | 2 | 3 | 2 | 3 | 3 | 1 | 2 | 2 | 18 |
+| R2 | 1 | 2 | 2 | 2 | 2 | 2 | 2 | 3 | 16 |
+| R3 | 1 | 1 | 2 | 4 | 3 | 2 | 3 | 4 | 20 |
+| R4 | 4 | 4 | 4 | 2 | 5 | 5 | 4 | 3 | **31** |
+| R5 | 5 | 3 | 1 | 1 | 4 | 3 | 3 | 1 | 21 |
+
+**Hallazgos:**
+- **Absorción da un 1 a R3:** Google ya responde la hora en la página de resultados.
+- **OpenUV ya ofrece exposición segura por fototipo y una estimación de vitamina D,** gratis hasta 500 peticiones/día (verificado, https://www.openuv.io/kb/skin-types-safe-exposure-time-calculation).
+- **Google Weather API:** 10 K llamadas/mes gratis (verificado, https://developers.google.com/maps/documentation/weather/usage-and-billing).
+
+**Minoría:** crecimiento y misión prefieren R3.
+
+**Objeción:**
+- Con R1 se compite en credibilidad, justo lo que el fundador admite no poder ganar.
+- R3 persigue al público que Google ya atiende.
+- El empate cae en las dos opciones que se construyen sin hablar con nadie: «estás evitando R4».
+
+**Ajustes a R4:**
+1. Sin código durante unas 4 semanas, con fecha límite.
+2. Umbral escrito de antemano; si no se alcanza, pasar a R5.
+3. Preguntar por el comportamiento pasado.
+4. Una rama para integradores (3–5 desarrolladores que usan OpenUV).
+5. Reclutar entre las visitas reales de las páginas de mes (solo con enlace a un formulario externo).
+6. Preguntar «¿de quién te fiarías?».
+
+**Decisión final:** pendiente.
