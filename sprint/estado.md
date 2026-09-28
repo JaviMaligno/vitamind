@@ -21,7 +21,7 @@
 | Aviso por temporada o viaje (ajuste 5 de D1) como forma de retorno | 4 · Enfoque |
 | El asistente como requisito de interfaz: ningún eje de la fase 2 puede ser «estar en el asistente» | 2 · Diferenciación |
 | App nativa (React Native/Expo) frente a PWA | 4 · Enfoque |
-| «Dentro de la IA que ya usas» (MCP/ChatGPT app) como enfoque principal | 4 · Enfoque |
+| ~~«Dentro de la IA» como enfoque principal~~ → resuelto en D1: es un requisito de interfaz, no una dirección | — |
 | Aparcar VitaminD (regla del 03-09: si los multiplicadores de salud callan) | 4 · Enfoque |
 | Piloto con residencias UK (3 correos sin respuesta, 452 candidatos) | 4 · Enfoque |
 | Monetizar el tráfico de horas de sol (98 % de las impresiones) | 4 · Enfoque |
