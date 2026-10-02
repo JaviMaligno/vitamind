@@ -436,7 +436,7 @@ Treat the number of locales and of sunrise cities as **fixed** when analysing us
 optimizations:
 
 - The six locales (`es`, `en`, `fr`, `de`, `ru`, `lt` in `i18n/routing.ts`) are **not to be cut**.
-  The owner keeps them for personal reasons, not metrics. Pruning `ru`/`lt` from the sunrise surface
+  This is a product decision, not a metrics one. Pruning `ru`/`lt` from the sunrise surface
   will keep showing up as the single biggest lever on the read meter (~1,040 crawlable URLs, ~29% of
   it, per the 2026-08-22 analysis) — decline it without re-arguing.
 - `SUNRISE_CITIES` in `lib/sun-routes.ts` stays at **40** for now; do not grow it toward the planned 73.
@@ -467,8 +467,8 @@ Both jobs use the `VERCEL_TOKEN` repo secret (GitHub → repo Settings → Secre
 > **Shipped 2026-07-20 — sunrise SEO pages (wave 1):** 28 cities × 12 months ×
 > 6 locales at `/amanecer/{city}/{month}` (localized prefixes/slugs in
 > `lib/sun-routes.ts`, page at `app/[locale]/[cityPrefix]/[city]/[month]/`).
-> Next waves (expand `SUNRISE_CITIES` toward all 73 when Search Console shows
-> traction): `docs/plans/2026-07-19-sunrise-seo-pages.md`.
+> Further waves are on hold: `SUNRISE_CITIES` stays at 40 (see "Fixed scale" under the
+> Vercel limits). Original plan: `docs/plans/2026-07-19-sunrise-seo-pages.md`.
 
 > **Historical release, 2026-07-19/20 — MCP evolution:** initially 10 tools (6 public incl.
 > `get_vitamin_d_year` + `estimate_sun_session`, 4 personal via OAuth 2.1),
