@@ -28,8 +28,8 @@ npm run lint && npm run typecheck && npm test && npm run build
 
 ## Docs
 
-- [`CLAUDE.md`](./CLAUDE.md) — architecture, deployment runbook, operational
-  gotchas and incident history.
+- [`AGENTS.md`](./AGENTS.md) — architecture, deployment runbook, operational
+  gotchas and incident history (`CLAUDE.md` imports it).
 - [`docs/PRODUCTION_READINESS.md`](./docs/PRODUCTION_READINESS.md) —
   production-readiness assessment and the practices that keep it that way.
 
