@@ -1,5 +1,4 @@
-import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import type { AuthInfo } from "@modelcontextprotocol/sdk/server/auth/types.js";
+import type { McpServer, AuthInfo, ServerContext } from "@modelcontextprotocol/server";
 import { registerAppResource, registerAppTool, RESOURCE_MIME_TYPE } from "@modelcontextprotocol/ext-apps/server";
 import { z } from "zod";
 import { measureMcpCall as timed } from "@/lib/mcp-analytics";
@@ -67,8 +66,8 @@ function personal<A>(
     return built ? { ...json(withHint), _meta: built } : json(withHint);
   };
 
-  return async (args: A, extra: { authInfo?: AuthInfo }): Promise<ToolResult> => timed(tool, async () => {
-    const auth = extra.authInfo;
+  return async (args: A, extra: ServerContext): Promise<ToolResult> => timed(tool, async () => {
+    const auth = extra.http?.authInfo;
     const userId = (auth?.extra as { userId?: string } | undefined)?.userId;
     if (!userId) {
       return wrap({
@@ -204,10 +203,12 @@ export function initMcpServer(server: McpServer) {
       }),
     );
 
-    server.tool(
+    server.registerTool(
       "search_city",
-      "Find a city in the app's database by name (any of the app's six languages works) and get its coordinates, IANA timezone and elevation — feed those into the other tools.",
-      { query: z.string().min(1).max(80).describe("City name, e.g. 'Madrid', 'London', 'Nueva York'") },
+      {
+        description: "Find a city in the app's database by name (any of the app's six languages works) and get its coordinates, IANA timezone and elevation — feed those into the other tools.",
+        inputSchema: z.object({ query: z.string().min(1).max(80).describe("City name, e.g. 'Madrid', 'London', 'Nueva York'") }),
+      },
       async ({ query }) =>
         timed("search_city", () => {
           const results = searchCity(query);
@@ -219,37 +220,38 @@ export function initMcpServer(server: McpServer) {
                   hint: "Not in the built-in DB (~80 major cities). Every other tool accepts raw lat/lon (plus an IANA timezone) directly — use coordinates you know, or the nearest listed city.",
                 },
           );
-        }),
-    );
+        }));
 
-    server.tool(
+    server.registerTool(
       "get_sun_times",
-      "Sunrise, sunset, solar noon, civil dawn/dusk, morning AND evening golden hour, and day length (with day-over-day trend) for a location and date. Handles midnight sun and polar night. Pure sun times — for vitamin D questions use the vitamin_d tools instead.",
-      { lat: LAT, lon: LON, date: DATE, timezone: TZ },
-      async (args) => timed("get_sun_times", () => json(sunTimesTool(args))),
-    );
-
-    server.tool(
-      "get_vitamin_d_window",
-      "The solar vitamin D synthesis window for ONE specific day at a location, for a personal profile: when UV is strong enough (index ≥ 3), the best hour, the clear-sky minutes needed to reach the target IU, and (with atTime) the minutes at the specific hour the user plans to go out. Returns synthesisPossible=false when the sun never gets high enough that day. Only for single-day questions — for months, seasons or 'when during the year', call get_vitamin_d_year instead of calling this once per date.",
       {
+        description: "Sunrise, sunset, solar noon, civil dawn/dusk, morning AND evening golden hour, and day length (with day-over-day trend) for a location and date. Handles midnight sun and polar night. Pure sun times — for vitamin D questions use the vitamin_d tools instead.",
+        inputSchema: z.object({ lat: LAT, lon: LON, date: DATE, timezone: TZ }),
+      },
+      async (args) => timed("get_sun_times", () => json(sunTimesTool(args))));
+
+    server.registerTool(
+      "get_vitamin_d_window",
+      {
+        description: "The solar vitamin D synthesis window for ONE specific day at a location, for a personal profile: when UV is strong enough (index ≥ 3), the best hour, the clear-sky minutes needed to reach the target IU, and (with atTime) the minutes at the specific hour the user plans to go out. Returns synthesisPossible=false when the sun never gets high enough that day. Only for single-day questions — for months, seasons or 'when during the year', call get_vitamin_d_year instead of calling this once per date.",
+        inputSchema: z.object({
         lat: LAT, lon: LON, date: DATE, timezone: TZ, ...PROFILE,
         atTime: z.string().regex(/^\d{1,2}:\d{2}$/).optional()
           .describe("Local HH:MM the user plans to go out — adds minutesNeeded and UV at that exact time"),
+      }),
       },
-      async (args) => timed("get_vitamin_d_window", () => json(vitaminDWindowTool(args))),
-    );
+      async (args) => timed("get_vitamin_d_window", () => json(vitaminDWindowTool(args))));
 
     registerAppTool(
       server,
       "get_vitamin_d_year",
       {
         description: "The WHOLE YEAR of solar vitamin D for a location in a single call. monthsWithSun lists every month with at least one viable day (season edges count as partial months, see byMonth[].viableDays); solidMonths lists months where most days work; exactViableSpan gives the exact season boundaries; summary carries per-year aggregates for comparing places. Use this for any question about months, seasons, winter/summer or 'when during the year can I…' — never probe individual dates with get_vitamin_d_window for that.",
-        inputSchema: {
+        inputSchema: z.object({
           lat: LAT, lon: LON, timezone: TZ, ...PROFILE,
           placeName: z.string().min(1).max(60).optional()
             .describe("The place's name as the user said it — used to caption the chart"),
-        },
+        }),
         _meta: { ui: { resourceUri: YEAR_STRIP_RESOURCE_URI } },
       },
       async (args) => timed("get_vitamin_d_year", () => {
@@ -324,7 +326,7 @@ export function initMcpServer(server: McpServer) {
       "configure_sun_profile",
       {
         description: "Show the user an interactive form for the four values every other tool assumes — Fitzpatrick skin type, fraction of skin exposed, age and target IU — with the minutes they need updating live. Use this when those values are unknown, when the user wants to change them, or instead of asking for them one at a time in conversation. Whatever the user picks comes back into the conversation; pass those values explicitly to the other tools afterwards.",
-        inputSchema: {
+        inputSchema: z.object({
           lat: z.number().min(-90).max(90).optional().describe("Latitude of the place being discussed, so the live estimate uses today's real UV there"),
           lon: z.number().min(-180).max(180).optional().describe("Longitude, paired with lat"),
           timezone: TZ,
@@ -333,15 +335,15 @@ export function initMcpServer(server: McpServer) {
           exposedSkinFraction: PROFILE.exposedSkinFraction,
           age: PROFILE.age,
           targetIU: PROFILE.targetIU,
-        },
+        }),
         _meta: { ui: { resourceUri: PROFILE_RESOURCE_URI } },
       },
-      async (args, extra: { authInfo?: AuthInfo }) => timed("configure_sun_profile", () => {
+      async (args, extra: ServerContext) => timed("configure_sun_profile", () => {
         const result = configureSunProfileFull(args);
         // Whether the form can persist depends on the connection, not the tool:
         // the public endpoint carries no token, so the widget must know to stay
         // context-only rather than offering a Save that would fail.
-        const canSave = extra.authInfo?.scopes.includes("profile:write") === true;
+        const canSave = extra.http?.authInfo?.scopes.includes("profile:write") === true;
         return {
           ...json({ ...result.text, savesToAccount: canSave }),
           _meta: { [PROFILE_META_KEY]: { ...result.chart, canSave } },
@@ -354,11 +356,11 @@ export function initMcpServer(server: McpServer) {
       "get_sun_forecast",
       {
         description: "The NEXT FEW DAYS of vitamin D sun at a location, using the live Open-Meteo forecast: per day the peak UV, average cloud cover, the synthesis window and the minutes needed, plus bestDay. Use this for any question spanning several days — 'which day this week should I go out', 'will it be better tomorrow', 'when's my next chance' — instead of calling get_vitamin_d_window once per date.",
-        inputSchema: {
+        inputSchema: z.object({
           lat: LAT, lon: LON, timezone: TZ, ...PROFILE,
           days: z.number().int().min(2).max(7).optional()
             .describe("How many days ahead, 2 to 7; default 5"),
-        },
+        }),
         _meta: { ui: { resourceUri: FORECAST_RESOURCE_URI } },
       },
       async (args) => timed("get_sun_forecast", async () => {
@@ -374,7 +376,7 @@ export function initMcpServer(server: McpServer) {
       "compare_vitamin_d_year",
       {
         description: "Compare the vitamin D year of 2 to 5 places side by side in ONE call — 'Madrid vs Berlin vs Oslo, where do I actually get winter sun?'. Returns each place's months with sun, exact season span and viable days per year, plus rankedByViableDays. Use this instead of calling get_vitamin_d_year once per city: only this tool can draw the years on a shared axis.",
-        inputSchema: {
+        inputSchema: z.object({
           places: z.array(z.object({
             name: z.string().min(1).max(60).describe("How to label this place in the comparison"),
             lat: LAT,
@@ -386,7 +388,7 @@ export function initMcpServer(server: McpServer) {
           exposedSkinFraction: PROFILE.exposedSkinFraction,
           age: PROFILE.age,
           targetIU: PROFILE.targetIU,
-        },
+        }),
         _meta: { ui: { resourceUri: YEAR_STRIP_RESOURCE_URI } },
       },
       async (args) => timed("compare_vitamin_d_year", () => {
@@ -403,7 +405,7 @@ export function initMcpServer(server: McpServer) {
       "get_current_status",
       {
         description: "Whether RIGHT NOW is a good moment for vitamin D synthesis at a location, using live Open-Meteo UV/cloud data when reachable (clear-sky model otherwise): current UV index, minutes needed now, and when today's window opens or closes.",
-        inputSchema: { lat: LAT, lon: LON, timezone: TZ, ...PROFILE },
+        inputSchema: z.object({ lat: LAT, lon: LON, timezone: TZ, ...PROFILE }),
         _meta: { ui: { resourceUri: DAY_CURVE_RESOURCE_URI } },
       },
       async (args) => timed("get_current_status", async () => {
@@ -415,10 +417,11 @@ export function initMcpServer(server: McpServer) {
       }),
     );
 
-    server.tool(
+    server.registerTool(
       "estimate_sun_session",
-      "Estimate a sun session's outcome: 'I was (or will be) out N minutes — how much vitamin D did I make?' plus 'how long before I'd burn?' for the profile. Takes a start time (defaults to the day's best hour) and session minutes; returns estimated IU (with the physiological cap), average UV and clear-sky minutes-to-sunburn. Use for any 'how much did I get / can I get in X minutes' or 'how long without burning' question.",
       {
+        description: "Estimate a sun session's outcome: 'I was (or will be) out N minutes — how much vitamin D did I make?' plus 'how long before I'd burn?' for the profile. Takes a start time (defaults to the day's best hour) and session minutes; returns estimated IU (with the physiological cap), average UV and clear-sky minutes-to-sunburn. Use for any 'how much did I get / can I get in X minutes' or 'how long without burning' question.",
+        inputSchema: z.object({
         lat: LAT, lon: LON, date: DATE, timezone: TZ,
         skinType: PROFILE.skinType,
         exposedSkinFraction: PROFILE.exposedSkinFraction,
@@ -427,9 +430,9 @@ export function initMcpServer(server: McpServer) {
         startTime: z.string().regex(/^\d{1,2}:\d{2}$/).optional()
           .describe("Local HH:MM the session starts; defaults to the day's best hour"),
         minutes: z.number().min(1).max(600).describe("Session length in minutes"),
+      }),
       },
-      async (args) => timed("estimate_sun_session", () => json(estimateSunSessionTool(args))),
-    );
+      async (args) => timed("estimate_sun_session", () => json(estimateSunSessionTool(args))));
 
     // ------------------------------------------------------------------
     // Personal tools (OAuth). Registered unconditionally so clients can
@@ -441,44 +444,47 @@ export function initMcpServer(server: McpServer) {
       return s;
     };
 
-    server.tool(
+    server.registerTool(
       "get_my_profile",
-      "The signed-in user's saved Vitamin D profile: skin type, exposed-skin default, age, target IU and their current city. Requires connecting with OAuth (scope profile:read). Call this FIRST for any personal question, then pass its values to the public tools instead of asking the user.",
-      {},
-      personal("get_my_profile", "profile:read", (userId) => myProfileTool(store(), userId)),
-    );
-
-    server.tool(
-      "get_my_cities",
-      "The signed-in user's current city and favorite cities with coordinates and timezones, ready to feed into the public tools. Requires OAuth (scope profile:read).",
-      {},
-      personal("get_my_cities", "profile:read", (userId) => myCitiesTool(store(), userId)),
-    );
-
-    server.tool(
-      "update_my_profile",
-      "Save the signed-in user's synthesis profile — skin type, exposed-skin fraction, age and target IU — to their account, so the app and every later call use them. Requires OAuth (scope profile:write). Only these four values are writable; favourites, cities and history are not.",
       {
+        description: "The signed-in user's saved Vitamin D profile: skin type, exposed-skin default, age, target IU and their current city. Requires connecting with OAuth (scope profile:read). Call this FIRST for any personal question, then pass its values to the public tools instead of asking the user.",
+        inputSchema: z.object({}),
+      },
+      personal("get_my_profile", "profile:read", (userId) => myProfileTool(store(), userId)));
+
+    server.registerTool(
+      "get_my_cities",
+      {
+        description: "The signed-in user's current city and favorite cities with coordinates and timezones, ready to feed into the public tools. Requires OAuth (scope profile:read).",
+        inputSchema: z.object({}),
+      },
+      personal("get_my_cities", "profile:read", (userId) => myCitiesTool(store(), userId)));
+
+    server.registerTool(
+      "update_my_profile",
+      {
+        description: "Save the signed-in user's synthesis profile — skin type, exposed-skin fraction, age and target IU — to their account, so the app and every later call use them. Requires OAuth (scope profile:write). Only these four values are writable; favourites, cities and history are not.",
+        inputSchema: z.object({
         skinType: PROFILE.skinType,
         exposedSkinFraction: PROFILE.exposedSkinFraction,
         age: z.number().min(0).max(120).nullable().optional()
           .describe("Age in years, or null for the adult baseline"),
         targetIU: PROFILE.targetIU,
+      }),
       },
       personal(
         "update_my_profile",
         "profile:write",
         (userId, args: { skinType?: number; exposedSkinFraction?: number; age?: number | null; targetIU?: number }) =>
           updateMyProfileTool(store(), userId, args),
-      ),
-    );
+      ));
 
     registerAppTool(
       server,
       "get_my_history",
       {
         description: "The signed-in user's sun history from the app's calendar: which recent days had viable sun, which they confirmed going outside, and their current streak. Covers the calendar days from `from` to `to`; records exist only for days the app was open, so a date missing from `records` means nothing was measured, not that the sun was insufficient. Requires OAuth (scope history:read). Renders as a calendar the user can tap to confirm a day.",
-        inputSchema: { days: z.number().int().min(1).max(365).optional().describe("How many recent days to return; default 30") },
+        inputSchema: z.object({ days: z.number().int().min(1).max(365).optional().describe("How many recent days to return; default 30") }),
         _meta: { ui: { resourceUri: HISTORY_RESOURCE_URI } },
       },
       personal(
@@ -489,36 +495,38 @@ export function initMcpServer(server: McpServer) {
       ),
     );
 
-    server.tool(
+    server.registerTool(
       "log_sun_session",
-      "Sets a day's answer in the signed-in user's history calendar. Three values: confirmed=true (went out, the default), confirmed=false (had usable sun but stayed in), confirmed=null (clear the answer). Defaults to today. Requires OAuth (scope history:write).",
       {
+        description: "Sets a day's answer in the signed-in user's history calendar. Three values: confirmed=true (went out, the default), confirmed=false (had usable sun but stayed in), confirmed=null (clear the answer). Defaults to today. Requires OAuth (scope history:write).",
+        inputSchema: z.object({
         date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional().describe("Day to set, YYYY-MM-DD; defaults to today"),
         minutes: z.number().min(1).max(600).optional().describe("Minutes the user reports having spent in the sun (acknowledged, not stored)"),
         confirmed: z.boolean().nullable().optional()
           .describe("true (default) the user went out; false they had sun but stayed in; null clears the answer"),
+      }),
       },
       personal("log_sun_session", "history:write",
-        (userId, args: { date?: string; minutes?: number; confirmed?: boolean | null }) => logSunSessionTool(store(), userId, args)),
-    );
+        (userId, args: { date?: string; minutes?: number; confirmed?: boolean | null }) => logSunSessionTool(store(), userId, args)));
 
-    server.tool(
+    server.registerTool(
       "set_history_location",
-      "Records where the signed-in user was over a range of past days, so their history stops assuming. "
+      {
+        description: "Records where the signed-in user was over a range of past days, so their history stops assuming. "
       + "Use it when the user corrects a stretch — get_my_history marks inherited days with `locationAssumed`, "
       + "and the history calendar offers those stretches for correction. Pass a cityId from search_city, or lat/lon. "
       + "Changes only the location: whether they went outside that day is untouched. Requires OAuth (scope history:write).",
-      {
+        inputSchema: z.object({
         from: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).describe("First day of the stretch, YYYY-MM-DD"),
         to: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).describe("Last day of the stretch, YYYY-MM-DD; same as `from` for one day"),
         cityId: z.string().max(80).optional().describe("City id from search_city, e.g. 'builtin:londres'"),
         lat: z.number().min(-90).max(90).optional().describe("Latitude, for a place not in the database"),
         lon: z.number().min(-180).max(180).optional().describe("Longitude, paired with lat"),
+      }),
       },
       personal("set_history_location", "history:write",
         (userId, args: { from: string; to: string; cityId?: string; lat?: number; lon?: number }) =>
-          setHistoryLocationTool(store(), userId, args)),
-    );
+          setHistoryLocationTool(store(), userId, args)));
 }
 
 /**

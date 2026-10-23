@@ -1,5 +1,6 @@
 import { createMcpHandler, withMcpAuth } from "mcp-handler";
 import { initMcpServer, verifyToken, SERVER_INFO } from "@/lib/mcp-server";
+import { withMcpBodyLimit } from "@/lib/mcp-http";
 
 /**
  * PUBLIC MCP endpoint (/api/mcp/mcp): auth is optional, so the calculation
@@ -7,12 +8,21 @@ import { initMcpServer, verifyToken, SERVER_INFO } from "@/lib/mcp-server";
  * MCP clients will not initiate the OAuth flow here — users who want the
  * personal tools connect the account endpoint (/api/mcp-auth/mcp) instead.
  */
+// SDK input traversal limits are opt-in; ordinary tool payloads are small.
+const handlerOptions: NonNullable<Parameters<typeof createMcpHandler>[1]> & { maxToolInputElements: number } = {
+  serverInfo: SERVER_INFO, verboseLogs: false, maxSubscriptions: 0, maxToolInputElements: 10000,
+};
 const handler = createMcpHandler(
   initMcpServer,
-  { serverInfo: SERVER_INFO },
-  { basePath: "/api/mcp", verboseLogs: false, maxDuration: 30 },
+  handlerOptions,
 );
 
-const authHandler = withMcpAuth(handler, verifyToken, { required: false });
+const authHandler = withMcpAuth(withMcpBodyLimit(handler), verifyToken, { required: false });
 
-export { authHandler as GET, authHandler as POST, authHandler as DELETE };
+// Keep the existing stateless endpoint; the SDK no longer owns path routing.
+export const maxDuration = 30;
+const routeHandler = (request: Request) => new URL(request.url).pathname === "/api/mcp/mcp"
+  ? authHandler(request)
+  : Promise.resolve(new Response(null, { status: 404 }));
+
+export { routeHandler as GET, routeHandler as POST, routeHandler as DELETE };

@@ -180,7 +180,7 @@ sigue existiendo como fallback — si lo usas, la disciplina vuelve a ser tuya.
 
 - `npm install` solo cuando se cambia `package.json`, y el lockfile resultante
   se commitea en el mismo PR (CI usa `npm ci` y falla si se desincronizan).
-- Node 22 (el de CI). Actualizaciones de Next/React en PR propio, con CI verde
+- Node 24.22.1 (el de CI y `.node-version`). Actualizaciones de Next/React en PR propio, con CI verde
   y deploy a `vitamind-dev` antes que a prod.
 - `.env.example` se actualiza en el mismo PR que introduce una env var nueva,
   y CLAUDE.md (§ env vars) si es operacionalmente relevante.
@@ -193,3 +193,25 @@ sigue existiendo como fallback — si lo usas, la disciplina vuelve a ser tuya.
   de tests) es el ejemplo de lo que no puede repetirse.
 - Los incidentes de producción se documentan en CLAUDE.md (qué pasó, cómo se
   detectó, cómo prevenirlo), como los dos de env vars corruptas.
+
+## Security runtime baseline (23 October 2026)
+
+Use Node 24.22.1, Next.js and eslint-config-next 16.4.1 or later within major 16,
+and sharp 0.35.5 or later. Next 16.3.8 is below the security floor in the
+[official 14 October update](https://nextjs.org/blog/nextjs-security-update-october-14-2026),
+which addresses Cache Components RCE, SVG image processing RCE and Server Actions DoS.
+
+The MCP parent cohort is mcp-handler 2.3, ext-apps 2.0.3, SDK 2.3.1 and Zod 4.
+The public/account paths and scope checks remain separate. Tool input traversal
+is capped at 10,000 members/elements and new subscriptions are disabled. The
+shared route wrapper bounds JSON POST streams to 4 MiB before the handler can
+clone or parse them, cancelling oversized streams even without Content-Length.
+It runs inside authentication, so the account endpoint challenges before reading
+the body. Accepted requests retain their headers, signal and verified identity.
+
+Local verification used synthetic HTTP requests, mocked account boundaries and
+self-contained widget bundles. The 22 HTTP/wire contracts passed after the Next 16.4.1 update and body guard.
+The 210 other scoped test results predate that update and were not rerun. The
+57 history-widget checks passed afterward using the threads pool because the
+forks worker failed to start locally. CI must still run the full suite on the
+final commit before merge is considered. No local Next build or deployed verification was run.

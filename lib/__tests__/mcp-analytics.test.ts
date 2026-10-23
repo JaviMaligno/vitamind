@@ -132,7 +132,7 @@ describe("MCP registration analytics integration", () => {
       favorites: [], custom_locations: [], last_city_id: null, history: [] };
     const getProfile = vi.fn().mockResolvedValue(exists ? profile : null);
     vi.spyOn(personal, "getProfileStore").mockReturnValue({getProfile, updateHistory: vi.fn(), updateProfile: vi.fn()});
-    const result = await registered().get("get_my_profile")!({}, {authInfo: {scopes: ["profile:read"], extra: {userId: "private-user"}}});
+    const result = await registered().get("get_my_profile")!({}, {http: {authInfo: {scopes: ["profile:read"], extra: {userId: "private-user"}}}});
     expect(getProfile).toHaveBeenCalledExactlyOnceWith("private-user");
     expect(JSON.parse(result.content[0].text)).toMatchObject(exists ? {skinType: 3} : {error: "no_profile"});
     await flush();
@@ -142,7 +142,7 @@ describe("MCP registration analytics integration", () => {
   });
 
   it("records insufficient OAuth scope without touching the profile store", async () => {
-    const result = await registered().get("get_my_profile")!({}, {authInfo: {scopes: [], extra: {userId: "private-user"}}});
+    const result = await registered().get("get_my_profile")!({}, {http: {authInfo: {scopes: [], extra: {userId: "private-user"}}}});
     expect(JSON.parse(result.content[0].text).error).toBe("insufficient_scope");
     await flush();
     expect(mocks.insert).toHaveBeenCalledTimes(1);

@@ -32,10 +32,13 @@ import { PROFILE_META_KEY } from "@/widgets/profile/data";
  * mcp-handler returns a web-standard `fetch(Request) => Response`, so no Next
  * server is needed. Responses may come back as SSE, hence the `data:` unwrapping.
  */
+// SDK input traversal limits are opt-in; ordinary tool payloads are small.
+const handlerOptions: NonNullable<Parameters<typeof createMcpHandler>[1]> & { maxToolInputElements: number } = {
+  serverInfo: SERVER_INFO, verboseLogs: false, maxSubscriptions: 0, maxToolInputElements: 10000,
+};
 const handler = createMcpHandler(
   initMcpServer,
-  { serverInfo: SERVER_INFO },
-  { basePath: "/api/mcp", verboseLogs: false, maxDuration: 30 },
+  handlerOptions,
 );
 
 let sessionId: string | undefined;
@@ -78,13 +81,10 @@ async function connect() {
  * the UV number is irrelevant, and the live path is covered by
  * app/api/__tests__/weather-route.test.ts, which mocks fetch too.
  */
-const realFetch = globalThis.fetch;
 beforeAll(() => {
-  vi.stubGlobal("fetch", (input: RequestInfo | URL, init?: RequestInit) => {
-    const url = typeof input === "string" ? input : input instanceof URL ? input.href : input.url;
-    if (url.includes("open-meteo.com")) return Promise.reject(new Error("offline in tests"));
-    return realFetch(input, init);
-  });
+  // Every upstream is synthetic here, including unexpected ones introduced by a
+  // transport upgrade. Never delegate to real fetch from a protocol unit test.
+  vi.stubGlobal("fetch", () => Promise.reject(new Error("offline in tests")));
 });
 afterAll(() => vi.unstubAllGlobals());
 
