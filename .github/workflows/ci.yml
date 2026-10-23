@@ -43,6 +43,10 @@ on:
       - '.gitignore'
       - '.gitattributes'
   pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
 
 jobs:
   # Fast feedback before merging. On push this is redundant — vercel.json's
@@ -62,11 +66,11 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: '24.22.1'
           cache: npm
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --ignore-scripts --no-audit --no-fund
 
       - name: Lint
         run: npm run lint
@@ -75,11 +79,13 @@ jobs:
         run: npm run typecheck
 
       - name: Unit tests
+        if: github.event.pull_request.draft == false
         run: npm test
 
       # prebuild generates public/sw.js; without git metadata build-sw.mjs
       # falls back to a dev- cache version, which is fine for CI.
       - name: Build
+        if: github.event.pull_request.draft == false
         run: npm run build
 
   # Production deploy: only after the full quality gate, only on master pushes.
@@ -105,6 +111,10 @@ jobs:
       cancel-in-progress: false
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.22.1'
+          cache: npm
 
       # Captured BEFORE deploying: Vercel purges the edge cache per deploy, so
       # this read is the sitemap of the deploy that is currently live — exactly
@@ -146,11 +156,6 @@ jobs:
           VERCEL_PROJECT_ID: prj_5Fe55OLq4R3Uk1zz1NCMwsB4jH7t
         run: npx vercel@latest deploy --prod --yes --token "$VERCEL_TOKEN"
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
-
       # Tells Bing/Yandex/Seznam/Naver which pages this deploy added. The URL
       # list comes from this commit's app/sitemap.ts (not from the network), so
       # it needs no waiting for cache purges. Only new URLs are submitted:
@@ -180,6 +185,10 @@ jobs:
       cancel-in-progress: false
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.22.1'
+          cache: npm
       - name: Deploy to Vercel (dev preview + stable alias)
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}

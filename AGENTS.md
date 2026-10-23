@@ -21,7 +21,7 @@ npm run test:watch  # Vitest watch mode
 npm run e2e         # Standalone Playwright install-awareness script (needs BASE_URL)
 ```
 
-**Quality gate:** `.github/workflows/ci.yml` runs lint + typecheck + test + build on every push/PR. All four must pass before deploying. See `docs/PRODUCTION_READINESS.md` for the practices that keep this project production-ready — read it before touching deploys, env vars, Supabase policies, or the push pipeline.
+**Quality gate:** `.github/workflows/ci.yml` runs lint + typecheck on draft PRs; ready PRs (including `ready_for_review`) run tests + build as well. All four must pass before deploying. See `docs/PRODUCTION_READINESS.md` for the practices that keep this project production-ready — read it before touching deploys, env vars, Supabase policies, or the push pipeline.
 
 ## Upstream failures page someone: `docs/ops-alerts.md`
 
