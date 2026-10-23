@@ -63,7 +63,7 @@ Best,
 Javier
 ```
 
-### 2. BetterYou - Sarah Peel
+### 2. BetterYou - Sarah Peel (Done)
 
 Perfil/rol: Marketing Director en BetterYou Ltd. +25 anos de experiencia en marketing (Procter & Gamble, Merck, GSK).
 
@@ -225,7 +225,7 @@ Un saludo,
 Javier
 ```
 
-### 6. MARNYS - Luca D'Ambrosio
+### 6. MARNYS - Luca D'Ambrosio (Done)
 
 Perfil/rol: CEO de MARNYS (Martinez Nieto S.A.) desde mayo 2024. Decision-maker maximo para partnerships estrategicos.
 
