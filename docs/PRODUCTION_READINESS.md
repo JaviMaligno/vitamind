@@ -204,13 +204,14 @@ which addresses Cache Components RCE, SVG image processing RCE and Server Action
 The MCP parent cohort is mcp-handler 2.3, ext-apps 2.0.3, SDK 2.3.1 and Zod 4.
 The public/account paths and scope checks remain separate. Tool input traversal
 is capped at 10,000 members/elements and new subscriptions are disabled. The
-handler parses a cloned JSON request before the SDK body bound; do not claim
-that the SDK's 4 MiB bound limits every earlier read. No platform body limit
-has been established by this local review.
+shared route wrapper bounds JSON POST streams to 4 MiB before the handler can
+clone or parse them, cancelling oversized streams even without Content-Length.
+It runs inside authentication, so the account endpoint challenges before reading
+the body. Accepted requests retain their headers, signal and verified identity.
 
 Local verification used synthetic HTTP requests, mocked account boundaries and
-self-contained widget bundles. The 18 HTTP/wire contracts and 210 scoped tests
-passed before the final Next 16.4.1 update; they were not rerun afterward. The
+self-contained widget bundles. The 22 HTTP/wire contracts passed after the Next 16.4.1 update and body guard.
+The 210 other scoped test results predate that update and were not rerun. The
 57 history-widget checks passed afterward using the threads pool because the
 forks worker failed to start locally. CI must still run the full suite on the
-final commit before readiness. No local Next build or deployed verification was run.
+final commit before merge is considered. No local Next build or deployed verification was run.

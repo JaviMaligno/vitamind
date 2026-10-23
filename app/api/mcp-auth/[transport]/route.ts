@@ -1,5 +1,6 @@
 import { createMcpHandler, withMcpAuth } from "mcp-handler";
 import { initMcpServer, verifyToken, SERVER_INFO } from "@/lib/mcp-server";
+import { withMcpBodyLimit } from "@/lib/mcp-http";
 
 /**
  * ACCOUNT MCP endpoint (/api/mcp-auth/mcp): same tool set as /api/mcp/mcp but
@@ -16,7 +17,7 @@ const handler = createMcpHandler(
   handlerOptions,
 );
 
-const authHandler = withMcpAuth(handler, verifyToken, { required: true });
+const authHandler = withMcpAuth(withMcpBodyLimit(handler), verifyToken, { required: true });
 
 // Keep the existing stateless endpoint; the SDK no longer owns path routing.
 export const maxDuration = 30;

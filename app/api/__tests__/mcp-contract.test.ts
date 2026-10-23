@@ -42,6 +42,70 @@ async function call(handler: typeof publicPost, endpoint: string, name: string, 
 }
 
 describe("MCP public and account HTTP contracts", () => {
+  function streamingRequest(endpoint: string, declaredLength?: number, contentType = "application/json") {
+    let pulls = 0;
+    let cancelled = false;
+    const chunk = new Uint8Array(64 * 1024).fill(32);
+    const stream = new ReadableStream<Uint8Array>({
+      pull(controller) {
+        pulls++;
+        if (pulls <= 128) controller.enqueue(chunk);
+        else {
+          controller.enqueue(new TextEncoder().encode("{}"));
+          controller.close();
+        }
+      },
+      cancel() { cancelled = true; },
+    }, { highWaterMark: 0 });
+    const options: RequestInit & { duplex: "half" } = {
+      method: "POST", body: stream, duplex: "half",
+      headers: {
+        "content-type": contentType,
+        accept: "application/json, text/event-stream",
+        ...(declaredLength === undefined ? {} : { "content-length": String(declaredLength) }),
+      },
+    };
+    return {
+      request: new Request(`https://fixture.invalid${endpoint}`, options),
+      pulls: () => pulls, cancelled: () => cancelled,
+    };
+  }
+
+  it("rejects an oversized declared JSON body before parsing it", async () => {
+    const fixture = streamingRequest("/api/mcp/mcp", 8 * 1024 * 1024 + 2);
+    const response = await publicPost(fixture.request);
+    expect(response.status).toBe(413);
+    expect(fixture.pulls()).toBe(0);
+    expect(fixture.cancelled()).toBe(true);
+    expect(mocks.getProfile).not.toHaveBeenCalled();
+  });
+
+  it("bounds JSON streaming without a Content-Length header", async () => {
+    const fixture = streamingRequest("/api/mcp/mcp");
+    const response = await publicPost(fixture.request);
+    expect(response.status).toBe(413);
+    expect(fixture.pulls()).toBeLessThanOrEqual(65);
+    expect(fixture.cancelled()).toBe(true);
+    expect(mocks.getProfile).not.toHaveBeenCalled();
+  });
+
+  it("challenges the account before reading even an oversized body", async () => {
+    const fixture = streamingRequest("/api/mcp-auth/mcp", 8 * 1024 * 1024 + 2);
+    const response = await accountPost(fixture.request);
+    expect(response.status).toBe(401);
+    expect(response.headers.get("www-authenticate")).toContain("resource_metadata=");
+    expect(fixture.pulls()).toBe(0);
+    expect(mocks.getProfile).not.toHaveBeenCalled();
+  });
+
+  it("also bounds malformed content types that the handler attempts to JSON-parse", async () => {
+    const fixture = streamingRequest("/api/mcp/mcp", undefined, "application/json-malformed");
+    const response = await publicPost(fixture.request);
+    expect(response.status).toBe(413);
+    expect(fixture.pulls()).toBeLessThanOrEqual(65);
+    expect(fixture.cancelled()).toBe(true);
+  });
+
   it("keeps public tools available without an account", async () => {
     const { response, message } = await call(publicPost, "/api/mcp/mcp", "search_city");
     expect(response.status).toBe(200);
