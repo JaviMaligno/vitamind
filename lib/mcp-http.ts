@@ -48,9 +48,15 @@ export function withMcpBodyLimit(handler: (request: Request) => Promise<Response
       body.set(chunk, offset);
       offset += chunk.byteLength;
     }
-    // Request copies URL, method, headers and abort signal. withMcpAuth's verified
-    // MCP identity is an extension on the request, so carry it over explicitly.
-    const bounded = new Request(request, { body });
+    // Next proxies NextRequest. Passing that Proxy to Request's constructor
+    // accesses native private slots and throws on Node 24. Copy public fields
+    // instead; withMcpAuth's verified identity also needs carrying explicitly.
+    const bounded = new Request(request.url, {
+      method: request.method,
+      headers: request.headers,
+      signal: request.signal,
+      body,
+    });
     const authenticated = request as Request & { auth?: AuthInfo };
     Object.assign(bounded, { auth: authenticated.auth });
     return handler(bounded);

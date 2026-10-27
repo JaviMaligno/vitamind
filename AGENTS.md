@@ -23,6 +23,16 @@ npm run e2e         # Standalone Playwright install-awareness script (needs BASE
 
 **Quality gate:** `.github/workflows/ci.yml` runs lint + typecheck on draft PRs; ready PRs (including `ready_for_review`) run tests + build as well. All four must pass before deploying. See `docs/PRODUCTION_READINESS.md` for the practices that keep this project production-ready — read it before touching deploys, env vars, Supabase policies, or the push pipeline.
 
+## MCP HTTP 500 with Node 24 and Next's request proxy (27 October 2026)
+
+Glama health checks exposed `Cannot read private member #state` after the
+23 October body-limit rollout. Next wraps route requests in a Proxy; native
+`new Request(request, { body })` cannot copy its private slots. Construct bounded
+requests from `request.url` and explicit method, headers, signal and body, then
+carry the verified OAuth identity. The HTTP contract tests reproduce Next's
+proxy for initialize, tools/list and an authenticated personal tool. Always
+verify the deployed preview: plain synthetic Request tests missed this failure.
+
 ## Upstream failures page someone: `docs/ops-alerts.md`
 
 Hobby keeps Vercel runtime logs for **one hour** and has no alerts, so upstream
