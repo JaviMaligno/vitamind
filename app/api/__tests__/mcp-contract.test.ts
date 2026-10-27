@@ -1,5 +1,6 @@
 // @vitest-environment node
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { NextRequest } from "next/server";
 
 const mocks = vi.hoisted(() => ({ verifyToken: vi.fn(), getProfile: vi.fn() }));
 vi.mock("@/lib/mcp-analytics", () => ({
@@ -42,6 +43,46 @@ async function call(handler: typeof publicPost, endpoint: string, name: string, 
 }
 
 describe("MCP public and account HTTP contracts", () => {
+  // Next's app-route module proxies NextRequest and binds methods/getters to
+  // the target. Native Request's constructor still cannot copy that Proxy's
+  // private slots (Node 24: "Cannot read private member #state").
+  function nextRouteRequest(endpoint: string, message: unknown, token?: string) {
+    return new Proxy(new NextRequest(`https://fixture.invalid${endpoint}`, {
+      method: "POST",
+      headers: { "content-type": "application/json", accept: "application/json, text/event-stream", ...(token ? { authorization: `Bearer ${token}` } : {}) },
+      body: JSON.stringify(message),
+    }), {
+      get(target, property) {
+        const value = Reflect.get(target, property, target);
+        return typeof value === "function" ? value.bind(target) : value;
+      },
+    });
+  }
+
+  it.each([
+    ["initialize", { protocolVersion: "2025-06-18", capabilities: {}, clientInfo: { name: "health-check", version: "1" } }],
+    ["tools/list", {}],
+  ])("H1: accepts %s through Next's proxied request", async (method, params) => {
+    const response = await publicPost(nextRouteRequest("/api/mcp/mcp", { jsonrpc: "2.0", id: 1, method, params }));
+    expect(response.status).toBe(200);
+    const body = await response.text();
+    const data = body.split("\n").find((line) => line.startsWith("data:"));
+    const message = JSON.parse(data ? data.slice(5) : body);
+    expect(message.error).toBeUndefined();
+    if (method === "tools/list") expect(message.result.tools).toHaveLength(15);
+    else expect(message.result.serverInfo.name).toBe("vitamind-explorer");
+  });
+
+  it("H2: preserves OAuth identity through Next's proxied request", async () => {
+    mocks.verifyToken.mockResolvedValue({ token: "synthetic", clientId: "fixture", scopes: ["profile:read"], extra: { userId: "user-own" } });
+    const response = await accountPost(nextRouteRequest("/api/mcp-auth/mcp", {
+      jsonrpc: "2.0", id: 1, method: "tools/call", params: { name: "get_my_profile", arguments: {} },
+    }, "synthetic"));
+    expect(response.status).toBe(200);
+    expect(await response.text()).toContain('\\"skinType\\": 2');
+    expect(mocks.getProfile).toHaveBeenCalledExactlyOnceWith("user-own");
+  });
+
   function streamingRequest(endpoint: string, declaredLength?: number, contentType = "application/json") {
     let pulls = 0;
     let cancelled = false;

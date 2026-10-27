@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { afterEach, describe, it, expect, vi } from "vitest";
 import {
   searchCity, sunTimesTool, vitaminDWindowTool, vitaminDYearTool, currentStatusTool,
   estimateSunSessionTool,
@@ -171,6 +171,8 @@ describe("estimateSunSessionTool", () => {
 });
 
 describe("currentStatusTool", () => {
+  afterEach(() => vi.useRealTimers());
+
   it("falls back to the clear-sky model when weather is unreachable", async () => {
     const r = await currentStatusTool(
       { lat: 40.42, lon: -3.7, timezone: "Europe/Madrid" },
@@ -181,6 +183,10 @@ describe("currentStatusTool", () => {
   });
 
   it("uses injected weather data when available", async () => {
+    // Match the forecast fixture's date. Wall-clock October/winter UV can
+    // have no synthesis window, regardless of the assertions below.
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(new Date("2026-09-22T10:00:00Z"));
     // A physically-shaped day: the forecast follows the sun's own curve at a
     // steady 85% transmission, which is what a thin, even haze looks like.
     //
