@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import type { NowStatus } from "@/lib/types";
 import { useSolarPhase } from "@/hooks/useSolarPhase";
@@ -44,6 +45,10 @@ export default function DayHeroBold({ nowStatus, cityName, cityFlag, targetIU, l
   const locale = useLocale();
   const phase = useSolarPhase(lat, lon) ?? "day";
   const ns = nowStatus;
+  // The reader's own report that no cloud is between them and the sun. The
+  // forecast cannot know it, so the direct-sun figures stay hidden until they
+  // say so — an estimate nobody asked for would contradict the headline.
+  const [inDirectSun, setInDirectSun] = useState(false);
 
   const statusKey = getStatusKey(ns);
   // "optimal" green follows the phase (mint by day, neon at night) so it stops
@@ -186,16 +191,32 @@ export default function DayHeroBold({ nowStatus, cityName, cityFlag, targetIU, l
             )}
 
             {directSun && (
-              <div className="max-w-2xl rounded-2xl border border-white/20 bg-white/10 px-4 py-3 backdrop-blur-sm">
-                <p className="text-body font-semibold text-white">☀️ {t("directSunTitle")}</p>
-                <p className="mt-1 text-sm sm:text-body text-white/85">
-                  {t("directSunBody", {
-                    uvi: ns.clearSkyNowUVI.toFixed(1),
-                    minutes: fmtMin(ns.clearSkyMinutesNow ?? 0),
-                    iu: targetIU,
-                  })}
-                </p>
-                <p className="mt-1 text-caption text-white/60">{t("directSunNote")}</p>
+              <div className="max-w-2xl">
+                <button
+                  type="button"
+                  aria-pressed={inDirectSun}
+                  onClick={() => setInDirectSun((v) => !v)}
+                  className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold transition-colors ${
+                    inDirectSun
+                      ? "border-white bg-white text-slate-900"
+                      : "border-white/40 bg-white/10 text-white hover:bg-white/20"
+                  }`}
+                >
+                  <span aria-hidden>{inDirectSun ? "✓" : "☀️"}</span>
+                  {t("directSunToggle")}
+                </button>
+                {inDirectSun && (
+                  <div className="mt-3 rounded-2xl border border-white/20 bg-white/10 px-4 py-3 backdrop-blur-sm">
+                    <p className="text-sm sm:text-body text-white/90">
+                      {t("directSunBody", {
+                        uvi: ns.clearSkyNowUVI.toFixed(1),
+                        minutes: fmtMin(ns.clearSkyMinutesNow ?? 0),
+                        iu: targetIU,
+                      })}
+                    </p>
+                    <p className="mt-1 text-caption text-white/60">{t("directSunNote")}</p>
+                  </div>
+                )}
               </div>
             )}
 
