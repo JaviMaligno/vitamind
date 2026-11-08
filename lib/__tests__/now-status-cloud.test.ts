@@ -256,3 +256,54 @@ describe("getCurrentStatus — cloud vs sun", () => {
     expect(noWeather.window).toEqual(noWeather.clearSkyWindow);
   });
 });
+
+/**
+ * Broken cloud, reported from Orvieto on 2026-11-08: inside the clear-sky window,
+ * the hero said the clouds were blocking synthesis while the reader was standing
+ * in full sun between them. The forecast is a grid-cell average; the beam on a
+ * sunlit patch is close to the clear-sky value, and the app must be able to say
+ * what that value is.
+ */
+describe("getCurrentStatus — direct sun under broken cloud", () => {
+  const doy = doyFromMonthDay(8, 22);
+  const ozoneDu = ozoneDU(LONDON.lat, LONDON.lon, doy);
+  const curve = getCurve(LONDON.lat, LONDON.lon, doy, LONDON.tz, LONDON.timezone);
+  const ctx = { ozoneDu, elevationM: LONDON.elevation };
+  const noon = new Date("2026-09-22T11:30:00Z");
+
+  it("reports this minute's clear-sky UV and dose even when the cloud closes the window", () => {
+    const s = getCurrentStatus(
+      { hours: attenuated(curve, ozoneDu, 0.5) }, curve, 3, 0.25, 1000, null, noon, LONDON.timezone, ctx,
+    );
+    expect(s.cloudDegraded).toBe(true);
+    expect(s.effectiveUVI).toBeLessThan(MIN_UVI);
+    expect(s.clearSkyNowUVI).toBeGreaterThanOrEqual(MIN_UVI);
+    // Roughly twice the cloudy reading, since the fixture lets half through.
+    expect(s.clearSkyNowUVI / s.effectiveUVI).toBeGreaterThan(1.6);
+    expect(s.clearSkyNowUVI / s.effectiveUVI).toBeLessThan(2.4);
+    expect(s.clearSkyMinutesNow).not.toBeNull();
+    expect(s.clearSkyMinutesNow!).toBeGreaterThan(0);
+  });
+
+  it("follows the forecast's clear-sky scale, not only our model's", () => {
+    const base = attenuated(curve, ozoneDu, 0.5);
+    const brighter = base.map((h) => ({ ...h, uvIndex: h.uvIndex * 1.3, uvIndexClearSky: h.uvIndexClearSky! * 1.3 }));
+    const a = getCurrentStatus({ hours: base }, curve, 3, 0.25, 1000, null, noon, LONDON.timezone, ctx);
+    const b = getCurrentStatus({ hours: brighter }, curve, 3, 0.25, 1000, null, noon, LONDON.timezone, ctx);
+    expect(b.clearSkyNowUVI / a.clearSkyNowUVI).toBeCloseTo(1.3, 1);
+  });
+
+  it("has no dose to offer when the sun alone is below the threshold", () => {
+    const evening = new Date("2026-09-22T17:30:00Z"); // 18:30 BST, low sun
+    const s = getCurrentStatus(
+      { hours: attenuated(curve, ozoneDu, 0.5) }, curve, 3, 0.25, 1000, null, evening, LONDON.timezone, ctx,
+    );
+    expect(s.clearSkyNowUVI).toBeLessThan(MIN_UVI);
+    expect(s.clearSkyMinutesNow).toBeNull();
+  });
+
+  it("matches the reading itself when there is no weather", () => {
+    const s = getCurrentStatus(null, curve, 3, 0.25, 1000, null, noon, LONDON.timezone, ctx);
+    expect(s.clearSkyNowUVI).toBeCloseTo(s.effectiveUVI, 0);
+  });
+});

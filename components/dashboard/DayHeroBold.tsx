@@ -1,11 +1,13 @@
 "use client";
 
+import { useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import type { NowStatus } from "@/lib/types";
 import { useSolarPhase } from "@/hooks/useSolarPhase";
 import { PHASE_STYLE } from "@/lib/solar-phase";
 import Flag from "@/components/ui/Flag";
 import { fmtTime } from "@/lib/solar";
+import { MIN_UVI } from "@/lib/vitd";
 import { formatCountdown, fmtMin, getStatusKey, type StatusKey } from "./day-status";
 
 /**
@@ -43,8 +45,29 @@ export default function DayHeroBold({ nowStatus, cityName, cityFlag, targetIU, l
   const locale = useLocale();
   const phase = useSolarPhase(lat, lon) ?? "day";
   const ns = nowStatus;
+  // The reader's own report that no cloud is between them and the sun. The
+  // forecast cannot know it, so the direct-sun figures stay hidden until they
+  // say so — an estimate nobody asked for would contradict the headline.
+  const [inDirectSun, setInDirectSun] = useState(false);
 
-  const statusKey = getStatusKey(ns);
+  // Broken cloud: the forecast is a grid-cell average, so it can say "too
+  // cloudy" while the reader is standing in full sun between two clouds. Offer
+  // the clear-sky reading for this minute whenever the sun alone would reach the
+  // threshold and the forecast's cloud is costing a real share of it. Without
+  // weather the two are the same number, so this never shows.
+  const directSun =
+    ns.clearSkyMinutesNow !== null &&
+    ns.clearSkyNowUVI >= MIN_UVI &&
+    ns.effectiveUVI < ns.clearSkyNowUVI * 0.9;
+  // Once the reader confirms it, the hero's VERDICT changes — not a card below
+  // it. Measured in the browser: a card left "No synthesis today" as the
+  // headline right above an estimate saying the opposite, and on a phone the
+  // card landed under the tab bar, so pressing the button showed nothing.
+  const sunMode = directSun && inDirectSun;
+
+  const statusKey: StatusKey = sunMode
+    ? ns.clearSkyNowUVI > 5 ? "optimal" : "moderate"
+    : getStatusKey(ns);
   // "optimal" green follows the phase (mint by day, neon at night) so it stops
   // reading as neon against the warm/light gradients; other states keep their hue.
   const dot = statusKey === "optimal" ? PHASE_STYLE[phase].stat : DOT[statusKey];
@@ -82,7 +105,13 @@ export default function DayHeroBold({ nowStatus, cityName, cityFlag, targetIU, l
       : t("noWindowHint");
   }
 
-  const showData = ns.state === "good_now" || ns.state === "upcoming";
+  if (sunMode) {
+    headline = t("directSunHeadline", { minutes: fmtMin(ns.clearSkyMinutesNow ?? 0) });
+    hint = t("directSunHint", { uvi: ns.clearSkyNowUVI.toFixed(1), iu: targetIU });
+  }
+
+  const showData = !sunMode && (ns.state === "good_now" || ns.state === "upcoming");
+
 
   return (
     <section className="relative isolate flex flex-col overflow-hidden rounded-[2rem] sm:rounded-[2.5rem] min-h-[300px] sm:min-h-[360px]">
@@ -159,7 +188,7 @@ export default function DayHeroBold({ nowStatus, cityName, cityFlag, targetIU, l
             <div className="flex items-center gap-2">
               <span className="inline-block h-2.5 w-2.5 rounded-full" style={{ background: dot }} />
               <span className="text-caption sm:text-sm font-semibold uppercase tracking-[0.2em]" style={{ color: dot }}>
-                {t(`now_${statusKey}`)}
+                {sunMode ? t("directSunPill") : t(`now_${statusKey}`)}
               </span>
             </div>
 
@@ -207,6 +236,23 @@ export default function DayHeroBold({ nowStatus, cityName, cityFlag, targetIU, l
                     <span className="ml-1 text-caption text-white/50">{t("forIU", { iu: targetIU })}</span>
                   </div>
                 )}
+              </div>
+            )}
+            {directSun && (
+              <div>
+                <button
+                  type="button"
+                  aria-pressed={inDirectSun}
+                  onClick={() => setInDirectSun((v) => !v)}
+                  className={`mt-1 inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold transition-colors ${
+                    inDirectSun
+                      ? "border-white bg-white text-slate-900"
+                      : "border-white/40 bg-white/10 text-white hover:bg-white/20"
+                  }`}
+                >
+                  <span aria-hidden>{inDirectSun ? "✓" : "☀️"}</span>
+                  {t("directSunToggle")}
+                </button>
               </div>
             )}
           </>

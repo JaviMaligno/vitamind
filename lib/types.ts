@@ -136,6 +136,20 @@ export interface NowStatus {
    * window, and which the app must not confuse.
    */
   cloudDegraded: boolean;
+  /**
+   * The UV index at THIS minute with no cloud in the way: the solar curve,
+   * calibrated onto the forecast's own `uv_index_clear_sky` where it has one.
+   *
+   * `effectiveUVI` is a grid-cell average — it blends the patches of sky that
+   * are cloudy with the ones that are not. Under broken cloud the reader may be
+   * standing in sunlight the cell average does not describe, and the direct beam
+   * on their skin is close to the clear-sky value. This is that value, so the
+   * app can answer "and if the sun is on me right now?" instead of only "what
+   * does the average cell see?". 0 at night or with no curve.
+   */
+  clearSkyNowUVI: number;
+  /** Minutes for the target dose at `clearSkyNowUVI`; null when it is below MIN_UVI. */
+  clearSkyMinutesNow: number | null;
 }
 
 export interface DayRecord {

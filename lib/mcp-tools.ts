@@ -782,6 +782,14 @@ async function buildCurrentStatus(args: VitDArgs, fetcher: WeatherFetcher) {
     // should be able to say where it came from.
     clearSkySource: status.clearSkySource,
     cloudDegraded: status.cloudDegraded,
+    // The forecast is a grid-cell average. Under broken cloud the user can be
+    // standing in direct sun the average does not describe, and the beam on
+    // their skin is close to the clear-sky value for this minute. This is the
+    // answer to "and if the sun is actually on me right now?".
+    directSunNow: {
+      uvIndex: Math.round(status.clearSkyNowUVI * 10) / 10,
+      minutesNeeded: status.clearSkyMinutesNow !== null ? Math.round(status.clearSkyMinutesNow) : null,
+    },
     bestHour: status.bestHour !== null ? hh(status.bestHour) : null,
     minutesUntilWindow: status.minutesUntilWindow,
     windowClosesInMinutes: status.windowClosesIn,
