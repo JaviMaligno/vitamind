@@ -550,12 +550,29 @@ export function getCurrentStatus(
   }
   const clearSkyWindow = csStart !== -1 ? { start: csStart, end: csEnd } : null;
 
+  // The sun on the reader's skin right now if no cloud is between them: the
+  // curve point nearest this minute, on the same calibrated scale as the window.
+  let clearSkyNowUVI = 0;
+  if (curve.length > 0) {
+    let nearest = curve[0];
+    for (const p of curve) {
+      if (Math.abs(p.localHours - nowHour) < Math.abs(nearest.localHours - nowHour)) nearest = p;
+    }
+    if (Math.abs(nearest.localHours - nowHour) <= 0.5) {
+      clearSkyNowUVI = calibratedClearSky(nearest.localHours, estimateUVFromElevation(nearest.elevation, ctx));
+    }
+  }
+  const clearSkyMinutesNow = clearSkyNowUVI >= MIN_UVI
+    ? minutesForVitD(clearSkyNowUVI, skinType, areaFraction, targetIU, age)
+    : null;
+
   if (hourlyUVI.length === 0) {
     return {
       state: "no_synthesis", currentUVI: 0, effectiveUVI: 0, intensity: null,
       minutesNeeded: null, window: null, bestHour: null, bestMinutes: null,
       minutesUntilWindow: null, windowClosesIn: null, cloudCover: null,
       clearSkyWindow, clearSkySource, cloudDegraded: false,
+      clearSkyNowUVI, clearSkyMinutesNow,
     };
   }
 
@@ -730,5 +747,6 @@ export function getCurrentStatus(
     minutesNeeded: minutesNeededNow, window: synthWindow, bestHour: bHour, bestMinutes: bMinutes,
     minutesUntilWindow, windowClosesIn, cloudCover: currentCloud,
     clearSkyWindow, clearSkySource, cloudDegraded,
+    clearSkyNowUVI, clearSkyMinutesNow,
   };
 }

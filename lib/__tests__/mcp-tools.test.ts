@@ -228,6 +228,10 @@ describe("currentStatusTool", () => {
     // the answer must say so rather than leave the caller to guess — the London
     // 2026-09-22 report, where the city page said the season ran to 27 September
     // and the live answer said "no synthesis" with nothing to reconcile them.
+    // Pinned to the fixture's day at Madrid noon: in November there is no
+    // solar window to blame the cloud for.
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(new Date("2026-06-21T11:00:00Z"));
     const overcast = Array.from({ length: 24 }, (_, h) => ({
       time: `2026-06-21T${String(h).padStart(2, "0")}:00`,
       uvIndex: 1.2,
@@ -241,6 +245,10 @@ describe("currentStatusTool", () => {
     expect(r.window).toBeNull();
     expect(r.clearSkyWindow).not.toBeNull();
     expect(r.cloudDegraded).toBe(true);
+    // Under broken cloud the user may be in direct sun: the answer carries what
+    // that minute's clear sky delivers, so an assistant can say so.
+    expect(r.directSunNow.uvIndex).toBeGreaterThan(3);
+    expect(r.directSunNow.minutesNeeded).not.toBeNull();
   });
 
   it("makes no cloud claim when the sun itself never gets high enough", async () => {

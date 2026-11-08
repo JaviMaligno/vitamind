@@ -255,6 +255,12 @@ export interface ContentRevision {
  *      all 3,318 pages with this guard silent; the hashes happened to move
  *      anyway because of (1). The table was NOT adopted (docs/ozone-rebase.md)
  *      and still ships empty, so this is the list catching up, not content.
+ *
+ * 2026-11-08 — hashes only, all three families, no date moved. `getCurrentStatus`
+ * now also returns this minute's clear-sky UV and dose (`clearSkyNowUVI`,
+ * `clearSkyMinutesNow`) for the dashboard's "is the sun on you directly?" card.
+ * Live path only — call sites are still `hooks/useNowStatus.ts` and
+ * `lib/mcp-tools.ts`, neither of which renders a sitemap URL.
  */
 export const SUN_MONTH_REVISION: ContentRevision = {
   date: "2026-09-22",
@@ -266,7 +272,7 @@ export const SUN_MONTH_REVISION: ContentRevision = {
     "copy.ru": "4fd942700575ec5d",
     "copy.lt": "4f1c6f865e78e355",
     cities: "35aebb84c49f350e",
-    figures: "6eab19830dac0691",
+    figures: "b6cad314753cd217",
     constants: "a3b447afa17fa07c",
   },
 };
@@ -312,7 +318,7 @@ export const CITY_PAGE_REVISION: ContentRevision = {
     "copy.ru": "39c852cd4713ae68",
     "copy.lt": "ff610006e37f9b63",
     cities: "c66cfdadbf8dabad",
-    figures: "2deb5733bd502f5b",
+    figures: "4c521d88d368a9e4",
     constants: "09032456232a5db5",
   },
 };
@@ -347,7 +353,7 @@ export const SUNTIME_PAGE_REVISION: ContentRevision = {
     "copy.de": "c72ec8cdf2df2ebb",
     "copy.ru": "e6c6fcebda3a7911",
     "copy.lt": "7f54b7c4c382e0ca",
-    figures: "1a1ea3f1e223988b",
+    figures: "83dc383de52a6984",
     reference: "4303d27a87c4a0dd",
     constants: "c9d5d03dc2b9c7b9",
   },

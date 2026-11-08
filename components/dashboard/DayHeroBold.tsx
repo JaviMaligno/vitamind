@@ -6,6 +6,7 @@ import { useSolarPhase } from "@/hooks/useSolarPhase";
 import { PHASE_STYLE } from "@/lib/solar-phase";
 import Flag from "@/components/ui/Flag";
 import { fmtTime } from "@/lib/solar";
+import { MIN_UVI } from "@/lib/vitd";
 import { formatCountdown, fmtMin, getStatusKey, type StatusKey } from "./day-status";
 
 /**
@@ -83,6 +84,16 @@ export default function DayHeroBold({ nowStatus, cityName, cityFlag, targetIU, l
   }
 
   const showData = ns.state === "good_now" || ns.state === "upcoming";
+
+  // Broken cloud: the forecast is a grid-cell average, so it can say "too
+  // cloudy" while the reader is standing in full sun between two clouds. Offer
+  // the clear-sky reading for this minute whenever the sun alone would reach the
+  // threshold and the forecast's cloud is costing a real share of it. Without
+  // weather the two are the same number, so this never shows.
+  const directSun =
+    ns.clearSkyMinutesNow !== null &&
+    ns.clearSkyNowUVI >= MIN_UVI &&
+    ns.effectiveUVI < ns.clearSkyNowUVI * 0.9;
 
   return (
     <section className="relative isolate flex flex-col overflow-hidden rounded-[2rem] sm:rounded-[2.5rem] min-h-[300px] sm:min-h-[360px]">
@@ -172,6 +183,20 @@ export default function DayHeroBold({ nowStatus, cityName, cityFlag, targetIU, l
               <p className="text-lg sm:text-xl text-white/85 max-w-2xl [text-shadow:0_1px_10px_rgba(0,0,0,0.35)]">
                 {hint}
               </p>
+            )}
+
+            {directSun && (
+              <div className="max-w-2xl rounded-2xl border border-white/20 bg-white/10 px-4 py-3 backdrop-blur-sm">
+                <p className="text-body font-semibold text-white">☀️ {t("directSunTitle")}</p>
+                <p className="mt-1 text-sm sm:text-body text-white/85">
+                  {t("directSunBody", {
+                    uvi: ns.clearSkyNowUVI.toFixed(1),
+                    minutes: fmtMin(ns.clearSkyMinutesNow ?? 0),
+                    iu: targetIU,
+                  })}
+                </p>
+                <p className="mt-1 text-caption text-white/60">{t("directSunNote")}</p>
+              </div>
             )}
 
             {/* data row */}
