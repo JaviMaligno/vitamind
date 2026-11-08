@@ -24,18 +24,23 @@ const hero = (ns: NowStatus) =>
   render(<DayHeroBold nowStatus={ns} cityName="Orvieto" cityFlag="it" targetIU={1000} loading={false} lat={42.7} lon={12.1} />);
 
 describe("DayHeroBold — direct sun under broken cloud", () => {
-  it("hides the direct-sun figures until the reader says the sun is on them", () => {
+  it("swaps the verdict itself once the reader says the sun is on them", () => {
     hero(cloudy);
     const toggle = screen.getByRole("button", { name: /dashboard\.directSunToggle/ });
     expect(toggle.getAttribute("aria-pressed")).toBe("false");
-    expect(screen.queryByText(/dashboard\.directSunBody/)).toBeNull();
+    expect(screen.getByRole("heading").textContent).toMatch(/dashboard\.noWindowToday/);
+    expect(screen.queryByText(/dashboard\.directSunHint/)).toBeNull();
 
     fireEvent.click(toggle);
     expect(toggle.getAttribute("aria-pressed")).toBe("true");
-    expect(screen.getByText(/dashboard\.directSunBody/).textContent).toContain('"uvi":"3.4"');
+    // The headline answers, so the two never contradict each other on screen.
+    expect(screen.getByRole("heading").textContent).toMatch(/dashboard\.directSunHeadline/);
+    expect(screen.getByRole("heading").textContent).toContain("~38 min");
+    expect(screen.getByText(/dashboard\.directSunPill/)).toBeTruthy();
+    expect(screen.getByText(/dashboard\.directSunHint/).textContent).toContain('"uvi":"3.4"');
 
     fireEvent.click(toggle);
-    expect(screen.queryByText(/dashboard\.directSunBody/)).toBeNull();
+    expect(screen.getByRole("heading").textContent).toMatch(/dashboard\.noWindowToday/);
   });
 
   it("offers nothing when the sun alone would not reach the threshold", () => {
