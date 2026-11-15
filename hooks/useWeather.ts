@@ -6,7 +6,8 @@ import { canRequestWeatherDate } from "@/lib/weather-dates";
 import type { WeatherData } from "@/lib/types";
 
 export function useWeather(lat: number, lon: number, date: Date) {
-  const dateStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+  // Explore supplies dateFromDoy() (UTC midnight), as does its displayed label.
+  const dateStr = `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, "0")}-${String(date.getUTCDate()).padStart(2, "0")}`;
   const isEmpty = lat === 0 && lon === 0;
   const eligible = !isEmpty && canRequestWeatherDate(dateStr);
   const requestKey = `${lat.toFixed(2)},${lon.toFixed(2)},${dateStr}`;

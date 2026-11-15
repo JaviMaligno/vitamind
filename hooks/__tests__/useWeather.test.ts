@@ -2,11 +2,12 @@ import { act, cleanup, renderHook, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { useWeather } from "../useWeather";
 import { getCachedWeather } from "@/lib/storage";
+import { dateFromDoy } from "@/lib/solar";
 
 vi.mock("@/lib/storage", () => ({ getCachedWeather: vi.fn(), setCachedWeather: vi.fn() }));
 
 const weather = { hours: [{ time: "2026-11-14T12:00", uvIndex: 3, uvIndexClearSky: 4, cloudCover: 10 }] };
-const date = (day: string) => new Date(`${day}T12:00:00`);
+const date = (day: string) => new Date(`${day}T00:00:00Z`);
 
 beforeEach(() => {
   vi.useFakeTimers({ toFake: ["Date"] });
@@ -23,6 +24,24 @@ afterEach(() => {
 });
 
 describe("SPEC-4: Explore weather horizon (incident #88)", () => {
+  it("keeps Explore's UTC calendar date in a western browser timezone", async () => {
+    const previousZone = process.env.TZ;
+    process.env.TZ = "America/New_York";
+    try {
+      const { result, rerender } = renderHook(({ doy }) => useWeather(40.42, -3.7, dateFromDoy(doy)), {
+        initialProps: { doy: 333 }, // November 29, the inclusive boundary
+      });
+      await waitFor(() => expect(result.current?.hours).toEqual(weather.hours));
+      expect(vi.mocked(fetch).mock.calls[0][0]).toContain("date=2026-11-29");
+      rerender({ doy: 334 }); // November 30 must not become November 29 locally
+      expect(result.current).toBeNull();
+      expect(fetch).toHaveBeenCalledTimes(1);
+    } finally {
+      if (previousZone === undefined) delete process.env.TZ;
+      else process.env.TZ = previousZone;
+    }
+  });
+
   it("uses the existing model fallback for dates beyond the forecast horizon without fetching", () => {
     const { result } = renderHook(() => useWeather(40.42, -3.7, date("2026-12-01")));
     expect(result.current).toBeNull();
