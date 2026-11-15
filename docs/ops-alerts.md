@@ -77,3 +77,42 @@ where env = 'production' and kind <> 'heartbeat'
 group by 1, 2, 3, 4
 order by 1 desc;
 ```
+
+## Incident #88 — Explore requested December forecasts in November
+
+On **2026-11-14, 16:43:04–16:43:27 UTC**, production recorded 18 main
+weather errors and 18 irradiance fallbacks. These were two failed upstream
+calls per request, **18 failed weather requests**, not 36 visitors. Open-Meteo
+returned HTTP 400: `start_date` was outside its allowed range, which ended on
+2026-11-29. The issue opened at 17:05 and recovered automatically at 21:28.
+
+Investigation on 2026-11-15 recovered all **18 HTTP 502 request records** from
+Vercel, matching the persistent events. All carried `/en/explore` as their
+referrer and dates between **2026-12-01 and 2026-12-30**. They reported the same
+iPhone/Safari user-agent and a US Google Fiber network; Vercel supplied no
+verified bot identity. This establishes the recorded request path and client
+metadata, **not a person's identity or proof of a real device**. Headers can be
+spoofed. No coordinates, IPs or client identifiers are copied into this report.
+
+The code explains how ordinary exploration can trigger this: the date picker
+and animation span the entire year, and `useWeather` requested the selected
+day without checking the weather horizon. The API checked only date format.
+Both upstream calls then failed for unsupported future days. MCP weather calls
+were not the source (`weather`, not `mcp-weather`; no matching weather tool
+events). Nearby analytics visits alone cannot identify who made the requests.
+
+The fix shares the provider's **16-day horizon including today, in UTC**
+between the API and `useWeather`. Explore uses its existing clear-sky model
+outside that horizon without fetching weather. The API rejects unsupported or
+invalid dates and incomplete/reversed ranges with 400 before making either
+upstream call or recording an ops incident. Valid historical dates remain
+eligible for the existing archive path. Regression tests cover both guards,
+the inclusive boundary, leap days, year rollover, cache and in-flight changes.
+
+**Check retention rather than assuming yesterday's logs are gone.** The older
+one-hour note above motivated the incident store, but this investigation could
+read both request metadata and weather error messages roughly 21 hours later.
+Use `vercel logs --project vitamind --environment production --level error
+--since <start> --until <end> --json`; request details also contain selected
+dates, referrer and reported user-agent. Always scope by production and time,
+and keep raw request details out of the repository.

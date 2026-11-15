@@ -35,6 +35,13 @@ verify the deployed preview: plain synthetic Request tests missed this failure.
 
 ## Upstream failures page someone: `docs/ops-alerts.md`
 
+**Incident #88 (2026-11-14):** Explore's year-wide date picker/animation sent
+December dates beyond Open-Meteo's 16-day horizon. `lib/weather-dates.ts` now
+shares UTC date bounds between the API and `useWeather`: reject invalid API
+dates before upstream calls; use the existing model without a weather request
+for future days outside the horizon. Keep historical requests working. Full
+investigation and evidence limits: `docs/ops-alerts.md`.
+
 Hobby keeps Vercel runtime logs for **one hour** and has no alerts, so upstream
 failures (Open-Meteo, today) are written to `ops_events` via `reportOpsEvent` in
 `lib/ops-events.ts`, and `.github/workflows/ops-alerts.yml` polls
