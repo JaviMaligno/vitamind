@@ -25,6 +25,7 @@ beforeEach(() => {
 
 afterEach(() => {
   global.fetch = realFetch;
+  vi.useRealTimers();
 });
 
 describe("/api/weather input validation", () => {
@@ -38,6 +39,59 @@ describe("/api/weather input validation", () => {
     const res = await GET(request(qs));
     expect(res.status).toBe(400);
     expect(global.fetch).not.toHaveBeenCalled();
+  });
+
+  describe("W1: date bounds (incident #88)", () => {
+    beforeEach(() => {
+      vi.useFakeTimers({ toFake: ["Date"] });
+      vi.setSystemTime(new Date("2026-11-14T16:43:00Z"));
+    });
+
+    it.each([
+      ["a day beyond the 16-day forecast", "date=2026-11-30"],
+      ["an out-of-range range end", "start=2026-11-14&end=2026-11-30"],
+      ["an impossible day", "date=2026-11-31"],
+      ["a non-leap February 29", "date=2026-02-29"],
+      ["an impossible range date", "start=2026-02-30&end=2026-03-01"],
+      ["a reversed range", "start=2026-11-15&end=2026-11-14"],
+      ["a start without an end", "start=2026-11-14"],
+      ["an end without a start", "end=2026-11-14"],
+      ["conflicting date and range", "date=2026-11-14&start=2026-11-15&end=2026-11-16"],
+      ["an empty date", "date="],
+      ["a day before the historical archive", "date=1939-12-31"],
+    ])("rejects %s without calling upstream or raising an ops alert", async (_name, dates) => {
+      vi.mocked(global.fetch).mockImplementation(async () =>
+        new Response('{"reason":"Date out of allowed range"}', { status: 400 }));
+      const res = await GET(request(`lat=40.42&lon=-3.70&${dates}`));
+      expect(res.status).toBe(400);
+      expect(await res.json()).toHaveProperty("error");
+      expect(global.fetch).not.toHaveBeenCalled();
+      expect(await reportedEvents()).toEqual([]);
+    });
+
+    it.each([
+      "date=2026-11-14",
+      "date=2026-11-29",
+      "start=2026-11-14&end=2026-11-29",
+      "date=2024-02-29",
+    ])("W2: preserves a valid request: %s", async (dates) => {
+      vi.mocked(global.fetch).mockImplementation(async () => new Response(JSON.stringify({
+        hourly: { time: ["2026-11-14T12:00"], uv_index: [3], cloud_cover: [0] },
+      })));
+      expect((await GET(request(`lat=40.42&lon=-3.70&${dates}`))).status).toBe(200);
+      expect(global.fetch).toHaveBeenCalled();
+    });
+
+    it("uses the UTC day at the year boundary", async () => {
+      vi.setSystemTime(new Date("2026-12-31T23:59:59Z"));
+      vi.mocked(global.fetch).mockImplementation(async () => new Response(JSON.stringify({
+        hourly: { time: ["2027-01-15T12:00"], uv_index: [3], cloud_cover: [0] },
+      })));
+      expect((await GET(request("lat=40&lon=-3&date=2027-01-15"))).status).toBe(200);
+      vi.mocked(global.fetch).mockClear();
+      expect((await GET(request("lat=40&lon=-3&date=2027-01-16"))).status).toBe(400);
+      expect(global.fetch).not.toHaveBeenCalled();
+    });
   });
 });
 

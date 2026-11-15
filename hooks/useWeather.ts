@@ -2,18 +2,22 @@
 
 import { useState, useEffect } from "react";
 import { getCachedWeather, setCachedWeather } from "@/lib/storage";
+import { canRequestWeatherDate } from "@/lib/weather-dates";
 import type { WeatherData } from "@/lib/types";
 
 export function useWeather(lat: number, lon: number, date: Date) {
   const dateStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
   const isEmpty = lat === 0 && lon === 0;
+  const eligible = !isEmpty && canRequestWeatherDate(dateStr);
   const requestKey = `${lat.toFixed(2)},${lon.toFixed(2)},${dateStr}`;
-  const cached = isEmpty ? null : getCachedWeather(lat, lon, dateStr);
+  const cached = eligible ? getCachedWeather(lat, lon, dateStr) : null;
 
   const [fetched, setFetched] = useState<{ key: string; data: WeatherData | null } | null>(null);
 
   useEffect(() => {
-    if (isEmpty || cached) return;
+    // Explore spans the entire year. Beyond the weather horizon, keep its
+    // existing clear-sky model instead of sending requests guaranteed to fail.
+    if (!eligible || cached) return;
 
     const controller = new AbortController();
     fetch(`/api/weather?lat=${lat.toFixed(2)}&lon=${lon.toFixed(2)}&date=${dateStr}`, { signal: controller.signal })
@@ -29,9 +33,9 @@ export function useWeather(lat: number, lon: number, date: Date) {
       })
       .catch(() => setFetched({ key: requestKey, data: null }));
     return () => controller.abort();
-  }, [lat, lon, dateStr, isEmpty, cached, requestKey]);
+  }, [lat, lon, dateStr, eligible, cached, requestKey]);
 
-  if (isEmpty) return null;
+  if (!eligible) return null;
   if (cached) return cached;
   return fetched?.key === requestKey ? fetched.data : null;
 }

@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { endpointFor, hoursFromPayload, FORECAST_URL } from "@/lib/weather-range";
 import { forecastHours, radiationUrl } from "@/lib/cloud-transmission";
 import { reportOpsEvent, upstreamFailure } from "@/lib/ops-events";
+import { FORECAST_DAYS, isWeatherDate, lastForecastDate } from "@/lib/weather-dates";
 
-const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 const UPSTREAM_TIMEOUT_MS = 8000;
 
 function parseCoord(value: string | null, min: number, max: number): number | null {
@@ -25,10 +25,22 @@ export async function GET(request: NextRequest) {
   if (lat === null || lon === null) {
     return NextResponse.json({ error: "lat and lon must be valid coordinates" }, { status: 400 });
   }
+  if ((start === null) !== (end === null) || (date !== null && start !== null)) {
+    return NextResponse.json({ error: "use either date or both start and end" }, { status: 400 });
+  }
   for (const d of [date, start, end]) {
-    if (d && !DATE_RE.test(d)) {
-      return NextResponse.json({ error: "dates must be YYYY-MM-DD" }, { status: 400 });
+    if (d !== null && !isWeatherDate(d)) {
+      return NextResponse.json({ error: "dates must be valid YYYY-MM-DD dates from 1940 onwards" }, { status: 400 });
     }
+  }
+  if (start !== null && end !== null && start > end) {
+    return NextResponse.json({ error: "start must not be after end" }, { status: 400 });
+  }
+  const latest = lastForecastDate();
+  if ([date, start, end].some((d) => d !== null && d > latest)) {
+    // Invalid client input must not become a pair of upstream failures and page
+    // the owner (incident #88). Validate before starting either fetch.
+    return NextResponse.json({ error: `dates must not be after ${latest}` }, { status: 400 });
   }
 
   // Every upstream failure below is also written to `ops_events`, after the
@@ -51,7 +63,7 @@ export async function GET(request: NextRequest) {
       url.searchParams.set("start_date", date);
       url.searchParams.set("end_date", date);
     } else if (days) {
-      const nDays = Math.min(Math.max(parseInt(days, 10) || 3, 1), 16);
+      const nDays = Math.min(Math.max(parseInt(days, 10) || 3, 1), FORECAST_DAYS);
       url.searchParams.set("forecast_days", String(nDays));
     } else {
       url.searchParams.set("forecast_days", "3");
