@@ -1,5 +1,7 @@
 # VitaminD Explorer
 
+[![mcptry](https://mcptry.com/badge/io.github.JaviMaligno/vitamind)](https://mcptry.com/servers/io.github.JaviMaligno/vitamind)
+
 Solar vitamin D calculator PWA — know when and where you can synthesize
 vitamin D from sunlight, based on solar elevation, real-time UV index, skin
 type, body exposure and age.
