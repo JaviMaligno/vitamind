@@ -95,6 +95,7 @@ server replies 406 before running anything.
 | **Smithery** | **dofollow** ×2 | ✅ 3/8 — `smithery.ai/server/javimaligno/vitamind` |
 | **Cursor Directory** | por comprobar | ✅ enviado 3/8 — `cursor.directory/plugins/vitamin-d-explorer`, en revisión |
 | mcp.so | dofollow **solo pagando 39 $** | ❌ **descartado** por el owner el 3/8 |
+| mcptry | badge en README | ✅ lo lista solo (lee el registro); 66/100, #902 de 1949 en Health & Science el 22/11 |
 
 ### PulseMCP
 
@@ -155,6 +156,25 @@ Cursor») — hay que reescribirlos a mano antes de publicar.
 **Queda pendiente:** la ficha dice *«Scanning your plugin… it will appear publicly once the
 security agent finishes»* y *«This plugin is unpublished and hidden from the directory»*.
 Mismo patrón que Smithery: enviado no es visible. **Volver a comprobarlo.**
+
+### mcptry — 2026-11-22
+
+Lee el registro oficial y prueba cada remoto por su cuenta. Nos escribieron con la
+puntuación (66/100) y dos sugerencias. Su método: https://mcptry.com/methodology.
+Badge añadido al `README.md`.
+
+- **Icono y título en `server.json` (+6) — hecho.** `title` e `icons` (los PNG 512/192 y
+  el SVG de `public/icons/`), versión a `1.0.1` porque el registro no acepta republicar
+  una versión existente. Validado contra el esquema `2025-12-11`. **Falta republicar**
+  con el binario Go (ver `docs/plans/2026-07-27-mcp-directory-submissions.md`).
+- **`initialize` y `tools/list` sin token (hasta +17) — no aplicado, a propósito.**
+  `/api/mcp/mcp` ya lo hace (y las 9 públicas funcionan sin cuenta). Lo que les puntúa
+  como «requiere login» es casi seguro `/api/mcp-auth/mcp`, cuyo 401 en `initialize` es
+  lo que hace que Claude/ChatGPT lancen el OAuth. Dejar pasar `initialize` movería el
+  primer 401 a un `tools/call`, y no está comprobado que esos clientes inicien el login
+  a mitad de sesión: se arriesga el conector con cuenta por una puntuación de terceros.
+  Si se quiere subir, pedirles que puntúen el remoto público (el primero de `remotes`)
+  o el mejor de los dos.
 
 ### mcp.so — descartado
 
